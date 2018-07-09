@@ -144,7 +144,7 @@
             android:theme="@style/take_photo_theme" />
 
         <activity
-            android:name=".activity.ExoPlayerActivity"
+            android:name=".activity.VideoExoPlayerActivity"
             android:screenOrientation="landscape" />
 
         <receiver

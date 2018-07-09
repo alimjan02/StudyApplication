@@ -1,16 +1,18 @@
 package com.sxt.chat.activity;
 
 import android.content.Intent;
+import android.drm.DrmStore;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
@@ -33,13 +35,11 @@ import com.sxt.chat.base.BaseActivity;
  * Created by 11837 on 2018/6/11.
  */
 
-public class ExoPlayerActivity extends BaseActivity implements View.OnClickListener {
+public class VideoExoPlayerActivity extends BaseActivity implements View.OnClickListener {
 
     private String URL1 = "https://media.w3.org/2010/05/sintel/trailer.mp4";
-    private String URL2 = "http://www.w3school.com.cn/example/html5/mov_bbb.mp4";
-    private String URL3 = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-    private String URL4 = "https://media.w3.org/2010/05/sintel/trailer.mp4";
-    private String URL5 = "https://media.w3.org/2010/05/sintel/trailer.mp4";
+    private String URL2 = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+
     private String img_url_1 = "http://f.hiphotos.baidu.com/image/pic/item/42166d224f4a20a403c7e0319c529822730ed06f.jpg";
     private String img_url_2 = "http://h.hiphotos.baidu.com/image/pic/item/43a7d933c895d14332bd91df7ff082025baf0706.jpg";
     private SimpleExoPlayer player;
@@ -54,10 +54,9 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
 
-// 2. Create a default LoadControl
+        // 2. Create a default LoadControl
         LoadControl loadControl = new DefaultLoadControl();
-
-// 3. Create the player
+        // 3. Create the player
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
         exoPlayerView.setPlayer(player);
 
@@ -67,28 +66,73 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
                 new TransferListener<DataSource>() {
                     @Override
                     public void onTransferStart(DataSource source, DataSpec dataSpec) {
-
+//                        Log.i("Video", "onTransferStart");//缓冲开始
                     }
 
                     @Override
                     public void onBytesTransferred(DataSource source, int bytesTransferred) {
-
+//                        Log.i("Video", "onTransferStart");//正在缓冲
                     }
 
                     @Override
                     public void onTransferEnd(DataSource source) {
-
+//                        Log.i("Video", "onTransferEnd");//缓冲完成
                     }
                 });
 
-// Produces Extractor instances for parsing the media data.
-        ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-// This is the MediaSource representing the media to be played.
-        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(URL3));
+        // This is the MediaSource representing the media to be played.
+        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(URL1));
+        player.addListener(new Player.DefaultEventListener() {
 
-// Prepare the player with the source.
+            @Override
+            public void onLoadingChanged(boolean isLoading) {
+                super.onLoadingChanged(isLoading);
+                Log.i("Video", "onLoadingChanged  isLoading = " + isLoading);
+                if (isLoading) {
+                    if (!loading.isShowing()) {
+                        loading.show();
+                    }
+                } else {
+                    loading.dismiss();
+                    player.seekTo(player.getCurrentPosition());
+                }
+            }
+
+            @Override
+            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                super.onPlayerStateChanged(playWhenReady, playbackState);
+                Log.i("Video", "onPlayerStateChanged playWhenReady = " + playWhenReady);
+                if (playbackState == DrmStore.Playback.START) {
+                    Log.i("Video", "playbackState == DrmStore.Playback.START");
+                } else if (playbackState == DrmStore.Playback.PAUSE) {
+                    Log.i("Video", "playbackState == DrmStore.Playback.PAUSE");
+                } else if (playbackState == DrmStore.Playback.RESUME) {
+                    Log.i("Video", "playbackState == DrmStore.Playback.RESUME");
+                } else if (playbackState == DrmStore.Playback.STOP) {
+                    Log.i("Video", "playbackState == DrmStore.Playback.STOP");
+                }
+            }
+
+            @Override
+            public void onPlayerError(ExoPlaybackException error) {
+                super.onPlayerError(error);
+                Log.i("Video", "onPlayerError  error = " + error);
+            }
+
+            @Override
+            public void onPositionDiscontinuity(int reason) {
+                super.onPositionDiscontinuity(reason);
+                Log.i("Video", "onPositionDiscontinuity");
+            }
+
+            @Override
+            public void onSeekProcessed() {
+                super.onSeekProcessed();
+                Log.i("Video", "onSeekProcessed");
+            }
+        });
+        // Prepare the player with the source.
         player.prepare(videoSource);
-
         findViewById(R.id.back).setOnClickListener(this);
         findViewById(R.id.quality).setOnClickListener(this);
         findViewById(R.id.select).setOnClickListener(this);
@@ -125,6 +169,15 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             initWindowStyle();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (player != null) {
+            player.stop();
+            player.release();
         }
     }
 }

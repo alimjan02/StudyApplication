@@ -237,7 +237,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 startActivity(new Intent(this, YouTuIdCardActivity.class));
                 break;
                 case R.id.exoplayer:
-                startActivity(new Intent(this, ExoPlayerActivity.class));
+                startActivity(new Intent(this, VideoExoPlayerActivity.class));
                 break;
         }
     }
