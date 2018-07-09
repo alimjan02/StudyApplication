@@ -1,0 +1,148 @@
+<resources>
+    <string name="app_name">畅玩</string>
+    <string name="permission_denied">Permission Denied</string>
+    <string name="content_is_empty">当前啥都没有哟</string>
+    <string name="error_request_data">数据请求失败,请稍后再试</string>
+    <string name="message_alert">温馨提示</string>
+    <string name="clear_cache_confirm">确定要清楚缓存吗?</string>
+    <string name="update_version">版本更新</string>
+    <string name="re_download">重新下载</string>
+    <string name="re_download_cancel">取消下载</string>
+    <string name="prompt">温馨提示</string>
+
+    <string name="exit_press_again">再按一次退出</string>
+    <string name="basic_info">基本信息</string>
+    <string name="nomal_settings">通用设置</string>
+    <string name="ocr_scan">腾讯优图</string>
+    <string name="ocr_scan_id_card">身份证识别</string>
+    <string name="change_login">切换账号</string>
+    <string name="clean_cache">清理缓存</string>
+    <string name="feedback">意见反馈</string>
+    <string name="about_us_ehu">关于我们</string>
+    <string name="current_version">检查更新</string>
+    <string name="login_out">退出登录</string>
+    <string name="login">登录</string>
+    <string name="cache_size">%sM</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="done">完成</string>
+    <string name="open">开启</string>
+    <string name="close">关闭</string>
+
+    <string name="header_name_update">姓名修改</string>
+    <string name="header_img_update">头像修改</string>
+    <string name="upload_img_failed">头像上传失败</string>
+    <string name="upload_img_successful">头像修改成功</string>
+    <string name="head_portrait">头像</string>
+    <string name="name">姓名</string>
+    <string name="body_number">身份证</string>
+    <string name="sex">性别</string>
+    <string name="age">年龄</string>
+    <string name="weight">体重</string>
+    <string name="hight">身高</string>
+    <string name="bmi">BMI</string>
+    <string name="phone">联系方式</string>
+    <string name="level">文化程度</string>
+
+    <string name="input_number">请输入手机号</string>
+    <string name="input_pwd">请输入密码</string>
+    <string name="loin">登录</string>
+    <string name="register">新用户注册</string>
+    <string name="register2">注册</string>
+    <string name="register_successful">注册成功</string>
+    <string name="forget">忘记密码</string>
+    <string name="get_pwd">找回密码</string>
+    <string name="set_pwd">设置密码</string>
+    <string name="code">验证码</string>
+    <string name="next">下一步</string>
+    <string name="i_know">知道了</string>
+    <string name="save">保存</string>
+    <string name="woman">女士</string>
+    <string name="man">男士</string>
+    <string name="finish">完成</string>
+    <string name="input_phone_number">请输入手机号</string>
+    <string name="select_phone_number">请选择您的手机号</string>
+    <string name="input_body_number">请输入您的身份证号码</string>
+
+    <string name="string_tab_home">首页</string>
+    <string name="string_tab_github">GitHub</string>
+    <string name="string_tab_chart">Chart</string>
+    <string name="string_tab_me">我的</string>
+    <string name="allow_WRITE_EXTERNAL_STORAGE">缺少必要的权限,请在手机设置中允许畅玩读写手机存储的权限</string>
+    <string name="allow_wifi">还未获取到相应权限哦,您可以到手机设置中允许爱照护使用位置和WiFi权限哟</string>
+    <string name="allow_READ_EXTERNAL_STORAGE">还未获取到相应权限哦,您可以到手机设置中允许爱照护读取手机存储的权限哟</string>
+    <string name="allow_READ_CONTACTS">还未获取到相应权限哦,您可以到手机设置中允许爱照护访问手机通讯录的权限哟</string>
+    <string name="allow_CAMERA">还未获取到相应权限哦,您可以到手机设置中允许爱照护访问手机拍照的权限哟</string>
+    <string name="allow_CALL_PHONE">还未获取到相应权限哦,您可以到手机设置中允许爱照护打电话的权限哟</string>
+    <string name="kong_ge">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
+    <string name="take_photo">拍摄</string>
+    <string name="take_photo_reset">重新拍摄</string>
+    <string name="just_a_moment">请稍后</string>
+
+    <string-array name="sleep_strings">
+        <item>离床次数(次)</item>
+        <item>安眠药</item>
+        <item>睡眠质量</item>
+    </string-array>
+
+    <string-array name="body_strings">
+        <item>血糖(mmol/L)</item>
+        <item>心跳(次/分)</item>
+        <item>血压(mmhg)</item>
+        <item>温度(℃)</item>
+    </string-array>
+
+    <string-array name="health_title_strings">
+        <item>心跳</item>
+        <item>血氧</item>
+        <item>收缩压</item>
+        <item>舒张压</item>
+        <item>血糖</item>
+        <item>体温</item>
+        <item>小腿围</item>
+        <item>体重</item>
+    </string-array>
+
+    <string-array name="health_unit_strings">
+        <item>次/分</item>
+        <item>%</item>
+        <item>mmHg</item>
+        <item>mmHg</item>
+        <item>mmol/L</item>
+        <item>℃</item>
+        <item>cm</item>
+        <item>kg</item>
+    </string-array>
+
+    <string name="string_unit_xt">(mmol/l)</string>
+    <string name="string_unit_hb">(次/分)</string>
+    <string name="string_unit_bt">(℃)</string>
+    <string name="string_unit_press">(mmhg)</string>
+    <string name="string_unit_step">(步)</string>
+    <string name="string_unit_lccs">(次)</string>
+    <string name="string_unit_fen">(份)</string>
+    <string name="string_unit_ml">(ml)</string>
+
+    <string name="string_label_snyd">室内移动</string>
+    <string name="string_label_jcfj">进出房间</string>
+    <string name="string_label_smfs">睡眠翻身</string>
+    <string name="string_label_lccs">离床次数</string>
+    <string name="string_rjlc">日间离床</string>
+    <string name="string_hdxs">活动形式</string>
+    <string name="string_label_smzl">睡眠质量</string>
+    <string name="string_label_xt">血糖</string>
+    <string name="string_label_hb">心跳</string>
+    <string name="string_label_press">血压</string>
+    <string name="string_label_bt">体温</string>
+    <string name="string_label_step">步数</string>
+    <string name="string_label_eat">进餐</string>
+    <string name="string_label_drink">饮水</string>
+    <string name="string_charbar_sleep_4">熟睡</string>
+    <string name="string_charbar_sleep_3">普通</string>
+    <string name="string_charbar_sleep_2">浅眠</string>
+    <string name="string_label_smzl_bad">差</string>
+    <string name="string_label_smzl_good">好</string>
+    <string name="string_chart_unit_month">月</string>
+    <string name="string_label_press_hight">高压</string>
+    <string name="string_label_press_lower">低压</string>
+</resources>

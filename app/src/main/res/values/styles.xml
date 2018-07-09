@@ -1,0 +1,80 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+
+        <!--设置默认的 提示文字颜色 和 EdiText光标样式-->
+        <item name="android:cursorVisible">true</item>
+        <item name="android:textColorHint">@color/text_color_gray_3</item>
+        <item name="android:textCursorDrawable">@drawable/text_cursor_drawable</item>
+    </style>
+
+
+    <!--优化启动页 修复闪屏界面出现的 短暂白屏 问题-->
+
+    <style name="PopContextMenu" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="take_photo_theme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="divider_line">
+        <item name="android:background">@color/dividing_line</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.5dp</item>
+    </style>
+
+    <style name="bottom_radio">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:drawablePadding">3dp</item>
+        <item name="android:textColor">@drawable/tab_text_selector_bg</item>
+    </style>
+
+    <style name="CustomDialog" parent="@android:style/Theme.Dialog">
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <!-- 浮于Activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- Dialog以外的区域模糊效果 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 无标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="Spinner_style" parent="Widget.AppCompat.Light.DropDownItem.Spinner">
+        <item name="android:background">@null</item>
+        <item name="android:popupBackground">@drawable/gray_solid_round_8</item>
+        <item name="android:popupElevation">0dp</item>
+        <item name="android:overlapAnchor">false</item>
+        <item name="android:spinnerMode">dropdown</item>
+    </style>
+
+    <style name="item_alert_text_select_style">
+        <item name="android:background">@drawable/item_text_bg_selector</item>
+        <item name="android:textColor">@drawable/item_text_color_selector</item>
+    </style>
+
+</resources>

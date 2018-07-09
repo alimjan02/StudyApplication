@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    android:paddingTop="50dp">
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="130dp"
+        android:layout_height="130dp" />
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/gray_solid_round_8"
+        android:hint="请输入您的姓名"
+        android:padding="12dp"
+        android:textColor="@color/text_color_2"
+        android:textColorHint="@color/text_color_gray_3" />
+
+
+    <EditText
+        android:id="@+id/et_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/gray_solid_round_8"
+        android:hint="@string/input_body_number"
+        android:maxLength="18"
+        android:maxLines="1"
+        android:padding="12dp"
+        android:singleLine="true"
+        android:textColor="@color/text_color_2"
+        android:textColorHint="@color/text_color_gray_3" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/blue_solid_round_25"
+        android:gravity="center"
+        android:paddingBottom="13dp"
+        android:paddingTop="13dp"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+</LinearLayout>

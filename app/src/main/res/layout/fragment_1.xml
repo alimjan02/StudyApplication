@@ -1,0 +1,214 @@
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:background="@color/main_body">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/top_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:overScrollMode="never" />
+
+            <ViewSwitcher
+                android:id="@+id/banner_viewSwitcher"
+                android:layout_width="match_parent"
+                android:layout_height="144dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_banner_placeholder" />
+
+                <com.youth.banner.Banner xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    app:indicator_drawable_selected="@drawable/dot_blue"
+                    app:indicator_drawable_unselected="@drawable/dot_white"
+                    app:indicator_height="6dp"
+                    app:indicator_margin="2dp"
+                    app:indicator_width="6dp" />
+
+            </ViewSwitcher>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:paddingTop="15dp">
+
+                <TextView
+                    style="@style/text_17_color_1_style"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:text="推荐房源"
+                    android:textColor="@color/black" />
+
+            </FrameLayout>
+
+            <ViewSwitcher
+                android:id="@+id/center_viewSitcher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_placeholder" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/center_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingLeft="5dp" />
+            </ViewSwitcher>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:paddingTop="15dp">
+
+                <TextView
+                    style="@style/text_17_color_1_style"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:text="热门房源"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/more"
+                    style="@style/text_12_color_3_style"
+                    android:layout_gravity="center_vertical|end"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text="更多" />
+
+            </FrameLayout>
+
+            <ViewSwitcher
+                android:id="@+id/bottom_viewSwitcher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_placeholder" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/bottom_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingLeft="5dp" />
+
+            </ViewSwitcher>
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:paddingTop="15dp">
+
+                <TextView
+                    style="@style/text_17_color_1_style"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:text="优选公寓房源"
+                    android:textColor="@color/black" />
+
+            </FrameLayout>
+
+            <ViewSwitcher
+                android:id="@+id/last_viewSitcher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_placeholder" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/last_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingLeft="5dp" />
+            </ViewSwitcher>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:paddingBottom="20dp">
+
+                <View
+                    android:layout_width="50dp"
+                    android:layout_height="0.5dp"
+                    android:background="@color/text_color_3" />
+
+                <TextView
+                    style="@style/text_14_color_3_style"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:text="我也是有底线的" />
+
+                <View
+                    android:layout_width="50dp"
+                    android:layout_height="0.5dp"
+                    android:background="@color/text_color_3" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+</android.support.v4.widget.SwipeRefreshLayout>

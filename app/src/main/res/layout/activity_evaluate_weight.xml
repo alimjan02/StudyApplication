@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent">
+
+
+    <com.sxt.chat.view.chart.RulerView
+        android:id="@+id/rulerView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        app:isVertical="false"
+        app:lineColor="@color/text_color_gray_3"
+        app:lineMaxHeight="20dp"
+        app:lineMidHeight="13dp"
+        app:lineMinHeight="8dp"
+        app:lineSpaceWidth="6dp"
+        app:lineWidth="1dp"
+        app:maxValue="250"
+        app:minValue="5"
+        app:perValue="1"
+        app:selectorValue="60"
+        app:textColor="@color/text_color_1"
+        app:textMarginTop="10dp"
+        app:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/rulerView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/main_blue"
+        android:textSize="26dp" />
+
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_above="@id/result"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp" />
+
+
+    <TextView
+        android:id="@+id/next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="45dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/login_btn_pressed_bg"
+        android:gravity="center"
+        android:padding="13dp"
+        android:text="@string/next"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+</RelativeLayout>

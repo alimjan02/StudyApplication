@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            style="@style/divider_line"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" />
+
+        <FrameLayout
+            android:id="@+id/user_name_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+            <TextView
+                style="@style/text_17_color_1_style"
+                android:layout_gravity="center_vertical"
+                android:text="@string/name" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/user_name"
+                    style="@style/text_15_color_3_style"
+                    android:text="" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="8dp"
+                    android:src="@mipmap/common_icon_more" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/user_portrait_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:background="@color/white"
+                android:foreground="?selectableItemBackground"
+                android:paddingBottom="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="15dp">
+
+                <TextView
+                    style="@style/text_17_color_1_style"
+                    android:layout_centerVertical="true"
+                    android:text="@string/head_portrait" />
+
+                <ImageView
+                    android:id="@+id/arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="8dp"
+                    android:src="@mipmap/common_icon_more" />
+
+                <ImageView
+                    android:id="@+id/user_portrait"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/arrow" />
+            </RelativeLayout>
+
+        </FrameLayout>
+
+        <View
+            style="@style/divider_line"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" />
+
+        <FrameLayout
+            android:id="@+id/body_number_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:foreground="?selectableItemBackground"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="14dp">
+
+            <TextView
+                style="@style/text_17_color_1_style"
+                android:layout_gravity="center_vertical"
+                android:text="@string/body_number" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/body_number"
+                    style="@style/text_15_color_3_style"
+                    android:text="" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:src="@mipmap/common_icon_more" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <View
+            style="@style/divider_line"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" />
+
+        <FrameLayout
+            android:id="@+id/user_sex_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:foreground="?selectableItemBackground"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="14dp">
+
+            <TextView
+                style="@style/text_17_color_1_style"
+                android:layout_gravity="center_vertical"
+                android:text="@string/sex" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/user_sex"
+                    style="@style/text_15_color_3_style"
+                    android:text="" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:src="@mipmap/common_icon_more" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <View
+            style="@style/divider_line"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" />
+
+        <FrameLayout
+            android:id="@+id/user_age_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:foreground="?selectableItemBackground"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="14dp">
+
+            <TextView
+                style="@style/text_17_color_1_style"
+                android:layout_gravity="center_vertical"
+                android:text="@string/age" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/user_age"
+                    style="@style/text_15_color_3_style"
+                    android:text="" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:src="@mipmap/common_icon_more" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <View
+            style="@style/divider_line"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" />
+
+        <FrameLayout
+            android:id="@+id/user_weight_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:foreground="?selectableItemBackground"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="14dp">
+
+            <TextView
+                style="@style/text_17_color_1_style"
+                android:layout_gravity="center_vertical"
+                android:text="@string/weight" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/user_weight"
+                    style="@style/text_15_color_3_style"
+                    android:text="" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:src="@mipmap/common_icon_more" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <View
+            style="@style/divider_line"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" />
+
+        <FrameLayout
+            android:id="@+id/user_hight_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:foreground="?selectableItemBackground"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="14dp">
+
+            <TextView
+                style="@style/text_17_color_1_style"
+                android:layout_gravity="center_vertical"
+                android:text="@string/hight" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/user_hight"
+                    style="@style/text_15_color_3_style"
+                    android:text="" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:src="@mipmap/common_icon_more" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <View
+            style="@style/divider_line"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackground"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="14dp">
+
+            <TextView
+                style="@style/text_17_color_1_style"
+                android:layout_gravity="center_vertical"
+                android:text="@string/bmi" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/user_bmi"
+                    style="@style/text_15_color_3_style"
+                    android:text="" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:src="@mipmap/common_icon_more"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <FrameLayout
+            android:id="@+id/ad_banner_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

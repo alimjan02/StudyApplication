@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/smartRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:srlDisableContentWhenRefresh="true"
+    app:srlDragRate="0.5"
+    app:srlEnableOverScrollBounce="true"
+    app:srlEnableOverScrollDrag="true"
+    app:srlEnableRefresh="true">
+
+    <com.scwang.smartrefresh.layout.header.ClassicsHeader
+        android:id="@+id/refreshHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srlAccentColor="@color/main_blue"
+        app:srlClassicsSpinnerStyle="FixedBehind" />
+
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+        android:layout_width="match_parent"
+        android:id="@+id/simpleExoPlayerView"
+        android:layout_height="200dp" />
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>

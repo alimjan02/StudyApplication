@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:ratingBarStyleIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="true"
+            android:maxWidth="100dp"
+            android:numStars="1"
+            android:progressDrawable="@drawable/rating_bar_style"
+            android:rating="0" />
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/text_12_color_1_style"
+            android:gravity="center"
+            android:maxWidth="72dp"
+            android:text="下拉弹框" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

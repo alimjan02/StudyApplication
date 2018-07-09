@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="10dp">
+
+    <com.sxt.chat.view.chart.BeizerCurveLine xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/chart_line"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:background="@drawable/white_solid_round_10" />
+</FrameLayout>
