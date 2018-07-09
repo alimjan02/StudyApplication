@@ -15,6 +15,7 @@
     <string name="nomal_settings">通用设置</string>
     <string name="ocr_scan">腾讯优图</string>
     <string name="ocr_scan_id_card">身份证识别</string>
+    <string name="exoplayer">ExoPlayer</string>
     <string name="change_login">切换账号</string>
     <string name="clean_cache">清理缓存</string>
     <string name="feedback">意见反馈</string>

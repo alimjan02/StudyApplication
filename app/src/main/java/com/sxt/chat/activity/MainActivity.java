@@ -71,10 +71,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
             tabGroup = (LinearLayout) findViewById(R.id.radio_group);
             findViewById(R.id.basic_info).setOnClickListener(this);
-            findViewById(R.id.ocr_scan_id_card).setOnClickListener(this);
-            findViewById(R.id.change_login).setOnClickListener(this);
             findViewById(R.id.normal_settings).setOnClickListener(this);
+            findViewById(R.id.ocr_scan_id_card).setOnClickListener(this);
             findViewById(R.id.ocr_scan).setOnClickListener(this);
+            findViewById(R.id.exoplayer).setOnClickListener(this);
+            findViewById(R.id.change_login).setOnClickListener(this);
             userIcon = (ImageView) findViewById(R.id.user_icon);
             userInfo = (TextView) findViewById(R.id.user_info);
             userName = (TextView) findViewById(R.id.user_name);
@@ -234,6 +235,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 break;
             case R.id.ocr_scan_id_card:
                 startActivity(new Intent(this, YouTuIdCardActivity.class));
+                break;
+                case R.id.exoplayer:
+                startActivity(new Intent(this, ExoPlayerActivity.class));
                 break;
         }
     }
