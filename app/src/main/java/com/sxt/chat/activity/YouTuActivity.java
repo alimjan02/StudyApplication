@@ -113,7 +113,7 @@ public class YouTuActivity extends HeaderActivity {
     }
 
     public void startGallery(View view) {
-        boolean b = checkPermission(REQUEST_CODE_GALLERY, Manifest.permission.WRITE_EXTERNAL_STORAGE, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
+        boolean b = checkPermission(REQUEST_CODE_GALLERY, Manifest.permission.READ_EXTERNAL_STORAGE, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE});
         if (b) {
             startGalleryApp();
         }

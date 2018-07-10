@@ -7,10 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -30,6 +28,8 @@ import com.google.android.exoplayer2.util.Util;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.base.BaseActivity;
+import com.sxt.chat.explayer.MyLoadControl;
+import com.sxt.chat.utils.NetworkUtils;
 
 /**
  * Created by 11837 on 2018/6/11.
@@ -37,30 +37,32 @@ import com.sxt.chat.base.BaseActivity;
 
 public class VideoExoPlayerActivity extends BaseActivity implements View.OnClickListener {
 
-    private String URL1 = "https://media.w3.org/2010/05/sintel/trailer.mp4";
-    private String URL2 = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-
     private String img_url_1 = "http://f.hiphotos.baidu.com/image/pic/item/42166d224f4a20a403c7e0319c529822730ed06f.jpg";
     private String img_url_2 = "http://h.hiphotos.baidu.com/image/pic/item/43a7d933c895d14332bd91df7ff082025baf0706.jpg";
     private SimpleExoPlayer player;
+    private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
+    private String TAG = "Video";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exoplayer);
+        findViewById(R.id.back).setOnClickListener(this);
+        findViewById(R.id.quality).setOnClickListener(this);
+        findViewById(R.id.select).setOnClickListener(this);
 
-        PlayerView exoPlayerView = findViewById(R.id.exoplayer);
+        final PlayerView exoPlayerView = findViewById(R.id.exoplayer);
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
 
         // 2. Create a default LoadControl
-        LoadControl loadControl = new DefaultLoadControl();
+        final MyLoadControl loadControl = new MyLoadControl();
         // 3. Create the player
-        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
+        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector, loadControl);
         exoPlayerView.setPlayer(player);
 
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
+        final DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
                 this,
                 Util.getUserAgent(this, App.class.getName()),
                 new TransferListener<DataSource>() {
@@ -81,20 +83,21 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                 });
 
         // This is the MediaSource representing the media to be played.
-        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(URL1));
+        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(urls[4]));
         player.addListener(new Player.DefaultEventListener() {
 
             @Override
-            public void onLoadingChanged(boolean isLoading) {
+            public void onLoadingChanged(boolean isLoading) {//缓冲时会调用
                 super.onLoadingChanged(isLoading);
-                Log.i("Video", "onLoadingChanged  isLoading = " + isLoading);
-                if (isLoading) {
-                    if (!loading.isShowing()) {
-                        loading.show();
+                Log.i(TAG, "onLoadingChanged  isLoading = " + isLoading);
+                if (isLoading) {//正在缓冲 可以在这里判断 当前是否处于无线网环境 , 可以提示用户是否耗费手机流量播放视频
+                    if (NetworkUtils.isWifi(App.getCtx())) {
+                        loadControl.shouldContinueLoading(true);
+                    } else {
+                        loadControl.shouldContinueLoading(false);
                     }
-                } else {
-                    loading.dismiss();
-                    player.seekTo(player.getCurrentPosition());
+                } else {//缓冲结束
+
                 }
             }
 
@@ -103,39 +106,41 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                 super.onPlayerStateChanged(playWhenReady, playbackState);
                 Log.i("Video", "onPlayerStateChanged playWhenReady = " + playWhenReady);
                 if (playbackState == DrmStore.Playback.START) {
-                    Log.i("Video", "playbackState == DrmStore.Playback.START");
-                } else if (playbackState == DrmStore.Playback.PAUSE) {
-                    Log.i("Video", "playbackState == DrmStore.Playback.PAUSE");
-                } else if (playbackState == DrmStore.Playback.RESUME) {
-                    Log.i("Video", "playbackState == DrmStore.Playback.RESUME");
+                    Log.i(TAG, "playbackState == DrmStore.Playback.START");
+                } else if (playbackState == DrmStore.Playback.PAUSE) {//暂停播放
+                    if (!loading.isShowing()) {
+                        loading.show();
+                    }
+                    Log.i(TAG, "playbackState == DrmStore.Playback.PAUSE");
+                } else if (playbackState == DrmStore.Playback.RESUME) {//继续播放
+                    if (loading.isShowing()) {
+                        loading.dismiss();
+                    }
+                    Log.i(TAG, "playbackState == DrmStore.Playback.RESUME");
                 } else if (playbackState == DrmStore.Playback.STOP) {
-                    Log.i("Video", "playbackState == DrmStore.Playback.STOP");
+                    if (loading.isShowing()) {
+                        loading.dismiss();
+                    }
+                    Log.i(TAG, "playbackState == DrmStore.Playback.STOP");
                 }
+                if (player.getCurrentPosition() == player.getDuration() - 10) {
+                    Log.i(TAG, "播放完成");
+                    final MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(urls[5]));
+                    player.stop(true);
+                    player.prepare(videoSource, true, true);
+                }
+                Log.i(TAG, "player.getCurrentPosition() = " + player.getCurrentPosition() + " , player.getContentPosition() " + player.getContentPosition() + " , player.getDuration() = " + player.getDuration());
             }
 
             @Override
             public void onPlayerError(ExoPlaybackException error) {
                 super.onPlayerError(error);
-                Log.i("Video", "onPlayerError  error = " + error);
-            }
-
-            @Override
-            public void onPositionDiscontinuity(int reason) {
-                super.onPositionDiscontinuity(reason);
-                Log.i("Video", "onPositionDiscontinuity");
-            }
-
-            @Override
-            public void onSeekProcessed() {
-                super.onSeekProcessed();
-                Log.i("Video", "onSeekProcessed");
+                Log.i(TAG, "onPlayerError  error = " + error);
             }
         });
         // Prepare the player with the source.
+        player.setPlayWhenReady(true);
         player.prepare(videoSource);
-        findViewById(R.id.back).setOnClickListener(this);
-        findViewById(R.id.quality).setOnClickListener(this);
-        findViewById(R.id.select).setOnClickListener(this);
     }
 
     @Override
@@ -167,9 +172,9 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            initWindowStyle();
-        }
+//        if (hasFocus) {
+        initWindowStyle();
+//        }
     }
 
     @Override
