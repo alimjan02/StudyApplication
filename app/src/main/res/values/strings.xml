@@ -146,6 +146,7 @@
     <string name="string_chart_unit_month">月</string>
     <string name="string_label_press_hight">高压</string>
     <string name="string_label_press_lower">低压</string>
+    <string name="test_img_url">http://h.hiphotos.baidu.com/image/pic/item/342ac65c103853434cc02dda9f13b07eca80883a.jpg</string>
 
 
     <string-array name="videos">
@@ -156,5 +157,15 @@
         <item>https://v.mifile.cn/b2c-mimall-media/a2d09c3e3c4a1be6caa9b83adafe0756.mp4</item><!--小米VR-->
         <item>https://v.mifile.cn/b2c-mimall-media/99d83cf4d4f9e62988c7911205bac5a0.mp4</item><!--小米音响-->
         <item>http://www.izhaohu.com/vsipage/tpl_thumb/ehome/201805/module/vedio/P1.mp4</item><!--爱照护官网宣传视频-->
+    </string-array>
+
+    <string-array name="videos_name">
+        <item>小米8 - 小米商城</item>
+        <item>小米8- 小米商城</item>
+        <item>小米笔记本- 小米商城</item>
+        <item>小米手环- 小米商城</item>
+        <item>小米VR- 小米商城</item>
+        <item>小米音响- 小米商城</item>
+        <item>爱照护官网宣传视频</item>
     </string-array>
 </resources>

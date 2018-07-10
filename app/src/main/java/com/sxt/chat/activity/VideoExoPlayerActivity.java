@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.drm.DrmStore;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
@@ -27,9 +30,15 @@ import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
+import com.sxt.chat.adapter.VideoListAdapter;
 import com.sxt.chat.base.BaseActivity;
+import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.explayer.MyLoadControl;
+import com.sxt.chat.json.VideoObject;
 import com.sxt.chat.utils.NetworkUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 11837 on 2018/6/11.
@@ -37,11 +46,16 @@ import com.sxt.chat.utils.NetworkUtils;
 
 public class VideoExoPlayerActivity extends BaseActivity implements View.OnClickListener {
 
+    private String TAG = "Video";
+    private SimpleExoPlayer player;
+    private DrawerLayout drawerLayout;
+    private RecyclerView recyclerView;
+    private View drawer;
+
+    private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
+    private String[] titles = App.getCtx().getResources().getStringArray(R.array.videos_name);
     private String img_url_1 = "http://f.hiphotos.baidu.com/image/pic/item/42166d224f4a20a403c7e0319c529822730ed06f.jpg";
     private String img_url_2 = "http://h.hiphotos.baidu.com/image/pic/item/43a7d933c895d14332bd91df7ff082025baf0706.jpg";
-    private SimpleExoPlayer player;
-    private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
-    private String TAG = "Video";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +64,11 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         findViewById(R.id.back).setOnClickListener(this);
         findViewById(R.id.quality).setOnClickListener(this);
         findViewById(R.id.select).setOnClickListener(this);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        recyclerView = findViewById(R.id.recyclerView);
+        drawer = findViewById(R.id.drawer);
+
+        setDrawer();
 
         final PlayerView exoPlayerView = findViewById(R.id.exoplayer);
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
@@ -62,28 +81,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector, loadControl);
         exoPlayerView.setPlayer(player);
 
-        final DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
-                this,
-                Util.getUserAgent(this, App.class.getName()),
-                new TransferListener<DataSource>() {
-                    @Override
-                    public void onTransferStart(DataSource source, DataSpec dataSpec) {
-//                        Log.i("Video", "onTransferStart");//缓冲开始
-                    }
-
-                    @Override
-                    public void onBytesTransferred(DataSource source, int bytesTransferred) {
-//                        Log.i("Video", "onTransferStart");//正在缓冲
-                    }
-
-                    @Override
-                    public void onTransferEnd(DataSource source) {
-//                        Log.i("Video", "onTransferEnd");//缓冲完成
-                    }
-                });
-
-        // This is the MediaSource representing the media to be played.
-        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(urls[4]));
         player.addListener(new Player.DefaultEventListener() {
 
             @Override
@@ -104,7 +101,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 super.onPlayerStateChanged(playWhenReady, playbackState);
-                Log.i("Video", "onPlayerStateChanged playWhenReady = " + playWhenReady);
                 if (playbackState == DrmStore.Playback.START) {
                     Log.i(TAG, "playbackState == DrmStore.Playback.START");
                 } else if (playbackState == DrmStore.Playback.PAUSE) {//暂停播放
@@ -123,11 +119,8 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     }
                     Log.i(TAG, "playbackState == DrmStore.Playback.STOP");
                 }
-                if (player.getCurrentPosition() == player.getDuration() - 10) {
+                if (player.getCurrentPosition() == player.getDuration()) {
                     Log.i(TAG, "播放完成");
-                    final MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(urls[5]));
-                    player.stop(true);
-                    player.prepare(videoSource, true, true);
                 }
                 Log.i(TAG, "player.getCurrentPosition() = " + player.getCurrentPosition() + " , player.getContentPosition() " + player.getContentPosition() + " , player.getDuration() = " + player.getDuration());
             }
@@ -140,7 +133,65 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         });
         // Prepare the player with the source.
         player.setPlayWhenReady(true);
-        player.prepare(videoSource);
+        player.prepare(getMediaSource(Uri.parse(urls[4])));
+    }
+
+    private void setDrawer() {
+        List<VideoObject> videoObjects = new ArrayList<>();
+        VideoObject videoObject;
+        for (int i = 0; i < urls.length; i++) {
+            videoObject = new VideoObject();
+            videoObject.setVideo_img_url(getString(R.string.test_img_url));
+            videoObject.setVideo_url(urls[i]);
+            videoObject.setTitle(titles[i]);
+            videoObjects.add(videoObject);
+        }
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        VideoListAdapter adapter = new VideoListAdapter(this, videoObjects);
+        recyclerView.setAdapter(adapter);
+        adapter.setOnClickListener(new BaseRecyclerAdapter.OnClickListener() {
+            @Override
+            public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
+                drawerLayout.closeDrawers();
+                player.stop(true);
+                player.setPlayWhenReady(true);
+                player.prepare(getMediaSource(Uri.parse(((VideoObject) object).getVideo_url())));
+            }
+        });
+    }
+
+    private MediaSource getMediaSource(Uri uri) {
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
+                this,
+                Util.getUserAgent(this, App.class.getName()),
+                new TransferListener<DataSource>() {
+                    @Override
+                    public void onTransferStart(DataSource source, DataSpec dataSpec) {
+//                        Log.i("Video", "onTransferStart");//缓冲开始
+                    }
+
+                    @Override
+                    public void onBytesTransferred(DataSource source, int bytesTransferred) {
+//                        Log.i("Video", "onTransferStart");//正在缓冲
+                    }
+
+                    @Override
+                    public void onTransferEnd(DataSource source) {
+//                        Log.i("Video", "onTransferEnd");//缓冲完成
+                    }
+                });
+
+        // This is the MediaSource representing the media to be played.
+        return new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (player != null && player.isPlayingAd()) {
+            player.stop();
+        }
     }
 
     @Override
@@ -162,7 +213,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                 Toast("切换清晰度");
                 break;
             case R.id.select:
-                Toast("切换视频");
+                drawerLayout.openDrawer(drawer);
                 break;
             default:
                 break;
