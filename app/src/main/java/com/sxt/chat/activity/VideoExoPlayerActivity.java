@@ -5,20 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.drm.DrmStore;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -27,6 +27,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.MediaSourceEventListener;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
@@ -49,6 +50,7 @@ import com.sxt.chat.explayer.MyLoadControl;
 import com.sxt.chat.json.VideoObject;
 import com.sxt.chat.utils.NetworkUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,36 +65,38 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private DrawerLayout drawerLayout;
     private RecyclerView recyclerView;
     private ImageView loading;
+    private ProgressDrawable loadingDrawable;
+    private ImageView loading_drawer;
+    private ProgressDrawable loading_drawerDrawable;
+    private TextView videoTitle;
     private View drawer;
 
     private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
     private String[] titles = App.getCtx().getResources().getStringArray(R.array.videos_name);
-    private String img_url_1 = "http://f.hiphotos.baidu.com/image/pic/item/42166d224f4a20a403c7e0319c529822730ed06f.jpg";
-    private String img_url_2 = "http://h.hiphotos.baidu.com/image/pic/item/43a7d933c895d14332bd91df7ff082025baf0706.jpg";
+    private String[] video_img_url = App.getCtx().getResources().getStringArray(R.array.video_img_url);
     private NetWorkReceiver netWorkReceiver;
     private MyLoadControl loadControler;
+    private VideoListAdapter adapter;
+    private Handler handler = new Handler();
+    private PlayerView exoPlayerView;
+    private boolean flag = true;
+    private ConcatenatingMediaSource mediaSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exoplayer);
 
-        findViewById(R.id.back).setOnClickListener(this);
-        findViewById(R.id.quality).setOnClickListener(this);
-        findViewById(R.id.select).setOnClickListener(this);
-        drawerLayout = findViewById(R.id.drawerLayout);
-        recyclerView = findViewById(R.id.recyclerView);
-        drawer = findViewById(R.id.drawer);
+        videoTitle = findViewById(R.id.video_title);
         loading = findViewById(R.id.loading);
-
-        ProgressDrawable drawable = new ProgressDrawable();
-        drawable.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(this, R.color.main_blue), PorterDuff.Mode.SRC_IN));
-        loading.setImageDrawable(drawable);
+        loadingDrawable = new ProgressDrawable();
+//        drawable.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(this, R.color.main_blue), PorterDuff.Mode.SRC_IN));
+        loading.setImageDrawable(loadingDrawable);
 
         setDrawer();
         registerNetWorkReceiver();
 
-        final PlayerView exoPlayerView = findViewById(R.id.exoplayer);
+        exoPlayerView = findViewById(R.id.exoplayer);
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
@@ -104,6 +108,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         exoPlayerView.setPlayer(player);
 
         player.addListener(new Player.DefaultEventListener() {
+            final static String TAG = "playbackState";
 
             @Override
             public void onLoadingChanged(boolean isLoading) {//缓冲时会调用
@@ -131,22 +136,18 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     if (loading.getVisibility() != View.VISIBLE) {
                         loading.setVisibility(View.VISIBLE);
                     }
-                    Log.i(TAG, "playbackState == DrmStore.Playback.PAUSE");
+                    Log.i(TAG, "playbackState == DrmStore.Playback.PAUSE 暂停播放(加载中...)");
                 } else if (playbackState == DrmStore.Playback.RESUME) {//继续播放(加载完成)
                     if (loading.getVisibility() == View.VISIBLE) {
                         loading.setVisibility(View.GONE);
                     }
-                    Log.i(TAG, "playbackState == DrmStore.Playback.RESUME");
-                } else if (playbackState == DrmStore.Playback.STOP) {
+                    Log.i(TAG, "playbackState == DrmStore.Playback.RESUME 继续播放(加载完成)");
+                } else if (playbackState == DrmStore.Playback.STOP) {//播放停止
                     if (loading.getVisibility() == View.VISIBLE) {
                         loading.setVisibility(View.GONE);
                     }
-                    Log.i(TAG, "playbackState == DrmStore.Playback.STOP");
+                    Log.i(TAG, "playbackState == DrmStore.Playback.STOP 播放停止");
                 }
-                if (player.getCurrentPosition() == player.getDuration()) {
-                    Log.i(TAG, "播放完成");
-                }
-                Log.i(TAG, "player.getCurrentPosition() = " + player.getCurrentPosition() + " , player.getContentPosition() " + player.getContentPosition() + " , player.getDuration() = " + player.getDuration());
             }
 
             @Override
@@ -158,9 +159,77 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         // Prepare the player with the source.
         player.setPlayWhenReady(true);
 //        player.setRepeatMode(Player.REPEAT_MODE_ONE);
-        player.prepare(new ConcatenatingMediaSource(//播放一组视频
-                getMediaSource(Uri.parse(urls[4])), getMediaSource(Uri.parse(urls[3])),
-                getMediaSource(Uri.parse(urls[2])), getMediaSource(Uri.parse(urls[1]))));
+        mediaSource = new ConcatenatingMediaSource(//播放一组视频
+                getMediaSource(Uri.parse(urls[0]))/*, getMediaSource(Uri.parse(urls[1])),
+                getMediaSource(Uri.parse(urls[2])), getMediaSource(Uri.parse(urls[3])),
+                getMediaSource(Uri.parse(urls[4])), getMediaSource(Uri.parse(urls[5])),
+                getMediaSource(Uri.parse(urls[6])), getMediaSource(Uri.parse(urls[7])),
+                getMediaSource(Uri.parse(urls[8])), getMediaSource(Uri.parse(urls[9])),
+                getMediaSource(Uri.parse(urls[10])), getMediaSource(Uri.parse(urls[11])),
+                getMediaSource(Uri.parse(urls[12])), getMediaSource(Uri.parse(urls[13]))*/
+        );
+
+        mediaSource.addEventListener(new Handler(), new MediaSourceEventListener() {
+            @Override
+            public void onMediaPeriodCreated(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
+                Log.i(TAG, "onMediaPeriodCreated " + " windowIndex = " + windowIndex);
+            }
+
+            @Override
+            public void onMediaPeriodReleased(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
+                Log.i(TAG, "onMediaPeriodReleased " + " windowIndex = " + windowIndex);
+            }
+
+            @Override
+            public void onLoadStarted(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
+                Log.i(TAG, "onLoadStarted " + " windowIndex = " + windowIndex);
+            }
+
+            /**
+             * 缓冲完毕
+             * @param windowIndex 队列中播放的资源索引
+             */
+            @Override
+            public void onLoadCompleted(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
+                Log.i(TAG, "onLoadCompleted  缓冲完成  " + " windowIndex = " + windowIndex);
+                mediaSource.addMediaSource(mediaSource.getSize(), getMediaSource(Uri.parse(adapter.getItem((windowIndex + 1) % adapter.getItemCount()).getVideo_url())));
+            }
+
+            @Override
+            public void onLoadCanceled(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
+                Log.i(TAG, "onLoadCanceled " + " windowIndex = " + windowIndex);
+            }
+
+            @Override
+            public void onLoadError(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData, IOException error, boolean wasCanceled) {
+                Log.i(TAG, "onLoadError " + " windowIndex = " + windowIndex);
+            }
+
+            @Override
+            public void onReadingStarted(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
+                Log.i(TAG, "onReadingStarted " + " windowIndex = " + windowIndex);
+            }
+
+            @Override
+            public void onUpstreamDiscarded(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId, MediaLoadData mediaLoadData) {
+                Log.i(TAG, "onUpstreamDiscarded " + " windowIndex = " + windowIndex);
+            }
+
+            /**
+             * (真正的下载资源)开始播放 亲测有效,嘎嘎
+             */
+            @Override
+            public void onDownstreamFormatChanged(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, MediaLoadData mediaLoadData) {
+                Log.i(TAG, "onDownstreamFormatChanged " + " windowIndex = " + windowIndex);
+                if (adapter != null) {
+                    adapter.notifyIndex(windowIndex % adapter.getItemCount());
+                    recyclerView.smoothScrollToPosition(windowIndex % adapter.getItemCount());
+                    videoTitle.setText(titles[windowIndex % adapter.getItemCount()]);
+                }
+            }
+        });
+
+        player.prepare(mediaSource);
     }
 
     private void registerNetWorkReceiver() {
@@ -173,18 +242,38 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     }
 
     private void setDrawer() {
+        findViewById(R.id.back).setOnClickListener(this);
+        findViewById(R.id.quality).setOnClickListener(this);
+        findViewById(R.id.select).setOnClickListener(this);
+
+        drawerLayout = findViewById(R.id.drawerLayout);
+        recyclerView = findViewById(R.id.recyclerView);
+        drawer = findViewById(R.id.drawer);
+
+        loading_drawer = findViewById(R.id.loading_drawer);
+        loading_drawerDrawable = new ProgressDrawable();
+        loading_drawer.setImageDrawable(loading_drawerDrawable);
+        showDrawerLoading();
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dismissDrawerLoading();
+            }
+        }, 3000);
+
         List<VideoObject> videoObjects = new ArrayList<>();
         VideoObject videoObject;
         for (int i = 0; i < urls.length; i++) {
             videoObject = new VideoObject();
-            videoObject.setVideo_img_url(getString(R.string.test_img_url));
-            videoObject.setVideo_url(urls[i]);
-            videoObject.setTitle(titles[i]);
+            videoObject.setVideo_img_url(video_img_url[i % urls.length]);
+            videoObject.setVideo_url(urls[i % urls.length]);
+            videoObject.setTitle(titles[i % urls.length]);
             videoObjects.add(videoObject);
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        VideoListAdapter adapter = new VideoListAdapter(this, videoObjects);
+        adapter = new VideoListAdapter(this, videoObjects);
         recyclerView.setAdapter(adapter);
         adapter.setOnClickListener(new BaseRecyclerAdapter.OnClickListener() {
             @Override
@@ -192,9 +281,41 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                 drawerLayout.closeDrawers();
                 player.stop(true);
                 player.setPlayWhenReady(true);
-                player.prepare(getMediaSource(Uri.parse(((VideoObject) object).getVideo_url())));
+                mediaSource.clear();
+                mediaSource.addMediaSource(getMediaSource(Uri.parse(((VideoObject) object).getVideo_url())));
+                player.prepare(mediaSource);
             }
         });
+
+        drawerLayout.openDrawer(drawer);
+    }
+
+    private void showLoading() {
+        if (loading != null && loadingDrawable != null) {
+            loadingDrawable.start();
+            loading.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void dismissLoading() {
+        if (loading != null && loadingDrawable != null) {
+            loadingDrawable.stop();
+            loading.setVisibility(View.GONE);
+        }
+    }
+
+    private void showDrawerLoading() {
+        if (loading_drawer != null && loading_drawerDrawable != null) {
+            loading_drawerDrawable.start();
+            loading_drawer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void dismissDrawerLoading() {
+        if (loading_drawer != null && loading_drawerDrawable != null) {
+            loading_drawerDrawable.stop();
+            loading_drawer.setVisibility(View.GONE);
+        }
     }
 
     private class NetWorkReceiver extends BroadcastReceiver {
@@ -299,16 +420,24 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     protected void onResume() {
         super.onResume();
         if (player != null) {
+            player.setPlayWhenReady(flag || player.getPlaybackState() == DrmStore.Playback.RESUME);
+            flag = false;
+//            player.setVolume(volume == 0 ? player.getVolume() : volume);
+//            player.setVideoSurfaceView((SurfaceView) exoPlayerView.getVideoSurfaceView());
             loadControler.shouldContinueLoading(NetworkUtils.isWifi(this));
-            player.seekTo(player.getCurrentPosition());
         }
     }
+
+    private float volume;
 
     @Override
     protected void onPause() {
         super.onPause();
         if (player != null) {
-            player.stop();
+            player.setPlayWhenReady(false);
+//            player.clearVideoSurface();//进入后台,清除画面
+//            volume = player.getVolume();
+//            player.setVolume(0);
             loadControler.shouldContinueLoading(false);
         }
     }

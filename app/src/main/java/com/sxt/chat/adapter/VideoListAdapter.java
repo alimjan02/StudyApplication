@@ -1,6 +1,7 @@
 package com.sxt.chat.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.sxt.chat.R;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.json.VideoObject;
+import com.sxt.chat.utils.glide.GlideRoundTransform;
 
 import java.util.List;
 
@@ -19,6 +22,13 @@ import java.util.List;
  */
 
 public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
+
+    private int index;
+
+    public void notifyIndex(int index) {
+        this.index = index;
+        notifyDataSetChanged();
+    }
 
     public VideoListAdapter(Context context, List<VideoObject> data) {
         super(context, data);
@@ -33,9 +43,16 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         final ViewHolder holder = (ViewHolder) viewHolder;
         holder.title.setText(data.get(position).getTitle());
+        if (index == position) {
+            holder.title.setTextColor(ContextCompat.getColor(context, R.color.main_blue_press));
+        } else {
+            holder.title.setTextColor(ContextCompat.getColor(context, R.color.white));
+        }
         Glide.with(context)
                 .load(data.get(position).getVideo_img_url())
+                .bitmapTransform(new CenterCrop(context), new GlideRoundTransform(context, 4))
                 .into(holder.img);
+
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

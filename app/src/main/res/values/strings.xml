@@ -150,22 +150,56 @@
 
 
     <string-array name="videos">
+        <item>https://v.mifile.cn/b2c-mimall-media/a2d09c3e3c4a1be6caa9b83adafe0756.mp4</item><!--小米VR-->
         <item>https://v.mifile.cn/b2c-mimall-media/ed921294fb62caf889d40502f5b38147.mp4</item><!--小米8-->
         <item>https://v.mifile.cn/b2c-mimall-media/a80200c935d5e8399fc9a0c40a96388f.mp4</item><!--小米8-->
+        <item>https://v.mifile.cn/b2c-mimall-media/20798f8af8d7edbb5afc51cf9dd527fe.mp4</item><!--小米6X-->
+        <item>https://c1.mifile.cn/f/i/2018/mix2s/summary/camera-video1.mp4</item><!--小米MIX 2S-->
+        <item>http://v.mifile.cn/b2c-mimall-media/4bfe2f80b7bff0f5accf1c1956bb6717.mp4</item><!--小米MAX 2-->
         <item>https://v.mifile.cn/b2c-mimall-media/18fe8322c418852522ad1c2c762be92b.mp4</item><!--小米笔记本-->
+        <item>https://v.mifile.cn/b2c-mimall-media/daded159e3a0c73b101d5feb9a6c8055.mp4</item><!--小米笔记本(游戏)-->
         <item>https://v.mifile.cn/b2c-mimall-media/7828bd7a97fc0393d3cf639ef6967d89.mp4</item><!--小米手环-->
-        <item>https://v.mifile.cn/b2c-mimall-media/a2d09c3e3c4a1be6caa9b83adafe0756.mp4</item><!--小米VR-->
         <item>https://v.mifile.cn/b2c-mimall-media/99d83cf4d4f9e62988c7911205bac5a0.mp4</item><!--小米音响-->
+        <item>https://g.alicdn.com/forest/ar-portal-pc/0.1.11/video/%E7%A2%97.mp4</item><!--手机淘宝餐具- 阿里AR开放平台-->
+        <item>https://g.alicdn.com/forest/ar-portal-pc/0.1.11/video/guoshu.mp4</item><!--国家图书馆《翰墨书香》书法- 阿里AR开放平台-->
+        <item>https://g.alicdn.com/forest/ar-portal-pc/0.1.11/video/market-konglong.mp4</item><!--发现探索恐龙AR 绘本- 阿里AR开放平台-->
+        <item>https://g.alicdn.com/forest/ar-portal-pc/0.1.11/video/hagendasi.mp4</item><!--哈根达斯AR创意冰淇淋公仔- 阿里AR开放平台-->
         <item>http://www.izhaohu.com/vsipage/tpl_thumb/ehome/201805/module/vedio/P1.mp4</item><!--爱照护官网宣传视频-->
     </string-array>
 
     <string-array name="videos_name">
+        <item>小米VR - 小米商城</item>
         <item>小米8 - 小米商城</item>
-        <item>小米8- 小米商城</item>
-        <item>小米笔记本- 小米商城</item>
-        <item>小米手环- 小米商城</item>
-        <item>小米VR- 小米商城</item>
-        <item>小米音响- 小米商城</item>
+        <item>小米8 - 小米商城</item>
+        <item>小米6X - 小米商城</item>
+        <item>小米MIX 2S - 小米商城</item>
+        <item>小米MAX 2 - 小米商城</item>
+        <item>小米笔记本 - 小米商城</item>
+        <item>小米笔记本(游戏) - 小米商城</item>
+        <item>小米手环 - 小米商城</item>
+        <item>小米音响 - 小米商城</item>
+        <item>手机淘宝餐具 - 阿里AR开放平台</item>
+        <item>国家图书馆《翰墨书香》书法 - 阿里AR开放平台</item>
+        <item>发现探索恐龙AR 绘本 - 阿里AR开放平台</item>
+        <item>哈根达斯AR创意冰淇淋公仔 - 阿里AR开放平台</item>
         <item>爱照护官网宣传视频</item>
+    </string-array>
+
+    <string-array name="video_img_url">
+        <item>https://c1.mifile.cn/f/i/16/chain/mivr-1o/mivr1o-14.jpg</item><!--小米VR眼睛一体机-->
+        <item>https://i1.mifile.cn/f/i/2018/mi8/summary/gallery2.jpg?1</item><!--小米8-->
+        <item>https://i1.mifile.cn/f/i/2018/mi8/summary/pic3.jpg?1</item><!--小米8SE-->
+        <item>https://i1.mifile.cn/f/i/18/mi6x/index_specs_img.jpg</item><!--小米6X-->
+        <item>https://i1.mifile.cn/f/i/2018/redmi6/summary/person1.jpg</item><!--小米MIX 2S-->
+        <item>https://i1.mifile.cn/f/i/18/mitv4/index_slider_img2.jpg</item><!--小米MAX 2-->
+        <item>https://i1.mifile.cn/f/i/17/mibookpro/index/slider01.jpg</item><!--小米笔记本-->
+        <item>https://i1.mifile.cn/f/i/18/mibookair/13/index_pic1.jpg</item><!--小米笔记本 游戏-->
+        <item>https://c1.mifile.cn/f/i/16/chain/shouhuan3/mj-shouhuan-1.jpg</item><!--小米手环-->
+        <item>https://c1.mifile.cn/f/i/16/chain/aispeaker-mini/mj-aispeaker-07.jpg</item><!--小米音响-小爱-->
+        <item>https://i1.mifile.cn/f/i/18/mi6x/index_aftercamera_bg2.jpg</item><!--手机淘宝餐具-->
+        <item>https://i1.mifile.cn/f/i/18/mi6x/index_aftercamera_bg1.jpg</item><!--国家图书馆《翰墨书香》书法-->
+        <item>https://i1.mifile.cn/f/i/2018/mi8/summary/gallery4.jpg</item><!--发现探索恐龙AR 绘本-->
+        <item>https://i1.mifile.cn/f/i/2018/mi8/summary/gallery5.jpg</item><!--哈根达斯AR创意冰淇淋公仔-->
+        <item>https://c1.mifile.cn/f/i/16/chain/projector/projector-11.jpg</item><!--爱照护官网宣传视频-->
     </string-array>
 </resources>

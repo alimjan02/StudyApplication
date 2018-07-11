@@ -49,21 +49,27 @@
                 android:src="@drawable/ic_arrow_back_black_24dp" />
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/video_title"
                 style="@style/text_22_color_1_style"
                 android:layout_marginStart="16dp"
-                android:text="爱护照线上学习平台 - 视频展示"
+                android:text=""
                 android:textColor="@color/white" />
         </LinearLayout>
 
     </FrameLayout>
 
-    <FrameLayout
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/drawer"
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="right"
-        android:background="@color/translate_alpha">
+        android:background="@color/black"
+        app:srlDisableContentWhenLoading="true"
+        app:srlDisableContentWhenRefresh="true"
+        app:srlEnableOverScrollDrag="true"
+        app:srlEnableAutoLoadmore="false"
+        app:srlEnableLoadmore="false"
+        app:srlEnableRefresh="false">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -72,6 +78,13 @@
             android:overScrollMode="never"
             android:scrollbars="none" />
 
-    </FrameLayout>
+        <ImageView
+            android:id="@+id/loading_drawer"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:visibility="visible" />
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 </android.support.v4.widget.DrawerLayout>

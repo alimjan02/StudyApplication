@@ -4,16 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?selectableItemBackground"
-    android:gravity="center_vertical"
-    android:paddingBottom="16dp"
-    android:paddingLeft="20dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="32dp"
     android:paddingRight="20dp"
-    android:paddingTop="16dp">
+    android:paddingTop="10dp">
 
     <ImageView
         android:id="@+id/img"
         android:layout_width="80dp"
-        android:layout_height="80dp" />
+        android:layout_height="80dp"
+        android:gravity="center_vertical"
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/title"
