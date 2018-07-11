@@ -80,6 +80,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private Handler handler = new Handler();
     private PlayerView exoPlayerView;
     private boolean flag = true;
+    private int videoIndex = 0;
     private ConcatenatingMediaSource mediaSource;
 
     @Override
@@ -133,19 +134,13 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                 if (playbackState == DrmStore.Playback.START) {
                     Log.i(TAG, "playbackState == DrmStore.Playback.START");
                 } else if (playbackState == DrmStore.Playback.PAUSE) {//暂停播放(加载中...)
-                    if (loading.getVisibility() != View.VISIBLE) {
-                        loading.setVisibility(View.VISIBLE);
-                    }
+                    showLoading();
                     Log.i(TAG, "playbackState == DrmStore.Playback.PAUSE 暂停播放(加载中...)");
                 } else if (playbackState == DrmStore.Playback.RESUME) {//继续播放(加载完成)
-                    if (loading.getVisibility() == View.VISIBLE) {
-                        loading.setVisibility(View.GONE);
-                    }
+                    dismissLoading();
                     Log.i(TAG, "playbackState == DrmStore.Playback.RESUME 继续播放(加载完成)");
                 } else if (playbackState == DrmStore.Playback.STOP) {//播放停止
-                    if (loading.getVisibility() == View.VISIBLE) {
-                        loading.setVisibility(View.GONE);
-                    }
+                    dismissLoading();
                     Log.i(TAG, "playbackState == DrmStore.Playback.STOP 播放停止");
                 }
             }
@@ -170,9 +165,19 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         );
 
         mediaSource.addEventListener(new Handler(), new MediaSourceEventListener() {
+            String TAG = "mediaSource.addEventListener";
+            int currentIndex=-1;
+
             @Override
             public void onMediaPeriodCreated(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
                 Log.i(TAG, "onMediaPeriodCreated " + " windowIndex = " + windowIndex);
+                if (currentIndex != ((videoIndex) % adapter.getItemCount())) {
+                    Log.i(TAG, "mediaPeriodId 不一样 , 添加下一个视频");
+                    mediaSource.addMediaSource(mediaSource.getSize(), getMediaSource(Uri.parse(adapter.getItem((videoIndex+1) % adapter.getItemCount()).getVideo_url())));
+                    this.currentIndex = (videoIndex + 1) % adapter.getItemCount();
+                } else {
+                    Log.i(TAG, "mediaPeriodId 一样");
+                }
             }
 
             @Override
@@ -192,7 +197,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
             @Override
             public void onLoadCompleted(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
                 Log.i(TAG, "onLoadCompleted  缓冲完成  " + " windowIndex = " + windowIndex);
-                mediaSource.addMediaSource(mediaSource.getSize(), getMediaSource(Uri.parse(adapter.getItem((windowIndex + 1) % adapter.getItemCount()).getVideo_url())));
             }
 
             @Override
@@ -208,6 +212,13 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
             @Override
             public void onReadingStarted(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
                 Log.i(TAG, "onReadingStarted " + " windowIndex = " + windowIndex);
+                if (adapter != null) {
+                    adapter.notifyIndex(videoIndex % adapter.getItemCount());
+                    recyclerView.smoothScrollToPosition(videoIndex % adapter.getItemCount());
+                    videoTitle.setText(titles[videoIndex % adapter.getItemCount()]);
+                    Log.i(TAG, "标题 " + titles[videoIndex % adapter.getItemCount()] + " videoIndex = " + (videoIndex % adapter.getItemCount()));
+                    videoIndex += 1;
+                }
             }
 
             @Override
@@ -215,17 +226,9 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                 Log.i(TAG, "onUpstreamDiscarded " + " windowIndex = " + windowIndex);
             }
 
-            /**
-             * (真正的下载资源)开始播放 亲测有效,嘎嘎
-             */
             @Override
             public void onDownstreamFormatChanged(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, MediaLoadData mediaLoadData) {
                 Log.i(TAG, "onDownstreamFormatChanged " + " windowIndex = " + windowIndex);
-                if (adapter != null) {
-                    adapter.notifyIndex(windowIndex % adapter.getItemCount());
-                    recyclerView.smoothScrollToPosition(windowIndex % adapter.getItemCount());
-                    videoTitle.setText(titles[windowIndex % adapter.getItemCount()]);
-                }
             }
         });
 
@@ -277,11 +280,11 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         recyclerView.setAdapter(adapter);
         adapter.setOnClickListener(new BaseRecyclerAdapter.OnClickListener() {
             @Override
-            public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
+            public void onClick(final int position, RecyclerView.ViewHolder holder, final Object object) {
                 drawerLayout.closeDrawers();
-                player.stop(true);
-                player.setPlayWhenReady(true);
                 mediaSource.clear();
+                videoIndex = position;
+                player.setPlayWhenReady(true);
                 mediaSource.addMediaSource(getMediaSource(Uri.parse(((VideoObject) object).getVideo_url())));
                 player.prepare(mediaSource);
             }
