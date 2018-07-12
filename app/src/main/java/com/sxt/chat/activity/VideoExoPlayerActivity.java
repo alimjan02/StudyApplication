@@ -202,7 +202,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     recyclerView.smoothScrollToPosition(videoIndex % adapter.getItemCount());
                     videoTitle.setText(titles[videoIndex % adapter.getItemCount()]);
                     Log.i(TAG, "当前播放的视频 -->标题 " + titles[videoIndex % adapter.getItemCount()] + " videoIndex = " + (videoIndex % adapter.getItemCount()));
-
                     mediaSource.addMediaSource(mediaSource.getSize(), getMediaSource(Uri.parse(adapter.getItem((videoIndex++) % adapter.getItemCount()).getVideo_url())));
                     Log.i(TAG, "下一个播放的视频 -->标题 " + titles[videoIndex % adapter.getItemCount()] + " videoIndex = " + (videoIndex % adapter.getItemCount()));
                 }
