@@ -155,29 +155,14 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         player.setPlayWhenReady(true);
 //        player.setRepeatMode(Player.REPEAT_MODE_ONE);
         mediaSource = new ConcatenatingMediaSource(//播放一组视频
-                getMediaSource(Uri.parse(urls[0]))/*, getMediaSource(Uri.parse(urls[1])),
-                getMediaSource(Uri.parse(urls[2])), getMediaSource(Uri.parse(urls[3])),
-                getMediaSource(Uri.parse(urls[4])), getMediaSource(Uri.parse(urls[5])),
-                getMediaSource(Uri.parse(urls[6])), getMediaSource(Uri.parse(urls[7])),
-                getMediaSource(Uri.parse(urls[8])), getMediaSource(Uri.parse(urls[9])),
-                getMediaSource(Uri.parse(urls[10])), getMediaSource(Uri.parse(urls[11])),
-                getMediaSource(Uri.parse(urls[12])), getMediaSource(Uri.parse(urls[13]))*/
+                getMediaSource(Uri.parse(urls[0]))
         );
 
         mediaSource.addEventListener(new Handler(), new MediaSourceEventListener() {
-            String TAG = "mediaSource.addEventListener";
-            int currentIndex=-1;
 
             @Override
             public void onMediaPeriodCreated(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
                 Log.i(TAG, "onMediaPeriodCreated " + " windowIndex = " + windowIndex);
-                if (currentIndex != ((videoIndex) % adapter.getItemCount())) {
-                    Log.i(TAG, "mediaPeriodId 不一样 , 添加下一个视频");
-                    mediaSource.addMediaSource(mediaSource.getSize(), getMediaSource(Uri.parse(adapter.getItem((videoIndex+1) % adapter.getItemCount()).getVideo_url())));
-                    this.currentIndex = (videoIndex + 1) % adapter.getItemCount();
-                } else {
-                    Log.i(TAG, "mediaPeriodId 一样");
-                }
             }
 
             @Override
@@ -216,8 +201,10 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     adapter.notifyIndex(videoIndex % adapter.getItemCount());
                     recyclerView.smoothScrollToPosition(videoIndex % adapter.getItemCount());
                     videoTitle.setText(titles[videoIndex % adapter.getItemCount()]);
-                    Log.i(TAG, "标题 " + titles[videoIndex % adapter.getItemCount()] + " videoIndex = " + (videoIndex % adapter.getItemCount()));
-                    videoIndex += 1;
+                    Log.i(TAG, "当前播放的视频 -->标题 " + titles[videoIndex % adapter.getItemCount()] + " videoIndex = " + (videoIndex % adapter.getItemCount()));
+
+                    mediaSource.addMediaSource(mediaSource.getSize(), getMediaSource(Uri.parse(adapter.getItem((videoIndex++) % adapter.getItemCount()).getVideo_url())));
+                    Log.i(TAG, "下一个播放的视频 -->标题 " + titles[videoIndex % adapter.getItemCount()] + " videoIndex = " + (videoIndex % adapter.getItemCount()));
                 }
             }
 
