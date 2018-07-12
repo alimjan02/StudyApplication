@@ -376,6 +376,8 @@ public class WifiUtils {
         private String SSID;
         private String pwd;
         private boolean flag;
+        private boolean updateFailed;
+
         private long time = 16 * 1000L;
 
         public WifiTask() {
@@ -419,6 +421,7 @@ public class WifiUtils {
                     int updateNetwork = mWifiManager.updateNetwork(wifiConfig);
                     Log.i("wifi", "已有WIFI, 更新配置 updateNetwork = " + updateNetwork);
                     if (updateNetwork < 0) {//更新失败
+                        updateFailed = true;
                         mWifiManager.reconnect();
                         try {
                             Thread.sleep(2000);
@@ -500,7 +503,7 @@ public class WifiUtils {
                 }
             } else {
                 if (wifiStateListener != null) {
-                    wifiStateListener.onFailed(new Exception("connect wifi failed ..."));
+                    wifiStateListener.onFailed(new Exception("connect wifi failed ..."),SSID,updateFailed);
                 }
             }
         }
@@ -515,7 +518,7 @@ public class WifiUtils {
 
         void onStart();
 
-        void onFailed(Exception e);
+        void onFailed(Exception e,String SSID,boolean updateFailed);
 
         void success(String SSID, String pwd);
     }
