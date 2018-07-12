@@ -38,6 +38,7 @@ import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.NetworkUtils;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransform;
+import com.sxt.chat.wifi.WiFiActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,6 +76,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             findViewById(R.id.ocr_scan_id_card).setOnClickListener(this);
             findViewById(R.id.ocr_scan).setOnClickListener(this);
             findViewById(R.id.exoplayer).setOnClickListener(this);
+            findViewById(R.id.wifi).setOnClickListener(this);
             findViewById(R.id.change_login).setOnClickListener(this);
             userIcon = (ImageView) findViewById(R.id.user_icon);
             userInfo = (TextView) findViewById(R.id.user_info);
@@ -236,7 +238,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             case R.id.ocr_scan_id_card:
                 startActivity(new Intent(this, YouTuIdCardActivity.class));
                 break;
-                case R.id.exoplayer:
+            case R.id.wifi:
+                startActivity(new Intent(this, WiFiActivity.class));
+                break;
+            case R.id.exoplayer:
                 startActivity(new Intent(this, VideoExoPlayerActivity.class));
                 break;
         }
