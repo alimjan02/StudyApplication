@@ -93,7 +93,7 @@ public class OCRTask extends AsyncTask<Void, Void, OCRObject> {
 //                    InputStream in = new FileInputStream(imageFile);
 //                    byte[] data = new byte[(int) imageFile.length()];
 //                    in.read(data);
-//                    in.close();
+//                    in.popub_close();
 //                    base64.append(Base64Util.encode(data));
 //
 //                    MultipartBody multipartBody = formBody

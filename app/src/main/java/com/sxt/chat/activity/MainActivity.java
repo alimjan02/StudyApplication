@@ -38,7 +38,6 @@ import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.NetworkUtils;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransform;
-import com.sxt.chat.wifi.WiFiActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -239,7 +238,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 startActivity(new Intent(this, YouTuIdCardActivity.class));
                 break;
             case R.id.wifi:
-                startActivity(new Intent(this, WiFiActivity.class));
+                startActivity(new Intent(this, WiFiSettingsActivity.class));
                 break;
             case R.id.exoplayer:
                 startActivity(new Intent(this, VideoExoPlayerActivity.class));

@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.sxt.chat.R;
 
 public class AlertDialogBuilder {
@@ -205,6 +206,13 @@ public class AlertDialogBuilder {
     public AlertDialogBuilder setCancelable(boolean cancelable) {
         if (mDialog != null) {
             mDialog.setCancelable(cancelable);
+        }
+        return this;
+    }
+
+    public AlertDialogBuilder setCanceledOnTouchOutside(boolean canceledOnTouchOutside) {
+        if (mDialog != null) {
+            mDialog.setCanceledOnTouchOutside(canceledOnTouchOutside);
         }
         return this;
     }

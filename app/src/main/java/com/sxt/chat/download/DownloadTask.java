@@ -110,7 +110,7 @@ public class DownloadTask extends AsyncTask<String, Integer, Exception> {
                 os.write(b, 0, len);
 //                savedFile.write(b, 0, len);
             }
-//            os.close();
+//            os.popub_close();
             is.close();
             installApk(localApkFile);
 

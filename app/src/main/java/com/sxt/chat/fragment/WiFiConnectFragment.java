@@ -1,4 +1,4 @@
-package com.sxt.chat.wifi;
+package com.sxt.chat.fragment;
 
 import android.Manifest;
 import android.app.Activity;
@@ -29,10 +29,14 @@ import android.widget.TextView;
 
 import com.sxt.chat.App;
 import com.sxt.chat.R;
+import com.sxt.chat.adapter.WiFiListAdapter;
 import com.sxt.chat.base.BaseFragment;
 import com.sxt.chat.base.HeaderActivity;
+import com.sxt.chat.dialog.DialogBuilder;
 import com.sxt.chat.dialog.LoadingDialog;
 import com.sxt.chat.utils.ToastUtil;
+import com.sxt.chat.utils.WifiUtils;
+import com.sxt.chat.wifi.AlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +47,7 @@ import static android.net.wifi.WifiManager.WIFI_STATE_CHANGED_ACTION;
 /**
  * Created by izhaohu on 2017/12/15.
  */
-public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnClickListener {
+public class WiFiConnectFragment extends BaseFragment implements View.OnClickListener {
 
     private HeaderActivity activity;
     private ImageView imgLevel;
@@ -68,9 +72,9 @@ public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnCli
     private TextView tvWifiName;
     private EditText etWifiPwd;
     private LoadingDialog loadingDialog;
-    //    private WiFiCountDownTimer wiFiCountDownTimer;
-    private final int REQUEST_OPEN_WIFI = 1;
-    private final int REQUEST_OPEN_WIFI2 = 2;
+    private final int REQUEST_OPEN_WIFI = 100;
+    private final int REQUEST_OPEN_WIFI2 = 101;
+    private boolean SUCCESS;
 
     @Override
     public void onAttach(Activity activity) {
@@ -83,6 +87,7 @@ public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnCli
         super.onCreate(savedInstanceState);
         bundle = getArguments();
         loadingDialog = new LoadingDialog(activity);
+        activity.setTitle(getString(R.string.wifi_settings));
         boolean b = checkPermission(REQUEST_OPEN_WIFI);
         if (b) {
             initWifiSettings();
@@ -113,18 +118,18 @@ public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnCli
                 if (grantResults != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initWifiSettings();
                 } else {
-                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                    if (permissions != null && permissions.length > 0 && !shouldShowRequestPermissionRationale(permissions[0])) {
                         //此时的意思是 用户设置了不再提醒 权限授权
                         ToastUtil.showToast(activity, R.string.allow_wifi);
                     }
                 }
                 break;
             case REQUEST_OPEN_WIFI2:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initWifiSettings();
                     showDialog();
                 } else {
-                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                    if (permissions != null && permissions.length > 0 && !shouldShowRequestPermissionRationale(permissions[0])) {
                         //此时的意思是 用户设置了不再提醒 权限授权
                         ToastUtil.showToast(activity, R.string.allow_wifi);
                     }
@@ -136,7 +141,6 @@ public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnCli
         }
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (view == null) {
@@ -149,8 +153,6 @@ public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnCli
             tvNext.setOnClickListener(this);
             wifiArrowRoot.setOnClickListener(this);
         }
-        activity.setTitle("选择WIFI");
-
         return view;
     }
 
@@ -167,7 +169,7 @@ public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnCli
             filter.addAction(SCAN_RESULTS_AVAILABLE_ACTION);
             filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
             filter.setPriority(1000);
-            getActivity().registerReceiver(wifiReceiver, filter);
+            activity.registerReceiver(wifiReceiver, filter);
         }
         wifiManager.startScan();
     }
@@ -185,7 +187,11 @@ public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnCli
                 break;
 
             case R.id.tv_next:
-                next();
+                if (SUCCESS) {
+                    activity.finish();
+                } else {
+                    ToastUtil.showToast(activity, "请确认您选择的Wi-Fi是否正常连接");
+                }
                 break;
         }
     }
@@ -198,13 +204,6 @@ public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnCli
             builder.replaceView(wifiItem).setCancelableOutSide(false);
         }
         builder.show(1, Gravity.TOP);
-    }
-
-    private void next() {
-        if (selectedScanResult == null || selectedScanResult.SSID == null || !WifiUtils.getInstance().initSSID(selectedScanResult.SSID).equals(WifiUtils.getInstance().initSSID(wifiManager.getConnectionInfo().getSSID()))) {
-            ToastUtil.showToast(activity, "请确认您选择的Wi-Fi是否正常连接");
-            return;
-        }
     }
 
     private void initWifiItem(View wifiItem) {
@@ -290,7 +289,7 @@ public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnCli
                         if (updateFailed) {
                             loadingDialog.dismiss();
                             final AlertDialogBuilder builder = new AlertDialogBuilder(activity);
-                            builder.setTitle(R.string.prompt).setMessage("您需要到系统设置界面先删除已经保存的 WiFi : " + SSID + ", \r\n才可以重新连接哟!!!")
+                            builder.setTitle(R.string.prompt).setMessage("您需要先到系统设置界面删除已经保存的 WiFi : " + SSID + "  \r\n才可以重新连接哟 !")
                                     .setLeftButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
@@ -305,7 +304,7 @@ public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnCli
                                     startActivity(it);
                                     builder.dismiss();
                                 }
-                            }).show();
+                            }).setCanceledOnTouchOutside(false).setBottomImageRes(R.mipmap.popub_close).show();
 
                         } else {
                             stopWatch(null, null);
@@ -401,13 +400,18 @@ public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnCli
 
     public void stopWatch(final String SSID, final String pwd) {
         dismissDialogs();
+        tvNext.setVisibility(View.VISIBLE);
         if (!TextUtils.isEmpty(SSID) && !TextUtils.isEmpty(pwd)) {
-            ToastUtil.showToast(activity, "连接成功");
+            SUCCESS = true;
             tvName.setText(SSID);
+            tvNext.setText("连接成功");
+            ToastUtil.showToast(activity, "连接成功");
             selectedScanResult = new WifiUtils.WifiScanResult(null, SSID, "", 0);
         } else {
-            ToastUtil.showToast(activity, "连接出错,请重试");
+            SUCCESS = false;
+            tvNext.setText("连接出错");
             selectedScanResult = null;
+            ToastUtil.showToast(activity, "连接出错,请重试");
         }
     }
 
@@ -428,6 +432,7 @@ public class SelectWorkerWiFiFragment extends BaseFragment implements View.OnCli
         if (wifiReceiver != null) {
             activity.unregisterReceiver(wifiReceiver);
         }
+        dismissDialogs();
         WifiUtils.getInstance().cancel();
         super.onDestroy();
     }

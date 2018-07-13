@@ -1,4 +1,4 @@
-package com.sxt.chat.wifi;
+package com.sxt.chat.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -9,12 +9,15 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.sxt.chat.R;
 import com.sxt.chat.utils.Px2DpUtil;
+import com.sxt.chat.utils.WifiUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class WiFiListAdapter<T> extends BaseExpandableListAdapter {
+public class WiFiListAdapter extends BaseExpandableListAdapter {
 
     protected Context context;
     private List<WifiUtils.WifiScanResult> groupDATA1;

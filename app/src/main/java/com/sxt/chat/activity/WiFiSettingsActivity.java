@@ -1,32 +1,26 @@
-package com.sxt.chat.wifi;
+package com.sxt.chat.activity;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
-import com.sxt.chat.utils.Prefs;
+import com.sxt.chat.fragment.WiFiConnectFragment;
 
 /**
- * Created by izhaohu on 2017/12/15.
+ * Created by sxt on 2017/12/15.
  */
 
-public class WiFiActivity extends HeaderActivity {
+public class WiFiSettingsActivity extends HeaderActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_binding_work_layout);
+        setContentView(R.layout.activity_wifi_settings_layout);
 
-        SelectWorkerWiFiFragment fragment = new SelectWorkerWiFiFragment();
+        WiFiConnectFragment fragment = new WiFiConnectFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.wifi_container_layout, fragment, SelectWorkerWiFiFragment.class.getName())
+                .add(R.id.wifi_container_layout, fragment, WiFiConnectFragment.class.getName())
                 .commit();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

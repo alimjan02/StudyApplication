@@ -148,7 +148,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/take_photo_theme" />
         <activity
-            android:name=".wifi.WiFiActivity"
+            android:name=".activity.WiFiSettingsActivity"
             android:screenOrientation="portrait" />
 
         <activity

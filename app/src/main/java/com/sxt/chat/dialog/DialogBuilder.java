@@ -1,4 +1,4 @@
-package com.sxt.chat.wifi;
+package com.sxt.chat.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;

@@ -276,7 +276,7 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
 //                                    FileOutputStream os = new FileOutputStream(file);
 //                                    os.write(bytes);
 //                                    os.flush();
-//                                    os.close();
+//                                    os.popub_close();
 
                                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                                     Matrix matrix = new Matrix(); // 旋转图片 动作

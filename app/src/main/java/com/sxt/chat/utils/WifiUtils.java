@@ -1,4 +1,4 @@
-package com.sxt.chat.wifi;
+package com.sxt.chat.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.sxt.chat.App;
-import com.sxt.chat.utils.NetworkUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -416,6 +415,7 @@ public class WifiUtils {
                 if (netID < 0) {
                     netID = mWifiManager.addNetwork(wifiConfig);
                     Log.i("wifi", "新添加WIFI  add后的 netID = " + netID);
+
                 } else {
                     //已保存过,更新本地的配置
                     int updateNetwork = mWifiManager.updateNetwork(wifiConfig);
@@ -434,6 +434,7 @@ public class WifiUtils {
                 boolean network = mWifiManager.enableNetwork(netID, true);
                 if (network) {//保持WIFI配置
                     boolean flag = false;
+                    updateFailed = false;
                     mWifiManager.saveConfiguration();
                     Log.i("wifi", "network == true");
                     while (time >= 0) {
@@ -518,7 +519,7 @@ public class WifiUtils {
 
         void onStart();
 
-        void onFailed(Exception e,String SSID,boolean updateFailed);
+        void onFailed(Exception e, String SSID, boolean updateFailed);
 
         void success(String SSID, String pwd);
     }

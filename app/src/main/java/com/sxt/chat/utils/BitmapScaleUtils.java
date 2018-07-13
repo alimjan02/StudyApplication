@@ -213,7 +213,7 @@ public class BitmapScaleUtils {
 //                    os = new FileOutputStream(file);
 //                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, os);
 //                    os.flush();
-//                    os.close();
+//                    os.popub_close();
 //
 //                } catch (FileNotFoundException e) {
 //                    e.printStackTrace();
