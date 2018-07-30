@@ -2,14 +2,11 @@ package com.sxt.chat.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -178,7 +175,7 @@ public class YouTuIdCardActivity extends HeaderActivity implements View.OnClickL
                                 drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
                                 statusTitle.setCompoundDrawables(drawable, null, null, null);
                                 statusTitle.setText("识别成功");
-                                resultTitle.setText("  姓名:"+ocrResult.getName());
+                                resultTitle.setText("  姓名:" + ocrResult.getName());
                                 resultValue.setText("身份证: " + ocrResult.getId());
                                 findViewById(R.id.result_layout).setVisibility(View.VISIBLE);
                             } else {
@@ -332,44 +329,29 @@ public class YouTuIdCardActivity extends HeaderActivity implements View.OnClickL
         }
     }
 
-    private boolean checkPermission(int requestCode, String permssion, String[] permissions) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(App.getCtx(), permssion) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(permissions, requestCode);
-                return false;
-            }
-            return true;
-        }
-        return true;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    public void onPermissionsaAlowed(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsaAlowed(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_CAMARER:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startCameraApp();
-                } else {
-                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        Toast(R.string.allow_CAMERA);
-                    }
-                }
+                startCameraApp();
+                break;
+            case REQUEST_CODE_GALLERY:
+                startGalleryApp();
+                break;
+        }
+    }
+
+    @Override
+    public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsRefused(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_CODE_CAMARER:
+                Toast(R.string.allow_CAMERA);
                 break;
 
             case REQUEST_CODE_GALLERY:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startGalleryApp();
-                } else {
-                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        Toast(R.string.allow_WRITE_EXTERNAL_STORAGE);
-                    }
-                }
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-                break;
+                Toast(R.string.allow_WRITE_EXTERNAL_STORAGE);
         }
     }
 

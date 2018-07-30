@@ -1,10 +1,15 @@
 package com.sxt.chat.base;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -26,6 +31,7 @@ import org.greenrobot.eventbus.ThreadMode;
 public class BaseActivity extends AppCompatActivity {
 
     protected LoadingDialog loading;
+    private String TAG = this.getClass().getName();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,6 +103,45 @@ public class BaseActivity extends AppCompatActivity {
                 );
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
+
+    public boolean checkPermission(int requestCode, String permssion, String[] permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(App.getCtx(), permssion) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(permissions, requestCode);
+                return false;
+            }
+            return true;
+        }
+        return true;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            onPermissionsaAlowed(requestCode, permissions, grantResults);
+        } else {
+            if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                onPermissionsRefusedNever(requestCode, permissions, grantResults);
+            } else {
+                onPermissionsRefused(requestCode, permissions, grantResults);
+            }
+        }
+    }
+
+    public void onPermissionsaAlowed(int requestCode, String[] permissions, int[] grantResults) {
+        Log.e(TAG, "onPermissionsaAlowed --> requestCode:" + requestCode);
+    }
+
+    public void onPermissionsRefused(int requestCode, String[] permissions, int[] grantResults) {
+        Log.e(TAG, "onPermissionsRefused --> requestCode:" + requestCode);
+    }
+
+    public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
+        Log.e(TAG, "onPermissionsRefusedNever --> requestCode:" + requestCode);
+    }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

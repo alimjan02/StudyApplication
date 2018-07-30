@@ -47,7 +47,7 @@ import static android.net.wifi.WifiManager.WIFI_STATE_CHANGED_ACTION;
 /**
  * Created by izhaohu on 2017/12/15.
  */
-public class WiFiConnectFragment extends BaseFragment implements View.OnClickListener {
+public class WiFiFragment extends BaseFragment implements View.OnClickListener {
 
     private HeaderActivity activity;
     private ImageView imgLevel;
@@ -304,7 +304,13 @@ public class WiFiConnectFragment extends BaseFragment implements View.OnClickLis
                                     startActivity(it);
                                     builder.dismiss();
                                 }
-                            }).setCanceledOnTouchOutside(false).setBottomImageRes(R.mipmap.popub_close).show();
+                            }).setCanceledOnTouchOutside(false).setBottomImageRes(R.mipmap.popub_close)
+                                    .setCloseCliklistener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            builder.dismiss();
+                                        }
+                                    }).show();
 
                         } else {
                             stopWatch(null, null);

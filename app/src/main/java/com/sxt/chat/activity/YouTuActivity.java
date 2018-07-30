@@ -2,14 +2,10 @@ package com.sxt.chat.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
@@ -18,7 +14,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.steelkiwi.cropiwa.util.ImageUriUtil;
-import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.json.OCRObject;
@@ -210,43 +205,28 @@ public class YouTuActivity extends HeaderActivity {
         }
     }
 
-    private boolean checkPermission(int requestCode, String permssion, String[] permissions) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(App.getCtx(), permssion) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(permissions, requestCode);
-                return false;
-            }
-            return true;
-        }
-        return true;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    public void onPermissionsaAlowed(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsaAlowed(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_CAMARER:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startCameraApp();
-                } else {
-                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        Toast(R.string.allow_CAMERA);
-                    }
-                }
+                startCameraApp();
                 break;
-
             case REQUEST_CODE_GALLERY:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startGalleryApp();
-                } else {
-                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        Toast(R.string.allow_WRITE_EXTERNAL_STORAGE);
-                    }
-                }
+                startGalleryApp();
                 break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    @Override
+    public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_CODE_CAMARER:
+                Toast(R.string.allow_CAMERA);
+                break;
+            case REQUEST_CODE_GALLERY:
+                Toast(R.string.allow_WRITE_EXTERNAL_STORAGE);
                 break;
         }
     }

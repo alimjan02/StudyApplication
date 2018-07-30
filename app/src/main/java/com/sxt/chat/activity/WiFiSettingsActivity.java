@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
-import com.sxt.chat.fragment.WiFiConnectFragment;
+import com.sxt.chat.fragment.WiFiFragment;
 
 /**
  * Created by sxt on 2017/12/15.
@@ -16,10 +16,10 @@ public class WiFiSettingsActivity extends HeaderActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wifi_settings_layout);
 
-        WiFiConnectFragment fragment = new WiFiConnectFragment();
+        WiFiFragment fragment = new WiFiFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.wifi_container_layout, fragment, WiFiConnectFragment.class.getName())
+                .add(R.id.wifi_container_layout, fragment, WiFiFragment.class.getName())
                 .commit();
     }
 

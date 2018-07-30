@@ -77,6 +77,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             findViewById(R.id.exoplayer).setOnClickListener(this);
             findViewById(R.id.wifi).setOnClickListener(this);
             findViewById(R.id.change_login).setOnClickListener(this);
+            findViewById(R.id.service).setOnClickListener(this);
             userIcon = (ImageView) findViewById(R.id.user_icon);
             userInfo = (TextView) findViewById(R.id.user_info);
             userName = (TextView) findViewById(R.id.user_name);
@@ -242,6 +243,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 break;
             case R.id.exoplayer:
                 startActivity(new Intent(this, VideoExoPlayerActivity.class));
+                break;
+            case R.id.service:
+                startActivity(new Intent(this, BinderActivity.class));
                 break;
         }
     }
