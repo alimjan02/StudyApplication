@@ -245,7 +245,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 startActivity(new Intent(this, VideoExoPlayerActivity.class));
                 break;
             case R.id.service:
-                startActivity(new Intent(this, BinderActivity.class));
+                startActivity(new Intent(this, BluetoothActivity.class));
                 break;
         }
     }
