@@ -1,4 +1,4 @@
-package com.sxt.chat;
+package com.sxt.chat.task;
 
 import android.app.Service;
 import android.content.Intent;

@@ -18,9 +18,10 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 
-import com.sxt.chat.BinderService;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
+import com.sxt.chat.task.BinderService;
+import com.sxt.chat.task.TaskService;
 
 /**
  * Created by sxt on 2018/7/30.
@@ -41,6 +42,7 @@ public class BinderActivity extends HeaderActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_biner);
+        startService(new Intent(this, TaskService.class));
     }
 
     public void startService(View view) {
