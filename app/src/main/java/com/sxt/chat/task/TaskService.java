@@ -11,7 +11,7 @@ import android.util.Log;
 
 import com.sxt.chat.App;
 import com.sxt.chat.R;
-import com.sxt.chat.activity.BinderActivity;
+import com.sxt.chat.activity.MainActivity;
 
 /**
  * Created by sxt on 2018/8/1.
@@ -32,7 +32,7 @@ public class TaskService extends Service {
                 .setContentText("提升为前台进程")
                 .setSmallIcon(R.mipmap.app_icon)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.app_icon))
-                .setContentIntent(PendingIntent.getActivity(App.getCtx(), 0, new Intent(App.getCtx(), BinderActivity.class), 0));
+                .setContentIntent(PendingIntent.getActivity(App.getCtx(), 0, new Intent(App.getCtx(), MainActivity.class), 0));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationBuilder.setChannelId(TAG);
         }

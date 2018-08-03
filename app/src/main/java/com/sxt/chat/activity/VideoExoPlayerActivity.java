@@ -16,7 +16,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -82,6 +84,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private boolean flag = true;
     private int videoIndex = 0;
     private ConcatenatingMediaSource mediaSource;
+    private final String URL = "http://sp.icloudcare.com/sv/fc9aeaf-164fde01e9c/fc9aeaf-164fde01e9c.mp4";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +101,9 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         registerNetWorkReceiver();
 
         exoPlayerView = findViewById(R.id.exoplayer);
+//        exoPlayerView.setOnTouchListener(new ExoPlayerOnTouchListener());
+//        exoPlayerView.setControllerHideOnTouch(true);
+
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
@@ -155,7 +161,8 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         player.setPlayWhenReady(true);
 //        player.setRepeatMode(Player.REPEAT_MODE_ONE);
         mediaSource = new ConcatenatingMediaSource(//播放一组视频
-                getMediaSource(Uri.parse(urls[0]))
+//                getMediaSource(Uri.parse(urls[0]))
+                getMediaSource(Uri.parse(URL))
         );
 
         mediaSource.addEventListener(new Handler(), new MediaSourceEventListener() {
@@ -374,11 +381,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_header_small://个人中心
-            case R.id.img_header_large:
-                startActivity(new Intent(this, BasicInfoActivity.class));
-                break;
-
             case R.id.back:
                 if (player != null) {
                     player.stop();
@@ -417,8 +419,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         }
     }
 
-    private float volume;
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -440,6 +440,76 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         }
         if (netWorkReceiver != null) {
             unregisterReceiver(netWorkReceiver);
+        }
+    }
+
+    private class ExoPlayerOnTouchListener implements View.OnTouchListener {
+
+        private float downX;
+        private float downY;
+        private float moveX;
+        private float moveY;
+        private float upX;
+        private float upY;
+        private float width;
+        private float height;
+        private long newPosition;
+        private boolean isPosition;
+        private boolean isVolume;
+        private boolean isAppha;
+
+        public ExoPlayerOnTouchListener() {
+            width = getWindow().getAttributes().width;
+            height = getWindow().getAttributes().height;
+            Log.i(TAG, "Width : " + width + " Height : " + height);
+        }
+
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    downX = motionEvent.getX();
+                    downY = motionEvent.getY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    moveX = motionEvent.getX();
+                    moveY = motionEvent.getY();
+                    float dx = moveX - downX;
+                    float dy = moveY - downY;
+                    if (dx >= dy && dx > 50) {//横向滑动
+                        isPosition = true;
+                        float rateWidth = ((float) player.getDuration()) / width;
+                        newPosition += (long) (rateWidth * dx);
+                    } else {//竖向滑动
+                        if (moveX < width / 2) {//左侧 竖向 调节音量
+                            isVolume = true;
+                            float rateVolume = 255 / height;
+                            player.setVolume(rateVolume * dy);
+                        } else {//右侧 竖向 调节亮度
+                            isVolume = true;
+                            float rateAlpha = 1 / height;
+                            WindowManager.LayoutParams attributes = getWindow().getAttributes();
+                            attributes.alpha = 1 - rateAlpha * dy;
+                            getWindow().setAttributes(attributes);
+                        }
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+
+                    downX = 0;
+                    downY = 0;
+                    moveX = 0;
+                    moveY = 0;
+                    if (!isVolume && !isAppha) {
+                        player.seekTo(player.getCurrentPosition() + newPosition);
+                    }
+                    isAppha = false;
+                    isVolume = false;
+                    isPosition = false;
+                    newPosition = 0;
+                    break;
+            }
+            return false;
         }
     }
 }
