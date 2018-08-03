@@ -169,8 +169,17 @@
         <activity
             android:name=".activity.BluetoothActivity"
             android:screenOrientation="portrait" />
+
         <service
-            android:name=".BinderService"
+            android:name=".task.BinderService"
+            android:exported="false" />
+
+        <service
+            android:name=".task.TaskService"
+            android:exported="false" />
+
+        <service
+            android:name=".task.TaskIntentService"
             android:exported="false" />
 
         <!-- This tag indicates that this application requires ARCore.  This results in the Google Play

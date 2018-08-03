@@ -1,7 +1,6 @@
 package com.sxt.chat.activity;
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -11,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -20,17 +18,16 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 
-import com.sxt.chat.BinderService;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
-
-import java.util.List;
+import com.sxt.chat.task.BinderService;
+import com.sxt.chat.task.TaskService;
 
 /**
  * Created by sxt on 2018/7/30.
  */
 
-public class BluetoothActivity extends HeaderActivity {
+public class BinderActivity extends HeaderActivity {
 
     private boolean flag;
     private boolean bindFlag;
@@ -44,37 +41,8 @@ public class BluetoothActivity extends HeaderActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bluetooth);
-    }
-
-    public void check(View view) {
-//        Toast(String.valueOf(checkAlive(this, BinderService.class.getName())));
-        Intent localIntent = new Intent();
-        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (Build.VERSION.SDK_INT >= 9) {
-            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
-            localIntent.setData(Uri.fromParts("package", getPackageName(), null));
-        } else if (Build.VERSION.SDK_INT <= 8) {
-            localIntent.setAction(Intent.ACTION_VIEW);
-            localIntent.setClassName("com.android.settings", "com.android.setting.InstalledAppDetails");
-            localIntent.putExtra("com.android.settings.ApplicationPkgName", getPackageName());
-        }
-        startActivity(localIntent);
-    }
-
-    public boolean checkAlive(Context context, String serviceClassName) {
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
-        if (activityManager != null) {
-            List<ActivityManager.RunningServiceInfo> services = activityManager.getRunningServices(Integer.MAX_VALUE);
-            for (int i = 0; i < services.size(); i++) {
-                ActivityManager.RunningServiceInfo serviceInfo = services.get(i);
-                ComponentName serviceName = serviceInfo.service;
-                if (serviceName.getClassName().equals(serviceClassName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        setContentView(R.layout.activity_biner);
+        startService(new Intent(this, TaskService.class));
     }
 
     public void startService(View view) {
@@ -132,15 +100,22 @@ public class BluetoothActivity extends HeaderActivity {
         }
     }
 
+    @Override
+    public void onPermissionsRefused(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsRefused(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void openBluetooth() {
         if (bluetoothManager != null && bluetoothManager.getAdapter() != null) {
             if (!bluetoothManager.getAdapter().enable()) {
-//                checkPermission(REQUEST_CODE_LOCATION, Manifest.permission_group.LOCATION, new String[]{
-//                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION});
-
-//                                checkPermission(REQUEST_CODE_BLUETOOTH, Manifest.permission.BLUETOOTH, new String[]{
-//                                        Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN});
+                checkPermission(REQUEST_CODE_LOCATION, Manifest.permission_group.LOCATION, new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION});
 
             } else {
                 Log.i(TAG, "Bluetooth Is Alreadly Opend ");

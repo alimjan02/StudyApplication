@@ -126,6 +126,7 @@ dependencies {
 //    implementation 'com.amap.api:search:latest.integration'
 //    implementation 'com.google.android.exoplayer:exoplayer:r2.8.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.8.0'
+    implementation 'org.altbeacon:android-beacon-library:2+'
     implementation project(':refresh-layout')
     implementation project(':crop_img')
 }
