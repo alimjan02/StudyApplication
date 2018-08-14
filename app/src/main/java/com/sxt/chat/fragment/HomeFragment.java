@@ -1,11 +1,6 @@
 package com.sxt.chat.fragment;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,12 +12,10 @@ import android.widget.ViewSwitcher;
 
 import com.sxt.chat.App;
 import com.sxt.chat.R;
-import com.sxt.chat.activity.ShareViewActivity;
 import com.sxt.chat.adapter.NormalCardListAdapter;
 import com.sxt.chat.adapter.NormalGridListAdapter;
 import com.sxt.chat.adapter.NormalListAdapter;
 import com.sxt.chat.adapter.config.NoScrollLinearLayoutManaget;
-import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.base.LazyFragment;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.RoomInfo;
@@ -42,7 +35,7 @@ import java.util.List;
  * Created by 11837 on 2018/4/22.
  */
 
-public class HomePageFragment extends LazyFragment {
+public class HomeFragment extends LazyFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerViewTop;
