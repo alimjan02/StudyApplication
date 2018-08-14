@@ -28,7 +28,8 @@
             android:layout_width="156dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:scaleType="fitXY" />
+            android:scaleType="centerCrop"
+            android:transitionName="shareView" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -70,7 +71,6 @@
                     android:rating="0" />
 
             </LinearLayout>
-
 
         </RelativeLayout>
 

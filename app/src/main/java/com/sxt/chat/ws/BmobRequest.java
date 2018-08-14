@@ -21,6 +21,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FetchUserInfoListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.LogInListener;
+import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UploadFileListener;
 
 public final class BmobRequest {
@@ -38,6 +39,35 @@ public final class BmobRequest {
             instance = new BmobRequest(context);
         }
         return instance;
+    }
+
+    /**
+     * 注册
+     */
+    public void register(String userName, String passwd, final String cmd) {
+        User user = new User();
+        user.setUsername(userName);
+        user.setPassword(passwd);
+        user.setUserName(userName);
+        user.setName(userName);
+        user.setUserPwd(passwd);
+        user.setPhone(userName);
+        user.signUp(new SaveListener<User>() {
+            @Override
+            public void done(User user, BmobException e) {
+                if (e == null) {//注册成功
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.OK);
+                    resp.setCmd(cmd);
+                    resp.setUser(user);
+                    EventBus.getDefault().post(resp);
+                } else {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.ERROR);
+                    resp.setCmd(cmd);
+                    resp.setError("errorCode = " + e.getErrorCode() + "\r\n message : " + e.getMessage());
+                    EventBus.getDefault().post(resp);
+                }
+            }
+        });
     }
 
     /**

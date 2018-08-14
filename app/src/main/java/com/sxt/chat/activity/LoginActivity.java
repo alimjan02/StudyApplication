@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.sxt.chat.App;
@@ -15,14 +17,14 @@ import com.sxt.chat.db.SQLiteUserDao;
 import com.sxt.chat.db.User;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.Prefs;
-import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.ws.BmobRequest;
 
 import cn.bmob.v3.BmobUser;
 
 public class LoginActivity extends HeaderActivity implements View.OnClickListener {
 
-    private EditText editTextUser;
+    private AutoCompleteTextView editTextUser;
+    private TextInputLayout input_user_name, input_password;
     private EditText editTextPwd;
     private String userName;
     private Handler handler = new Handler();
@@ -47,8 +49,11 @@ public class LoginActivity extends HeaderActivity implements View.OnClickListene
 
     private void initView() {
         findViewById(R.id.root).setVisibility(View.VISIBLE);
-        editTextUser = (EditText) findViewById(R.id.edit_text_user);
-        editTextPwd = (EditText) findViewById(R.id.edit_text_pwd);
+        input_user_name = findViewById(R.id.input_user_name);
+        input_password = findViewById(R.id.input_password);
+        editTextUser = findViewById(R.id.tv_user_name);
+        editTextPwd = findViewById(R.id.tv_password);
+
         findViewById(R.id.btn_login_confirm).setOnClickListener(this);
         findViewById(R.id.icon_login).setOnClickListener(this);
         findViewById(R.id.register).setOnClickListener(this);
@@ -74,16 +79,21 @@ public class LoginActivity extends HeaderActivity implements View.OnClickListene
     }
 
     private void checkUserName() {
-        userName = editTextUser.getText().toString().trim();
-        String passwd = editTextPwd.getText().toString().trim();
+        input_user_name.setError(null);
+        input_password.setError(null);
+
+        userName = editTextUser.getText().toString();
+        String passwd = editTextPwd.getText().toString();
+
         if (TextUtils.isEmpty(userName)) {
-            ToastUtil.showToast(App.getCtx(), getString(R.string.input_number));
+            input_user_name.setError(getString(R.string.input_number));
             return;
         }
         if (TextUtils.isEmpty(passwd)) {
-            ToastUtil.showToast(App.getCtx(), getString(R.string.input_pwd));
+            input_password.setError(getString(R.string.input_pwd));
             return;
         }
+
         loading.show();
         BmobRequest.getInstance(this).login(userName, passwd, CMD_LOGIN);
     }

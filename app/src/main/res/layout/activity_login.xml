@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,62 +14,53 @@
         android:orientation="vertical">
 
         <ImageView
-            android:foreground="?selectableItemBackgroundBorderless"
             android:id="@+id/icon_login"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="64dp"
+            android:foreground="?selectableItemBackgroundBorderless"
             android:src="@mipmap/ic_launcher" />
 
-        <EditText
-            android:id="@+id/edit_text_user"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/input_number"
+                android:imeOptions="actionNext"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:singleLine="true" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="32dp"
-            android:background="@null"
-            android:hint="@string/input_number"
-            android:maxLines="1"
-            android:paddingBottom="20dp"
-            android:paddingTop="20dp"
-            android:singleLine="true"
-            android:text=""
-            android:textColor="@color/text_color_1"
-            android:textColorHint="#B8B8B8"
-            android:textSize="17dp" />
+            android:layout_marginTop="8dp"
+            app:passwordToggleEnabled="true">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/dividing_line" />
-
-        <EditText
-            android:id="@+id/edit_text_pwd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@null"
-            android:hint="@string/input_pwd"
-            android:inputType="textPassword"
-            android:maxLines="1"
-            android:paddingBottom="20dp"
-            android:paddingTop="20dp"
-            android:text=""
-            android:textColor="@color/text_color_1"
-            android:textColorHint="#B8B8B8"
-            android:textSize="17dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/dividing_line" />
+            <EditText
+                android:id="@+id/tv_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/input_pwd"
+                android:imeActionLabel="@string/login"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:singleLine="true" />
+        </android.support.design.widget.TextInputLayout>
 
         <TextView
             android:id="@+id/btn_login_confirm"
