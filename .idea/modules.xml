@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WeChartApplication.iml" filepath="$PROJECT_DIR$/WeChartApplication.iml" />
-      <module fileurl="file://$PROJECT_DIR$/altbeacon/altbeacon.iml" filepath="$PROJECT_DIR$/altbeacon/altbeacon.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/crop_img/crop_img.iml" filepath="$PROJECT_DIR$/crop_img/crop_img.iml" />
       <module fileurl="file://$PROJECT_DIR$/refresh-layout/refresh-layout.iml" filepath="$PROJECT_DIR$/refresh-layout/refresh-layout.iml" />
