@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="15dp">
+    android:paddingBottom="15dp"
+    android:paddingRight="15dp"
+    android:paddingTop="15dp">
 
     <TextView
         android:id="@+id/basic_info"
@@ -11,9 +13,10 @@
         android:layout_width="match_parent"
         android:background="?android:selectableItemBackground"
         android:drawablePadding="10dp"
-        android:drawableStart="@mipmap/me_icon_user"
+        android:drawableStart="@drawable/ic_vector_basic_info_24dp"
         android:gravity="center_vertical"
         android:paddingBottom="8dp"
+        android:paddingStart="15dp"
         android:paddingTop="8dp"
         android:text="@string/basic_info" />
 
@@ -24,9 +27,10 @@
         android:layout_marginTop="15dp"
         android:background="?android:selectableItemBackground"
         android:drawablePadding="10dp"
-        android:drawableStart="@mipmap/me_icon_setting"
+        android:drawableStart="@drawable/ic_vector_settings_24dp"
         android:gravity="center_vertical"
         android:paddingBottom="8dp"
+        android:paddingStart="15dp"
         android:paddingTop="8dp"
         android:text="@string/nomal_settings" />
 
@@ -36,11 +40,11 @@
         android:layout_width="match_parent"
         android:layout_marginTop="15dp"
         android:background="?android:selectableItemBackground"
-        android:drawableLeft="@mipmap/me_icon_user"
         android:drawablePadding="10dp"
-        android:drawableStart="@mipmap/me_icon_user"
+        android:drawableStart="@drawable/ic_vector_img_scanner_24dp"
         android:gravity="center_vertical"
         android:paddingBottom="8dp"
+        android:paddingStart="15dp"
         android:paddingTop="8dp"
         android:text="@string/ocr_scan" />
 
@@ -50,27 +54,13 @@
         android:layout_width="match_parent"
         android:layout_marginTop="15dp"
         android:background="?android:selectableItemBackground"
-        android:drawableLeft="@mipmap/me_icon_user"
         android:drawablePadding="10dp"
-        android:drawableStart="@mipmap/me_icon_user"
+        android:drawableStart="@drawable/ic_vector_idcard_scanner_24dp"
         android:gravity="center_vertical"
         android:paddingBottom="8dp"
+        android:paddingStart="15dp"
         android:paddingTop="8dp"
         android:text="@string/ocr_scan_id_card" />
-
-    <TextView
-        android:id="@+id/exoplayer"
-        style="@style/text_15_color_1_style"
-        android:layout_width="match_parent"
-        android:layout_marginTop="15dp"
-        android:background="?android:selectableItemBackground"
-        android:drawableLeft="@mipmap/me_icon_user"
-        android:drawablePadding="10dp"
-        android:drawableStart="@mipmap/me_icon_user"
-        android:gravity="center_vertical"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:text="@string/exoplayer" />
 
     <TextView
         android:id="@+id/wifi"
@@ -78,13 +68,27 @@
         android:layout_width="match_parent"
         android:layout_marginTop="15dp"
         android:background="?android:selectableItemBackground"
-        android:drawableLeft="@mipmap/me_icon_user"
         android:drawablePadding="10dp"
-        android:drawableStart="@mipmap/me_icon_user"
+        android:drawableStart="@drawable/ic_vector_wifi_24dp"
         android:gravity="center_vertical"
         android:paddingBottom="8dp"
+        android:paddingStart="15dp"
         android:paddingTop="8dp"
         android:text="@string/wifi" />
+
+    <TextView
+        android:id="@+id/exoplayer"
+        style="@style/text_15_color_1_style"
+        android:layout_width="match_parent"
+        android:layout_marginTop="15dp"
+        android:background="?android:selectableItemBackground"
+        android:drawablePadding="10dp"
+        android:drawableStart="@drawable/ic_vector_video_24dp"
+        android:gravity="center_vertical"
+        android:paddingBottom="8dp"
+        android:paddingStart="15dp"
+        android:paddingTop="8dp"
+        android:text="@string/exoplayer" />
 
     <View
         android:layout_width="wrap_content"
@@ -98,9 +102,10 @@
         android:layout_marginTop="15dp"
         android:background="?android:selectableItemBackground"
         android:drawablePadding="10dp"
-        android:drawableStart="@mipmap/me_icon_switch"
+        android:drawableStart="@drawable/ic_vector_switch_24dp"
         android:gravity="center_vertical"
         android:paddingBottom="8dp"
+        android:paddingStart="15dp"
         android:paddingTop="8dp"
         android:text="@string/change_login" />
 
