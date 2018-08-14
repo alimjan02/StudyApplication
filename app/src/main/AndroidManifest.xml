@@ -155,7 +155,11 @@
 
         <activity
             android:name=".activity.VideoExoPlayerActivity"
-            android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize" />
+
+        <activity
+            android:name=".activity.ShareViewActivity"
+            android:configChanges="orientation|screenSize" />
 
         <receiver
             android:name=".receiver.WatchDogReceiver"

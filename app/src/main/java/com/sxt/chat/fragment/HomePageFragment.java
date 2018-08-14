@@ -1,6 +1,11 @@
 package com.sxt.chat.fragment;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +17,7 @@ import android.widget.ViewSwitcher;
 
 import com.sxt.chat.App;
 import com.sxt.chat.R;
+import com.sxt.chat.activity.ShareViewActivity;
 import com.sxt.chat.adapter.NormalCardListAdapter;
 import com.sxt.chat.adapter.NormalGridListAdapter;
 import com.sxt.chat.adapter.NormalListAdapter;
@@ -137,29 +143,6 @@ public class HomePageFragment extends LazyFragment {
             adapter2 = new NormalListAdapter(activity, list);
             adapter3 = new NormalCardListAdapter(activity, list);
 
-            adapter0.setOnClickListener(new BaseRecyclerAdapter.OnClickListener() {
-                @Override
-                public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
-                }
-            });
-            adapter1.setOnClickListener(new BaseRecyclerAdapter.OnClickListener() {
-                @Override
-                public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
-
-                }
-            });
-            adapter2.setOnClickListener(new BaseRecyclerAdapter.OnClickListener() {
-                @Override
-                public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
-
-                }
-            });
-            adapter3.setOnClickListener(new BaseRecyclerAdapter.OnClickListener() {
-                @Override
-                public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
-
-                }
-            });
             viewSwitcherBanner.setDisplayedChild(1);
             viewSwitcherCenter.setDisplayedChild(1);
             viewSwitcherBottom.setDisplayedChild(1);
