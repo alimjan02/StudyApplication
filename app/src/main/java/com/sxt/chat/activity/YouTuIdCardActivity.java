@@ -22,7 +22,7 @@ import com.sxt.chat.json.OCRObject;
 import com.sxt.chat.utils.glide.GlideRoundTransform;
 import com.sxt.chat.youtu.OCRListener;
 import com.sxt.chat.youtu.OCRTask;
-import com.sxt.chat.youtu.YouTuConfig;
+import com.sxt.chat.youtu.SDKConfig;
 
 import java.io.File;
 
@@ -123,7 +123,7 @@ public class YouTuIdCardActivity extends HeaderActivity implements View.OnClickL
             if (ocrTask != null && !ocrTask.isCancelled()) {
                 ocrTask.cancel(true);
             }
-            ocrTask = new OCRTask(imgPath, YouTuConfig.TYPE_ID_CARD, position, new OCRListener() {
+            ocrTask = new OCRTask(imgPath, SDKConfig.TYPE_ID_CARD, position, new OCRListener() {
                 @Override
                 public void onStart() {
                     showDialog();

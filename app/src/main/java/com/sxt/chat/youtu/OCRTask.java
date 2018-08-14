@@ -41,7 +41,7 @@ public class OCRTask extends AsyncTask<Void, Void, OCRObject> {
      * 卡片的正反面类型 0 正面  ; 1 反面
      */
     private int card_type;
-    private String TYPE = YouTuConfig.TYPE_IMAGE_CARDCOR;//默认是 图片类别
+    private String TYPE = SDKConfig.TYPE_IMAGE_CARDCOR;//默认是 图片类别
     private String TAG = "YouTu_SXT";
     private static int EXPIRED_SECONDS = 2592000;
     private OCRListener listener;
@@ -133,18 +133,18 @@ public class OCRTask extends AsyncTask<Void, Void, OCRObject> {
                 float length = base64.length();
                 Log.i(TAG, "图片读取完毕 Image.length = " + (length > 1024 ? length / (1204f * 1024f) + "M" : (length / 1024f) + "K"));
 
-                postData.put("app_id", YouTuConfig.APP_ID);//设置请求体的数据
+                postData.put("app_id", SDKConfig.APP_ID);//设置请求体的数据
                 postData.put("card_type", card_type);
                 postData.put("image", base64.toString());
 
                 SSLContext sc = SSLContext.getInstance("SSL");
                 sc.init((KeyManager[]) null, new TrustManager[]{new TrustAnyTrustManager()}, new SecureRandom());
                 StringBuffer mySign = new StringBuffer("");
-                YoutuSign.appSign(YouTuConfig.APP_ID, YouTuConfig.SECRET_ID, YouTuConfig.SECRET_KEY, System.currentTimeMillis() / 1000L + (long) EXPIRED_SECONDS, YouTuConfig.USER_ID, mySign);
+                YoutuSign.appSign(SDKConfig.APP_ID, SDKConfig.SECRET_ID, SDKConfig.SECRET_KEY, System.currentTimeMillis() / 1000L + (long) EXPIRED_SECONDS, SDKConfig.USER_ID, mySign);
                 System.setProperty("sun.net.client.defaultConnectTimeout", "30000");
                 System.setProperty("sun.net.client.defaultReadTimeout", "30000");
 
-                URL url = new URL(YouTuConfig.Base_Url + TYPE);
+                URL url = new URL(SDKConfig.Base_Url + TYPE);
                 HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
                 connection.setSSLSocketFactory(sc.getSocketFactory());
                 connection.setHostnameVerifier(new TrustAnyHostnameVerifier());
@@ -258,13 +258,13 @@ public class OCRTask extends AsyncTask<Void, Void, OCRObject> {
         } else {
             if ("OK".equals(OCRObject.getErrormsg())) {
                 OCRObject.setCode(OCRObject.SUCCESS);
-                if (YouTuConfig.TYPE_ID_CARD.equals(TYPE)) {//身份证
+                if (SDKConfig.TYPE_ID_CARD.equals(TYPE)) {//身份证
                     result = ID_CARD(OCRObject);
-                } else if (YouTuConfig.TYPE_CREDIT_CARDCOR.equals(TYPE)) {//银行卡/信用卡
+                } else if (SDKConfig.TYPE_CREDIT_CARDCOR.equals(TYPE)) {//银行卡/信用卡
                     result = CREDIT_CARD(OCRObject);
-                } else if (YouTuConfig.TYPE_FOOD_CARDCOR.equals(TYPE)) {//美食图片
+                } else if (SDKConfig.TYPE_FOOD_CARDCOR.equals(TYPE)) {//美食图片
                     result = FOOD_CARD(OCRObject);
-                } else if (YouTuConfig.TYPE_IMAGE_CARDCOR.equals(TYPE)) {//图片标签/类别 识别
+                } else if (SDKConfig.TYPE_IMAGE_CARDCOR.equals(TYPE)) {//图片标签/类别 识别
                     result = IMAGE_CARD(OCRObject);
                 }
                 if (TextUtils.isEmpty(result)) {

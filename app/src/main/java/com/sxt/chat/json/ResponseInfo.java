@@ -1,17 +1,12 @@
 package com.sxt.chat.json;
 
+import com.sxt.chat.db.User;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @Descripition
- * @Auther liubing
- * @CreateTime 2017/7/13
- * @Version
- * @Since
- */
 public class ResponseInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -20,43 +15,26 @@ public class ResponseInfo implements Serializable {
     public static final int ERROR = 1;
     public static final int CANCELED = 2;
 
-    private List<Map<String, Object>> resultData;
     private final int code;
     private String error;
     private long csn;
     private String ticket;
     private int accountId;
-    private int onDuty;
-    private String cameraUrl;
-    private String workerPayment;
-    private Map<String, String> extraMap;
-    private double ratioOfPackages;
-    private String payResult;
-    private List<Date> dates;
-    private boolean isOldClient;
-    private int appraisalPayment;
-    private int count;
     private String cmd;
-    private String videoLink;
     private int workerId;
-    private int instrudeAlarmStatus;
-    private int unusualAlarmLevel;
-    private String trainCode;
     private String userName;
     private int domainId;
     private int version;
+    private String RequestId;
+    private VideoBase VideoBase;
+    private PlayInfoList PlayInfoList;
+    private User user;
+    private String imgUrl;
+    private List<RoomInfo> roomInfoList;
 
     public ResponseInfo(int code) {
         this.code = code;
         this.cmd = "";
-    }
-
-    public List<Map<String, Object>> getResultData() {
-        return resultData;
-    }
-
-    public void setResultData(List<Map<String, Object>> resultData) {
-        this.resultData = resultData;
     }
 
     public int getCode() {
@@ -69,6 +47,30 @@ public class ResponseInfo implements Serializable {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<RoomInfo> getRoomInfoList() {
+        return roomInfoList;
+    }
+
+    public void setRoomInfoList(List<RoomInfo> roomInfoList) {
+        this.roomInfoList = roomInfoList;
     }
 
     public long getCsn() {
@@ -95,86 +97,6 @@ public class ResponseInfo implements Serializable {
         this.accountId = accountId;
     }
 
-    public int getOnDuty() {
-        return onDuty;
-    }
-
-    public void setOnDuty(int onDuty) {
-        this.onDuty = onDuty;
-    }
-
-    public String getCameraUrl() {
-        return cameraUrl;
-    }
-
-    public void setCameraUrl(String cameraUrl) {
-        this.cameraUrl = cameraUrl;
-    }
-
-    public String getWorkerPayment() {
-        return workerPayment;
-    }
-
-    public void setWorkerPayment(String workerPayment) {
-        this.workerPayment = workerPayment;
-    }
-
-    public Map<String, String> getExtraMap() {
-        return extraMap;
-    }
-
-    public void setExtraMap(Map<String, String> extraMap) {
-        this.extraMap = extraMap;
-    }
-
-    public double getRatioOfPackages() {
-        return ratioOfPackages;
-    }
-
-    public void setRatioOfPackages(double ratioOfPackages) {
-        this.ratioOfPackages = ratioOfPackages;
-    }
-
-    public String getPayResult() {
-        return payResult;
-    }
-
-    public void setPayResult(String payResult) {
-        this.payResult = payResult;
-    }
-
-    public List<Date> getDates() {
-        return dates;
-    }
-
-    public void setDates(List<Date> dates) {
-        this.dates = dates;
-    }
-
-    public boolean isOldClient() {
-        return isOldClient;
-    }
-
-    public void setOldClient(boolean oldClient) {
-        isOldClient = oldClient;
-    }
-
-    public int getAppraisalPayment() {
-        return appraisalPayment;
-    }
-
-    public void setAppraisalPayment(int appraisalPayment) {
-        this.appraisalPayment = appraisalPayment;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
     public String getCmd() {
         return cmd;
     }
@@ -183,44 +105,12 @@ public class ResponseInfo implements Serializable {
         this.cmd = cmd;
     }
 
-    public String getVideoLink() {
-        return videoLink;
-    }
-
-    public void setVideoLink(String videoLink) {
-        this.videoLink = videoLink;
-    }
-
     public int getWorkerId() {
         return workerId;
     }
 
     public void setWorkerId(int workerId) {
         this.workerId = workerId;
-    }
-
-    public int getInstrudeAlarmStatus() {
-        return instrudeAlarmStatus;
-    }
-
-    public void setInstrudeAlarmStatus(int instrudeAlarmStatus) {
-        this.instrudeAlarmStatus = instrudeAlarmStatus;
-    }
-
-    public int getUnusualAlarmLevel() {
-        return unusualAlarmLevel;
-    }
-
-    public void setUnusualAlarmLevel(int unusualAlarmLevel) {
-        this.unusualAlarmLevel = unusualAlarmLevel;
-    }
-
-    public String getTrainCode() {
-        return trainCode;
-    }
-
-    public void setTrainCode(String trainCode) {
-        this.trainCode = trainCode;
     }
 
     public String getUserName() {
@@ -245,5 +135,29 @@ public class ResponseInfo implements Serializable {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public String getRequestId() {
+        return RequestId;
+    }
+
+    public void setRequestId(String requestId) {
+        RequestId = requestId;
+    }
+
+    public com.sxt.chat.json.VideoBase getVideoBase() {
+        return VideoBase;
+    }
+
+    public void setVideoBase(com.sxt.chat.json.VideoBase videoBase) {
+        VideoBase = videoBase;
+    }
+
+    public com.sxt.chat.json.PlayInfoList getPlayInfoList() {
+        return PlayInfoList;
+    }
+
+    public void setPlayInfoList(com.sxt.chat.json.PlayInfoList playInfoList) {
+        PlayInfoList = playInfoList;
     }
 }

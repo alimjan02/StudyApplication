@@ -30,7 +30,7 @@ import java.util.Random;
  * Created by 11837 on 2018/4/22.
  */
 @RequiresApi(api = Build.VERSION_CODES.M)
-public class Fragment3 extends LazyFragment {
+public class ChartFragment extends LazyFragment {
 
     private Handler handler = new Handler();
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -98,19 +98,20 @@ public class Fragment3 extends LazyFragment {
         for (int i = 0; i < 20; i++) {
             if (i == 0) {
                 drawPie();
-            } else if (i < 3) {
+            } else if (i == 1) {
                 drawBar();
-            } else if (i < 5) {
+            } else if (i == 2) {
                 drawLine();
-            } else if (i < 9) {
-                drawPie();
+            } else if (i == 3) {
+                drawCircleProgress();
             } else if (i % 2 == 0) {
-                drawLine();//曲线
+                drawBar();
+            } else if (i % 3 == 0) {
+                drawLine();
             } else {
                 drawPie();
             }
         }
-        drawCircleProgress();//圆形进度
     }
 
     @SuppressLint("CutPasteId")
@@ -127,8 +128,8 @@ public class Fragment3 extends LazyFragment {
                 "今日步数");
     }
 
+    //柱状图-------------------------------------------------------------------------------------
     private void drawBar() {
-        //柱状图-------------------------------------------------------------------------------------
         View barView = View.inflate(activity, R.layout.item_chart_bar, null);
         bottomListRoot.addView(barView);
         barView.setTag(bottomListRoot.getChildCount() - 1);

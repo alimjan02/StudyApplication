@@ -4,7 +4,7 @@ package com.sxt.chat.youtu;
  * Created by 11837 on 2018/6/9.
  */
 
-public class YouTuConfig {
+public class SDKConfig {
 
     public static final String APP_ID = "10135453";
     public static final String SECRET_ID = "AKIDdBXnldZqAMNZhmgLPIzVqz1slWGrJ8pc";
@@ -16,5 +16,8 @@ public class YouTuConfig {
     public static final String TYPE_CREDIT_CARDCOR = "ocrapi/creditcardocr";//银行卡/信用卡
     public static final String TYPE_FOOD_CARDCOR = "imageapi/fooddetect";//美食图片
     public static final String TYPE_IMAGE_CARDCOR = "imageapi/imagetag";//图片类别
+
+    public static final String AccessKeyId="LTAIe1N8CISkYzLb";
+    public static final String AccessKeySecret="pS7nO5LHUk2JVVUh4VgJeieGnpEtuM";
 
 }

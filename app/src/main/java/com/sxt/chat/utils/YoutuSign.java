@@ -6,7 +6,7 @@
 package com.sxt.chat.utils;
 
 
-import com.sxt.chat.youtu.HMACSHA1;
+import com.sxt.chat.youtu.SignatureUtil;
 
 import java.util.Random;
 
@@ -45,7 +45,7 @@ public class YoutuSign {
 
     private static byte[] hashHmac(String plain_text, String accessKey) {
         try {
-            return HMACSHA1.getSignature(plain_text, accessKey);
+            return SignatureUtil.getSignature(plain_text, accessKey);
         } catch (Exception var3) {
             var3.printStackTrace();
             return null;

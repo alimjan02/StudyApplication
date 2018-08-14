@@ -5,7 +5,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +15,14 @@ import com.sxt.chat.R;
 import com.sxt.chat.adapter.NormalCardListAdapter;
 import com.sxt.chat.adapter.NormalGridListAdapter;
 import com.sxt.chat.adapter.NormalListAdapter;
+import com.sxt.chat.adapter.config.NoScrollLinearLayoutManaget;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.base.LazyFragment;
+import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.RoomInfo;
-import com.sxt.chat.utils.glide.GlideImageLoader;
 import com.sxt.chat.utils.ToastUtil;
-import com.sxt.chat.adapter.config.NoScrollLinearLayoutManaget;
+import com.sxt.chat.utils.glide.GlideImageLoader;
+import com.sxt.chat.ws.BmobRequest;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
@@ -31,15 +32,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
-
 /**
  * Created by 11837 on 2018/4/22.
  */
 
-public class Fragment1 extends LazyFragment {
+public class HomePageFragment extends LazyFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerViewTop;
@@ -57,9 +54,11 @@ public class Fragment1 extends LazyFragment {
     private NormalCardListAdapter adapter3;
     private Banner banner;
 
+    private final String CMD_GET_ROOM_LIST = this.getClass().getName() + "CMD_GET_ROOM_LIST";
+
     @Override
     protected int getDisplayView(LayoutInflater inflater, ViewGroup container) {
-        return R.layout.fragment_1;
+        return R.layout.fragment_home_page;
     }
 
     @Override
@@ -110,6 +109,7 @@ public class Fragment1 extends LazyFragment {
         imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/20799e5a4012706c80f83276a47b7f89.jpg");
         imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/21/77a27d12401d6964807090cafca10f5e.jpg");
         imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/21/51e795bc405863d5805af06327c0f208.png");
+
         banner.setOnBannerListener(new OnBannerListener() {
             @Override
             public void OnBannerClick(int position) {
@@ -125,21 +125,7 @@ public class Fragment1 extends LazyFragment {
                 .isAutoPlay(true)
                 .start();
 
-        BmobQuery<RoomInfo> query = new BmobQuery<>();
-        query.setLimit(50);
-        query.findObjects(new FindListener<RoomInfo>() {
-            @Override
-            public void done(List<RoomInfo> list, BmobException e) {
-                if (e == null) {
-                    Log.i("room", "size = " + list.size() + "list = " + list.toString());
-                    swipeRefreshLayout.setRefreshing(false);
-                    setAdapter(list);
-                } else {
-                    swipeRefreshLayout.setRefreshing(false);
-                    Log.i("room", "errorCode = " + e.getErrorCode() + e.getMessage());
-                }
-            }
-        });
+        BmobRequest.getInstance(activity).getRoomList(50, 0, CMD_GET_ROOM_LIST);
     }
 
     private void setAdapter(List<RoomInfo> list) {
@@ -150,13 +136,6 @@ public class Fragment1 extends LazyFragment {
             adapter1 = new NormalListAdapter(activity, list);
             adapter2 = new NormalListAdapter(activity, list);
             adapter3 = new NormalCardListAdapter(activity, list);
-
-//          TODO  adapter = new NormalGridListAdapter(activity, Arrays.asList(strings));
-//          TODO  recyclerView.setLayoutManager(new GridLayoutManager(activity, 3));
-//          TODO  recyclerView.addItemDecoration(new DividerGridItemDecoration(context));
-//          TODO  recyclerView.setAdapter(adapter);
-
-            recyclerViewTop.setAdapter(adapter0);
 
             adapter0.setOnClickListener(new BaseRecyclerAdapter.OnClickListener() {
                 @Override
@@ -185,6 +164,7 @@ public class Fragment1 extends LazyFragment {
             viewSwitcherCenter.setDisplayedChild(1);
             viewSwitcherBottom.setDisplayedChild(1);
             viewSwitcherLast.setDisplayedChild(1);
+            recyclerViewTop.setAdapter(adapter0);
             recyclerViewCenter.setAdapter(adapter1);
             recyclerViewBottom.setAdapter(adapter2);
             recyclerViewLast.setAdapter(adapter3);
@@ -195,7 +175,19 @@ public class Fragment1 extends LazyFragment {
         }
     }
 
-    //如果你需要考虑更好的体验，可以这么操作
+    @Override
+    public void onMessage(ResponseInfo resp) {
+        if (ResponseInfo.OK == resp.getCode()) {
+            if (CMD_GET_ROOM_LIST.equals(resp.getCmd())) {
+                swipeRefreshLayout.setRefreshing(false);
+                setAdapter(resp.getRoomInfoList());
+            }
+        } else {
+            swipeRefreshLayout.setRefreshing(false);
+            ToastUtil.showToast(activity, resp.getError());
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();

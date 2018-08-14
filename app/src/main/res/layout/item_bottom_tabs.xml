@@ -27,6 +27,6 @@
         android:id="@+id/tab_4"
         style="@style/bottom_radio"
         android:drawableTop="@drawable/tab_4_selector"
-        android:text="@string/string_tab_me" />
+        android:text="@string/string_tab_news" />
 
 </LinearLayout>

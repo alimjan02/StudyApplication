@@ -20,7 +20,7 @@ import com.sxt.chat.json.OCRObject;
 import com.sxt.chat.utils.glide.GlideRoundTransform;
 import com.sxt.chat.youtu.OCRListener;
 import com.sxt.chat.youtu.OCRTask;
-import com.sxt.chat.youtu.YouTuConfig;
+import com.sxt.chat.youtu.SDKConfig;
 
 import java.io.File;
 
@@ -234,13 +234,13 @@ public class YouTuActivity extends HeaderActivity {
     public String getCardType() {
         switch (rgCardType.getCheckedRadioButtonId()) {
             case R.id.radio_card_type_2:
-                return YouTuConfig.TYPE_CREDIT_CARDCOR;
+                return SDKConfig.TYPE_CREDIT_CARDCOR;
             case R.id.radio_card_type_3:
-                return YouTuConfig.TYPE_FOOD_CARDCOR;
+                return SDKConfig.TYPE_FOOD_CARDCOR;
             case R.id.radio_card_type_4:
-                return YouTuConfig.TYPE_IMAGE_CARDCOR;
+                return SDKConfig.TYPE_IMAGE_CARDCOR;
             default:
-                return YouTuConfig.TYPE_IMAGE_CARDCOR;
+                return SDKConfig.TYPE_IMAGE_CARDCOR;
         }
     }
 

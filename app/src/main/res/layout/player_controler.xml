@@ -5,8 +5,7 @@
     android:layout_gravity="bottom"
     android:background="@color/translate_alpha"
     android:orientation="vertical"
-    android:paddingBottom="8dp"
-    android:paddingTop="16dp">
+    android:paddingBottom="5dp">
 
     <com.google.android.exoplayer2.ui.DefaultTimeBar
         android:id="@id/exo_progress"
@@ -42,12 +41,12 @@
                 android:layout_marginStart="16dp"
                 android:src="@drawable/exo_controls_previous" />
 
-          <!--  <ImageView
-                android:id="@+id/exo_rew"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/exo_controls_rewind"
-                android:visibility="gone" />-->
+            <!--  <ImageView
+                  android:id="@+id/exo_rew"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:src="@drawable/exo_controls_rewind"
+                  android:visibility="gone" />-->
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -92,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/left"
+            android:layout_toEndOf="@id/left"
             android:gravity="center_vertical">
 
             <TextView
@@ -100,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="01:00:24"
+                android:text=""
                 android:textColor="@android:color/white" />
 
             <TextView
@@ -113,16 +112,18 @@
                 android:id="@+id/exo_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="01:00:24"
+                android:text=""
                 android:textColor="@android:color/white" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp">
 
             <TextView
                 android:id="@+id/quality"
@@ -130,21 +131,33 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
                 android:text="清晰度"
                 android:textColor="@android:color/white" />
 
-            <TextView
-                android:id="@+id/select"
+            <ViewSwitcher
+                android:id="@+id/viewSwitcher"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
-                android:text="选集"
-                android:textColor="@android:color/white" />
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/switchScreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_zoom_out_map_black_24dp"
+                    android:text="选集"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:text="选集"
+                    android:textColor="@android:color/white" />
+            </ViewSwitcher>
 
         </LinearLayout>
 

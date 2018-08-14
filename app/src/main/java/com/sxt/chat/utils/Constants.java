@@ -11,4 +11,9 @@ public class Constants {
 //  public static final String NativeVideoPosID = "5090421627704602";
 //  public static final String NativeExpressPosID = "7030020348049331"; //如果选择支持视频的模版样式，请使用NativeExpressSupportVideoPosID测试广告位拉取
 
+    public static final String KEY_Header ="header";
+    public static final String KEY_Ticket ="ticket";
+    public static final String KEY_Authorization ="Authorization";
+    public static final String KEY_UserId ="userId";
+
 }

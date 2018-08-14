@@ -10,15 +10,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.qq.e.ads.banner.AbstractBannerADListener;
 import com.qq.e.ads.banner.BannerView;
 import com.qq.e.comm.util.AdError;
+import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.db.SQLiteUserDao;
 import com.sxt.chat.db.User;
 import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.Constants;
+import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransform;
 
 import cn.bmob.v3.BmobUser;
@@ -26,7 +29,8 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FetchUserInfoListener;
 import cn.bmob.v3.listener.UpdateListener;
 
-/* Created by izhaohu on 2018/1/25.
+/**
+ * Created by sxt on 2018/1/25.
  */
 public class BasicInfoActivity extends HeaderActivity implements View.OnClickListener {
 
@@ -128,6 +132,7 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
                 .bitmapTransform(new GlideCircleTransform(this))
 //                .skipMemoryCache(true)//跳过内存
 //                .diskCacheStrategy(DiskCacheStrategy.NONE)//想要生效必须添加 跳过内存
+                .signature(new StringSignature(Prefs.getInstance(App.getCtx()).getString(Prefs.KEY_USER_HEADER_IMAGE_FLAG, "")))
                 .into(userPortait);
     }
 

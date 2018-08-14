@@ -22,6 +22,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.activity.ad.SplashActivity;
@@ -30,21 +31,21 @@ import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.download.DownloadTask;
-import com.sxt.chat.fragment.Fragment1;
+import com.sxt.chat.fragment.ChartFragment;
 import com.sxt.chat.fragment.Fragment2;
-import com.sxt.chat.fragment.Fragment3;
-import com.sxt.chat.fragment.Fragment4;
+import com.sxt.chat.fragment.HomePageFragment;
+import com.sxt.chat.fragment.NewsFragment;
+import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.NetworkUtils;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransform;
+import com.sxt.chat.ws.BmobRequest;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FetchUserInfoListener;
 
 public class MainActivity extends TabActivity implements View.OnClickListener {
 
@@ -57,10 +58,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private ActionBarDrawerToggle drawerToggle;
     private final long millis = 5 * 60 * 1000L;
     public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
-    public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     private DownloadTask downloadTask;
+    public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
+    public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
 
     @Override
+
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (BmobUser.getCurrentUser() == null) {
@@ -88,16 +91,16 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
     private void initFragment() {
         Map<Integer, BaseFragment> fragmentMap = new HashMap<>();
-        fragmentMap.put(0, new Fragment1());
+        fragmentMap.put(0, new HomePageFragment());
         fragmentMap.put(1, new Fragment2());
-        fragmentMap.put(2, new Fragment3());
-        fragmentMap.put(3, new Fragment4());
+        fragmentMap.put(2, new ChartFragment());
+        fragmentMap.put(3, new NewsFragment());
 
         Map<Integer, RadioButton> tabMap = new HashMap<>();
         for (int i = 0; i < tabGroup.getChildCount(); i++) {
             tabMap.put(i, (RadioButton) tabGroup.getChildAt(i));
         }
-        String[] titles = new String[]{getString(R.string.string_tab_home), getString(R.string.string_tab_github), getString(R.string.string_tab_chart), getString(R.string.string_tab_me)};
+        String[] titles = new String[]{getString(R.string.string_tab_home), getString(R.string.string_tab_github), getString(R.string.string_tab_chart), getString(R.string.string_tab_news)};
         initFragment(fragmentMap, tabMap, titles, R.id.container, 0);
     }
 
@@ -122,19 +125,23 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     }
 
     private void checkUser() {
-//      更新本地用户信息
-//      注意：需要先登录，否则会报9024错误
-        BmobUser.fetchUserJsonInfo(new FetchUserInfoListener<String>() {
-            @Override
-            public void done(String s, BmobException e) {
-                if (e == null) {
-                    updateUserInfo(BmobUser.getCurrentUser(User.class));
-                    loadAD();
-                } else {
-                    startActivity(new Intent(App.getCtx(), LoginActivity.class));
-                }
+        BmobRequest.getInstance(this).updateUserInfo(CMD_UPDATE_USER_INFO);
+    }
+
+    @Override
+    public void onMessage(ResponseInfo resp) {
+        if (ResponseInfo.OK == resp.getCode()) {
+            if (CMD_UPDATE_USER_INFO.equals(resp.getCmd())) {
+                updateUserInfo(BmobUser.getCurrentUser(User.class));
+                loadAD();
             }
-        });
+        } else {
+            if (CMD_UPDATE_USER_INFO.equals(resp.getCmd())) {
+                startActivity(new Intent(App.getCtx(), LoginActivity.class));
+            } else {
+                Toast(resp.getError());
+            }
+        }
     }
 
     private void loadAD() {
@@ -153,13 +160,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     }
 
     private void updateUserInfo(User user) {
-
         if (user != null) {
-            if ("M".equals(user.getGender())) {
-                update(user.getImgUri(), R.mipmap.men);
-            } else {
-                update(user.getImgUri(), R.mipmap.female);
-            }
             userName.setText(user.getName());
             String info = "";
             if (0 != (user.getAge() == null ? 0 : user.getAge())) {
@@ -180,16 +181,16 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 info = info + " BMI:" + (ArithTool.div((user.getWeight() == null ? 0 : user.getWeight()) * 10000, pow, 1));
             }
             userInfo.setText(info);
+            loadHeader(user.getImgUri(), user.getGender());
+            Prefs.getInstance(this).putString(Prefs.KEY_USER_GENDER, user.getGender());
         }
     }
 
-    private void update(String url, int placeHolder) {
-        Glide.with(this)
-                .load(url)
-                .error(placeHolder)
+    private void loadHeader(String url, String gender) {
+        Glide.with(this).load(url)
+                .error("M".equals(gender) ? R.mipmap.men : R.mipmap.female)
                 .bitmapTransform(new GlideCircleTransform(this))
-//                .skipMemoryCache(true)//跳过内存
-//                .diskCacheStrategy(DiskCacheStrategy.NONE)//想要生效必须添加 跳过内存
+                .signature(new StringSignature(Prefs.getInstance(App.getCtx()).getString(Prefs.KEY_USER_HEADER_IMAGE_FLAG, "")))
                 .into(userIcon);
     }
 
@@ -253,7 +254,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             downloadTask.cancel(true);
         }
     }
-
 
     //----------------------------------------版本更新-----------------------------------------------
     private void checkUpdate(int serverVersion) {

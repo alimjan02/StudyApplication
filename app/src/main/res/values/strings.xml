@@ -68,6 +68,7 @@
     <string name="string_tab_home">首页</string>
     <string name="string_tab_github">GitHub</string>
     <string name="string_tab_chart">Chart</string>
+    <string name="string_tab_news">资讯</string>
     <string name="string_tab_me">我的</string>
     <string name="allow_WRITE_EXTERNAL_STORAGE">缺少必要的权限,请在手机设置中允许畅玩读写手机存储的权限</string>
     <string name="allow_wifi">还未获取到相应权限哦,您可以到手机设置中允许爱照护使用位置和WiFi权限哟</string>
@@ -150,6 +151,7 @@
     <string name="wifi">wifi设置</string>
     <string name="service">服务</string>
     <string name="wifi_settings">Wi-Fi设置</string>
+    <string name="displayName">xt.sun</string>
 
 
     <string-array name="videos">

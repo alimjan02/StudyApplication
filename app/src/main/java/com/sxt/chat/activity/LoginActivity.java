@@ -13,12 +13,12 @@ import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.db.SQLiteUserDao;
 import com.sxt.chat.db.User;
+import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
+import com.sxt.chat.ws.BmobRequest;
 
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.LogInListener;
 
 public class LoginActivity extends HeaderActivity implements View.OnClickListener {
 
@@ -26,6 +26,7 @@ public class LoginActivity extends HeaderActivity implements View.OnClickListene
     private EditText editTextPwd;
     private String userName;
     private Handler handler = new Handler();
+    private final String CMD_LOGIN = this.getClass().getName() + "CMD_LOGIN";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,7 +38,6 @@ public class LoginActivity extends HeaderActivity implements View.OnClickListene
         if (currentUser == null) {
             initView();
         } else {
-
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(MainActivity.KEY_IS_AUTO_LOGIN, true);
             startActivity(intent);
@@ -84,28 +84,28 @@ public class LoginActivity extends HeaderActivity implements View.OnClickListene
             ToastUtil.showToast(App.getCtx(), getString(R.string.input_pwd));
             return;
         }
-        loginByAccount(userName, passwd);
+        loading.show();
+        BmobRequest.getInstance(this).login(userName, passwd, CMD_LOGIN);
     }
 
-    private void loginByAccount(String userName, String passwd) {
-        loading.show();
-        BmobUser.loginByAccount(userName, passwd, new LogInListener<User>() {
-            @Override
-            public void done(User user, BmobException e) {
+    @Override
+    public void onMessage(ResponseInfo resp) {
+        if (ResponseInfo.OK == resp.getCode()) {
+            if (CMD_LOGIN.equals(resp.getCmd())) {
                 loading.dismiss();
-                if (user != null) {
-                    SQLiteUserDao.getInstance(App.getCtx()).addUser(user);
-                    Prefs prefs = Prefs.getInstance(App.getCtx());
-                    prefs.setTicket(user.getUsername(), user.getTicket(), user.getAccountId() == null ? 0 : user.getAccountId());
-                    Intent intent = new Intent(App.getCtx(), MainActivity.class);
-                    intent.putExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, true);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Toast("errorCode: " + e.getErrorCode() + " , " + e.getMessage());
-                }
+                SQLiteUserDao.getInstance(App.getCtx()).addUser(resp.getUser());
+                Prefs prefs = Prefs.getInstance(App.getCtx());
+                prefs.setTicket(resp.getUser().getUsername(), resp.getUser().getTicket(), resp.getUser().getAccountId() == null ? 0 : resp.getUser().getAccountId());
+                prefs.putString(Prefs.KEY_USER_HEADER_IMAGE_FLAG, prefs.getUserId() + "-" + System.currentTimeMillis());
+                Intent intent = new Intent(App.getCtx(), MainActivity.class);
+                intent.putExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, true);
+                startActivity(intent);
+                finish();
             }
-        });
+        } else {
+            loading.dismiss();
+            Toast(resp.getError());
+        }
     }
 
     @Override

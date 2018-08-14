@@ -4,7 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.drm.DrmStore;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -12,6 +16,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,8 +24,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -42,6 +49,7 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
+import com.google.gson.Gson;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.adapter.VideoListAdapter;
@@ -49,15 +57,27 @@ import com.sxt.chat.base.BaseActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.dialog.ProgressDrawable;
 import com.sxt.chat.explayer.MyLoadControl;
+import com.sxt.chat.json.PlayInfo;
+import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.VideoObject;
 import com.sxt.chat.utils.NetworkUtils;
+import com.sxt.chat.utils.Px2DpUtil;
+import com.sxt.chat.youtu.SignatureUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
- * Created by 11837 on 2018/6/11.
+ * Created by sxt on 2018/6/11.
  */
 
 public class VideoExoPlayerActivity extends BaseActivity implements View.OnClickListener {
@@ -84,7 +104,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private boolean flag = true;
     private int videoIndex = 0;
     private ConcatenatingMediaSource mediaSource;
-    private final String URL = "http://sp.icloudcare.com/sv/fc9aeaf-164fde01e9c/fc9aeaf-164fde01e9c.mp4";
+    private ViewSwitcher viewSwitcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,15 +114,15 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         videoTitle = findViewById(R.id.video_title);
         loading = findViewById(R.id.loading);
         loadingDrawable = new ProgressDrawable();
-//        drawable.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(this, R.color.main_blue), PorterDuff.Mode.SRC_IN));
+        loadingDrawable.setColor(ContextCompat.getColor(this, R.color.main_green));
         loading.setImageDrawable(loadingDrawable);
 
-        setDrawer();
+        initLayout();
         registerNetWorkReceiver();
 
         exoPlayerView = findViewById(R.id.exoplayer);
+        exoPlayerView.setControllerHideOnTouch(true);
 //        exoPlayerView.setOnTouchListener(new ExoPlayerOnTouchListener());
-//        exoPlayerView.setControllerHideOnTouch(true);
 
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
@@ -160,72 +180,81 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         // Prepare the player with the source.
         player.setPlayWhenReady(true);
 //        player.setRepeatMode(Player.REPEAT_MODE_ONE);
-        mediaSource = new ConcatenatingMediaSource(//播放一组视频
+    }
+
+    private void startPlay(final String videoUrl) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mediaSource == null) {
+                    mediaSource = new ConcatenatingMediaSource(//播放一组视频
 //                getMediaSource(Uri.parse(urls[0]))
-                getMediaSource(Uri.parse(URL))
-        );
+                            getMediaSource(Uri.parse(videoUrl))
+                    );
 
-        mediaSource.addEventListener(new Handler(), new MediaSourceEventListener() {
+                    mediaSource.addEventListener(new Handler(), new MediaSourceEventListener() {
 
-            @Override
-            public void onMediaPeriodCreated(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
-                Log.i(TAG, "onMediaPeriodCreated " + " windowIndex = " + windowIndex);
-            }
+                        @Override
+                        public void onMediaPeriodCreated(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
+                            Log.i(TAG, "onMediaPeriodCreated " + " windowIndex = " + windowIndex);
+                        }
 
-            @Override
-            public void onMediaPeriodReleased(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
-                Log.i(TAG, "onMediaPeriodReleased " + " windowIndex = " + windowIndex);
-            }
+                        @Override
+                        public void onMediaPeriodReleased(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
+                            Log.i(TAG, "onMediaPeriodReleased " + " windowIndex = " + windowIndex);
+                        }
 
-            @Override
-            public void onLoadStarted(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
-                Log.i(TAG, "onLoadStarted " + " windowIndex = " + windowIndex);
-            }
+                        @Override
+                        public void onLoadStarted(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
+                            Log.i(TAG, "onLoadStarted " + " windowIndex = " + windowIndex);
+                        }
 
-            /**
-             * 缓冲完毕
-             * @param windowIndex 队列中播放的资源索引
-             */
-            @Override
-            public void onLoadCompleted(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
-                Log.i(TAG, "onLoadCompleted  缓冲完成  " + " windowIndex = " + windowIndex);
-            }
+                        /**
+                         * 缓冲完毕
+                         * @param windowIndex 队列中播放的资源索引
+                         */
+                        @Override
+                        public void onLoadCompleted(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
+                            Log.i(TAG, "onLoadCompleted  缓冲完成  " + " windowIndex = " + windowIndex);
+                        }
 
-            @Override
-            public void onLoadCanceled(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
-                Log.i(TAG, "onLoadCanceled " + " windowIndex = " + windowIndex);
-            }
+                        @Override
+                        public void onLoadCanceled(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
+                            Log.i(TAG, "onLoadCanceled " + " windowIndex = " + windowIndex);
+                        }
 
-            @Override
-            public void onLoadError(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData, IOException error, boolean wasCanceled) {
-                Log.i(TAG, "onLoadError " + " windowIndex = " + windowIndex);
-            }
+                        @Override
+                        public void onLoadError(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData, IOException error, boolean wasCanceled) {
+                            Log.i(TAG, "onLoadError " + " windowIndex = " + windowIndex);
+                        }
 
-            @Override
-            public void onReadingStarted(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
-                Log.i(TAG, "onReadingStarted " + " windowIndex = " + windowIndex);
-                if (adapter != null) {
-                    adapter.notifyIndex(videoIndex % adapter.getItemCount());
-                    recyclerView.smoothScrollToPosition(videoIndex % adapter.getItemCount());
-                    videoTitle.setText(titles[videoIndex % adapter.getItemCount()]);
-                    Log.i(TAG, "当前播放的视频 -->标题 " + titles[videoIndex % adapter.getItemCount()] + " videoIndex = " + (videoIndex % adapter.getItemCount()));
-                    mediaSource.addMediaSource(mediaSource.getSize(), getMediaSource(Uri.parse(adapter.getItem((videoIndex++) % adapter.getItemCount()).getVideo_url())));
-                    Log.i(TAG, "下一个播放的视频 -->标题 " + titles[videoIndex % adapter.getItemCount()] + " videoIndex = " + (videoIndex % adapter.getItemCount()));
+                        @Override
+                        public void onReadingStarted(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
+                            Log.i(TAG, "onReadingStarted " + " windowIndex = " + windowIndex);
+                            if (adapter != null) {
+                                adapter.notifyIndex(videoIndex % adapter.getItemCount());
+                                recyclerView.smoothScrollToPosition(videoIndex % adapter.getItemCount());
+                                videoTitle.setText(titles[videoIndex % adapter.getItemCount()]);
+                                Log.i(TAG, "当前播放的视频 -->标题 " + titles[videoIndex % adapter.getItemCount()] + " videoIndex = " + (videoIndex % adapter.getItemCount()));
+                                mediaSource.addMediaSource(mediaSource.getSize(), getMediaSource(Uri.parse(adapter.getItem((videoIndex++) % adapter.getItemCount()).getVideo_url())));
+                                Log.i(TAG, "下一个播放的视频 -->标题 " + titles[videoIndex % adapter.getItemCount()] + " videoIndex = " + (videoIndex % adapter.getItemCount()));
+                            }
+                        }
+
+                        @Override
+                        public void onUpstreamDiscarded(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId, MediaLoadData mediaLoadData) {
+                            Log.i(TAG, "onUpstreamDiscarded " + " windowIndex = " + windowIndex);
+                        }
+
+                        @Override
+                        public void onDownstreamFormatChanged(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, MediaLoadData mediaLoadData) {
+                            Log.i(TAG, "onDownstreamFormatChanged " + " windowIndex = " + windowIndex);
+                        }
+                    });
+                    player.prepare(mediaSource);
                 }
             }
-
-            @Override
-            public void onUpstreamDiscarded(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId, MediaLoadData mediaLoadData) {
-                Log.i(TAG, "onUpstreamDiscarded " + " windowIndex = " + windowIndex);
-            }
-
-            @Override
-            public void onDownstreamFormatChanged(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, MediaLoadData mediaLoadData) {
-                Log.i(TAG, "onDownstreamFormatChanged " + " windowIndex = " + windowIndex);
-            }
         });
-
-        player.prepare(mediaSource);
     }
 
     private void registerNetWorkReceiver() {
@@ -237,10 +266,12 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         registerReceiver(netWorkReceiver, filter);
     }
 
-    private void setDrawer() {
+    private void initLayout() {
         findViewById(R.id.back).setOnClickListener(this);
         findViewById(R.id.quality).setOnClickListener(this);
+        viewSwitcher = findViewById(R.id.viewSwitcher);
         findViewById(R.id.select).setOnClickListener(this);
+        findViewById(R.id.switchScreen).setOnClickListener(this);
 
         drawerLayout = findViewById(R.id.drawerLayout);
         recyclerView = findViewById(R.id.recyclerView);
@@ -282,8 +313,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                 player.prepare(mediaSource);
             }
         });
-
-        drawerLayout.openDrawer(drawer);
     }
 
     private void showLoading() {
@@ -382,11 +411,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.back:
-                if (player != null) {
-                    player.stop();
-                    player.release();
-                }
-                finish();
+                onBack();
                 break;
             case R.id.quality:
                 Toast("切换清晰度");
@@ -394,9 +419,47 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
             case R.id.select:
                 drawerLayout.openDrawer(drawer);
                 break;
+            case R.id.switchScreen:
+                setRequestedOrientation(getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {//竖屏
+            viewSwitcher.setDisplayedChild(0);
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) exoPlayerView.getLayoutParams();
+            lp.height = Px2DpUtil.dip2px(this, 200);
+            exoPlayerView.setLayoutParams(lp);
+
+        } else if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {//横屏
+            viewSwitcher.setDisplayedChild(1);
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) exoPlayerView.getLayoutParams();
+            lp.height = FrameLayout.LayoutParams.MATCH_PARENT;
+            exoPlayerView.setLayoutParams(lp);
+        }
+    }
+
+    private void onBack() {
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            drawerLayout.closeDrawers();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            if (player != null) {
+                player.stop();
+                player.release();
+            }
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        onBack();
     }
 
     @Override
@@ -410,6 +473,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     @Override
     protected void onResume() {
         super.onResume();
+        getVideoList();
         if (player != null) {
             player.setPlayWhenReady(flag || player.getPlaybackState() == DrmStore.Playback.RESUME);
             flag = false;
@@ -511,5 +575,39 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
             }
             return false;
         }
+    }
+
+    private void getVideoList() {
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS).readTimeout(20, TimeUnit.SECONDS).writeTimeout(20, TimeUnit.SECONDS);
+
+        //生成私有参数，不同API需要修改
+        Map<String, String> privateParams = SignatureUtil.generatePrivateParamters("baa55f3da3d1448a9f9c8f1374a767dd", "GetPlayInfo");
+        //生成公共参数，不需要修改
+        Map<String, String> publicParams = SignatureUtil.generatePublicParamters();
+        //生成OpenAPI地址，不需要修改
+        String URL = SignatureUtil.generateOpenAPIURL(publicParams, privateParams);
+
+        clientBuilder.build().newCall(new Request.Builder().url(URL).get().build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("sxt", e.toString());
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) {
+                Log.e("sxt", response.toString());
+                try {
+                    ResponseInfo responseInfo = new Gson().fromJson(response.body().string(), ResponseInfo.class);
+                    if (responseInfo.getVideoBase() != null && responseInfo.getPlayInfoList() != null) {
+                        List<PlayInfo> playInfos = responseInfo.getPlayInfoList().getPlayInfo();
+                        if (playInfos != null && playInfos.size() > 0) {
+                            startPlay(playInfos.get(1).PlayURL);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

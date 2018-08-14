@@ -155,7 +155,7 @@
 
         <activity
             android:name=".activity.VideoExoPlayerActivity"
-            android:screenOrientation="landscape" />
+            android:configChanges="orientation|screenSize"/>
 
         <receiver
             android:name=".receiver.WatchDogReceiver"
@@ -165,10 +165,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-        <activity
-            android:name=".activity.BluetoothActivity"
-            android:screenOrientation="portrait" />
 
         <service
             android:name=".task.BinderService"

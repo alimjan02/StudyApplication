@@ -30,7 +30,7 @@ import java.util.List;
  * Created by 11837 on 2018/4/22.
  */
 
-public class Fragment4 extends LazyFragment implements
+public class NewsFragment extends LazyFragment implements
         NativeExpressAD.NativeExpressADListener {
 
     private final String TAG = "AD_sxt";

@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.qq.e.ads.banner.ADSize;
 import com.qq.e.ads.banner.AbstractBannerADListener;
 import com.qq.e.ads.banner.BannerView;
@@ -20,17 +21,16 @@ import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.db.User;
+import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.Constants;
+import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransform;
-
-import java.io.File;
+import com.sxt.chat.ws.BmobRequest;
 
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FetchUserInfoListener;
 import cn.bmob.v3.listener.UpdateListener;
-import cn.bmob.v3.listener.UploadFileListener;
 
 /**
  * Created by izhaohu on 2018/3/13.
@@ -39,10 +39,10 @@ import cn.bmob.v3.listener.UploadFileListener;
 public class UpdateUserImgActivity extends HeaderActivity implements View.OnClickListener {
 
     private ImageView img;
-    private boolean successful;
     private final int REQUEST_CHOOSE_PHOTO = 1000;
     private final int REQUEST_CROP_PHOTO = 1001;
     private Uri bitmapUri;
+    private final String CMD_UPLOAD_FILE = this.getClass().getName() + "CMD_UPLOAD_FILE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,41 +59,35 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
     private void updateHeadPortrait() {
         User user = BmobUser.getCurrentUser(User.class);
         if (user != null) {
-            load(user.getImgUri(), "M".equals(user.getGender()) ? R.mipmap.men : R.mipmap.female, false);
+            load(user.getImgUri(), "M".equals(BmobUser.getCurrentUser(User.class).getGender()) ? R.mipmap.men : R.mipmap.female);
         }
     }
 
-    private void load(final String url, final int placeHolder, boolean isUpdate) {
-
-        if (isUpdate) {
-            User newUser = new User();
-            newUser.setImgUri(url);
-            BmobUser bmobUser = BmobUser.getCurrentUser();
-            newUser.update(bmobUser.getObjectId(), new UpdateListener() {
-                @Override
-                public void done(BmobException e) {
-                    if (e != null) {
-                        loading.dismiss();
-                        Toast("errorCode: " + e.getErrorCode() + " , " + e.getMessage());
-                    } else {
-                        BmobUser.fetchUserJsonInfo(new FetchUserInfoListener<String>() {
-                            @Override
-                            public void done(String s, BmobException e) {
-                                loading.dismiss();
-                                if (e == null) {
-                                    successful = true;
-                                    load(BmobUser.getCurrentUser(User.class).getImgUri(), placeHolder);
-                                } else {
-                                    Toast("errorCode: " + e.getErrorCode() + " , " + e.getMessage());
-                                }
+    private void updateUser(final String url) {
+        User newUser = new User();
+        newUser.setImgUri(url);
+        final BmobUser bmobUser = BmobUser.getCurrentUser();
+        newUser.update(bmobUser.getObjectId(), new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e != null) {
+                    loading.dismiss();
+                    Toast("errorCode: " + e.getErrorCode() + " , " + e.getMessage());
+                } else {
+                    BmobUser.fetchUserJsonInfo(new FetchUserInfoListener<String>() {
+                        @Override
+                        public void done(String s, BmobException e) {
+                            loading.dismiss();
+                            if (e == null) {
+                                load(BmobUser.getCurrentUser(User.class).getImgUri(), "M".equals(BmobUser.getCurrentUser(User.class).getGender()) ? R.mipmap.men : R.mipmap.female);
+                            } else {
+                                Toast("errorCode: " + e.getErrorCode() + " , " + e.getMessage());
                             }
-                        });
-                    }
+                        }
+                    });
                 }
-            });
-        } else {
-            load(url, placeHolder);
-        }
+            }
+        });
     }
 
     private void load(String url, int placeHolder) {
@@ -103,6 +97,7 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
                 .bitmapTransform(new GlideCircleTransform(App.getCtx()))
 //                .skipMemoryCache(true)//跳过内存
 //                .diskCacheStrategy(DiskCacheStrategy.NONE)//想要生效必须添加 跳过内存
+                .signature(new StringSignature(Prefs.getInstance(App.getCtx()).getString(Prefs.KEY_USER_HEADER_IMAGE_FLAG, "")))
                 .into(img);
     }
 
@@ -170,78 +165,20 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
 
     private void upload(Uri bitmapUri) {
         loading.show();
-        final BmobFile bmobFile = new BmobFile(new File(bitmapUri.getPath()));
-        bmobFile.uploadblock(new UploadFileListener() {
+        BmobRequest.getInstance(this).uploadFile(bitmapUri.getPath(), CMD_UPLOAD_FILE);
+    }
 
-            @Override
-            public void done(BmobException e) {
-                if (e == null) {
-                    //bmobFile.getFileUrl()--返回的上传文件的完整地址
-                    load(bmobFile.getUrl(), "M".equals(BmobUser.getCurrentUser(User.class).getGender()) ? R.mipmap.men : R.mipmap.female, true);
-
-                } else {
-                    loading.dismiss();
-                    Toast(getString(R.string.upload_img_failed) + e.getMessage());
-                }
+    @Override
+    public void onMessage(ResponseInfo resp) {
+        if (ResponseInfo.OK == resp.getCode()) {
+            if (CMD_UPLOAD_FILE.equals(resp.getCmd())) {
+                Prefs.getInstance(this).putString(Prefs.KEY_USER_HEADER_IMAGE_FLAG, Prefs.getInstance(this).getUserId() + "-" + System.currentTimeMillis());
+                updateUser(resp.getImgUrl());
             }
-
-            @Override
-            public void onProgress(Integer value) {
-                // 返回的上传进度（百分比）
-            }
-        });
-//            OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS).readTimeout(20, TimeUnit.SECONDS).writeTimeout(20, TimeUnit.SECONDS);
-//            final File file = new File(bitmapUri.getPath());
-//            MultipartBody.Builder formBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
-////            RequestBody fileBody = RequestBody.create(MediaType.parse("application/octet-stream"), file);
-//            RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), file);
-////            RequestBody fileBody = RequestBody.create(MediaType.parse("text/x-markdown; charset=utf-8"), file);
-//
-//            formBody.addFormDataPart("0", file.getName(), fileBody)//worker_id 对应的是 1, user_id对应的是0
-//                    .addFormDataPart("id", String.valueOf(Prefs.getInstance(this).getInt(Prefs.KEY_USER_ID, 0)))
-//                    .addFormDataPart("type", "0");//worker_id 对应的是 1, user_id对应的是0
-//
-//            Request request = new Request.Builder()
-//                    .url(Prefs.getInstance(this).getUploadUrl())
-//                    .post(formBody.build())
-//                    .tag(this)
-//                    .build();
-//
-//            clientBuilder.build().newCall(request).enqueue(new Callback() {
-//                @Override
-//                public void onFailure(Call call, IOException e) {
-//                    UpdateUserImgActivity.this.runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            loading.dismiss();
-//                            Toast(getString(R.string.upload_img_failed));
-//                        }
-//                    });
-//                }
-//
-//                @Override
-//                public void onResponse(Call call, final Response response) {
-//                    UpdateUserImgActivity.this.runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if (response.isSuccessful()) {
-//                                loading.dismiss();
-//                                Toast(getString(R.string.upload_img_successful));
-//                                successful = true;
-//                                updateHeadPortrait();
-//                            } else {
-//                                loading.dismiss();
-//                                Toast(getString(R.string.error_request_data));
-//                            }
-//                        }
-//                    });
-//                }
-//            });
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Toast(getString(R.string.error_request_data));
-//        }
+        } else {
+            loading.dismiss();
+            Toast(resp.getError());
+        }
     }
 
     private void initAdBanner() {
