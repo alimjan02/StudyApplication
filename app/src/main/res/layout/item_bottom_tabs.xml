@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    app:layout_scrollFlags="scroll|enterAlways">
+    app:layout_behavior="@string/bottom_sheet_behavior">
 
     <RadioButton
         android:id="@+id/tab_1"

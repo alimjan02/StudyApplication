@@ -50,14 +50,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
     private boolean isFirst = true;
     private ImageView userIcon;
-    private TextView userInfo;
-    private TextView userName;
+    private TextView userInfo,userName;
     private LinearLayout tabGroup;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
-    private final long millis = 5 * 60 * 1000L;
-    public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
+    private final long millis = 2 * 60 * 1000L;
     private DownloadTask downloadTask;
+    public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
     public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
 

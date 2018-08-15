@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -93,9 +94,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private TextView videoTitle;
     private View drawer;
 
-    private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
-    private String[] titles = App.getCtx().getResources().getStringArray(R.array.videos_name);
-    private String[] video_img_url = App.getCtx().getResources().getStringArray(R.array.video_img_url);
     private NetWorkReceiver netWorkReceiver;
     private MyLoadControl loadControler;
     private VideoListAdapter adapter;
@@ -105,6 +103,9 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private int videoIndex = 0;
     private ConcatenatingMediaSource mediaSource;
     private ViewSwitcher viewSwitcher;
+    private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
+    private String[] titles = App.getCtx().getResources().getStringArray(R.array.videos_name);
+    private String[] video_img_url = App.getCtx().getResources().getStringArray(R.array.video_img_url);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +123,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 
         exoPlayerView = findViewById(R.id.exoplayer);
         exoPlayerView.setControllerHideOnTouch(true);
-//        exoPlayerView.setOnTouchListener(new ExoPlayerOnTouchListener());
+        exoPlayerView.setOnTouchListener(new ExoPlayerOnTouchListener());
 
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
@@ -523,9 +524,10 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         private boolean isAppha;
 
         public ExoPlayerOnTouchListener() {
-            width = getWindow().getAttributes().width;
-            height = getWindow().getAttributes().height;
-            Log.i(TAG, "Width : " + width + " Height : " + height);
+            DisplayMetrics dm = getResources().getDisplayMetrics();
+            width = dm.widthPixels;
+            height = dm.heightPixels;
+            Log.e("Gesture", "Width : " + width + " Height : " + height);
         }
 
         @Override
@@ -540,11 +542,12 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     moveY = motionEvent.getY();
                     float dx = moveX - downX;
                     float dy = moveY - downY;
-                    if (dx >= dy && dx > 50) {//横向滑动
+                    if (Math.abs(dx) >= Math.abs(dy) && Math.abs(dx) > 50) {//横向滑动
                         isPosition = true;
-                        float rateWidth = ((float) player.getDuration()) / width;
-                        newPosition += (long) (rateWidth * dx);
-                    } else {//竖向滑动
+                        float rateWidth = width / ((float) player.getDuration());
+                        newPosition += (long) (dx / rateWidth);
+                        Log.e("Gesture", "druation : " + player.getDuration() + " newPosition : " + newPosition);
+                    } /*else {//竖向滑动
                         if (moveX < width / 2) {//左侧 竖向 调节音量
                             isVolume = true;
                             float rateVolume = 255 / height;
@@ -556,7 +559,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                             attributes.alpha = 1 - rateAlpha * dy;
                             getWindow().setAttributes(attributes);
                         }
-                    }
+                    }*/
                     break;
                 case MotionEvent.ACTION_UP:
 
@@ -565,7 +568,8 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     moveX = 0;
                     moveY = 0;
                     if (!isVolume && !isAppha) {
-                        player.seekTo(player.getCurrentPosition() + newPosition);
+                        long targetPosition = player.getCurrentPosition() + newPosition;
+                        player.seekTo(targetPosition >= player.getDuration() ? player.getDuration() : targetPosition);
                     }
                     isAppha = false;
                     isVolume = false;
