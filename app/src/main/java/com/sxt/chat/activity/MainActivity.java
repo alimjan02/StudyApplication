@@ -25,7 +25,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
-import com.sxt.chat.activity.ad.SplashActivity;
 import com.sxt.chat.base.BaseFragment;
 import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.db.User;

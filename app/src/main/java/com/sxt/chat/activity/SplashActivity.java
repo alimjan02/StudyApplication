@@ -1,4 +1,4 @@
-package com.sxt.chat.activity.ad;
+package com.sxt.chat.activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
@@ -43,7 +44,7 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
     private SplashAD splashAD;
     private ViewGroup container;
     private TextView skipView;
-    private ImageView splashHolder;
+    private ViewSwitcher viewSwitcher;
     private static final String SKIP_TEXT = "点击跳过 %d";
 
     public boolean canJump = false;
@@ -53,9 +54,9 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         showToolbar(false);
+        viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher);
         container = (ViewGroup) this.findViewById(R.id.splash_container);
         skipView = (TextView) findViewById(R.id.skip_view);
-        splashHolder = (ImageView) findViewById(R.id.splash_holder);
         // 如果targetSDKVersion >= 23，就要申请好权限。如果您的App没有适配到Android6.0（即targetSDKVersion < 23），那么只需要在这里直接调用fetchSplashAD接口。
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkAndRequestPermission();
@@ -64,7 +65,7 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
             fetchSplashAD(this, container, skipView, Constants.APPID, getPosId(), this, 0);
         }
         if (!getIntent().getBooleanExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, true)) {
-            splashHolder.setVisibility(View.GONE);
+            viewSwitcher.setDisplayedChild(0);
         }
     }
 
@@ -129,7 +130,9 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
         if (requestCode == 1024 && hasAllPermissionsGranted(grantResults)) {
             fetchSplashAD(this, container, skipView, Constants.APPID, getPosId(), this, 0);
         } else {
@@ -164,7 +167,7 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                splashHolder.setVisibility(View.INVISIBLE); // 广告展示后一定要把预设的开屏图片隐藏起来
+                viewSwitcher.setDisplayedChild(0); // 广告展示后一定要把预设的开屏图片隐藏起来
             }
         }, 1000);
     }

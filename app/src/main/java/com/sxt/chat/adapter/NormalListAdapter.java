@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.sxt.chat.R;
-import com.sxt.chat.activity.ShareViewActivity;
+import com.sxt.chat.activity.RoomDetailActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.json.RoomInfo;
 import com.sxt.chat.utils.glide.GlideRoundTransform;
@@ -51,7 +51,7 @@ public class NormalListAdapter extends BaseRecyclerAdapter<RoomInfo> {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ShareViewActivity.class);
+                Intent intent = new Intent(context, RoomDetailActivity.class);
                 intent.putExtra("url", data.get(position).getRoom_url());
                 context.startActivity(intent,
                         ActivityOptions.makeSceneTransitionAnimation

@@ -13,7 +13,6 @@
         <item name="android:textCursorDrawable">@drawable/text_cursor_drawable</item>
     </style>
 
-
     <!--优化启动页 修复闪屏界面出现的 短暂白屏 问题-->
 
     <style name="PopContextMenu" parent="@android:style/Theme.Dialog">

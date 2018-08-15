@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.json.OCRObject;
-import com.sxt.chat.utils.Base64Util;
+import com.sxt.chat.utils.Base64;
 import com.sxt.chat.utils.YoutuSign;
 
 import org.json.JSONObject;
@@ -86,47 +86,13 @@ public class OCRTask extends AsyncTask<Void, Void, OCRObject> {
             Log.i(TAG, "腾讯YouTu 图文识别 开始... ");
             File imageFile = new File(imgPath);
             if (imageFile.exists() && imageFile.length() > 0) {
-//                    OkHttpClient.Builder clientBuilder = getClientBuilder();
-//                    MultipartBody.Builder formBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
-//
-//                    StringBuffer base64 = new StringBuffer();
-//                    InputStream in = new FileInputStream(imageFile);
-//                    byte[] data = new byte[(int) imageFile.length()];
-//                    in.read(data);
-//                    in.popub_close();
-//                    base64.append(Base64Util.encode(data));
-//
-//                    MultipartBody multipartBody = formBody
-//                            .addFormDataPart("app_id", APP_ID)
-//                            .addFormDataPart("image", base64.toString())
-//                            .addFormDataPart("card_type", String.valueOf(card_type)).build();
-//
-//                    StringBuffer mySign = new StringBuffer("");
-//                    YoutuSign.appSign(APP_ID, SECRET_ID, SECRET_KEY, System.currentTimeMillis() / 1000L + (long) EXPIRED_SECONDS, USER_ID, mySign);
-//
-//                    Request request = new Request.Builder()
-////                            .addHeader("accept", "*/*")
-////                            .removeHeader("user-agent")
-////                            .addHeader("user-agent", "youtu-java-sdk")
-//                            .addHeader("Content-Length", String.valueOf(multipartBody.contentLength()))
-//                            .addHeader("Content-Type", "text/json")
-////                            .addHeader("Content-Type", "multipart/form-data")
-//                            .addHeader("Authorization", mySign.toString())
-//                            .url("https://api.youtu.qq.com/youtu/ocrapi/idcardocr"
-//                                  /*  + "Content-Length=" + multipartBody.contentLength()
-//                                    + "&Authorization=" + mySign.toString()*/)
-//                            .post(multipartBody)
-//                            .tag(this)
-//                            .build();
-//
-//                    response = clientBuilder.build().newCall(request).execute();
                 JSONObject postData = new JSONObject();
                 StringBuffer base64 = new StringBuffer();
                 InputStream in = new FileInputStream(imageFile);
                 byte[] data = new byte[(int) imageFile.length()];
                 in.read(data);
                 in.close();
-                base64.append(Base64Util.encode(data));
+                base64.append(Base64.encode(data));
                 if (base64.length() == 0) {
                     return null;
                 }

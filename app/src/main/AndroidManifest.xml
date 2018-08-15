@@ -82,7 +82,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".activity.ad.SplashActivity"
+            android:name=".activity.SplashActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop">
             <intent-filter>
@@ -159,7 +159,7 @@
             android:configChanges="orientation|screenSize" />
 
         <activity
-            android:name=".activity.ShareViewActivity"
+            android:name=".activity.RoomDetailActivity"
             android:configChanges="orientation|screenSize" />
 
         <receiver
@@ -222,9 +222,6 @@
             android:name="com.qq.e.ads.ADActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             tools:ignore="DuplicateActivity" />
-        <activity
-            android:name=".activity.ad.DemoListActivity"
-            android:configChanges="orientation|screenSize" />
 
 
         <!--高德地图-->

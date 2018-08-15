@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_scrolling"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

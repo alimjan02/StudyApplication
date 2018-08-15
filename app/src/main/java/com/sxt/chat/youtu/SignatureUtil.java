@@ -6,11 +6,8 @@
 package com.sxt.chat.youtu;
 
 import com.sxt.chat.utils.Base64;
-import com.sxt.chat.utils.Base64Util;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SignatureException;
 import java.text.SimpleDateFormat;
@@ -21,7 +18,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.SimpleTimeZone;
 import java.util.UUID;
 import java.util.logging.Level;

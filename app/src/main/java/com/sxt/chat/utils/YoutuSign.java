@@ -15,14 +15,14 @@ public class YoutuSign {
     }
 
     public static int appSign(String appId, String secret_id, String secret_key, long expired, String userid, StringBuffer mySign) {
-        return appSignBase(appId, secret_id, secret_key, expired, userid, (String)null, mySign);
+        return appSignBase(appId, secret_id, secret_key, expired, userid, (String) null, mySign);
     }
 
     private static int appSignBase(String appId, String secret_id, String secret_key, long expired, String userid, String url, StringBuffer mySign) {
-        if(!empty(secret_id) && !empty(secret_key)) {
+        if (!empty(secret_id) && !empty(secret_key)) {
             String puserid = "";
-            if(!empty(userid)) {
-                if(userid.length() > 64) {
+            if (!empty(userid)) {
+                if (userid.length() > 64) {
                     return -2;
                 }
 
@@ -36,7 +36,7 @@ public class YoutuSign {
             byte[] all = new byte[bin.length + plain_text.getBytes().length];
             System.arraycopy(bin, 0, all, 0, bin.length);
             System.arraycopy(plain_text.getBytes(), 0, all, bin.length, plain_text.getBytes().length);
-            mySign.append(Base64Util.encode(all));
+            mySign.append(Base64.encode(all));
             return 0;
         } else {
             return -1;
