@@ -11,11 +11,11 @@
     <string name="prompt">温馨提示</string>
 
     <string name="exit_press_again">再按一次退出</string>
-    <string name="basic_info">基本信息</string>
+    <string name="basic_info">个人中心</string>
     <string name="nomal_settings">通用设置</string>
     <string name="ocr_scan">腾讯优图</string>
-    <string name="ocr_scan_id_card">身份证识别</string>
-    <string name="exoplayer">ExoPlayer</string>
+    <string name="ocr_scan_id_card">证件识别</string>
+    <string name="exoplayer">视频专区</string>
     <string name="change_login">切换账号</string>
     <string name="clean_cache">清理缓存</string>
     <string name="feedback">意见反馈</string>
@@ -148,7 +148,7 @@
     <string name="string_label_press_hight">高压</string>
     <string name="string_label_press_lower">低压</string>
     <string name="test_img_url">http://h.hiphotos.baidu.com/image/pic/item/342ac65c103853434cc02dda9f13b07eca80883a.jpg</string>
-    <string name="wifi">wifi设置</string>
+    <string name="wifi">Wi-Fi连接</string>
     <string name="service">服务</string>
     <string name="wifi_settings">Wi-Fi设置</string>
     <string name="displayName">xt.sun</string>

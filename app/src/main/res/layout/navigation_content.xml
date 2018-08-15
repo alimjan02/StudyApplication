@@ -21,18 +21,18 @@
         android:text="@string/basic_info" />
 
     <TextView
-        android:id="@+id/normal_settings"
+        android:id="@+id/exoplayer"
         style="@style/text_15_color_1_style"
         android:layout_width="match_parent"
         android:layout_marginTop="15dp"
         android:background="?android:selectableItemBackground"
         android:drawablePadding="10dp"
-        android:drawableStart="@drawable/ic_vector_settings_24dp"
+        android:drawableStart="@drawable/ic_vector_video_24dp"
         android:gravity="center_vertical"
         android:paddingBottom="8dp"
         android:paddingStart="15dp"
         android:paddingTop="8dp"
-        android:text="@string/nomal_settings" />
+        android:text="@string/exoplayer" />
 
     <TextView
         android:id="@+id/ocr_scan"
@@ -77,18 +77,18 @@
         android:text="@string/wifi" />
 
     <TextView
-        android:id="@+id/exoplayer"
+        android:id="@+id/normal_settings"
         style="@style/text_15_color_1_style"
         android:layout_width="match_parent"
         android:layout_marginTop="15dp"
         android:background="?android:selectableItemBackground"
         android:drawablePadding="10dp"
-        android:drawableStart="@drawable/ic_vector_video_24dp"
+        android:drawableStart="@drawable/ic_vector_settings_24dp"
         android:gravity="center_vertical"
         android:paddingBottom="8dp"
         android:paddingStart="15dp"
         android:paddingTop="8dp"
-        android:text="@string/exoplayer" />
+        android:text="@string/nomal_settings" />
 
     <View
         android:layout_width="wrap_content"

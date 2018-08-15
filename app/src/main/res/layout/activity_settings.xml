@@ -154,7 +154,6 @@
             android:layout_marginRight="15dp"
             android:layout_marginTop="30dp"
             android:background="@drawable/login_btn_pressed_bg"
-            android:foreground="?selectableItemBackground"
             android:gravity="center"
             android:paddingBottom="13dp"
             android:paddingTop="13dp"
