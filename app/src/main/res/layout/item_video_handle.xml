@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="right"
+    android:background="@color/black"
+    app:srlDisableContentWhenLoading="true"
+    app:srlDisableContentWhenRefresh="true"
+    app:srlEnableAutoLoadmore="false"
+    app:srlEnableLoadmore="false"
+    app:srlEnableOverScrollDrag="true"
+    app:srlEnableRefresh="false">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+
+    <ImageView
+        android:id="@+id/loading_drawer"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:visibility="visible" />
+
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>

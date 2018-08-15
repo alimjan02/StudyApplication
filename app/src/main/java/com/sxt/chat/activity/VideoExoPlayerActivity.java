@@ -7,8 +7,6 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.drm.DrmStore;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -20,13 +18,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -57,10 +53,12 @@ import com.sxt.chat.adapter.VideoListAdapter;
 import com.sxt.chat.base.BaseActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.dialog.ProgressDrawable;
+import com.sxt.chat.explayer.ExoPlayerOnTouchListener;
 import com.sxt.chat.explayer.MyLoadControl;
 import com.sxt.chat.json.PlayInfo;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.VideoObject;
+import com.sxt.chat.utils.DateFormatUtil;
 import com.sxt.chat.utils.NetworkUtils;
 import com.sxt.chat.utils.Px2DpUtil;
 import com.sxt.chat.youtu.SignatureUtil;
@@ -106,13 +104,23 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
     private String[] titles = App.getCtx().getResources().getStringArray(R.array.videos_name);
     private String[] video_img_url = App.getCtx().getResources().getStringArray(R.array.video_img_url);
+    private View progressTool;
+    private ProgressBar progressBar;
+    private TextView currentProgress;
+    private TextView duration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exoplayer);
 
+        exoPlayerView = findViewById(R.id.exoplayer);
         videoTitle = findViewById(R.id.video_title);
+        progressTool = findViewById(R.id.progressTool);
+        progressBar = findViewById(R.id.progressBar);
+        currentProgress = findViewById(R.id.currentPosition);
+        duration = findViewById(R.id.duration);
+
         loading = findViewById(R.id.loading);
         loadingDrawable = new ProgressDrawable();
         loadingDrawable.setColor(ContextCompat.getColor(this, R.color.main_green));
@@ -120,10 +128,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 
         initLayout();
         registerNetWorkReceiver();
-
-        exoPlayerView = findViewById(R.id.exoplayer);
-        exoPlayerView.setControllerHideOnTouch(true);
-        exoPlayerView.setOnTouchListener(new ExoPlayerOnTouchListener());
 
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
@@ -180,7 +184,43 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         });
         // Prepare the player with the source.
         player.setPlayWhenReady(true);
+        setPlayerHandle();
 //        player.setRepeatMode(Player.REPEAT_MODE_ONE);
+    }
+
+    /**
+     * 设置触摸监听
+     */
+    private void setPlayerHandle() {
+        exoPlayerView.setControllerHideOnTouch(true);
+        ExoPlayerOnTouchListener onTouchListener = new ExoPlayerOnTouchListener(this, player)
+                .setOnTouchInfoListener(new ExoPlayerOnTouchListener.OnTouchInfoListener() {
+
+                    @Override
+                    public void onProgressChanged(long currentPosition, long duration, int currentProgress) {
+                        VideoExoPlayerActivity.this.progressTool.setVisibility(View.VISIBLE);
+                        VideoExoPlayerActivity.this.currentProgress.setText(DateFormatUtil.getTimeHHMMSS(currentPosition));
+                        VideoExoPlayerActivity.this.duration.setText(DateFormatUtil.getTimeHHMMSS(player.getDuration()));
+                        VideoExoPlayerActivity.this.progressBar.setProgress(currentProgress);
+                    }
+
+                    @Override
+                    public void onTouchUp(long targetPosition) {
+                        player.seekTo(targetPosition);
+                        VideoExoPlayerActivity.this.progressTool.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onVolumeChanged() {
+
+                    }
+
+                    @Override
+                    public void onAlphaChanged() {
+
+                    }
+                });
+        exoPlayerView.setOnTouchListener(onTouchListener);
     }
 
     private void startPlay(final String videoUrl) {
@@ -505,79 +545,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         }
         if (netWorkReceiver != null) {
             unregisterReceiver(netWorkReceiver);
-        }
-    }
-
-    private class ExoPlayerOnTouchListener implements View.OnTouchListener {
-
-        private float downX;
-        private float downY;
-        private float moveX;
-        private float moveY;
-        private float upX;
-        private float upY;
-        private float width;
-        private float height;
-        private long newPosition;
-        private boolean isPosition;
-        private boolean isVolume;
-        private boolean isAppha;
-
-        public ExoPlayerOnTouchListener() {
-            DisplayMetrics dm = getResources().getDisplayMetrics();
-            width = dm.widthPixels;
-            height = dm.heightPixels;
-            Log.e("Gesture", "Width : " + width + " Height : " + height);
-        }
-
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            switch (motionEvent.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    downX = motionEvent.getX();
-                    downY = motionEvent.getY();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    moveX = motionEvent.getX();
-                    moveY = motionEvent.getY();
-                    float dx = moveX - downX;
-                    float dy = moveY - downY;
-                    if (Math.abs(dx) >= Math.abs(dy) && Math.abs(dx) > 50) {//横向滑动
-                        isPosition = true;
-                        float rateWidth = width / ((float) player.getDuration());
-                        newPosition += (long) (dx / rateWidth);
-                        Log.e("Gesture", "druation : " + player.getDuration() + " newPosition : " + newPosition);
-                    } /*else {//竖向滑动
-                        if (moveX < width / 2) {//左侧 竖向 调节音量
-                            isVolume = true;
-                            float rateVolume = 255 / height;
-                            player.setVolume(rateVolume * dy);
-                        } else {//右侧 竖向 调节亮度
-                            isVolume = true;
-                            float rateAlpha = 1 / height;
-                            WindowManager.LayoutParams attributes = getWindow().getAttributes();
-                            attributes.alpha = 1 - rateAlpha * dy;
-                            getWindow().setAttributes(attributes);
-                        }
-                    }*/
-                    break;
-                case MotionEvent.ACTION_UP:
-
-                    downX = 0;
-                    downY = 0;
-                    moveX = 0;
-                    moveY = 0;
-                    if (!isVolume && !isAppha) {
-                        long targetPosition = player.getCurrentPosition() + newPosition;
-                        player.seekTo(targetPosition >= player.getDuration() ? player.getDuration() : targetPosition);
-                    }
-                    isAppha = false;
-                    isVolume = false;
-                    isPosition = false;
-                    newPosition = 0;
-                    break;
-            }
-            return false;
         }
     }
 

@@ -48,6 +48,21 @@ public class DateFormatUtil {
         }
     }
 
+    public static String getTimeHHMMSS(long millis) {
+        if (millis > 0) {
+            long minute = 60 * 1000L;
+            long hour = millis * 60;
+            int hours = (int) (millis / hour);
+            int minutes = (int) ((millis - hours * hour) / minute);
+            int seconds = (int) ((millis - minutes * minute) / 1000);
+
+            return (hours == 0 ? "" : (hours < 10 ? "0" + hours : hours + ":"))
+                    + (minutes == 0 ? "00" : minutes < 10 ? "0" + minutes : minutes)
+                    + ":" + (seconds == 0 ? "00" : seconds < 10 ? "0" + seconds : seconds);
+        }
+        return "00:00";
+    }
+
     /**
      * 秒数转化为日期
      *
