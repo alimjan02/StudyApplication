@@ -64,6 +64,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(0, 0);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
         if (BmobUser.getCurrentUser() == null) {
             startActivity(new Intent(App.getCtx(), LoginActivity.class));
             finish();

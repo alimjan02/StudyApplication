@@ -139,7 +139,7 @@
         <activity
             android:name=".activity.TakePhotoActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/take_photo_theme" />
+            android:theme="@style/FullScreenTheme" />
         <activity
             android:name=".activity.WiFiSettingsActivity"
             android:screenOrientation="portrait" />

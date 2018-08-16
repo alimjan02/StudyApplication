@@ -95,7 +95,7 @@ public class BaseActivity extends AppCompatActivity {
             getWindow()
                     .getDecorView()
                     .setSystemUiVisibility(
-                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE//防止系统栏隐藏时内容区域大小发生变化
                                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION//隐藏导航栏
                                     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN//全屏
                                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION//隐藏底部的 三个 虚拟按键导航栏

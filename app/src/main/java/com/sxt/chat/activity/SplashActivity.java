@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(0, 0);
         setContentView(R.layout.activity_splash);
         showToolbar(false);
         container = (ViewGroup) this.findViewById(R.id.splash_container);
@@ -70,7 +72,7 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            // Standard Android full-screen functionality.
+//            // Standard Android full-screen functionality.
             initWindowStyle();
         }
     }
