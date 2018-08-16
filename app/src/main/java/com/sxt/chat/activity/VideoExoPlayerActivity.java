@@ -1,5 +1,6 @@
 package com.sxt.chat.activity;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -55,6 +56,7 @@ import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.dialog.ProgressDrawable;
 import com.sxt.chat.explayer.ExoPlayerOnTouchListener;
 import com.sxt.chat.explayer.MyLoadControl;
+import com.sxt.chat.explayer.OnTouchInfoListener;
 import com.sxt.chat.json.PlayInfo;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.VideoObject;
@@ -191,10 +193,11 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     /**
      * 设置触摸监听
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void setPlayerHandle() {
         exoPlayerView.setControllerHideOnTouch(true);
         ExoPlayerOnTouchListener onTouchListener = new ExoPlayerOnTouchListener(this, player)
-                .setOnTouchInfoListener(new ExoPlayerOnTouchListener.OnTouchInfoListener() {
+                .setOnTouchInfoListener(new OnTouchInfoListener() {
 
                     @Override
                     public void onProgressChanged(long currentPosition, long duration, int currentProgress) {

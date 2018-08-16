@@ -97,15 +97,4 @@ public class ExoPlayerOnTouchListener implements View.OnTouchListener {
         this.onTouchInfoListener = onTouchInfoListener;
         return this;
     }
-
-    public interface OnTouchInfoListener {
-
-        void onTouchUp(long targetPosition);
-
-        void onProgressChanged(long currentPosition, long duration, int currentProgress);
-
-        void onVolumeChanged();
-
-        void onAlphaChanged();
-    }
 }
