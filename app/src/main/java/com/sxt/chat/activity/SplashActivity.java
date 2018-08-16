@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -167,12 +166,7 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
     @Override
     public void onADPresent() {//广告展示
         Log.i("AD_DEMO", "SplashADPresent");
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                findViewById(R.id.splash_holder).setVisibility(View.GONE);
-            }
-        }, 200); // 广告展示后一定要把预设的开屏图片隐藏起来
+        findViewById(R.id.splash_holder).setVisibility(View.GONE);// 广告展示后一定要把预设的开屏图片隐藏起来
     }
 
     @Override

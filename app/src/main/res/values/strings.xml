@@ -13,6 +13,7 @@
     <string name="exit_press_again">再按一次退出</string>
     <string name="basic_info">个人中心</string>
     <string name="nomal_settings">通用设置</string>
+    <string name="notifycations_demo">通知演示</string>
     <string name="ocr_scan">腾讯优图</string>
     <string name="ocr_scan_id_card">证件识别</string>
     <string name="exoplayer">视频专区</string>
@@ -213,4 +214,22 @@
        {"RequestId":"77FB0804-8554-482A-99C9-46C1BB1C3E98","VideoBase":{"TranscodeMode":"FastTranscode","CreationTime":"2018-08-06T04:00:02Z","CoverURL":"http://video.izhaohu.com/baa55f3da3d1448a9f9c8f1374a767dd/covers/25440d899e3c4b119012cdb351477a16-00005.jpg","Status":"Normal","MediaType":"video","VideoId":"baa55f3da3d1448a9f9c8f1374a767dd","Duration":"834.392","OutputType":"cdn","Title":"课程9-口腔机能与吞咽障碍"},"PlayInfoList":{"PlayInfo":[{"Format":"m3u8","StreamType":"video","PreprocessStatus":"UnPreprocess","ModificationTime":"2018-08-06T04:03:18Z","Height":720,"PlayURL":"http://video.izhaohu.com/baa55f3da3d1448a9f9c8f1374a767dd/6b3cbbec7a314f1ead67a3ace75d9a88-08bd51174d3377a3566cc97039a46672-ld.m3u8","CreationTime":"2018-08-06T04:00:56Z","Status":"Normal","Duration":"834.4064","JobId":"1169a66a81ba4ff0bb7f676825eb22d5","Encrypt":0,"Width":960,"Fps":"25","Bitrate":"1114.249","Size":116217088,"Definition":"LD"},{"Format":"mp4","StreamType":"video","PreprocessStatus":"PreprocessSucceed","ModificationTime":"2018-08-06T04:02:35Z","Height":360,"PlayURL":"http://video.izhaohu.com/baa55f3da3d1448a9f9c8f1374a767dd/4c482760426fe75d1bcdae46732eccab-fd.mp4","CreationTime":"2018-08-06T04:01:22Z","Status":"Normal","Duration":"834.4560","JobId":"149966e4421e4273b65f2493f21214f6","Encrypt":0,"Width":480,"Fps":"25","Bitrate":"538.478","Size":56167082,"Definition":"FD"},{"Format":"mp4","StreamType":"video","PreprocessStatus":"PreprocessSucceed","ModificationTime":"2018-08-06T04:03:44Z","Height":768,"PlayURL":"http://video.izhaohu.com/baa55f3da3d1448a9f9c8f1374a767dd/399459672768e561396503b2c234a62c-ld.mp4","CreationTime":"2018-08-06T04:01:22Z","Status":"Normal","Duration":"834.4560","JobId":"d1ef9a66989d44c7803347a296f4c86c","Encrypt":0,"Width":1024,"Fps":"25","Bitrate":"1320.796","Size":137768310,"Definition":"LD"}]}}
     </string>
     <string name="share_with">Share with</string>
+
+    <string name="main_primary_title">Primary Channel</string>
+    <string name="main_primary_send1">Send 1</string>
+    <string name="main_primary_send2">Send 2</string>
+    <string name="main_primary_config">Go to primary settings</string>
+
+    <string name="main_secondary_title">Secondary Channel</string>
+    <string name="main_secondary_send1">Send 1</string>
+    <string name="main_secondary_send2">Send 2</string>
+    <string name="main_secondary_config">Go to secondary settings</string>
+    <string name="primary2_body">Second Notification for Primary Channel</string>
+    <string name="secondary2_body">Second Notification for Secondary Channel</string>
+    <string name="btnA_title">Go to Settings</string>
+    <string name="primary1_body">The content</string>
+    <string name="noti2_title">Second notification</string>
+    <string name="secondary1_body">Notification body text.</string>
+    <string name="noti_channel_second">Secondary Channel</string>
+
 </resources>

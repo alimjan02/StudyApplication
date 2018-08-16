@@ -152,6 +152,10 @@
             android:name=".activity.RoomDetailActivity"
             android:configChanges="orientation|screenSize" />
 
+        <activity
+            android:name=".activity.NotifycationActivity"
+            android:configChanges="orientation|screenSize" />
+
         <receiver
             android:name=".receiver.WatchDogReceiver"
             android:exported="false">
