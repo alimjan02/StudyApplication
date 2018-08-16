@@ -14,6 +14,9 @@
     </style>
 
     <!--优化启动页 修复闪屏界面出现的 短暂白屏 问题-->
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@mipmap/splash_holder</item>
+    </style>
 
     <style name="PopContextMenu" parent="@android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>

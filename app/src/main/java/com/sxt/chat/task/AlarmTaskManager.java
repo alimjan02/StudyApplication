@@ -34,7 +34,7 @@ public class AlarmTaskManager {
             alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         }
         long atTime = SystemClock.elapsedRealtime() + delay;
-        Intent intent = new Intent(context, TaskService.class);
+        Intent intent = new Intent(context, MainService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {//19
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, atTime, pendingIntent);

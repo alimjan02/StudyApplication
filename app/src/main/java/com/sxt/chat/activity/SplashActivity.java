@@ -5,6 +5,8 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,17 +18,13 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
 import com.qq.e.comm.util.AdError;
 import com.sxt.chat.R;
-import com.sxt.chat.activity.LoginActivity;
-import com.sxt.chat.activity.MainActivity;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.utils.Constants;
 
@@ -44,7 +42,6 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
     private SplashAD splashAD;
     private ViewGroup container;
     private TextView skipView;
-    private ViewSwitcher viewSwitcher;
     private static final String SKIP_TEXT = "点击跳过 %d";
 
     public boolean canJump = false;
@@ -54,7 +51,6 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         showToolbar(false);
-        viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher);
         container = (ViewGroup) this.findViewById(R.id.splash_container);
         skipView = (TextView) findViewById(R.id.skip_view);
         // 如果targetSDKVersion >= 23，就要申请好权限。如果您的App没有适配到Android6.0（即targetSDKVersion < 23），那么只需要在这里直接调用fetchSplashAD接口。
@@ -62,10 +58,11 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
             checkAndRequestPermission();
         } else {
             // 如果是Android6.0以下的机器，默认在安装时获得了所有权限，可以直接调用SDK
-            fetchSplashAD(this, container, skipView, Constants.APPID, getPosId(), this, 0);
+            loadAD();
         }
         if (!getIntent().getBooleanExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, true)) {
-            viewSwitcher.setDisplayedChild(0);
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            findViewById(R.id.splash_holder).setVisibility(View.GONE);
         }
     }
 
@@ -110,7 +107,7 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
 
         // 权限都已经有了，那么直接调用SDK
         if (lackedPermission.size() == 0) {
-            fetchSplashAD(this, container, skipView, Constants.APPID, getPosId(), this, 0);
+            loadAD();
         } else {
             // 请求所缺少的权限，在onRequestPermissionsResult中再看是否获得权限，如果获得权限就可以调用SDK，否则不要调用SDK。
             String[] requestPermissions = new String[lackedPermission.size()];
@@ -134,7 +131,7 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
         if (requestCode == 1024 && hasAllPermissionsGranted(grantResults)) {
-            fetchSplashAD(this, container, skipView, Constants.APPID, getPosId(), this, 0);
+            loadAD();
         } else {
             // 如果用户没有授权，那么应该说明意图，引导用户去设置里面授权。
             Toast.makeText(this, "应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。", Toast.LENGTH_LONG).show();
@@ -143,6 +140,10 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
             startActivity(intent);
             finish();
         }
+    }
+
+    private void loadAD() {
+        fetchSplashAD(this, container, skipView, Constants.APPID, getPosId(), this, 0);
     }
 
     /**
@@ -162,14 +163,14 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
     }
 
     @Override
-    public void onADPresent() {
+    public void onADPresent() {//广告展示
         Log.i("AD_DEMO", "SplashADPresent");
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                viewSwitcher.setDisplayedChild(0); // 广告展示后一定要把预设的开屏图片隐藏起来
+                findViewById(R.id.splash_holder).setVisibility(View.GONE);
             }
-        }, 1000);
+        }, 200); // 广告展示后一定要把预设的开屏图片隐藏起来
     }
 
     @Override
@@ -206,12 +207,8 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
     }
 
     private void jump() {
-        if (getIntent().getBooleanExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, true)) {
-            this.startActivity(new Intent(this, LoginActivity.class));
-        } else {
-            this.startActivity(new Intent(this, MainActivity.class));
-        }
-        this.finish();
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 
     /**

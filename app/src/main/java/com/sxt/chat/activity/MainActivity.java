@@ -35,6 +35,7 @@ import com.sxt.chat.fragment.Fragment2;
 import com.sxt.chat.fragment.HomeFragment;
 import com.sxt.chat.fragment.NewsFragment;
 import com.sxt.chat.json.ResponseInfo;
+import com.sxt.chat.task.MainService;
 import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.NetworkUtils;
 import com.sxt.chat.utils.Prefs;
@@ -50,7 +51,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
     private boolean isFirst = true;
     private ImageView userIcon;
-    private TextView userInfo,userName;
+    private TextView userInfo, userName;
     private LinearLayout tabGroup;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
@@ -61,7 +62,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
 
     @Override
-
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (BmobUser.getCurrentUser() == null) {
@@ -84,6 +84,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
             initDrawer();
             initFragment();
+            startService(new Intent(App.getCtx(), MainService.class));
         }
     }
 
@@ -149,7 +150,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             long lastMillis = Prefs.getInstance(this).getLong(Prefs.KEY_LAST_RESUME_MILLIS, 0);
             if (System.currentTimeMillis() - lastMillis > millis) {
                 Prefs.getInstance(this).putLong(Prefs.KEY_LAST_RESUME_MILLIS, System.currentTimeMillis());
-                //如果上次可视的时间距离现在短于10秒钟,就去赚取广告费 嘎嘎嘎嘎
+                //如果上次可视的时间距离现在短于2分钟,就去赚取广告费 嘎嘎嘎嘎
                 Intent intent = new Intent(App.getCtx(), SplashActivity.class);
                 intent.putExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, false);
                 startActivity(intent);
