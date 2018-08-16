@@ -42,16 +42,15 @@ public class NotificationHelper extends ContextWrapper {
     public NotificationHelper(Context ctx) {
         super(ctx);
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel chan1 = new NotificationChannel(PRIMARY_CHANNEL,
-                    "Primary Channel", NotificationManager.IMPORTANCE_DEFAULT);
+                    "通知1Channel", NotificationManager.IMPORTANCE_DEFAULT);
             chan1.setLightColor(Color.GREEN);
             chan1.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             getManager().createNotificationChannel(chan1);
 
             NotificationChannel chan2 = new NotificationChannel(SECONDARY_CHANNEL,
-                    "Secondary Channel", NotificationManager.IMPORTANCE_HIGH);
+                    "通知2Channel", NotificationManager.IMPORTANCE_HIGH);
             chan2.setLightColor(Color.BLUE);
             chan2.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             getManager().createNotificationChannel(chan2);
@@ -113,7 +112,7 @@ public class NotificationHelper extends ContextWrapper {
      * @return The small icon resource id
      */
     private int getSmallIcon() {
-        return android.R.drawable.stat_notify_chat;
+        return R.drawable.ic_vector_notifications_24dp;
     }
 
     /**
