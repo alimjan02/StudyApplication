@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
@@ -88,7 +89,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
             initDrawer();
             initFragment();
-            startService(new Intent(App.getCtx(), MainService.class));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(new Intent(App.getCtx(), MainService.class));
+            } else {
+                startService(new Intent(App.getCtx(), MainService.class));
+            }
         }
     }
 
