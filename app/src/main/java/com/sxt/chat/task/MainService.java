@@ -51,7 +51,6 @@ public class MainService extends Service {
         } else {
             notification = new Notification();
         }
-
         startForeground(NOTIFY_ID, notification);
         return START_STICKY;
     }

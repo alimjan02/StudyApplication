@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.qq.e.ads.nativ.ADSize;
@@ -238,6 +239,7 @@ public class NewsFragment extends LazyFragment implements
             } else {
                 customViewHolder.title.setText(String.valueOf(data.get(position)));
             }
+            customViewHolder.container.startAnimation(AnimationUtils.loadAnimation(context,R.anim.anim_item_vertical_percent_50));
         }
 
         @NonNull

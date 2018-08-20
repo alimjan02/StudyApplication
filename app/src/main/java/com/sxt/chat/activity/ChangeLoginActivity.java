@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 
 import com.sxt.chat.App;
 import com.sxt.chat.R;
@@ -48,6 +49,7 @@ public class ChangeLoginActivity extends HeaderActivity {
 
         mRecyclerView = (SwipeMenuRecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_vertical));
         mRecyclerView.setSwipeMenuCreator(swipeMenuCreator);
         mRecyclerView.setSwipeMenuItemClickListener(mMenuItemClickListener);
         List<User> userList = SQLiteUserDao.getInstance(this).queryUser();

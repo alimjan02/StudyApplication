@@ -7,295 +7,327 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layoutAnimation="@anim/layout_animation_vertical"
         android:orientation="vertical">
 
-        <View
-            style="@style/divider_line"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp" />
-
-        <FrameLayout
-            android:id="@+id/user_name_layout"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:orientation="vertical">
 
-            <TextView
-                style="@style/text_17_color_1_style"
-                android:layout_gravity="center_vertical"
-                android:text="@string/name" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/user_name"
-                    style="@style/text_15_color_3_style"
-                    android:text="" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
-                    android:src="@mipmap/common_icon_more" />
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/user_portrait_layout"
+            <FrameLayout
+                android:id="@+id/user_name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end"
+                android:background="@color/white">
+
+                <TextView
+                    style="@style/text_17_color_1_style"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/name" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/user_name"
+                        style="@style/text_15_color_3_style"
+                        android:text="" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
+                        android:src="@mipmap/common_icon_more" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/user_portrait_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|end"
+                    android:background="@color/white"
+                    android:foreground="?selectableItemBackground"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="15dp">
+
+                    <TextView
+                        style="@style/text_17_color_1_style"
+                        android:layout_centerVertical="true"
+                        android:text="@string/head_portrait" />
+
+                    <ImageView
+                        android:id="@+id/arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
+                        android:src="@mipmap/common_icon_more" />
+
+                    <ImageView
+                        android:id="@+id/user_portrait"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/arrow" />
+                </RelativeLayout>
+
+            </FrameLayout>
+
+            <View
+                style="@style/divider_line"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/body_number_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:foreground="?selectableItemBackground"
                 android:paddingBottom="15dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
-                android:paddingTop="15dp">
+                android:paddingTop="14dp">
 
                 <TextView
                     style="@style/text_17_color_1_style"
-                    android:layout_centerVertical="true"
-                    android:text="@string/head_portrait" />
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/body_number" />
 
-                <ImageView
-                    android:id="@+id/arrow"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
-                    android:src="@mipmap/common_icon_more" />
+                    android:layout_gravity="end|center_vertical"
+                    android:gravity="center_vertical">
 
-                <ImageView
-                    android:id="@+id/user_portrait"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toStartOf="@id/arrow" />
-            </RelativeLayout>
+                    <TextView
+                        android:id="@+id/body_number"
+                        style="@style/text_15_color_3_style"
+                        android:text="" />
 
-        </FrameLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:src="@mipmap/common_icon_more" />
 
-        <View
-            style="@style/divider_line"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp" />
+                </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/body_number_layout"
+            </FrameLayout>
+
+            <View
+                style="@style/divider_line"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:foreground="?selectableItemBackground"
-            android:paddingBottom="15dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="14dp">
+            android:orientation="vertical">
 
-            <TextView
-                style="@style/text_17_color_1_style"
-                android:layout_gravity="center_vertical"
-                android:text="@string/body_number" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:id="@+id/user_sex_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:gravity="center_vertical">
+                android:background="@color/white"
+                android:foreground="?selectableItemBackground"
+                android:paddingBottom="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="14dp">
 
                 <TextView
-                    android:id="@+id/body_number"
-                    style="@style/text_15_color_3_style"
-                    android:text="" />
+                    style="@style/text_17_color_1_style"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/sex" />
 
-                <ImageView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:src="@mipmap/common_icon_more" />
+                    android:layout_gravity="end|center_vertical"
+                    android:gravity="center_vertical">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/user_sex"
+                        style="@style/text_15_color_3_style"
+                        android:text="" />
 
-        </FrameLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:src="@mipmap/common_icon_more" />
 
-        <View
-            style="@style/divider_line"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp" />
+                </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/user_sex_layout"
+            </FrameLayout>
+
+            <View
+                style="@style/divider_line"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:foreground="?selectableItemBackground"
-            android:paddingBottom="15dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="14dp">
+            android:orientation="vertical">
 
-            <TextView
-                style="@style/text_17_color_1_style"
-                android:layout_gravity="center_vertical"
-                android:text="@string/sex" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:id="@+id/user_age_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:gravity="center_vertical">
+                android:background="@color/white"
+                android:foreground="?selectableItemBackground"
+                android:paddingBottom="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="14dp">
 
                 <TextView
-                    android:id="@+id/user_sex"
-                    style="@style/text_15_color_3_style"
-                    android:text="" />
+                    style="@style/text_17_color_1_style"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/age" />
 
-                <ImageView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:src="@mipmap/common_icon_more" />
+                    android:layout_gravity="end|center_vertical"
+                    android:gravity="center_vertical">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/user_age"
+                        style="@style/text_15_color_3_style"
+                        android:text="" />
 
-        </FrameLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:src="@mipmap/common_icon_more" />
 
-        <View
-            style="@style/divider_line"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp" />
+                </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/user_age_layout"
+            </FrameLayout>
+
+            <View
+                style="@style/divider_line"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:foreground="?selectableItemBackground"
-            android:paddingBottom="15dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="14dp">
+            android:orientation="vertical">
 
-            <TextView
-                style="@style/text_17_color_1_style"
-                android:layout_gravity="center_vertical"
-                android:text="@string/age" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:id="@+id/user_weight_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:gravity="center_vertical">
+                android:background="@color/white"
+                android:foreground="?selectableItemBackground"
+                android:paddingBottom="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="14dp">
 
                 <TextView
-                    android:id="@+id/user_age"
-                    style="@style/text_15_color_3_style"
-                    android:text="" />
+                    style="@style/text_17_color_1_style"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/weight" />
 
-                <ImageView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:src="@mipmap/common_icon_more" />
+                    android:layout_gravity="end|center_vertical"
+                    android:gravity="center_vertical">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/user_weight"
+                        style="@style/text_15_color_3_style"
+                        android:text="" />
 
-        </FrameLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:src="@mipmap/common_icon_more" />
 
-        <View
-            style="@style/divider_line"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp" />
+                </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/user_weight_layout"
+            </FrameLayout>
+
+            <View
+                style="@style/divider_line"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:foreground="?selectableItemBackground"
-            android:paddingBottom="15dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="14dp">
+            android:orientation="vertical">
 
-            <TextView
-                style="@style/text_17_color_1_style"
-                android:layout_gravity="center_vertical"
-                android:text="@string/weight" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:id="@+id/user_hight_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:gravity="center_vertical">
+                android:background="@color/white"
+                android:foreground="?selectableItemBackground"
+                android:paddingBottom="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="14dp">
 
                 <TextView
-                    android:id="@+id/user_weight"
-                    style="@style/text_15_color_3_style"
-                    android:text="" />
+                    style="@style/text_17_color_1_style"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/hight" />
 
-                <ImageView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:src="@mipmap/common_icon_more" />
+                    android:layout_gravity="end|center_vertical"
+                    android:gravity="center_vertical">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/user_hight"
+                        style="@style/text_15_color_3_style"
+                        android:text="" />
 
-        </FrameLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:src="@mipmap/common_icon_more" />
 
-        <View
-            style="@style/divider_line"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp" />
+                </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/user_hight_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:foreground="?selectableItemBackground"
-            android:paddingBottom="15dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="14dp">
+            </FrameLayout>
 
-            <TextView
-                style="@style/text_17_color_1_style"
-                android:layout_gravity="center_vertical"
-                android:text="@string/hight" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/user_hight"
-                    style="@style/text_15_color_3_style"
-                    android:text="" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:src="@mipmap/common_icon_more" />
-
-            </LinearLayout>
-
-        </FrameLayout>
-
-        <View
-            style="@style/divider_line"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp" />
+            <View
+                style="@style/divider_line"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp" />
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="match_parent"

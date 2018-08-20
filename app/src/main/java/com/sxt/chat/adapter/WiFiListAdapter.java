@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -108,6 +109,7 @@ public class WiFiListAdapter extends BaseExpandableListAdapter {
             lp.height = Px2DpUtil.dip2px(context, 10);
             holder.line.setLayoutParams(lp);
         }
+        convertView.startAnimation(AnimationUtils.loadAnimation(context, R.anim.anim_item_vertical_percent_50));
         return convertView;
     }
 
@@ -158,7 +160,7 @@ public class WiFiListAdapter extends BaseExpandableListAdapter {
         if (result.SSID != null) {
             holder.tvWifiName.setText(result.SSID.replaceAll("\"", ""));
         }
-
+        convertView.startAnimation(AnimationUtils.loadAnimation(context, R.anim.anim_item_vertical_percent_50));
         return convertView;
     }
 

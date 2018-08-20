@@ -9,7 +9,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -62,18 +62,16 @@ public class NormalCardListAdapter extends BaseRecyclerAdapter<RoomInfo> {
             public void onClick(View v) {
                 Intent intent = new Intent(context, RoomDetailActivity.class);
                 intent.putExtra("url", data.get(position).getRoom_url());
-                context.startActivity(intent,
-                        ActivityOptions.makeSceneTransitionAnimation
-                                ((Activity) context, holder.img, "shareView").toBundle());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    context.startActivity(intent,
+                            ActivityOptions.makeSceneTransitionAnimation
+                                    ((Activity) context, holder.img, "shareView").toBundle());
+                } else {
+                    context.startActivity(intent);
+                }
             }
         });
-
-        AlphaAnimation aa1 = new AlphaAnimation(1.0f, 0.1f);
-        aa1.setDuration(500);
-        holder.img.startAnimation(aa1);
-        AlphaAnimation aa = new AlphaAnimation(0.1f, 1.0f);
-        aa.setDuration(500);
-        holder.img.startAnimation(aa);
+        holder.root.startAnimation(AnimationUtils.loadAnimation(context, R.anim.anim_item_horizontal_percent_20));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

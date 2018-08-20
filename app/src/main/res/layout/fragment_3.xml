@@ -19,6 +19,7 @@
             <include layout="@layout/item_no_data" />
 
             <LinearLayout
+                android:layoutAnimation="@anim/layout_animation_vertical"
                 android:id="@+id/line_layout_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
