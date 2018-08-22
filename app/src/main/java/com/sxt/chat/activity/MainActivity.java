@@ -32,7 +32,7 @@ import com.sxt.chat.db.User;
 import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.download.DownloadTask;
 import com.sxt.chat.fragment.ChartFragment;
-import com.sxt.chat.fragment.Fragment2;
+import com.sxt.chat.fragment.GitHubFragment;
 import com.sxt.chat.fragment.HomeFragment;
 import com.sxt.chat.fragment.NewsFragment;
 import com.sxt.chat.json.ResponseInfo;
@@ -99,7 +99,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private void initFragment() {
         Map<Integer, BaseFragment> fragmentMap = new HashMap<>();
         fragmentMap.put(0, new HomeFragment());
-        fragmentMap.put(1, new Fragment2());
+        fragmentMap.put(1, new GitHubFragment());
         fragmentMap.put(2, new ChartFragment());
         fragmentMap.put(3, new NewsFragment());
 

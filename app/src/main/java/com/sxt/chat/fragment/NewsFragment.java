@@ -49,7 +49,7 @@ public class NewsFragment extends LazyFragment implements
 
     @Override
     protected int getDisplayView(LayoutInflater inflater, ViewGroup container) {
-        return R.layout.fragment_4;
+        return R.layout.fragment_news;
     }
 
     @Override
@@ -63,7 +63,6 @@ public class NewsFragment extends LazyFragment implements
                 loadAD();//刷新广告
             }
         });
-        setAdapter();
         swipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -71,17 +70,19 @@ public class NewsFragment extends LazyFragment implements
                 swipeRefreshLayout.setRefreshing(true);//第一次来 并不会调用onRefresh方法  android bug
             }
         });
+        refresh();
     }
 
-    private void setAdapter() {
-        mDataList.clear();
-//        mDataList.addAll(contentList);
+    private void refresh() {
         if (mAdapter == null) {
             mAdapter = new CustomAdapter(activity, mDataList);
             mRecyclerView.setEmptyView(LayoutInflater.from(activity).inflate(R.layout.item_no_data, null, false));
             mRecyclerView.setAdapter(new LinearLayoutManager(activity), mAdapter);
             mRecyclerView.getRecyclerView().setHasFixedSize(true);
+        } else {
+            mAdapter.notifyDataSetChanged(mDataList);
         }
+        mRecyclerView.getRecyclerView().setLayoutAnimation(AnimationUtils.loadLayoutAnimation(activity, R.anim.layout_animation_vertical));
     }
 
     @Override
@@ -112,9 +113,9 @@ public class NewsFragment extends LazyFragment implements
 
     @Override
     public void onNoAD(AdError adError) {
-        swipeRefreshLayout.setRefreshing(false);
         mDataList.clear();
         mAdapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
         Log.i(TAG, String.format("onNoAD, error code: %d, error msg: %s", adError.getErrorCode(), adError.getErrorMsg()));
     }
 
@@ -122,15 +123,12 @@ public class NewsFragment extends LazyFragment implements
     public void onADLoaded(List<NativeExpressADView> adList) {
         Log.i(TAG, "onADLoaded: " + adList.size());
         mAdViewList = adList;
-        setAdapter();
+        mDataList.clear();
         for (int i = 0; i < mAdViewList.size(); i++) {
-//            if (i % 2 == 0) {
             mAdViewPositionMap.put(mAdViewList.get(i), i); // 把每个广告在列表中位置记录下来
             mDataList.add(mAdViewList.get(i));
-//            mAdapter.addADViewToPosition(i, mAdViewList.get(i));
-//            }
         }
-        mAdapter.notifyDataSetChanged();
+        refresh();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -205,8 +203,8 @@ public class NewsFragment extends LazyFragment implements
         // 移除NativeExpressADView的时候是一条一条移除的
         public void removeADView(int position, NativeExpressADView adView) {
             data.remove(position);
-            mAdapter.notifyItemRemoved(position); // position为adView在当前列表中的位置
-            mAdapter.notifyItemRangeChanged(0, data.size());
+            notifyItemRemoved(position); // position为adView在当前列表中的位置
+            notifyItemRangeChanged(0, data.size());
         }
 
         @Override
@@ -239,7 +237,7 @@ public class NewsFragment extends LazyFragment implements
             } else {
                 customViewHolder.title.setText(String.valueOf(data.get(position)));
             }
-            customViewHolder.container.startAnimation(AnimationUtils.loadAnimation(context,R.anim.anim_item_vertical_percent_50));
+            customViewHolder.container.startAnimation(AnimationUtils.loadAnimation(context, R.anim.anim_item_vertical_percent_50));
         }
 
         @NonNull

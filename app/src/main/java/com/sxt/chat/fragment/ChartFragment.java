@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.ViewSwitcher;
 
@@ -39,7 +40,7 @@ public class ChartFragment extends LazyFragment {
     int[] lineColor;
     int[] shaderColor;
     private ViewSwitcher viewSwitcher;
-    private LinearLayout bottomListRoot;
+    private LinearLayout lineLayoutList;
     private List<ChartBean> chartBeanList0;
     private List<ChartBean> chartBeanList;
     private NestedScrollView scrollView;
@@ -48,14 +49,14 @@ public class ChartFragment extends LazyFragment {
 
     @Override
     protected int getDisplayView(LayoutInflater inflater, ViewGroup container) {
-        return R.layout.fragment_3;
+        return R.layout.fragment_chart;
     }
 
     @Override
     protected void initView() {
         scrollView = contentView.findViewById(R.id.scrollview);
         viewSwitcher = contentView.findViewById(R.id.viewSwitcher);
-        bottomListRoot = (LinearLayout) contentView.findViewById(R.id.line_layout_list);
+        lineLayoutList = (LinearLayout) contentView.findViewById(R.id.line_layout_list);
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorAccent, R.color.main_blue, R.color.main_green);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -64,9 +65,10 @@ public class ChartFragment extends LazyFragment {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        bottomListRoot.removeAllViews();
-                        init();
+                        lineLayoutList.removeAllViews();
                         swipeRefreshLayout.setRefreshing(false);
+                        lineLayoutList.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(activity, R.anim.layout_animation_vertical));
+                        init();
                     }
                 }, 2000);
             }
@@ -117,7 +119,7 @@ public class ChartFragment extends LazyFragment {
     @SuppressLint("CutPasteId")
     private void drawCircleProgress() {
         View view = View.inflate(activity, R.layout.item_circle_progress, null);
-        bottomListRoot.addView(view);
+        lineLayoutList.addView(view);
         CircleProgressView itemView = (CircleProgressView) view.findViewById(R.id.chart_circle_progress);
         itemView
                 .setDuration(2000)
@@ -131,8 +133,8 @@ public class ChartFragment extends LazyFragment {
     //柱状图-------------------------------------------------------------------------------------
     private void drawBar() {
         View barView = View.inflate(activity, R.layout.item_chart_bar, null);
-        bottomListRoot.addView(barView);
-        barView.setTag(bottomListRoot.getChildCount() - 1);
+        lineLayoutList.addView(barView);
+        barView.setTag(lineLayoutList.getChildCount() - 1);
 
         final ChartBar chartBar = (ChartBar) barView.findViewById(R.id.chartbar);
         //设置柱状图的数据源
@@ -183,7 +185,7 @@ public class ChartFragment extends LazyFragment {
     private void drawPie() {
         //底部的曲线图
         View childAt = View.inflate(activity, R.layout.item_chart_pie, null);
-        bottomListRoot.addView(childAt);
+        lineLayoutList.addView(childAt);
         ChartPie chartPie = childAt.findViewById(R.id.chart_pie);
         chartPie.setData(pieBeanList).start();
 
@@ -194,7 +196,7 @@ public class ChartFragment extends LazyFragment {
     private void drawLine() {
         //底部的曲线图
         View childAt = View.inflate(activity, R.layout.item_chart_line, null);
-        bottomListRoot.addView(childAt);
+        lineLayoutList.addView(childAt);
         BeizerCurveLine chartLine = (BeizerCurveLine) childAt.findViewById(R.id.chart_line);
         BeizerCurveLine.CurveLineBuilder builder = new BeizerCurveLine.CurveLineBuilder();
         List<ChartBean> chartBeans = new ArrayList<>();

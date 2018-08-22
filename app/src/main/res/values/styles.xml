@@ -22,7 +22,7 @@
         <item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorPrimary</item>
     </style>
 
-    <style name="FullScreenTheme" parent="AppTheme">
+    <style name="FullScreenTheme" parent="BaseTheme">
         <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowTranslucentNavigation" tools:targetApi="kitkat">true</item>

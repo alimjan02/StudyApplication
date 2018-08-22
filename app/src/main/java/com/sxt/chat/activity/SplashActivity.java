@@ -62,7 +62,7 @@ public class SplashActivity extends BaseActivity implements SplashADListener {
             loadAD();
         }
         if (!getIntent().getBooleanExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, true)) {
-            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             findViewById(R.id.splash_holder).setVisibility(View.GONE);
         }
     }
@@ -166,6 +166,7 @@ public class SplashActivity extends BaseActivity implements SplashADListener {
     @Override
     public void onADPresent() {//广告展示
         Log.i("AD_DEMO", "SplashADPresent");
+        skipView.setVisibility(View.VISIBLE);
         findViewById(R.id.splash_holder).setVisibility(View.GONE);// 广告展示后一定要把预设的开屏图片隐藏起来
     }
 

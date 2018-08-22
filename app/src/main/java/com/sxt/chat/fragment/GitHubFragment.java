@@ -20,14 +20,14 @@ import com.sxt.chat.base.LazyFragment;
  * Created by 11837 on 2018/4/22.
  */
 
-public class Fragment2 extends LazyFragment {
+public class GitHubFragment extends LazyFragment {
 
     private final String GIT_HUB_URL = "https://github.com/good-good-study";
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected int getDisplayView(LayoutInflater inflater, ViewGroup container) {
-        return R.layout.fragment_2;
+        return R.layout.fragment_github;
     }
 
     @Override
