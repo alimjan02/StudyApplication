@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+    <!--fitsSystemWindows 设置为true后,window窗体上的view设置padding已经无效了,包含Dialog,popubWindow和自定义Toast等,,, 内容里的padding可以正常使用-->
 
     <LinearLayout
         android:layout_width="match_parent"

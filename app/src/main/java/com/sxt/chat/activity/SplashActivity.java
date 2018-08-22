@@ -25,6 +25,7 @@ import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
 import com.qq.e.comm.util.AdError;
 import com.sxt.chat.R;
+import com.sxt.chat.base.BaseActivity;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.utils.Constants;
 
@@ -36,7 +37,7 @@ import java.util.List;
  * <p>
  * 在调用SDK之前，如果您的App的targetSDKVersion >= 23，那么一定要把"READ_PHONE_STATE"、"WRITE_EXTERNAL_STORAGE"、"ACCESS_FINE_LOCATION"这几个权限申请到，否则SDK将不会工作。
  */
-public class SplashActivity extends HeaderActivity implements SplashADListener {
+public class SplashActivity extends BaseActivity implements SplashADListener {
 
     private Handler handler = new Handler();
     private SplashAD splashAD;
@@ -51,7 +52,6 @@ public class SplashActivity extends HeaderActivity implements SplashADListener {
         super.onCreate(savedInstanceState);
         overridePendingTransition(0, 0);
         setContentView(R.layout.activity_splash);
-        showToolbar(false);
         container = (ViewGroup) this.findViewById(R.id.splash_container);
         skipView = (TextView) findViewById(R.id.skip_view);
         // 如果targetSDKVersion >= 23，就要申请好权限。如果您的App没有适配到Android6.0（即targetSDKVersion < 23），那么只需要在这里直接调用fetchSplashAD接口。
