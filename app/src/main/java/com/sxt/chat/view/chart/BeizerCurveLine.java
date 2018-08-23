@@ -23,8 +23,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+
 import com.sxt.chat.R;
 import com.sxt.chat.utils.DateFormatUtil;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -848,15 +850,24 @@ public class BeizerCurveLine extends BaseChart {
     @Override
     public void start() {
         super.start();
-        if (isCover(BeizerCurveLine.this)) {
-            startDraw();
-        } else {
-            this.post(new Runnable() {//可以避免页面未初始化完成造成的 空白
-                @Override
-                public void run() {//可以避免页面未初始化完成造成的 空白
-                    if (isCover(BeizerCurveLine.this)) {
-                        startDraw();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isCover(BeizerCurveLine.this)) {
+                startDraw();
+            } else {
+                this.post(new Runnable() {//可以避免页面未初始化完成造成的 空白
+                    @Override
+                    public void run() {//可以避免页面未初始化完成造成的 空白
+                        if (isCover(BeizerCurveLine.this)) {
+                            startDraw();
+                        }
                     }
+                });
+            }
+        } else {
+            this.post(new Runnable() {
+                @Override
+                public void run() {
+                    startDraw();
                 }
             });
         }

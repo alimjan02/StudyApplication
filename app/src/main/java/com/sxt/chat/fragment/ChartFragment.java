@@ -91,11 +91,13 @@ public class ChartFragment extends LazyFragment {
     }
 
     private void init() {
-        if (onScrollChangeListener == null) {
-            onScrollChangeListener = new LineOnScrollChangeListener();
-            scrollView.setOnScrollChangeListener(onScrollChangeListener);
-        } else {
-            onScrollChangeListener.clearLines();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (onScrollChangeListener == null) {
+                onScrollChangeListener = new LineOnScrollChangeListener();
+                scrollView.setOnScrollChangeListener(onScrollChangeListener);
+            } else {
+                onScrollChangeListener.clearLines();
+            }
         }
         for (int i = 0; i < 20; i++) {
             if (i == 0) {
@@ -144,7 +146,11 @@ public class ChartFragment extends LazyFragment {
                         new String[]{getString(R.string.string_label_smzl), getString(R.string.string_label_smzl_bad), getString(R.string.string_label_smzl_good)},
                         new int[]{lineColor[0], lineColor[1], lineColor[3]})
                 .start();
-        onScrollChangeListener.addLine(chartBar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            onScrollChangeListener.addLine(chartBar);
+        } else {
+            chartBar.start();
+        }
     }
 
     private void initData() {
@@ -189,8 +195,12 @@ public class ChartFragment extends LazyFragment {
         ChartPie chartPie = childAt.findViewById(R.id.chart_pie);
         chartPie.setData(pieBeanList).start();
 
-        //将当前曲线添加到ScrollView的滑动监听中
-        onScrollChangeListener.addLine(chartPie);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //将当前曲线添加到ScrollView的滑动监听中
+            onScrollChangeListener.addLine(chartPie);
+        } else {
+            chartPie.start();
+        }
     }
 
     private void drawLine() {
@@ -216,7 +226,11 @@ public class ChartFragment extends LazyFragment {
         builder.builder(chartBeans, lineColor[0], shaderColor[0]);
 
         builder.build(chartLine);
-        //将当前曲线添加到ScrollView的滑动监听中
-        onScrollChangeListener.addLine(chartLine);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //将当前曲线添加到ScrollView的滑动监听中
+            onScrollChangeListener.addLine(chartLine);
+        } else {
+            chartLine.start();
+        }
     }
 }

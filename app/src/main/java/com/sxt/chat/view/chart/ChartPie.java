@@ -16,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
-
 import com.sxt.chat.R;
 
 import java.util.HashMap;
@@ -394,15 +393,24 @@ public class ChartPie extends BaseChart {
 
     public void start() {
         super.start();
-        if (isCover(ChartPie.this)) {
-            startAnimator();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isCover(ChartPie.this)) {
+                startAnimator();
+            } else {
+                this.post(new Runnable() {//可以避免页面未初始化完成造成的 空白
+                    @Override
+                    public void run() {
+                        if (isCover(ChartPie.this)) {
+                            startAnimator();
+                        }
+                    }
+                });
+            }
         } else {
-            this.post(new Runnable() {//可以避免页面未初始化完成造成的 空白
+            this.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (isCover(ChartPie.this)) {
-                        startAnimator();
-                    }
+                    startAnimator();
                 }
             });
         }

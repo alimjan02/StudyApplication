@@ -20,8 +20,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+
 import com.sxt.chat.R;
 import com.sxt.chat.utils.DateFormatUtil;
+
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +111,7 @@ public class ChartBar extends BaseChart {
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
             startX = getPaddingLeft() + basePadding;
-            endX = getMeasuredWidth() - getPaddingRight()-basePadding;
+            endX = getMeasuredWidth() - getPaddingRight() - basePadding;
             startY = getMeasuredHeight() - getPaddingBottom() - basePadding * 3;
             endY = getPaddingTop() + basePadding * 4;
         }
@@ -437,15 +439,24 @@ public class ChartBar extends BaseChart {
 
     public void start() {
         super.start();
-        if (isCover(ChartBar.this)) {
-            startAnimator();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isCover(ChartBar.this)) {
+                startAnimator();
+            } else {
+                this.post(new Runnable() {//可以避免页面未初始化完成造成的 空白
+                    @Override
+                    public void run() {
+                        if (isCover(ChartBar.this)) {
+                            startAnimator();
+                        }
+                    }
+                });
+            }
         } else {
             this.post(new Runnable() {//可以避免页面未初始化完成造成的 空白
                 @Override
                 public void run() {
-                    if (isCover(ChartBar.this)) {
-                        startAnimator();
-                    }
+                    startAnimator();
                 }
             });
         }
