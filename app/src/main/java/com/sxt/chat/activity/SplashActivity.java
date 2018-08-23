@@ -188,6 +188,11 @@ public class SplashActivity extends BaseActivity implements SplashADListener {
     }
 
     @Override
+    public void onADExposure() {
+
+    }
+
+    @Override
     public void onADDismissed() {
         Log.i("AD_DEMO", "SplashADDismissed");
         next();
