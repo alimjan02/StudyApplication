@@ -198,7 +198,6 @@
 
 #Bomb混淆打包规则
 -ignorewarnings
-
 -keepattributes Signature,*Annotation*
 
 # keep BmobSDK
