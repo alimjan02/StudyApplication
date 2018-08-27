@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
+import com.sxt.chat.ar.HelloArActivity;
 import com.sxt.chat.base.BaseFragment;
 import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.db.User;
@@ -81,6 +82,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             findViewById(R.id.exoplayer).setOnClickListener(this);
             findViewById(R.id.wifi).setOnClickListener(this);
             findViewById(R.id.notifycations_demo).setOnClickListener(this);
+            findViewById(R.id.ar).setOnClickListener(this);
             findViewById(R.id.change_login).setOnClickListener(this);
             userIcon = (ImageView) findViewById(R.id.user_icon);
             userInfo = (TextView) findViewById(R.id.user_info);
@@ -253,6 +255,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 break;
                 case R.id.notifycations_demo:
                 startActivity(new Intent(this, NotifycationActivity.class));
+                break;
+                case R.id.ar:
+                startActivity(new Intent(this, HelloArActivity.class));
                 break;
         }
     }

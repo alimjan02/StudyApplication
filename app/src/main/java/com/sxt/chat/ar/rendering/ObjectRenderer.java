@@ -21,9 +21,6 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
 
-
-import com.sxt.chat.R;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -53,7 +50,12 @@ public class ObjectRenderer {
     Grid
   }
 
+  // Shader names.
+  private static final String VERTEX_SHADER_NAME = "shaders/object.vert";
+  private static final String FRAGMENT_SHADER_NAME = "shaders/object.frag";
+
   private static final int COORDS_PER_VERTEX = 3;
+  private static final float[] DEFAULT_COLOR = new float[] {0f, 0f, 0f, 0f};
 
   // Note: the last component must be zero to avoid applying the translational part of the matrix.
   private static final float[] LIGHT_DIRECTION = new float[] {0.250f, 0.866f, 0.433f, 0.0f};
@@ -88,6 +90,12 @@ public class ObjectRenderer {
   // Shader location: material properties.
   private int materialParametersUniform;
 
+  // Shader location: color correction property
+  private int colorCorrectionParameterUniform;
+
+  // Shader location: object color property (to change the primary color of the object).
+  private int colorUniform;
+
   private BlendMode blendMode = null;
 
   // Temporary matrices allocated here to reduce number of allocations for each frame.
@@ -112,6 +120,36 @@ public class ObjectRenderer {
    */
   public void createOnGlThread(Context context, String objAssetName, String diffuseTextureAssetName)
       throws IOException {
+    final int vertexShader =
+        ShaderUtil.loadGLShader(TAG, context, GLES20.GL_VERTEX_SHADER, VERTEX_SHADER_NAME);
+    final int fragmentShader =
+        ShaderUtil.loadGLShader(TAG, context, GLES20.GL_FRAGMENT_SHADER, FRAGMENT_SHADER_NAME);
+
+    program = GLES20.glCreateProgram();
+    GLES20.glAttachShader(program, vertexShader);
+    GLES20.glAttachShader(program, fragmentShader);
+    GLES20.glLinkProgram(program);
+    GLES20.glUseProgram(program);
+
+    ShaderUtil.checkGLError(TAG, "Program creation");
+
+    modelViewUniform = GLES20.glGetUniformLocation(program, "u_ModelView");
+    modelViewProjectionUniform = GLES20.glGetUniformLocation(program, "u_ModelViewProjection");
+
+    positionAttribute = GLES20.glGetAttribLocation(program, "a_Position");
+    normalAttribute = GLES20.glGetAttribLocation(program, "a_Normal");
+    texCoordAttribute = GLES20.glGetAttribLocation(program, "a_TexCoord");
+
+    textureUniform = GLES20.glGetUniformLocation(program, "u_Texture");
+
+    lightingParametersUniform = GLES20.glGetUniformLocation(program, "u_LightingParameters");
+    materialParametersUniform = GLES20.glGetUniformLocation(program, "u_MaterialParameters");
+    colorCorrectionParameterUniform =
+        GLES20.glGetUniformLocation(program, "u_ColorCorrectionParameters");
+    colorUniform = GLES20.glGetUniformLocation(program, "u_ObjColor");
+
+    ShaderUtil.checkGLError(TAG, "Program parameters");
+
     // Read the texture.
     Bitmap textureBitmap =
         BitmapFactory.decodeStream(context.getAssets().open(diffuseTextureAssetName));
@@ -192,33 +230,6 @@ public class ObjectRenderer {
 
     ShaderUtil.checkGLError(TAG, "OBJ buffer load");
 
-    final int vertexShader =
-        ShaderUtil.loadGLShader(TAG, context, GLES20.GL_VERTEX_SHADER, R.raw.object_vertex);
-    final int fragmentShader =
-        ShaderUtil.loadGLShader(TAG, context, GLES20.GL_FRAGMENT_SHADER, R.raw.object_fragment);
-
-    program = GLES20.glCreateProgram();
-    GLES20.glAttachShader(program, vertexShader);
-    GLES20.glAttachShader(program, fragmentShader);
-    GLES20.glLinkProgram(program);
-    GLES20.glUseProgram(program);
-
-    ShaderUtil.checkGLError(TAG, "Program creation");
-
-    modelViewUniform = GLES20.glGetUniformLocation(program, "u_ModelView");
-    modelViewProjectionUniform = GLES20.glGetUniformLocation(program, "u_ModelViewProjection");
-
-    positionAttribute = GLES20.glGetAttribLocation(program, "a_Position");
-    normalAttribute = GLES20.glGetAttribLocation(program, "a_Normal");
-    texCoordAttribute = GLES20.glGetAttribLocation(program, "a_TexCoord");
-
-    textureUniform = GLES20.glGetUniformLocation(program, "u_Texture");
-
-    lightingParametersUniform = GLES20.glGetUniformLocation(program, "u_LightingParameters");
-    materialParametersUniform = GLES20.glGetUniformLocation(program, "u_MaterialParameters");
-
-    ShaderUtil.checkGLError(TAG, "Program parameters");
-
     Matrix.setIdentityM(modelMatrix, 0);
   }
 
@@ -236,7 +247,7 @@ public class ObjectRenderer {
    *
    * @param modelMatrix A 4x4 model-to-world transformation matrix, stored in column-major order.
    * @param scaleFactor A separate scaling factor to apply before the {@code modelMatrix}.
-   * @see android.opengl.Matrix
+   * @see Matrix
    */
   public void updateModelMatrix(float[] modelMatrix, float scaleFactor) {
     float[] scaleMatrix = new float[16];
@@ -274,9 +285,17 @@ public class ObjectRenderer {
    * @see #setBlendMode(BlendMode)
    * @see #updateModelMatrix(float[], float)
    * @see #setMaterialProperties(float, float, float, float)
-   * @see android.opengl.Matrix
+   * @see Matrix
    */
-  public void draw(float[] cameraView, float[] cameraPerspective, float lightIntensity) {
+  public void draw(float[] cameraView, float[] cameraPerspective, float[] colorCorrectionRgba) {
+    draw(cameraView, cameraPerspective, colorCorrectionRgba, DEFAULT_COLOR);
+  }
+
+  public void draw(
+      float[] cameraView,
+      float[] cameraPerspective,
+      float[] colorCorrectionRgba,
+      float[] objColor) {
 
     ShaderUtil.checkGLError(TAG, "Before draw");
 
@@ -295,7 +314,11 @@ public class ObjectRenderer {
         viewLightDirection[0],
         viewLightDirection[1],
         viewLightDirection[2],
-        lightIntensity);
+        1.f);
+    GLES20.glUniform4fv(colorCorrectionParameterUniform, 1, colorCorrectionRgba, 0);
+
+    // Set the object color property.
+    GLES20.glUniform4fv(colorUniform, 1, objColor, 0);
 
     // Set the object material properties.
     GLES20.glUniform4f(materialParametersUniform, ambient, diffuse, specular, specularPower);
