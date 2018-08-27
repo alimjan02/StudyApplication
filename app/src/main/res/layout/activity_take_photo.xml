@@ -142,7 +142,7 @@
         android:layout_height="wrap_content"
         android:foreground="?selectableItemBackgroundBorderless"
         android:padding="16dp"
-        android:src="@drawable/ic_arrow_back_black_24dp" />
+        android:src="@drawable/ic_arrow_back_white_24dp" />
 
     <LinearLayout
         android:id="@+id/result_layout"

@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/crop_img" />
             <option value="$PROJECT_DIR$/refresh-layout" />
+            <option value="$PROJECT_DIR$/zxing-android-embedded" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

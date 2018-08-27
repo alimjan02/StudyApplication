@@ -77,20 +77,6 @@
         android:text="@string/wifi" />
 
     <TextView
-        android:id="@+id/normal_settings"
-        style="@style/text_15_color_1_style"
-        android:layout_width="match_parent"
-        android:layout_marginTop="15dp"
-        android:background="?android:selectableItemBackground"
-        android:drawablePadding="10dp"
-        android:drawableStart="@drawable/ic_vector_settings_24dp"
-        android:gravity="center_vertical"
-        android:paddingBottom="8dp"
-        android:paddingStart="15dp"
-        android:paddingTop="8dp"
-        android:text="@string/nomal_settings" />
-
-    <TextView
         android:id="@+id/notifycations_demo"
         style="@style/text_15_color_1_style"
         android:layout_width="match_parent"
@@ -102,8 +88,7 @@
         android:paddingBottom="8dp"
         android:paddingStart="15dp"
         android:paddingTop="8dp"
-        android:text="@string/notifycations_demo"
-        android:visibility="gone" />
+        android:text="@string/scan_2_scan" />
 
     <TextView
         android:id="@+id/ar"
@@ -118,6 +103,20 @@
         android:paddingStart="15dp"
         android:paddingTop="8dp"
         android:text="@string/ar"/>
+
+    <TextView
+        android:id="@+id/normal_settings"
+        style="@style/text_15_color_1_style"
+        android:layout_width="match_parent"
+        android:layout_marginTop="15dp"
+        android:background="?android:selectableItemBackground"
+        android:drawablePadding="10dp"
+        android:drawableStart="@drawable/ic_vector_settings_24dp"
+        android:gravity="center_vertical"
+        android:paddingBottom="8dp"
+        android:paddingStart="15dp"
+        android:paddingTop="8dp"
+        android:text="@string/nomal_settings" />
 
     <View
         android:layout_width="wrap_content"

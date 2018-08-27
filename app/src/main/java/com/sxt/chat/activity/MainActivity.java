@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
+import com.journeyapps.barcodescanner.CaptureActivity;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.ar.HelloArActivity;
@@ -253,10 +254,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             case R.id.exoplayer:
                 startActivity(new Intent(this, VideoExoPlayerActivity.class));
                 break;
-                case R.id.notifycations_demo:
-                startActivity(new Intent(this, NotifycationActivity.class));
+            case R.id.notifycations_demo:
+                startActivity(new Intent(this, CaptureActivity.class));
+//                startActivity(new Intent(this, NotifycationActivity.class));
                 break;
-                case R.id.ar:
+            case R.id.ar:
                 startActivity(new Intent(this, HelloArActivity.class));
                 break;
         }

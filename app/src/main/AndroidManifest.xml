@@ -105,7 +105,8 @@
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="locked" />
+            android:screenOrientation="locked"
+            android:theme="@style/FullScreenTheme" />
         <activity
             android:name=".activity.BasicInfoActivity"
             android:configChanges="orientation|screenSize" />

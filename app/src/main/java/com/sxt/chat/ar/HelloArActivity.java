@@ -19,20 +19,13 @@ package com.sxt.chat.ar;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.design.widget.BaseTransientBottomBar;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.Camera;
-import com.google.ar.core.Config;
 import com.google.ar.core.Frame;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
@@ -51,7 +44,6 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 import com.sxt.chat.R;
 import com.sxt.chat.ar.helpers.CameraPermissionHelper;
 import com.sxt.chat.ar.helpers.DisplayRotationHelper;
-import com.sxt.chat.ar.helpers.FullScreenHelper;
 import com.sxt.chat.ar.helpers.SnackbarHelper;
 import com.sxt.chat.ar.helpers.TapHelper;
 import com.sxt.chat.ar.rendering.BackgroundRenderer;
@@ -62,7 +54,6 @@ import com.sxt.chat.base.BaseActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -93,7 +84,7 @@ public class HelloArActivity extends BaseActivity implements GLSurfaceView.Rende
 
     // Temporary matrix allocated here to reduce number of allocations for each frame.
     private final float[] anchorMatrix = new float[16];
-    private static final float[] DEFAULT_COLOR = new float[] {0f, 0f, 0f, 0f};
+    private static final float[] DEFAULT_COLOR = new float[]{0f, 0f, 0f, 0f};
 
     // Anchors created from taps used for object placing with a given color.
     private static class ColoredAnchor {
@@ -111,6 +102,7 @@ public class HelloArActivity extends BaseActivity implements GLSurfaceView.Rende
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(0, 0);
         setContentView(R.layout.activity_ar_layout);
         surfaceView = findViewById(R.id.surfaceview);
         displayRotationHelper = new DisplayRotationHelper(/*context=*/ this);
@@ -227,7 +219,9 @@ public class HelloArActivity extends BaseActivity implements GLSurfaceView.Rende
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus);
+        if (hasFocus) {
+            initWindowStyle();
+        }
     }
 
     @Override
@@ -262,22 +256,19 @@ public class HelloArActivity extends BaseActivity implements GLSurfaceView.Rende
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        // Clear screen to notify driver it should not load any pixels from previous frame.
+        // 清除屏幕以通知驱动程序它不应加载前一帧的任何内容。
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         if (session == null) {
             return;
         }
-        // Notify ARCore session that the view size changed so that the perspective matrix and
-        // the video background can be properly adjusted.
+        // 通知ARCore会话视图大小已更改，以便可以正确调整透视矩阵和视频背景。
         displayRotationHelper.updateSessionIfNeeded(session);
 
         try {
             session.setCameraTextureName(backgroundRenderer.getTextureId());
 
-            // Obtain the current frame from ARSession. When the configuration is set to
-            // UpdateMode.BLOCKING (it is by default), this will throttle the rendering to the
-            // camera framerate.
+            //从ARSession获取当前帧。当配置设置为// UpdateMode.BLOCKING（默认情况下）时，这会将渲染限制为//摄像机帧速率
             Frame frame = session.update();
             Camera camera = frame.getCamera();
 
@@ -292,27 +283,24 @@ public class HelloArActivity extends BaseActivity implements GLSurfaceView.Rende
                 return;
             }
 
-            // Get projection matrix.
+            // 获取投影矩阵
             float[] projmtx = new float[16];
             camera.getProjectionMatrix(projmtx, 0, 0.1f, 100.0f);
 
-            // Get camera matrix and draw.
+            // 获取相机矩阵并绘制
             float[] viewmtx = new float[16];
             camera.getViewMatrix(viewmtx, 0);
 
-            // Compute lighting from average intensity of the image.
-            // The first three components are color scaling factors.
-            // The last one is the average pixel intensity in gamma space.
+            // //根据图像的平均强度计算光照。 //前三个组件是颜色缩放因子。 //最后一个是伽马空间中的平均像素强度.
             final float[] colorCorrectionRgba = new float[4];
             frame.getLightEstimate().getColorCorrection(colorCorrectionRgba, 0);
 
-            // Visualize tracked points.
+            // 可视化跟踪点。
             PointCloud pointCloud = frame.acquirePointCloud();
             pointCloudRenderer.update(pointCloud);
             pointCloudRenderer.draw(viewmtx, projmtx);
 
-            // Application is responsible for releasing the point cloud resources after
-            // using it.
+            //使用之后释放资源。
             pointCloud.release();
 
             // Check if we detected at least one plane. If so, hide the loading message.
@@ -379,9 +367,9 @@ public class HelloArActivity extends BaseActivity implements GLSurfaceView.Rende
                     // for AR_TRACKABLE_PLANE, it's green color.
                     float[] objColor;
                     if (trackable instanceof Point) {
-                        objColor = new float[] {66.0f, 133.0f, 244.0f, 255.0f};
+                        objColor = new float[]{66.0f, 133.0f, 244.0f, 255.0f};
                     } else if (trackable instanceof Plane) {
-                        objColor = new float[] {139.0f, 195.0f, 74.0f, 255.0f};
+                        objColor = new float[]{139.0f, 195.0f, 74.0f, 255.0f};
                     } else {
                         objColor = DEFAULT_COLOR;
                     }

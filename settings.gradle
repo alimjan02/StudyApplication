@@ -1,1 +1,1 @@
-include ':app', ':refresh-layout', ':crop_img'
+include ':app', ':refresh-layout', ':crop_img',':zxing-android-embedded'

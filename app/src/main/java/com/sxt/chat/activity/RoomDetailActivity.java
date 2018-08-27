@@ -33,7 +33,7 @@ public class RoomDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_share_view);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("房间详情");
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         setSupportActionBar(toolbar);
         //让点击导航的逻辑箭头与后键相同，手动finish掉 没有动画效果
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
