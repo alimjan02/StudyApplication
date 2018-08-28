@@ -140,4 +140,10 @@ dependencies {
     implementation project(':crop_img')
     implementation files('libs/GDTUnionSDK.4.19.573.min.jar')
     implementation project(':zxing-android-embedded')
+
+    //google VR
+    implementation 'com.google.android.exoplayer:extension-gvr:2.6.1'
+    implementation 'com.google.vr:sdk-base:1.160.0'
+    implementation 'com.google.vr:sdk-common:1.160.0'
+    implementation 'com.google.vr:sdk-controller:1.160.0'
 }

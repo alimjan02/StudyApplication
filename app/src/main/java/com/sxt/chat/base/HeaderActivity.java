@@ -37,10 +37,7 @@ public class HeaderActivity extends BaseActivity {
     private void initView() {
         RootView = LayoutInflater.from(this).inflate(R.layout.activity_header, null);
         appBarLayout = (AppBarLayout) RootView.findViewById(R.id.app_bar_layout);
-        toolbar = (Toolbar) RootView.findViewById(R.id.toolbar);
         setToolbar();
-        title = (TextView) toolbar.findViewById(R.id.title);
-        rightContainer = (FrameLayout) toolbar.findViewById(R.id.right_container);
     }
 
     @Override
@@ -93,7 +90,7 @@ public class HeaderActivity extends BaseActivity {
 
     public void setToolbarNavigationIcon(int resId) {
         if (this.toolbar != null) {
-            this.toolbar.setNavigationIcon(R.mipmap.common_icon_more);
+            this.toolbar.setNavigationIcon(resId);
         }
     }
 
@@ -120,12 +117,16 @@ public class HeaderActivity extends BaseActivity {
     }
 
     private void setToolbar() {
+        toolbar = (Toolbar) RootView.findViewById(R.id.toolbar);
+        title = (TextView) toolbar.findViewById(R.id.title);
+        rightContainer = (FrameLayout) toolbar.findViewById(R.id.right_container);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
         setSupportActionBar(toolbar);//代替原来的ActionBar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);//隐藏ToolBar自带的Title
+        setToolbarNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
     }
 
     public void showToolbarBack(boolean showBack) {

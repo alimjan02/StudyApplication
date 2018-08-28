@@ -33,6 +33,8 @@
         <item name="android:windowBackground">@mipmap/splash_holder</item>
     </style>
 
+    <style name="VrTheme" parent="android:Theme.Material" tools:targetApi="lollipop" />
+
     <style name="PopContextMenu" parent="@android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>

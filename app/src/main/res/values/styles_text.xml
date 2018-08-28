@@ -170,4 +170,19 @@
         <item name="android:textColor">@color/main_orange</item>
     </style>
 
+    <!--menu样式-->
+    <style name="menu_style">
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColor">@color/text_color_1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingTop">8dp</item>
+    </style>
+
 </resources>

@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
+import com.google.zxing.client.android.Intents;
 import com.journeyapps.barcodescanner.CaptureActivity;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
@@ -43,6 +44,7 @@ import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.NetworkUtils;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransform;
+import com.sxt.chat.vr.video360.VideoActivity;
 import com.sxt.chat.ws.BmobRequest;
 
 import java.util.HashMap;
@@ -84,6 +86,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             findViewById(R.id.wifi).setOnClickListener(this);
             findViewById(R.id.notifycations_demo).setOnClickListener(this);
             findViewById(R.id.ar).setOnClickListener(this);
+            findViewById(R.id.vr).setOnClickListener(this);
             findViewById(R.id.change_login).setOnClickListener(this);
             userIcon = (ImageView) findViewById(R.id.user_icon);
             userInfo = (TextView) findViewById(R.id.user_info);
@@ -255,11 +258,18 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 startActivity(new Intent(this, VideoExoPlayerActivity.class));
                 break;
             case R.id.notifycations_demo:
-                startActivity(new Intent(this, CaptureActivity.class));
+                Intent intent = new Intent(this, CaptureActivity.class);
+                intent.setAction(Intents.Scan.ACTION);
+                intent.putExtra(Intents.Scan.FORMATS, Intents.Scan.QR_CODE_MODE);
+                startActivity(intent);
 //                startActivity(new Intent(this, NotifycationActivity.class));
                 break;
             case R.id.ar:
                 startActivity(new Intent(this, HelloArActivity.class));
+                break;
+
+            case R.id.vr:
+                startActivity(new Intent(this, VideoActivity.class));
                 break;
         }
     }

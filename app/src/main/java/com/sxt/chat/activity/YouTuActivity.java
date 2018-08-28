@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.steelkiwi.cropiwa.util.ImageUriUtil;
+import com.steelkiwi.cropiwa.util.UriUtil;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.json.OCRObject;
@@ -166,7 +166,7 @@ public class YouTuActivity extends HeaderActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_GALLERY) {
                 if (data != null && data.getData() != null) {
-                    String path = ImageUriUtil.uri2Path(this, data.getData());
+                    String path = UriUtil.uri2Path(this, data.getData());
                     if (path != null) {
                         File file = new File(path);
                         if (file.exists()) {
@@ -184,7 +184,7 @@ public class YouTuActivity extends HeaderActivity {
                 if (data != null) {
                     Uri uri = data.getParcelableExtra(CropActivity.CROP_IMG_URI);
                     if (uri != null) {
-                        startCardOCR(ImageUriUtil.uri2Path(this, uri));
+                        startCardOCR(UriUtil.uri2Path(this, uri));
                     }
                 }
             } else if (requestCode == REQUEST_CODE_TAKE_PHOTO) {

@@ -16,6 +16,7 @@
     <string name="scan_2_scan">扫一扫</string>
     <string name="ocr_scan">腾讯优图</string>
     <string name="ar">ARCore</string>
+    <string name="vr">VR360°</string>
     <string name="ocr_scan_id_card">证件识别</string>
     <string name="exoplayer">视频专区</string>
     <string name="change_login">切换账号</string>
@@ -232,5 +233,20 @@
     <string name="noti2_title">Second notification</string>
     <string name="secondary1_body">Notification body text.</string>
     <string name="noti_channel_second">Secondary Channel</string>
+
+
+    <string name="enter_vr_label">Enter VR mode</string>
+    <string name="exit_vr_label">Exit VR mode</string>
+    <string name="pause_label">Pause video</string>
+    <string name="permission_warning">This app will not run without permission to read from storage. Click to enable permission.</string>
+    <string name="play_label">Play video</string>
+
+    <string name="drm_error_not_supported">Protected content not supported on API levels below 18</string>
+    <string name="drm_error_unsupported_scheme">This device does not support the required DRM scheme</string>
+    <string name="drm_error_unknown">An unknown DRM error occurred</string>
+    <string name="decoder_init_error">Decoder initialization error</string>
+    <string name="playback_error">Cannot play video</string>
+    <string name="error_creating_context">Could not create secure context</string>
+
 
 </resources>

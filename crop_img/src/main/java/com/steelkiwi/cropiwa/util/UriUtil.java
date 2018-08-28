@@ -14,7 +14,7 @@ import android.provider.MediaStore;
  * Created by izhaohu on 2018/6/6.
  */
 
-public class ImageUriUtil {
+public class UriUtil {
 
     @SuppressLint("NewApi")
     public static String uri2Path(final Context context, final Uri uri) {
