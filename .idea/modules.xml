@@ -7,7 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/crop_img/crop_img.iml" filepath="$PROJECT_DIR$/crop_img/crop_img.iml" />
       <module fileurl="file://$PROJECT_DIR$/refresh-layout/refresh-layout.iml" filepath="$PROJECT_DIR$/refresh-layout/refresh-layout.iml" />
       <module fileurl="file://$PROJECT_DIR$/zxing-android-embedded/zxing-android-embedded.iml" filepath="$PROJECT_DIR$/zxing-android-embedded/zxing-android-embedded.iml" />
-      <module fileurl="file://F:/AndroidStudio_WorkSpace/WeChartApplication/zxing-android-embedded/zxing-android-embedded.iml" filepath="F:/AndroidStudio_WorkSpace/WeChartApplication/zxing-android-embedded/zxing-android-embedded.iml" />
     </modules>
   </component>
 </project>
