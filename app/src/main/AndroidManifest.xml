@@ -117,22 +117,6 @@
             android:theme="@style/FullScreenTheme" />
 
         <activity
-            android:name=".vr.panowidget.SimpleVrPanoramaActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:screenOrientation="locked"
-            android:theme="@style/FullScreenTheme">
-            <intent-filter>
-                <!-- Primary intent when launching from the home screen -->
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="com.google.intent.category.CARDBOARD" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name=".vr.video360.VrVideoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|uiMode|navigation"
             android:enableVrMode="@string/gvr_vr_mode_component"

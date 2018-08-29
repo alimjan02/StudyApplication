@@ -34,6 +34,8 @@
         android:name="android.hardware.wifi"
         android:required="false" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application android:debuggable="true" >
         <uses-library android:name="android.test.runner" />
 
