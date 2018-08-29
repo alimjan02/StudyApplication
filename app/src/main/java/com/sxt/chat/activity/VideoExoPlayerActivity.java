@@ -575,7 +575,8 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     if (responseInfo.getVideoBase() != null && responseInfo.getPlayInfoList() != null) {
                         List<PlayInfo> playInfos = responseInfo.getPlayInfoList().getPlayInfo();
                         if (playInfos != null && playInfos.size() > 0) {
-                            startPlay(playInfos.get(1).PlayURL);
+//                            startPlay(playInfos.get(1).PlayURL);
+                            startPlay("http://live.hkstv.hk.lxdns.com/live/hks/playlist.m3u8");
                         }
                     }
                 } catch (IOException e) {

@@ -47,6 +47,7 @@ public class VideoActivity extends BaseActivity {
     private static final int READ_EXTERNAL_STORAGE_PERMISSION_ID = 1;
     private final int REQUEST_CODE_GALLERY = 100;
     private MonoscopicView videoView;
+    private VideoUiView videoUi;
 
     /**
      * Checks that the appropriate permissions have been granted. Otherwise, the sample will wait
@@ -61,7 +62,8 @@ public class VideoActivity extends BaseActivity {
 
         // Configure the MonoscopicView which will render the video and UI.
         videoView = (MonoscopicView) findViewById(R.id.video_view);
-        VideoUiView videoUi = (VideoUiView) findViewById(R.id.video_ui_view);
+        videoUi = (VideoUiView) findViewById(R.id.video_ui_view);
+        videoView.initialize(videoUi);
         videoUi.setVrIconClickListener(
                 new OnClickListener() {
                     @Override
@@ -94,7 +96,6 @@ public class VideoActivity extends BaseActivity {
                         finish();
                     }
                 });
-        videoView.initialize(videoUi);
 
         // Boilerplate for checking runtime permissions in Android.
         View button = findViewById(R.id.select);

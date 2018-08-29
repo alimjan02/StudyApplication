@@ -37,8 +37,12 @@ import com.sxt.chat.vr.video360.rendering.Mesh;
 import com.sxt.chat.vr.video360.rendering.SceneRenderer;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLConnection;
 import java.security.InvalidParameterException;
 
@@ -143,6 +147,9 @@ public class MediaLoader {
         // take 100s of milliseconds.
         // Note that this sample doesn't cancel any pending mediaLoaderTasks since it assumes only one
         // Intent will ever be fired for a single Activity lifecycle.
+        if (mediaLoaderTask != null && !mediaLoaderTask.isCancelled()) {
+            mediaLoaderTask.cancel(true);
+        }
         mediaLoaderTask = new MediaLoaderTask(uiView);
         mediaLoaderTask.execute(intent);
     }
@@ -189,6 +196,8 @@ public class MediaLoader {
 
             // Based on the Intent's data, load the appropriate media from disk.
             String path = UriUtil.uri2Path(App.getCtx(), intent[0].getData());
+//            String path = "http://dl.mojing.baofeng.com/picture/hubeiyichangqingjianghualang.jpg";
+//            String path = "http://dl.mojing.baofeng.com/picture/chongqingshifurongdongjingqumenkou.jpg";
             try {
                 File file = new File(path);
                 if (!file.exists()) {
@@ -199,11 +208,34 @@ public class MediaLoader {
                     throw new InvalidParameterException("Unknown file type: " + path);
                 } else if (type.startsWith("image")) {
                     // Decoding a large image can take 100+ ms.
+                    if (mediaImage != null && !mediaImage.isRecycled()) {
+                        mediaImage.recycle();
+                    }
                     mediaImage = BitmapFactory.decodeFile(path);
+//                    URL imgeUrl = new URL(path);
+//                    HttpURLConnection urlConnection = (HttpURLConnection) imgeUrl.openConnection();
+//                    urlConnection.setConnectTimeout(10000);// 设置链接超时
+//                    urlConnection.setReadTimeout(5000);
+//                    urlConnection.setRequestMethod("GET");// 设置请求方法为get
+//                    urlConnection.connect();// 开始连接
+//                    int responseCode = urlConnection.getResponseCode();
+//                    if (responseCode == 200) {
+//                        InputStream is = urlConnection.getInputStream();
+//                        // 根据流数据创建 一个Bitmap位图对象
+//                        mediaImage = BitmapFactory.decodeStream(is);
+//                        is.close();
+//                        urlConnection.disconnect();
+//                    }
+//                    mediaImage = BitmapFactory.decodeStream(urlConnection.getInputStream());
+                    Log.e("IMAGE", mediaImage != null ? mediaImage.getByteCount() + "" : "null");
                 } else if (type.startsWith("video")) {
                     MediaPlayer mp = MediaPlayer.create(context, Uri.parse(path));
                     synchronized (MediaLoader.this) {
                         // This needs to be synchronized with the methods that could clear mediaPlayer.
+                        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                            mediaPlayer.stop();
+                            mediaPlayer.release();
+                        }
                         mediaPlayer = mp;
                     }
                 } else {
