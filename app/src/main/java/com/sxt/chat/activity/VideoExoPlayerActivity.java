@@ -553,7 +553,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 
     private void getVideoList() {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS).readTimeout(20, TimeUnit.SECONDS).writeTimeout(20, TimeUnit.SECONDS);
-
         //生成私有参数，不同API需要修改
         Map<String, String> privateParams = SignatureUtil.generatePrivateParamters("baa55f3da3d1448a9f9c8f1374a767dd", "GetPlayInfo");
         //生成公共参数，不需要修改
