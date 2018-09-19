@@ -1,24 +1,20 @@
 package com.sxt.chat.activity;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.Display;
+import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -32,8 +28,6 @@ import com.sxt.chat.ar.HelloArActivity;
 import com.sxt.chat.base.BaseFragment;
 import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.db.User;
-import com.sxt.chat.dialog.AlertDialogBuilder;
-import com.sxt.chat.download.DownloadTask;
 import com.sxt.chat.fragment.ChartFragment;
 import com.sxt.chat.fragment.GitHubFragment;
 import com.sxt.chat.fragment.HomeFragment;
@@ -41,9 +35,9 @@ import com.sxt.chat.fragment.NewsFragment;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.task.MainService;
 import com.sxt.chat.utils.ArithTool;
-import com.sxt.chat.utils.NetworkUtils;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransform;
+import com.sxt.chat.view.searchview.MaterialSearchView;
 import com.sxt.chat.vr.video360.VideoActivity;
 import com.sxt.chat.ws.BmobRequest;
 
@@ -61,10 +55,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private final long millis = 2 * 60 * 1000L;
-    private DownloadTask downloadTask;
     public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
     public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
+    private MaterialSearchView searchView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -118,6 +112,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     }
 
     private void initDrawer() {
+        View searchContainer = getLayoutInflater().inflate(R.layout.toolbar_search, null);
+        Toolbar toolbar = searchContainer.findViewById(R.id.toolbar);
+        searchView = searchContainer.findViewById(R.id.search_view);
+        replaceToolbarView(searchContainer, toolbar);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close) {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -129,6 +127,45 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         };
         drawerToggle.syncState();//实现箭头和三条杠图案切换和侧滑菜单开关的同步
         drawerLayout.addDrawerListener(drawerToggle);
+
+        searchView.setVoiceSearch(false);
+        searchView.setEllipsize(false);
+        searchView.setSuggestions(getResources().getStringArray(R.array.query_suggestions));
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //Do some magic
+                Snackbar.make(findViewById(R.id.container), "Query: " + query, Snackbar.LENGTH_LONG)
+                        .show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //Do some magic
+                return false;
+            }
+        });
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                //Do some magic
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                //Do some magic
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.item_search_menu, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -215,6 +252,14 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (drawerLayout != null && drawerLayout.isDrawerOpen(Gravity.START)) {
+                drawerLayout.closeDrawers();
+                return false;
+            }
+            if (searchView != null && searchView.isSearchOpen()) {
+                searchView.closeSearch();
+                return false;
+            }
             long preMillis = Prefs.getInstance(App.getCtx()).getLong(Prefs.KEY_EXIT_ACTIVITY, 0);
             if (System.currentTimeMillis() - preMillis > 2000) {
                 Prefs.getInstance(App.getCtx()).putLong(Prefs.KEY_EXIT_ACTIVITY, System.currentTimeMillis());
@@ -272,123 +317,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 startActivity(new Intent(this, VideoActivity.class));
                 break;
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (downloadTask != null && !downloadTask.isCancelled()) {
-            downloadTask.cancel(true);
-        }
-    }
-
-    //----------------------------------------版本更新-----------------------------------------------
-    private void checkUpdate(int serverVersion) {
-        try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            if (serverVersion > packageInfo.versionCode) {
-                //判断WIFI情况
-                if (NetworkUtils.isNetworkAvailable(this)) {//判断网络是否可用
-                    if (NetworkUtils.isWifiEnabled(this)) {//判断WIFI是否打开
-                        if (NetworkUtils.isWifi(this)) {//判断是wifi还是3g网络
-                            startDownloadApkDialog();
-                        } else {
-                            if (NetworkUtils.is3rd(this)) {
-                                showWifiAlert();
-                            }
-                        }
-                    } else {
-                        if (NetworkUtils.is3rd(this)) {//判断是否是3G网络
-                            showWifiAlert();
-                        }
-                    }
-                }
-            } else {
-                Toast("当前已是最新版本");
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void startDownloadApkDialog() {
-        final Dialog dialog = new Dialog(this, R.style.CustomDialog);
-        View item = LayoutInflater.from(this).inflate(R.layout.item_update, null);
-        final TextView progressTitle = (TextView) item.findViewById(R.id.upgrade_title);
-        final ProgressBar progressBar = (ProgressBar) item.findViewById(R.id.my_progress);
-        final TextView tvProgress = (TextView) item.findViewById(R.id.tv_progres);
-        dialog.setContentView(item);
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-        Window window = dialog.getWindow();
-        if (window != null) {
-            WindowManager.LayoutParams layoutParams = window.getAttributes();
-            WindowManager wm = this.getWindowManager();
-            Display display = wm.getDefaultDisplay();
-            layoutParams.width = (int) (display.getWidth() * 0.875);
-            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            window.setAttributes(layoutParams);
-        }
-        download(dialog, progressTitle, progressBar, tvProgress);
-        item.findViewById(R.id.btn_download).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                download(dialog, progressTitle, progressBar, tvProgress);
-            }
-        });
-        item.findViewById(R.id.btn_download_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                downloadTask.cancel(true);
-                dialog.dismiss();
-            }
-        });
-    }
-
-    private void showWifiAlert() {
-        new AlertDialogBuilder(this).setTitle(getString(R.string.prompt)).setMessage("您当前处于非WIFI状态，继续更新版本吗?").setLeftButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startDownloadApkDialog();
-            }
-        }).setRightButton(R.string.cancel, null).show();
-    }
-
-    private void download(final Dialog dialog, final TextView progressTitle, final ProgressBar progressBar, final TextView tvProgress) {
-        if (downloadTask != null && !downloadTask.isCancelled()) {
-            downloadTask.cancel(true);
-        }
-        downloadTask = new DownloadTask(this);
-        downloadTask.setDownloadListener(new DownloadTask.DownloadListener() {
-            @Override
-            public void onError(Exception e) {
-                dialog.dismiss();
-                Toast("下载文件失败，请重新登录进行升级");
-            }
-
-            @Override
-            public void onProgressUpdate(int progress, long max) {
-                if (dialog != null) {
-                    double size = max / 1024.0 / 1024.0;
-                    String result = String.format("更新版本:(共%.2fMB)", size);
-                    progressTitle.setText(result);
-                    progressBar.setProgress(progress);
-                    tvProgress.setText(progress + "%");
-                }
-            }
-
-            @Override
-            public void onSuccessful() {
-                dialog.dismiss();
-            }
-
-            @Override
-            public void onFinish() {
-                dialog.dismiss();
-            }
-        });
-        downloadTask.execute(Prefs.getInstance(this).getServerUrl() + Prefs.getInstance(this).KEY_APP_UPDATE_URL);
     }
 
 }

@@ -93,4 +93,6 @@
     <color name="textDark">#222</color>
     <color name="textLight">#555</color>
 
+    <color name="search_layover_bg">#50000000</color>
+
 </resources>

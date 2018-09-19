@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sxt.chat.R;
@@ -127,6 +129,23 @@ public class HeaderActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);//隐藏ToolBar自带的Title
         setToolbarNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+    }
+
+    public void replaceToolbarView(View toolbarView, Toolbar toolbar) {
+        if (toolbar != null) {
+            if (this.toolbar != null) {
+                appBarLayout.removeView(this.toolbar);
+            }
+            appBarLayout.addView(toolbarView, new AppBarLayout.LayoutParams(AppBarLayout.LayoutParams.MATCH_PARENT, AppBarLayout.LayoutParams.WRAP_CONTENT));
+            this.toolbar = toolbar;
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().hide();
+            }
+            setSupportActionBar(toolbar);//代替原来的ActionBar
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);//隐藏ToolBar自带的Title
+            setToolbarNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        }
     }
 
     public void showToolbarBack(boolean showBack) {

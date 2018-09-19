@@ -39,7 +39,7 @@
     <TextView
         android:id="@+id/notifycations_demo"
         style="@style/menu_style"
-        android:drawableStart="@drawable/ic_vector_notifications_24dp"
+        android:drawableStart="@drawable/ic_scanner_white_24dp"
         android:text="@string/scan_2_scan" />
 
     <TextView

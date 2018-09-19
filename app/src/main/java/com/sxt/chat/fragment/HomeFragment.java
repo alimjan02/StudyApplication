@@ -153,6 +153,9 @@ public class HomeFragment extends LazyFragment {
             viewSwitcherCenter.setDisplayedChild(1);
             viewSwitcherBottom.setDisplayedChild(1);
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                banner.setNestedScrollingEnabled(false);
+            }
             recyclerViewTop.setNestedScrollingEnabled(false);
             recyclerViewCenter.setNestedScrollingEnabled(false);
             recyclerViewBottom.setNestedScrollingEnabled(false);
