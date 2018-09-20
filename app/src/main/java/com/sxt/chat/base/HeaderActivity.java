@@ -13,8 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sxt.chat.R;
@@ -136,10 +134,10 @@ public class HeaderActivity extends BaseActivity {
             if (this.toolbar != null) {
                 appBarLayout.removeView(this.toolbar);
             }
-            title = (TextView) toolbar.findViewById(R.id.title);
-            rightContainer = (FrameLayout) toolbar.findViewById(R.id.right_container);
             appBarLayout.addView(toolbarView, new AppBarLayout.LayoutParams(AppBarLayout.LayoutParams.MATCH_PARENT, AppBarLayout.LayoutParams.WRAP_CONTENT));
             this.toolbar = toolbar;
+            title = (TextView) toolbar.findViewById(R.id.title);
+            rightContainer = (FrameLayout) toolbar.findViewById(R.id.right_container);
             if (getSupportActionBar() != null) {
                 getSupportActionBar().hide();
             }
@@ -163,11 +161,25 @@ public class HeaderActivity extends BaseActivity {
         }
     }
 
+    public void setToolbarTitle(String title) {
+        if (this.title != null) {
+            this.title.setText("");
+        }
+        toolbar.setTitle(title);
+    }
+
     public void setTitle(int resId) {
         if (this.title != null) {
             this.title.setText(resId);
             toolbar.setTitle("");
         }
+    }
+
+    public void setToolbarTitle(int resId) {
+        if (this.title != null) {
+            this.title.setText("");
+        }
+        toolbar.setTitle(resId);
     }
 
     @Override
@@ -176,6 +188,13 @@ public class HeaderActivity extends BaseActivity {
             this.title.setText(title);
             toolbar.setTitle("");
         }
+    }
+
+    public void setToolbarTitle(CharSequence title) {
+        if (this.title != null) {
+            this.title.setText("");
+        }
+        toolbar.setTitle(title);
     }
 
     public void setRightContainer(View rightContainer) {

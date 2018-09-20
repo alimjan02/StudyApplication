@@ -43,18 +43,18 @@ public class RoomDetailActivity extends BaseActivity {
             }
         });
 
-//        FloatingActionButton fab = findViewById(R.id.fab_scrolling);
-//        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this,R.color.yellow_rgb_253_202_78)));
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent();
-//                intent.setAction(Intent.ACTION_SEND);
-//                intent.putExtra(Intent.EXTRA_TEXT, Constants.SHARE_CONTENT);
-//                intent.setType("text/plain");
-//                startActivity(Intent.createChooser(intent, getString(R.string.share_with)));
-//            }
-//        });
+        FloatingActionButton fab = findViewById(R.id.fab_scrolling);
+        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this,R.color.yellow_rgb_253_202_78)));
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT, Constants.SHARE_CONTENT);
+                intent.setType("text/plain");
+                startActivity(Intent.createChooser(intent, getString(R.string.share_with)));
+            }
+        });
 
         String url = getIntent().getStringExtra("url");
         ImageView img = findViewById(R.id.image_scrolling_top);

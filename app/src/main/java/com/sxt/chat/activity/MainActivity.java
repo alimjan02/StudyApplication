@@ -36,6 +36,7 @@ import com.sxt.chat.fragment.NewsFragment;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.task.MainService;
 import com.sxt.chat.utils.ArithTool;
+import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransform;
 import com.sxt.chat.view.searchview.MaterialSearchView;
@@ -55,7 +56,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private LinearLayout tabGroup;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
-    private final long millis = 20 * 60 * 1000L;
+    private final long millis = 5 * 60 * 1000L;
     public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
     public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
@@ -163,30 +164,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
-        getMenuInflater().inflate(R.menu.item_search_menu, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    protected void onTabCheckedChange(String[] titles, int checkedId) {
-        super.onTabCheckedChange(titles, checkedId);
-        if (titles != null && titles.length > checkedId) {
-            setTitle(titles[checkedId]);
-            if (menu != null) {
-                if (checkedId == 0) {
-                    menu.findItem(R.id.action_search).setVisible(true);
-                } else {
-                    menu.findItem(R.id.action_search).setVisible(false);
-                }
-            }
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         checkUser();
@@ -260,6 +237,51 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 .bitmapTransform(new GlideCircleTransform(this))
                 .signature(new StringSignature(Prefs.getInstance(App.getCtx()).getString(Prefs.KEY_USER_HEADER_IMAGE_FLAG, "")))
                 .into(userIcon);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        getMenuInflater().inflate(R.menu.item_search_menu, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                share();
+                break;
+            case R.id.action_more:
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void share() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, Constants.SHARE_CONTENT);
+        intent.setType("text/plain");
+        startActivity(Intent.createChooser(intent, getString(R.string.share_with)));
+    }
+
+    @Override
+    protected void onTabCheckedChange(String[] titles, int checkedId) {
+        super.onTabCheckedChange(titles, checkedId);
+        if (titles != null && titles.length > checkedId) {
+            setToolbarTitle(titles[checkedId]);
+            if (menu != null) {
+                if (checkedId == 0) {
+                    menu.findItem(R.id.action_search).setVisible(true);
+                } else {
+                    menu.findItem(R.id.action_search).setVisible(false);
+                }
+            }
+        }
     }
 
     @Override

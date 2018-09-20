@@ -14,7 +14,8 @@
         app:contentInsetEnd="0dp"
         app:contentInsetStart="0dp"
         app:layout_collapseMode="pin"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextAppearance="@style/text_17_color_white_style">
 
         <TextView
             android:id="@+id/title"
