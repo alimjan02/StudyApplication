@@ -136,6 +136,8 @@ public class HeaderActivity extends BaseActivity {
             if (this.toolbar != null) {
                 appBarLayout.removeView(this.toolbar);
             }
+            title = (TextView) toolbar.findViewById(R.id.title);
+            rightContainer = (FrameLayout) toolbar.findViewById(R.id.right_container);
             appBarLayout.addView(toolbarView, new AppBarLayout.LayoutParams(AppBarLayout.LayoutParams.MATCH_PARENT, AppBarLayout.LayoutParams.WRAP_CONTENT));
             this.toolbar = toolbar;
             if (getSupportActionBar() != null) {

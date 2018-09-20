@@ -276,6 +276,7 @@
     <string name="source">Source &lt;a href="https://en.wikipedia.org/wiki/Machu_Picchu">Wikipedia&lt;/a></string>
     <string name="search">搜索</string>
     <string name="scan">扫一扫</string>
+    <string name="more">更多</string>
 
     <string-array name="query_suggestions">
         <item>A very very long suggestion that would span multiple lines.</item>

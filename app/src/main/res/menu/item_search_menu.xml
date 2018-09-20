@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_action_search_white_24dp"
@@ -9,9 +10,10 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_scan"
-        android:icon="@drawable/ic_scanner_white_24dp"
+        android:id="@+id/action_more"
+        android:icon="@drawable/ic_more_vert_white_24dp"
         android:orderInCategory="100"
-        android:title="@string/scan"
+        android:title="@string/more"
         app:showAsAction="always" />
+
 </menu>

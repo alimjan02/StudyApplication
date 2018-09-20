@@ -23,13 +23,17 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,9 +43,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 /**
- * 0
- *
- * @author Miguel Catalan Bañuls
+ * creaated by Miguel Catalan Bañuls
+ * developed by xt.sun
  */
 public class MaterialSearchView extends FrameLayout implements Filter.FilterListener {
     public static final int REQUEST_VOICE = 9999;
@@ -246,11 +249,48 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
         mUserQuery = text;
         boolean hasText = !TextUtils.isEmpty(text);
         if (hasText) {
-            mEmptyBtn.setVisibility(VISIBLE);
+            if (mEmptyBtn.getVisibility() != View.VISIBLE) {
+                mEmptyBtn.setVisibility(VISIBLE);
+                RotateAnimation rotateAnimation = new RotateAnimation(0, 90, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+                AlphaAnimation alphaAnimation = new AlphaAnimation(0.5f, 1);
+                AnimationSet animatorSet = new AnimationSet(true);
+                animatorSet.setInterpolator(new LinearInterpolator());
+                animatorSet.addAnimation(rotateAnimation);
+                animatorSet.addAnimation(alphaAnimation);
+                animatorSet.setDuration(200);
+                animatorSet.start();
+                mEmptyBtn.startAnimation(animatorSet);
+            }
             showVoice(false);
         } else {
-            mEmptyBtn.setVisibility(GONE);
-            showVoice(true);
+            if (mEmptyBtn.getVisibility() == View.VISIBLE) {
+                RotateAnimation rotateAnimation = new RotateAnimation(90, 0, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+                AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);
+                AnimationSet animatorSet = new AnimationSet(true);
+                animatorSet.setInterpolator(new LinearInterpolator());
+                animatorSet.addAnimation(rotateAnimation);
+                animatorSet.addAnimation(alphaAnimation);
+                animatorSet.setDuration(200);
+                animatorSet.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mEmptyBtn.setVisibility(GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                animatorSet.start();
+                mEmptyBtn.startAnimation(animatorSet);
+                showVoice(true);
+            }
         }
 
         if (mOnQueryChangeListener != null && !TextUtils.equals(newText, mOldQueryText)) {
