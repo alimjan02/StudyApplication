@@ -62,6 +62,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     private ImageButton mBackBtn;
     private ImageButton mVoiceBtn;
     private ImageButton mEmptyBtn;
+    private View mSearchTopBarContainer;
     private RelativeLayout mSearchTopBar;
 
     private CharSequence mOldQueryText;
@@ -148,6 +149,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
         LayoutInflater.from(mContext).inflate(R.layout.search_view, this, true);
         mSearchLayout = findViewById(R.id.search_layout);
 
+        mSearchTopBarContainer = mSearchLayout.findViewById(R.id.search_top_bar_container);
         mSearchTopBar = (RelativeLayout) mSearchLayout.findViewById(R.id.search_top_bar);
         mSuggestionsRecyclerView = (RecyclerView) mSearchLayout.findViewById(R.id.suggestion_list);
         mSearchSrcTextView = (EditText) mSearchLayout.findViewById(R.id.searchTextView);
@@ -338,14 +340,26 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     @Override
     public void setBackground(Drawable background) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mSearchTopBarContainer.setBackground(background);
+        } else {
+            mSearchTopBarContainer.setBackgroundDrawable(background);
+        }
+    }
+
+    @Override
+    public void setBackgroundColor(int color) {
+        mSearchTopBar.setBackgroundColor(color);
+    }
+
+    public void setToolbarBackground(Drawable background) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             mSearchTopBar.setBackground(background);
         } else {
             mSearchTopBar.setBackgroundDrawable(background);
         }
     }
 
-    @Override
-    public void setBackgroundColor(int color) {
+    public void setToolbarBackgroundColor(int color) {
         mSearchTopBar.setBackgroundColor(color);
     }
 
@@ -593,7 +607,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mSearchLayout.setVisibility(View.VISIBLE);
-            AnimationUtil.open(mSearchTopBar, animationListener);
+            AnimationUtil.open(mSearchTopBarContainer, animationListener);
 
         } else {
             AnimationUtil.fadeInView(mSearchLayout, mAnimationDuration, animationListener);
@@ -622,7 +636,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
                 if (mSearchViewListener != null) {
                     mSearchViewListener.onSearchViewClosed();
                 }
-                view.setVisibility(GONE);
+                mSearchLayout.setVisibility(GONE);
                 return false;
             }
 
@@ -633,7 +647,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
         };
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AnimationUtil.close(mSearchLayout, animationListener);
+            AnimationUtil.close(mSearchTopBar,mSearchTopBarContainer, animationListener);
 
         } else {
             AnimationUtil.fadeOutView(mSearchLayout, mAnimationDuration, animationListener);

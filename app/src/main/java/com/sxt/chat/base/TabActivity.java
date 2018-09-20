@@ -76,9 +76,7 @@ public abstract class TabActivity extends HeaderActivity {
     private void changeTab(int checkedId) {
         if (tabs != null) {
             if (titles != null && titles.length > checkedId) {
-                setTitle(titles[checkedId]);
-                //可以在这儿控制Toorbar的显示与否
-                showToolbar(checkedId == 0 || checkedId == 1 || checkedId == 2 || checkedId == 3);
+                onTabCheckedChange(titles,checkedId);
             }
             for (Map.Entry<Integer, RadioButton> entry : tabs.entrySet()) {
                 if (entry.getKey() == checkedId) {
@@ -88,6 +86,10 @@ public abstract class TabActivity extends HeaderActivity {
                 }
             }
         }
+    }
+
+    protected void onTabCheckedChange(String[] titles, int checkedId) {
+
     }
 
     public void setOnCheckedChangeListener(OnCheckedChangeListener onCheckedChangeListener) {
@@ -114,7 +116,7 @@ public abstract class TabActivity extends HeaderActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

@@ -8,20 +8,24 @@
     <View
         android:id="@+id/transparent_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/ActionBarSize"
+        android:layout_height="match_parent"
         android:background="@color/search_layover_bg"
         android:visibility="gone" />
 
     <LinearLayout
+        android:id="@+id/search_top_bar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:background="#FFFFFF"
+        android:layout_marginRight="2dp"
+
         android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/search_top_bar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/ActionBarSize"
-            android:background="@android:color/white">
+            android:layout_height="@dimen/ActionBarSizeSmall">
 
             <EditText
                 android:id="@+id/searchTextView"
@@ -65,13 +69,15 @@
                 android:layout_alignParentBottom="true"
                 android:background="#fff"
                 android:backgroundTint="#10000000" />
+
         </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/suggestion_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:divider="@android:color/transparent"/>
+            android:divider="@android:color/transparent" />
+
     </LinearLayout>
+
 </FrameLayout>

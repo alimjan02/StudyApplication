@@ -3,7 +3,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:foreground="?selectableItemBackgroundBorderless">
+    android:foreground="?android:attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/suggestion_text"

@@ -5,6 +5,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="text_margin_very_small">4dp</dimen>
     <dimen name="ActionBarSize">50dp</dimen>
+    <dimen name="ActionBarSizeSmall">49dp</dimen>
 
     <dimen name="zero_horizontal_margin">0dp</dimen>
     <dimen name="zero_horizontal_margin_big_activity">0dp</dimen>

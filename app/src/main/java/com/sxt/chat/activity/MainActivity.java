@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -54,11 +55,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private LinearLayout tabGroup;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
-    private final long millis = 2 * 60 * 1000L;
+    private final long millis = 20 * 60 * 1000L;
     public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
     public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
     private MaterialSearchView searchView;
+    private Menu menu;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,13 +132,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
         searchView.setVoiceSearch(false);
         searchView.setEllipsize(false);
+        searchView.setBackground(ContextCompat.getDrawable(this, R.drawable.white_solid_round_4));
         searchView.setSuggestions(getResources().getStringArray(R.array.query_suggestions));
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //Do some magic
-                Snackbar.make(findViewById(R.id.container), "Query: " + query, Snackbar.LENGTH_LONG)
-                        .show();
+                Snackbar.make(findViewById(R.id.container), "Query: " + query, Snackbar.LENGTH_LONG).show();
                 return false;
             }
 
@@ -162,10 +164,26 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.item_search_menu, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView.setMenuItem(item);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onTabCheckedChange(String[] titles, int checkedId) {
+        super.onTabCheckedChange(titles, checkedId);
+        if (titles != null && titles.length > checkedId) {
+            setTitle(titles[checkedId]);
+            if (menu != null) {
+                if (checkedId == 0) {
+                    menu.findItem(R.id.action_search).setVisible(true);
+                } else {
+                    menu.findItem(R.id.action_search).setVisible(false);
+                }
+            }
+        }
     }
 
     @Override
@@ -252,12 +270,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (drawerLayout != null && drawerLayout.isDrawerOpen(Gravity.START)) {
-                drawerLayout.closeDrawers();
-                return false;
-            }
             if (searchView != null && searchView.isSearchOpen()) {
                 searchView.closeSearch();
+                return false;
+            }
+            if (drawerLayout != null && drawerLayout.isDrawerOpen(Gravity.START)) {
+                drawerLayout.closeDrawers();
                 return false;
             }
             long preMillis = Prefs.getInstance(App.getCtx()).getLong(Prefs.KEY_EXIT_ACTIVITY, 0);

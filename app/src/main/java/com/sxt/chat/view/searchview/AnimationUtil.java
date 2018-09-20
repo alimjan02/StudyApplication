@@ -93,27 +93,27 @@ public class AnimationUtil {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static void close(final View view, final AnimationListener listener) {
-        int cx = view.getWidth() -(int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 24, view.getResources().getDisplayMetrics());
-        int cy = view.getHeight() / 2;
-        int finalRadius = Math.max(view.getWidth(), view.getHeight());
+    public static void close(final View view1, View view2, final AnimationListener listener) {
+        int cx = view2.getWidth() - (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 24, view1.getResources().getDisplayMetrics());
+        int cy = view1.getHeight() / 2;
+        int finalRadius = Math.max(view1.getWidth(), view1.getHeight());
 
-        Animator anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, finalRadius,0);
+        Animator anim = ViewAnimationUtils.createCircularReveal(view2, cx, cy, finalRadius, 0);
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                listener.onAnimationStart(view);
+                listener.onAnimationStart(view1);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                listener.onAnimationEnd(view);
+                listener.onAnimationEnd(view1);
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                listener.onAnimationCancel(view);
+                listener.onAnimationCancel(view1);
             }
 
             @Override

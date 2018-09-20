@@ -5,19 +5,18 @@
     android:fitsSystemWindows="true">
     <!--fitsSystemWindows 设置为true后,window窗体上的view设置padding已经无效了,包含Dialog,popubWindow和自定义Toast等,,, 内容里的padding可以正常使用-->
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <include layout="@layout/toolbar" />
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/content_frameLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/ActionBarSize" />
 
-    </LinearLayout>
+        <include layout="@layout/toolbar" />
+
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>
