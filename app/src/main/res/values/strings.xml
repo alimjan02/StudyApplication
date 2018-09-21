@@ -194,9 +194,9 @@
     </string-array>
 
     <string-array name="video_img_url">
-        <item>https://c1.mifile.cn/f/i/16/chain/mivr-1o/mivr1o-14.jpg</item><!--小米VR眼睛一体机-->
+        <item>https://i1.mifile.cn/f/i/2018/mi8/summary/pic3.jpg?1</item><!--小米VR眼睛一体机-->
+        <item>https://c1.mifile.cn/f/i/16/chain/mivr-1o/mivr1o-18.jpg</item><!--小米8SE-->
         <item>https://i1.mifile.cn/f/i/2018/mi8/summary/gallery2.jpg?1</item><!--小米8-->
-        <item>https://i1.mifile.cn/f/i/2018/mi8/summary/pic3.jpg?1</item><!--小米8SE-->
         <item>https://i1.mifile.cn/f/i/18/mi6x/index_specs_img.jpg</item><!--小米6X-->
         <item>https://i1.mifile.cn/f/i/2018/redmi6/summary/person1.jpg</item><!--小米MIX 2S-->
         <item>https://i1.mifile.cn/f/i/18/mitv4/index_slider_img2.jpg</item><!--小米MAX 2-->

@@ -15,6 +15,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,6 +52,8 @@ import com.google.gson.Gson;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.adapter.VideoListAdapter;
+import com.sxt.chat.adapter.VideoListAdapter2;
+import com.sxt.chat.adapter.config.NoScrollLinearLayoutManager;
 import com.sxt.chat.base.BaseActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.dialog.ProgressDrawable;
@@ -96,7 +99,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 
     private NetWorkReceiver netWorkReceiver;
     private MyLoadControl loadControler;
-    private VideoListAdapter adapter;
+    private VideoListAdapter2 adapter;
     private Handler handler = new Handler();
     private PlayerView exoPlayerView;
     private boolean flag = true;
@@ -185,9 +188,10 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
             }
         });
         // Prepare the player with the source.
-        player.setPlayWhenReady(true);
+        player.setPlayWhenReady(false);
         setPlayerHandle();
-//        player.setRepeatMode(Player.REPEAT_MODE_ONE);
+        player.setRepeatMode(Player.REPEAT_MODE_ONE);
+        startPlay(urls[0]);
     }
 
     /**
@@ -195,7 +199,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
      */
     @SuppressLint("ClickableViewAccessibility")
     private void setPlayerHandle() {
-        exoPlayerView.setControllerHideOnTouch(true);
+//        exoPlayerView.setControllerHideOnTouch(true);
         ExoPlayerOnTouchListener onTouchListener = new ExoPlayerOnTouchListener(this, player)
                 .setOnTouchInfoListener(new OnTouchInfoListener() {
 
@@ -316,23 +320,30 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         viewSwitcher = findViewById(R.id.viewSwitcher);
         findViewById(R.id.select).setOnClickListener(this);
         findViewById(R.id.switchScreen).setOnClickListener(this);
-
-        drawerLayout = findViewById(R.id.drawerLayout);
         recyclerView = findViewById(R.id.recyclerView);
-        drawer = findViewById(R.id.drawer);
+        recyclerView.setNestedScrollingEnabled(false);
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.nestedScrollView));
+        behavior.setSkipCollapsed(false);
+        behavior.setHideable(false);
+        behavior.setPeekHeight(Px2DpUtil.dip2px(this,80));
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
-        loading_drawer = findViewById(R.id.loading_drawer);
-        loading_drawerDrawable = new ProgressDrawable();
-        loading_drawer.setImageDrawable(loading_drawerDrawable);
-        showDrawerLoading();
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dismissDrawerLoading();
-            }
-        }, 3000);
-
+//        drawerLayout = findViewById(R.id.drawerLayout);
+//        recyclerView = findViewById(R.id.recyclerView);
+//        drawer = findViewById(R.id.drawer);
+//
+//        loading_drawer = findViewById(R.id.loading_drawer);
+//        loading_drawerDrawable = new ProgressDrawable();
+//        loading_drawer.setImageDrawable(loading_drawerDrawable);
+//        showDrawerLoading();
+//
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                dismissDrawerLoading();
+//            }
+//        }, 3000);
+//
         List<VideoObject> videoObjects = new ArrayList<>();
         VideoObject videoObject;
         for (int i = 0; i < urls.length; i++) {
@@ -343,13 +354,13 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
             videoObjects.add(videoObject);
         }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        adapter = new VideoListAdapter(this, videoObjects);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        adapter = new VideoListAdapter2(this, videoObjects);
         recyclerView.setAdapter(adapter);
         adapter.setOnClickListener(new BaseRecyclerAdapter.OnClickListener() {
             @Override
             public void onClick(final int position, RecyclerView.ViewHolder holder, final Object object) {
-                drawerLayout.closeDrawers();
+//                drawerLayout.closeDrawers();
                 mediaSource.clear();
                 videoIndex = position;
                 player.setPlayWhenReady(true);
@@ -477,7 +488,8 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {//竖屏
             viewSwitcher.setDisplayedChild(0);
             FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) exoPlayerView.getLayoutParams();
-            lp.height = Px2DpUtil.dip2px(this, 200);
+//            lp.height = Px2DpUtil.dip2px(this, 200);
+            lp.height = FrameLayout.LayoutParams.WRAP_CONTENT;
             exoPlayerView.setLayoutParams(lp);
 
         } else if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {//横屏
@@ -490,7 +502,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 
     private void onBack() {
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            drawerLayout.closeDrawers();
+//            drawerLayout.closeDrawers();
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else {
             if (player != null) {
@@ -517,7 +529,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     @Override
     protected void onResume() {
         super.onResume();
-        getVideoList();
+//        getVideoList();
         if (player != null) {
             player.setPlayWhenReady(flag || player.getPlaybackState() == DrmStore.Playback.RESUME);
             flag = false;

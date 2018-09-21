@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="4dp"
+    android:padding="2dp">
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="155dp"
+        android:layout_height="240dp"
+        android:layout_gravity="center" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="8dp">
+
+        <ImageView
+            android:id="@+id/img_header"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/img_header"
+            android:orientation="vertical"
+            android:paddingLeft="5dp">
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/text_15_color_white_style"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:maxWidth="110dp"
+                android:text="六居室-南卧-33㎡" />
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="?android:ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="false"
+                android:maxWidth="100dp"
+                android:numStars="5"
+                android:progressDrawable="@drawable/rating_bar_style2"
+                android:rating="0" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>
