@@ -14,8 +14,10 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,6 +42,7 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -111,6 +114,9 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private ProgressBar progressBar;
     private TextView currentProgress;
     private TextView duration;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private ImageView menuArrow;
+    private View videoTitleLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +124,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         setContentView(R.layout.activity_exoplayer);
 
         exoPlayerView = findViewById(R.id.exoplayer);
+        videoTitleLayout = findViewById(R.id.video_title_layout);
         videoTitle = findViewById(R.id.video_title);
         progressTool = findViewById(R.id.progressTool);
         progressBar = findViewById(R.id.progressBar);
@@ -196,7 +203,21 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
      */
     @SuppressLint("ClickableViewAccessibility")
     private void setPlayerHandle() {
-//        exoPlayerView.setControllerHideOnTouch(true);
+        exoPlayerView.setControllerHideOnTouch(true);
+        exoPlayerView.setControllerVisibilityListener(new PlayerControlView.VisibilityListener() {
+            @Override
+            public void onVisibilityChange(int visibility) {
+                if (bottomSheetBehavior != null) {
+                    if (visibility == View.VISIBLE) {
+                        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                        }
+                    } else {
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    }
+                }
+            }
+        });
         ExoPlayerOnTouchListener onTouchListener = new ExoPlayerOnTouchListener(this, player)
                 .setOnTouchInfoListener(new OnTouchInfoListener() {
 
@@ -319,13 +340,42 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         viewSwitcher = findViewById(R.id.viewSwitcher);
         findViewById(R.id.select).setOnClickListener(this);
         findViewById(R.id.switchScreen).setOnClickListener(this);
+        TabLayout tabLayout = findViewById(R.id.tablayout);
+        findViewById(R.id.menu_search).setOnClickListener(this);
+        menuArrow = (ImageView) findViewById(R.id.menu_expand_arrow);
+        menuArrow.setOnClickListener(this);
+        findViewById(R.id.menu_more).setOnClickListener(this);
+        tabLayout.addTab(tabLayout.newTab().setText("推荐"));
+        tabLayout.addTab(tabLayout.newTab().setText("关注"));
+        tabLayout.addTab(tabLayout.newTab().setText("热门"));
+        tabLayout.addTab(tabLayout.newTab().setText("历史"));
+
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setNestedScrollingEnabled(false);
-        BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.nestedScrollView));
-        behavior.setSkipCollapsed(false);
-        behavior.setHideable(false);
-        behavior.setPeekHeight(Px2DpUtil.dip2px(this, 30));
-        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.nestedScrollView));
+        bottomSheetBehavior.setSkipCollapsed(false);
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setPeekHeight(Px2DpUtil.dip2px(this, 50));
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    menuArrow.setImageResource(R.drawable.ic_expand_arrow_down_white_24dp);
+                    if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {//横平时隐藏视频的Title
+                        videoTitleLayout.setVisibility(View.INVISIBLE);
+                    }
+                } else {
+                    videoTitleLayout.setVisibility(View.VISIBLE);
+                    menuArrow.setImageResource(R.drawable.ic_expand_arrow_up_white_24dp);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
 
 //        drawerLayout = findViewById(R.id.drawerLayout);
 //        recyclerView = findViewById(R.id.recyclerView);
@@ -479,6 +529,19 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
             case R.id.switchScreen:
                 setRequestedOrientation(getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 break;
+            case R.id.menu_search:
+                break;
+            case R.id.menu_expand_arrow:
+                if (bottomSheetBehavior != null) {
+                    if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    }
+                }
+                break;
+            case R.id.menu_more:
+                break;
             default:
                 break;
         }
@@ -493,12 +556,16 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 //            lp.height = Px2DpUtil.dip2px(this, 200);
             lp.height = FrameLayout.LayoutParams.WRAP_CONTENT;
             exoPlayerView.setLayoutParams(lp);
+            videoTitleLayout.setVisibility(View.VISIBLE);
 
         } else if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {//横屏
             viewSwitcher.setDisplayedChild(1);
             FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) exoPlayerView.getLayoutParams();
             lp.height = FrameLayout.LayoutParams.MATCH_PARENT;
             exoPlayerView.setLayoutParams(lp);
+            if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                videoTitleLayout.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

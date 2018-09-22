@@ -65,10 +65,49 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:paddingBottom="10dp"
+                    android:paddingBottom="8dp"
                     android:paddingLeft="15dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="15dp">
+                    android:paddingTop="8dp">
+
+                    <TextView
+                        style="@style/text_17_color_1_style"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="优选公寓房源"
+                        android:textColor="@color/black" />
+
+                </FrameLayout>
+
+                <ViewSwitcher
+                    android:id="@+id/last_viewSitcher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="10dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_placeholder" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/last_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="5dp" />
+                </ViewSwitcher>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="10dp"
+                    android:layout_marginTop="8dp"
+                    android:paddingTop="8dp">
 
                     <TextView
                         style="@style/text_17_color_1_style"
@@ -103,12 +142,12 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     android:background="@color/white"
-                    android:paddingBottom="10dp"
+                    android:paddingBottom="8dp"
                     android:paddingLeft="15dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="15dp">
+                    android:paddingTop="8dp">
 
                     <TextView
                         style="@style/text_17_color_1_style"
@@ -147,46 +186,6 @@
                         android:paddingLeft="5dp" />
 
                 </ViewSwitcher>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/white"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="15dp">
-
-                    <TextView
-                        style="@style/text_17_color_1_style"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center"
-                        android:text="优选公寓房源"
-                        android:textColor="@color/black" />
-
-                </FrameLayout>
-
-                <ViewSwitcher
-                    android:id="@+id/last_viewSitcher"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="10dp"
-                        android:scaleType="centerCrop"
-                        android:src="@mipmap/ic_placeholder" />
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/last_recyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:paddingLeft="5dp" />
-                </ViewSwitcher>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"

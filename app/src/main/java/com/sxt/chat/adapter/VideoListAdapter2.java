@@ -7,6 +7,7 @@ import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -84,7 +85,6 @@ public class VideoListAdapter2 extends BaseRecyclerAdapter<VideoObject> {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
-                            holder.root.clearAnimation();
                             notifyIndex(position);
                         }
                     });
