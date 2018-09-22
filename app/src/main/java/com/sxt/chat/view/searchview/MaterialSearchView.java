@@ -38,6 +38,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sxt.chat.R;
+import com.sxt.chat.utils.AnimationUtil;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -289,7 +290,6 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
 
                     }
                 });
-                animatorSet.start();
                 mEmptyBtn.startAnimation(animatorSet);
                 showVoice(true);
             }

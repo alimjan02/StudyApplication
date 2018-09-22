@@ -1,4 +1,4 @@
-package com.sxt.chat.view.searchview;
+package com.sxt.chat.utils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

@@ -1,17 +1,20 @@
 package com.sxt.chat.adapter;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -19,9 +22,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.sxt.chat.R;
-import com.sxt.chat.activity.RoomDetailActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
-import com.sxt.chat.json.RoomInfo;
 import com.sxt.chat.json.VideoObject;
 import com.sxt.chat.utils.glide.GlideCircleTransform;
 import com.sxt.chat.utils.glide.GlideRoundTransform;
@@ -76,8 +77,19 @@ public class VideoListAdapter2 extends BaseRecyclerAdapter<VideoObject> {
             @Override
             public void onClick(View view) {
                 if (onClickListener != null) {
-                    notifyIndex(position);
                     onClickListener.onClick(position, holder, getItem(position));
+                    holder.root.clearAnimation();
+                    @SuppressLint("ResourceType") AnimatorSet animation = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.anim.anim_scale_alpha);
+                    animation.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            holder.root.clearAnimation();
+                            notifyIndex(position);
+                        }
+                    });
+                    animation.setTarget(holder.root);
+                    animation.start();
                 }
             }
         });

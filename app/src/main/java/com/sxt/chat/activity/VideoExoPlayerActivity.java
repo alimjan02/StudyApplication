@@ -51,9 +51,7 @@ import com.google.android.exoplayer2.util.Util;
 import com.google.gson.Gson;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
-import com.sxt.chat.adapter.VideoListAdapter;
 import com.sxt.chat.adapter.VideoListAdapter2;
-import com.sxt.chat.adapter.config.NoScrollLinearLayoutManager;
 import com.sxt.chat.base.BaseActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.dialog.ProgressDrawable;
@@ -325,7 +323,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.nestedScrollView));
         behavior.setSkipCollapsed(false);
         behavior.setHideable(false);
-        behavior.setPeekHeight(Px2DpUtil.dip2px(this,80));
+        behavior.setPeekHeight(Px2DpUtil.dip2px(this, 30));
         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
 //        drawerLayout = findViewById(R.id.drawerLayout);
@@ -361,11 +359,13 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
             @Override
             public void onClick(final int position, RecyclerView.ViewHolder holder, final Object object) {
 //                drawerLayout.closeDrawers();
-                mediaSource.clear();
-                videoIndex = position;
-                player.setPlayWhenReady(true);
-                mediaSource.addMediaSource(getMediaSource(Uri.parse(((VideoObject) object).getVideo_url())));
-                player.prepare(mediaSource);
+                if (position != videoIndex) {
+                    mediaSource.clear();
+                    videoIndex = position;
+                    player.setPlayWhenReady(true);
+                    mediaSource.addMediaSource(getMediaSource(Uri.parse(((VideoObject) object).getVideo_url())));
+                    player.prepare(mediaSource);
+                }
             }
         });
     }
