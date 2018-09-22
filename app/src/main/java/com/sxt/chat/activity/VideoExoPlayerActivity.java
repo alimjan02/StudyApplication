@@ -101,7 +101,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private Handler handler = new Handler();
     private PlayerView exoPlayerView;
     private boolean flag = true;
-    private int videoIndex = 0;
+    private int videoIndexNext = 0, videoIndexCurrent = 0;
     private ConcatenatingMediaSource mediaSource;
     private ViewSwitcher viewSwitcher;
     private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
@@ -188,7 +188,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         // Prepare the player with the source.
         player.setPlayWhenReady(false);
         setPlayerHandle();
-        player.setRepeatMode(Player.REPEAT_MODE_ONE);
         startPlay(urls[0]);
     }
 
@@ -278,12 +277,14 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                         public void onReadingStarted(int windowIndex, MediaSource.MediaPeriodId mediaPeriodId) {
                             Log.i(TAG, "onReadingStarted " + " windowIndex = " + windowIndex);
                             if (adapter != null) {
-                                adapter.notifyIndex(videoIndex % adapter.getItemCount());
-                                recyclerView.smoothScrollToPosition(videoIndex % adapter.getItemCount());
-                                videoTitle.setText(titles[videoIndex % adapter.getItemCount()]);
-                                Log.i(TAG, "当前播放的视频 -->标题 " + titles[videoIndex % adapter.getItemCount()] + " videoIndex = " + (videoIndex % adapter.getItemCount()));
-                                mediaSource.addMediaSource(mediaSource.getSize(), getMediaSource(Uri.parse(adapter.getItem((videoIndex++) % adapter.getItemCount()).getVideo_url())));
-                                Log.i(TAG, "下一个播放的视频 -->标题 " + titles[videoIndex % adapter.getItemCount()] + " videoIndex = " + (videoIndex % adapter.getItemCount()));
+                                videoIndexCurrent = videoIndexNext;
+                                adapter.notifyIndex(videoIndexNext % adapter.getItemCount());
+                                recyclerView.smoothScrollToPosition(videoIndexNext % adapter.getItemCount());
+                                videoTitle.setText(titles[videoIndexNext % adapter.getItemCount()]);
+                                Log.i(TAG, "当前播放的视频 -->标题 " + titles[videoIndexNext % adapter.getItemCount()] + " videoIndexCurrent = " + (videoIndexNext % adapter.getItemCount()));
+                                videoIndexNext++;
+                                mediaSource.addMediaSource(getMediaSource(Uri.parse(adapter.getItem((videoIndexNext) % adapter.getItemCount()).getVideo_url())));
+                                Log.i(TAG, "下一个播放的视频 -->标题 " + titles[videoIndexNext % adapter.getItemCount()] + " videoIndexNext = " + (videoIndexNext % adapter.getItemCount()));
                             }
                         }
 
@@ -359,9 +360,10 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
             @Override
             public void onClick(final int position, RecyclerView.ViewHolder holder, final Object object) {
 //                drawerLayout.closeDrawers();
-                if (position != videoIndex) {
+                if (position != videoIndexCurrent) {
                     mediaSource.clear();
-                    videoIndex = position;
+                    videoIndexCurrent = position;
+                    videoIndexNext = videoIndexCurrent;
                     player.setPlayWhenReady(true);
                     mediaSource.addMediaSource(getMediaSource(Uri.parse(((VideoObject) object).getVideo_url())));
                     player.prepare(mediaSource);
