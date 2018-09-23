@@ -33,7 +33,7 @@
                 android:layout_gravity="center"
                 android:background="@android:color/transparent"
                 app:controller_layout_id="@layout/player_controler"
-                app:hide_on_touch="false"
+                app:hide_on_touch="true"
                 app:resize_mode="zoom" />
 
             <include layout="@layout/item_video_touch_tools" />

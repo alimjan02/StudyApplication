@@ -110,6 +110,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private ConcatenatingMediaSource mediaSource;
     private BottomSheetBehavior bottomSheetBehavior;
 
+    private boolean isControllerVisiable = true;
     private boolean isUsePhoneData;
     private AlertDialog alertDialog;
     private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
@@ -178,6 +179,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         });
         // 设置播放资源 开始播放视频
         player.setPlayWhenReady(true);
+        exoPlayerView.setControllerAutoShow(false);
         setPlayerHandle();
         startPlay(urls[0]);
     }
@@ -187,10 +189,10 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
      */
     @SuppressLint("ClickableViewAccessibility")
     private void setPlayerHandle() {
-        exoPlayerView.setControllerHideOnTouch(true);
         exoPlayerView.setControllerVisibilityListener(new PlayerControlView.VisibilityListener() {
             @Override
             public void onVisibilityChange(int visibility) {
+                isControllerVisiable = visibility == View.VISIBLE;
                 if (bottomSheetBehavior != null) {
                     if (visibility == View.VISIBLE) {
                         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
@@ -199,6 +201,10 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     } else {
                         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
                             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                            if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                            }
                         }
                     }
                 }
@@ -217,9 +223,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 
                     @Override
                     public void onTouch() {
-                        if (!exoPlayerView.getUseController()) {
-                            exoPlayerView.setUseController(true);
-                        }
                     }
 
                     @Override
@@ -362,10 +365,11 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     menuArrow.setImageResource(R.drawable.ic_expand_arrow_down_white_24dp);
                     if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {//横平时隐藏视频的Title
                         videoTitleLayout.setVisibility(View.INVISIBLE);
-                        exoPlayerView.setUseController(true);
                     }
                 } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                    exoPlayerView.setUseController(false);
+                    if (isControllerVisiable) {
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                    }
                     videoTitleLayout.setVisibility(View.VISIBLE);
                     menuArrow.setImageResource(R.drawable.ic_expand_arrow_up_white_24dp);
                 }
