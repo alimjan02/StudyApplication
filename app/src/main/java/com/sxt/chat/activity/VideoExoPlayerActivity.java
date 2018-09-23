@@ -3,6 +3,7 @@ package com.sxt.chat.activity;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
@@ -19,7 +20,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -54,7 +55,7 @@ import com.google.android.exoplayer2.util.Util;
 import com.google.gson.Gson;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
-import com.sxt.chat.adapter.VideoListAdapter2;
+import com.sxt.chat.adapter.VideoListAdapter;
 import com.sxt.chat.base.BaseActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.dialog.ProgressDrawable;
@@ -88,64 +89,51 @@ import okhttp3.Response;
 public class VideoExoPlayerActivity extends BaseActivity implements View.OnClickListener {
 
     private String TAG = "Video";
-    private SimpleExoPlayer player;
-    private DrawerLayout drawerLayout;
-    private RecyclerView recyclerView;
     private ImageView loading;
-    private ProgressDrawable loadingDrawable;
-    private ImageView loading_drawer;
-    private ProgressDrawable loading_drawerDrawable;
-    private TextView videoTitle;
-    private View drawer;
-
-    private NetWorkReceiver netWorkReceiver;
-    private MyLoadControl loadControler;
-    private VideoListAdapter2 adapter;
-    private Handler handler = new Handler();
-    private PlayerView exoPlayerView;
-    private boolean flag = true;
-    private int videoIndexNext = 0, videoIndexCurrent = 0;
-    private ConcatenatingMediaSource mediaSource;
-    private ViewSwitcher viewSwitcher;
-    private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
-    private String[] titles = App.getCtx().getResources().getStringArray(R.array.videos_name);
-    private String[] video_img_url = App.getCtx().getResources().getStringArray(R.array.video_img_url);
     private View progressTool;
+    private ProgressDrawable loadingDrawable;
+    private View videoTitleLayout;
+    private TextView videoTitle;
+    private ImageView menuArrow;
+    private RecyclerView recyclerView;
+    private VideoListAdapter adapter;
+
+    private SimpleExoPlayer player;
+    private PlayerView exoPlayerView;
+    private int videoIndexNext = 0, videoIndexCurrent = 0;
+    private ViewSwitcher viewSwitcher;
     private ProgressBar progressBar;
     private TextView currentProgress;
     private TextView duration;
+    private NetWorkReceiver netWorkReceiver;
+    private MyLoadControl loadControler;
+    private ConcatenatingMediaSource mediaSource;
     private BottomSheetBehavior bottomSheetBehavior;
-    private ImageView menuArrow;
-    private View videoTitleLayout;
+
+    private boolean isUsePhoneData;
+    private AlertDialog alertDialog;
+    private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
+    private String[] titles = App.getCtx().getResources().getStringArray(R.array.videos_name);
+    private String[] video_img_url = App.getCtx().getResources().getStringArray(R.array.video_img_url);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exoplayer);
-
-        exoPlayerView = findViewById(R.id.exoplayer);
-        videoTitleLayout = findViewById(R.id.video_title_layout);
-        videoTitle = findViewById(R.id.video_title);
-        progressTool = findViewById(R.id.progressTool);
-        progressBar = findViewById(R.id.progressBar);
-        currentProgress = findViewById(R.id.currentPosition);
-        duration = findViewById(R.id.duration);
-
-        loading = findViewById(R.id.loading);
-        loadingDrawable = new ProgressDrawable();
-        loadingDrawable.setColor(ContextCompat.getColor(this, R.color.main_green));
-        loading.setImageDrawable(loadingDrawable);
-
-        initLayout();
         registerNetWorkReceiver();
+        initLayout();
+        initPlayer();
+    }
 
+    private void initPlayer() {
+        //set video url
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
 
-        // 2. Create a default LoadControl
+        // 创建缓冲控制器
         loadControler = new MyLoadControl();
-        // 3. Create the player
+        // 创建播放器
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector, loadControler);
         exoPlayerView.setPlayer(player);
 
@@ -156,14 +144,9 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
             public void onLoadingChanged(boolean isLoading) {//缓冲时会调用
                 super.onLoadingChanged(isLoading);
                 Log.i(TAG, "onLoadingChanged  isLoading = " + isLoading);
-                if (isLoading) {//正在缓冲 可以在这里判断 当前是否处于无线网环境 , 可以提示用户是否耗费手机流量播放视频
-                    if (NetworkUtils.isWifi(App.getCtx())) {
-                        loadControler.shouldContinueLoading(true);
-                        Log.i(TAG, "Wi-Fi状态下 自动缓冲模式开启");
-                    } else {
-                        loadControler.shouldContinueLoading(false);
-                        Log.i(TAG, "检测到您正在使用手机流量 ,自动缓冲模式已关闭");
-                    }
+                if (isLoading) {
+                    //正在缓冲 可以在这里判断 当前是否处于无线网环境 , 可以提示用户是否耗费手机流量播放视频
+                    alertMobileDataDialog();
                 } else {//缓冲结束
 
                 }
@@ -176,6 +159,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     Log.i(TAG, "playbackState == DrmStore.Playback.START");
                 } else if (playbackState == DrmStore.Playback.PAUSE) {//暂停播放(加载中...)
                     showLoading();
+                    alertMobileDataDialog();
                     Log.i(TAG, "playbackState == DrmStore.Playback.PAUSE 暂停播放(加载中...)");
                 } else if (playbackState == DrmStore.Playback.RESUME) {//继续播放(加载完成)
                     dismissLoading();
@@ -192,8 +176,8 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                 Log.i(TAG, "onPlayerError  error = " + error);
             }
         });
-        // Prepare the player with the source.
-        player.setPlayWhenReady(false);
+        // 设置播放资源 开始播放视频
+        player.setPlayWhenReady(true);
         setPlayerHandle();
         startPlay(urls[0]);
     }
@@ -213,12 +197,14 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                         }
                     } else {
-                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        }
                     }
                 }
             }
         });
-        ExoPlayerOnTouchListener onTouchListener = new ExoPlayerOnTouchListener(this, player)
+        exoPlayerView.setOnTouchListener(new ExoPlayerOnTouchListener(this, player)
                 .setOnTouchInfoListener(new OnTouchInfoListener() {
 
                     @Override
@@ -227,6 +213,13 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                         VideoExoPlayerActivity.this.currentProgress.setText(DateFormatUtil.getTimeHHMMSS(currentPosition));
                         VideoExoPlayerActivity.this.duration.setText(DateFormatUtil.getTimeHHMMSS(player.getDuration()));
                         VideoExoPlayerActivity.this.progressBar.setProgress(currentProgress);
+                    }
+
+                    @Override
+                    public void onTouch() {
+                        if (!exoPlayerView.getUseController()) {
+                            exoPlayerView.setUseController(true);
+                        }
                     }
 
                     @Override
@@ -244,8 +237,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     public void onAlphaChanged() {
 
                     }
-                });
-        exoPlayerView.setOnTouchListener(onTouchListener);
+                }));
     }
 
     private void startPlay(final String videoUrl) {
@@ -325,21 +317,27 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         });
     }
 
-    private void registerNetWorkReceiver() {
-        netWorkReceiver = new NetWorkReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        registerReceiver(netWorkReceiver, filter);
-    }
-
     private void initLayout() {
+        exoPlayerView = findViewById(R.id.exoplayer);
+
+        videoTitleLayout = findViewById(R.id.video_title_layout);
+        videoTitle = findViewById(R.id.video_title);
+        progressTool = findViewById(R.id.progressTool);
+        progressBar = findViewById(R.id.progressBar);
+        currentProgress = findViewById(R.id.currentPosition);
+        duration = findViewById(R.id.duration);
+
+        loading = findViewById(R.id.loading);
+        loadingDrawable = new ProgressDrawable();
+        loadingDrawable.setColor(ContextCompat.getColor(this, R.color.main_green));
+        loading.setImageDrawable(loadingDrawable);
+
         findViewById(R.id.back).setOnClickListener(this);
         findViewById(R.id.quality).setOnClickListener(this);
         viewSwitcher = findViewById(R.id.viewSwitcher);
         findViewById(R.id.select).setOnClickListener(this);
         findViewById(R.id.switchScreen).setOnClickListener(this);
+
         TabLayout tabLayout = findViewById(R.id.tablayout);
         findViewById(R.id.menu_search).setOnClickListener(this);
         menuArrow = (ImageView) findViewById(R.id.menu_expand_arrow);
@@ -364,8 +362,10 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     menuArrow.setImageResource(R.drawable.ic_expand_arrow_down_white_24dp);
                     if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {//横平时隐藏视频的Title
                         videoTitleLayout.setVisibility(View.INVISIBLE);
+                        exoPlayerView.setUseController(true);
                     }
-                } else {
+                } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    exoPlayerView.setUseController(false);
                     videoTitleLayout.setVisibility(View.VISIBLE);
                     menuArrow.setImageResource(R.drawable.ic_expand_arrow_up_white_24dp);
                 }
@@ -377,22 +377,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
             }
         });
 
-//        drawerLayout = findViewById(R.id.drawerLayout);
-//        recyclerView = findViewById(R.id.recyclerView);
-//        drawer = findViewById(R.id.drawer);
-//
-//        loading_drawer = findViewById(R.id.loading_drawer);
-//        loading_drawerDrawable = new ProgressDrawable();
-//        loading_drawer.setImageDrawable(loading_drawerDrawable);
-//        showDrawerLoading();
-//
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                dismissDrawerLoading();
-//            }
-//        }, 3000);
-//
         List<VideoObject> videoObjects = new ArrayList<>();
         VideoObject videoObject;
         for (int i = 0; i < urls.length; i++) {
@@ -404,12 +388,11 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        adapter = new VideoListAdapter2(this, videoObjects);
+        adapter = new VideoListAdapter(this, videoObjects);
         recyclerView.setAdapter(adapter);
         adapter.setOnClickListener(new BaseRecyclerAdapter.OnClickListener() {
             @Override
             public void onClick(final int position, RecyclerView.ViewHolder holder, final Object object) {
-//                drawerLayout.closeDrawers();
                 if (position != videoIndexCurrent) {
                     mediaSource.clear();
                     videoIndexCurrent = position;
@@ -420,73 +403,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                 }
             }
         });
-    }
-
-    private void showLoading() {
-        if (loading != null && loadingDrawable != null) {
-            loadingDrawable.start();
-            loading.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void dismissLoading() {
-        if (loading != null && loadingDrawable != null) {
-            loadingDrawable.stop();
-            loading.setVisibility(View.GONE);
-        }
-    }
-
-    private void showDrawerLoading() {
-        if (loading_drawer != null && loading_drawerDrawable != null) {
-            loading_drawerDrawable.start();
-            loading_drawer.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void dismissDrawerLoading() {
-        if (loading_drawer != null && loading_drawerDrawable != null) {
-            loading_drawerDrawable.stop();
-            loading_drawer.setVisibility(View.GONE);
-        }
-    }
-
-    private class NetWorkReceiver extends BroadcastReceiver {
-
-        private String getConnectionType(int type) {
-            String connType = "";
-            if (type == ConnectivityManager.TYPE_MOBILE) {
-                connType = "手机网络数据";
-            } else if (type == ConnectivityManager.TYPE_WIFI) {
-                connType = "Wi-Fi网络";
-            }
-            return connType;
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // 监听网络连接，包括wifi和移动数据的打开和关闭,以及连接上可用的连接都会接到监听
-            if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
-                //获取联网状态的NetworkInfo对象
-                NetworkInfo info = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-                if (info != null) {
-                    //如果当前的网络连接成功并且网络连接可用
-                    if (NetworkInfo.State.CONNECTED == info.getState() && info.isAvailable()) {
-                        if (info.getType() == ConnectivityManager.TYPE_WIFI) {
-
-                            loadControler.shouldContinueLoading(true);
-                            player.seekTo(player.getCurrentPosition());
-                            Log.i(TAG, getConnectionType(info.getType()) + "连上");
-
-                        } else if (info.getType() == ConnectivityManager.TYPE_MOBILE) {
-
-                            Log.i(TAG, getConnectionType(info.getType()) + "连上");
-                        }
-                    } else {
-                        Log.i(TAG, getConnectionType(info.getType()) + "断开");
-                    }
-                }
-            }
-        }
     }
 
     private MediaSource getMediaSource(Uri uri) {
@@ -524,7 +440,10 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                 Toast("切换清晰度");
                 break;
             case R.id.select:
-                drawerLayout.openDrawer(drawer);
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN
+                        || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
                 break;
             case R.id.switchScreen:
                 setRequestedOrientation(getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -544,6 +463,111 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                 break;
             default:
                 break;
+        }
+    }
+
+    private void showLoading() {
+        if (loading != null && loadingDrawable != null) {
+            loadingDrawable.start();
+            loading.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void dismissLoading() {
+        if (loading != null && loadingDrawable != null) {
+            loadingDrawable.stop();
+            loading.setVisibility(View.GONE);
+        }
+    }
+
+    private void registerNetWorkReceiver() {
+        netWorkReceiver = new NetWorkReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        registerReceiver(netWorkReceiver, filter);
+    }
+
+    private class NetWorkReceiver extends BroadcastReceiver {
+
+        private String getConnectionType(int type) {
+            String connType = "";
+            if (type == ConnectivityManager.TYPE_MOBILE) {
+                connType = "手机网络数据";
+            } else if (type == ConnectivityManager.TYPE_WIFI) {
+                connType = "Wi-Fi网络";
+            }
+            return connType;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // 监听网络连接，包括wifi和移动数据的打开和关闭,以及连接上可用的连接都会接到监听
+            if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
+                //获取联网状态的NetworkInfo对象
+                NetworkInfo info = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
+                if (info != null) {
+                    //如果当前的网络连接成功并且网络连接可用
+                    if (NetworkInfo.State.CONNECTED == info.getState() && info.isAvailable()) {
+                        if (info.getType() == ConnectivityManager.TYPE_WIFI) {
+
+                            player.setPlayWhenReady(true);
+                            loadControler.shouldContinueLoading(true);
+                            player.seekTo(player.getCurrentPosition());
+                            Log.i(TAG, getConnectionType(info.getType()) + "连上");
+
+                        } else if (info.getType() == ConnectivityManager.TYPE_MOBILE) {
+                            alertMobileDataDialog();
+                            Log.i(TAG, getConnectionType(info.getType()) + "连上");
+                        }
+                    } else {
+                        Log.i(TAG, getConnectionType(info.getType()) + "断开");
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 可以在这里判断 当前是否处于无线网环境 , 可以提示用户是否耗费手机流量播放视频
+     */
+    private void alertMobileDataDialog() {
+        if (!NetworkUtils.isWifi(this) && !isUsePhoneData) {
+            if (alertDialog == null) {
+                alertDialog = new AlertDialog.Builder(VideoExoPlayerActivity.this).create();
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.setCancelable(false);
+                alertDialog.setTitle("温馨提示");
+                alertDialog.setMessage("当前为非Wi-Fi环境\r\n继续播放将消耗手机流量");
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        isUsePhoneData = false;
+                        player.setPlayWhenReady(false);
+                        loadControler.shouldContinueLoading(false);
+                    }
+                });
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        isUsePhoneData = true;
+                        player.setPlayWhenReady(true);
+                        loadControler.shouldContinueLoading(true);
+                    }
+                });
+            }
+            dismissLoading();
+            player.setPlayWhenReady(false);
+            loadControler.shouldContinueLoading(false);
+            if (!alertDialog.isShowing()) {
+                alertDialog.show();
+            }
+        } else {
+            player.setPlayWhenReady(true);
+            loadControler.shouldContinueLoading(true);
         }
     }
 
@@ -571,7 +595,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 
     private void onBack() {
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-//            drawerLayout.closeDrawers();
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else {
             if (player != null) {
@@ -590,9 +613,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-//        if (hasFocus) {
         initWindowStyle();
-//        }
     }
 
     @Override
@@ -600,11 +621,11 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         super.onResume();
 //        getVideoList();
         if (player != null) {
-            player.setPlayWhenReady(flag || player.getPlaybackState() == DrmStore.Playback.RESUME);
-            flag = false;
+//            player.setPlayWhenReady(flag || player.getPlaybackState() == DrmStore.Playback.RESUME);
+//            flag = false;
 //            player.setVolume(volume == 0 ? player.getVolume() : volume);
 //            player.setVideoSurfaceView((SurfaceView) exoPlayerView.getVideoSurfaceView());
-            loadControler.shouldContinueLoading(NetworkUtils.isWifi(this));
+            alertMobileDataDialog();
         }
     }
 

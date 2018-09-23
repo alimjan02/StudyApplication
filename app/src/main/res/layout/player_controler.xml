@@ -11,9 +11,9 @@
         android:id="@id/exo_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:foreground="?selectableItemBackgroundBorderless"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:background="?selectableItemBackground"
         app:bar_height="2dp"
         app:buffered_color="@color/white"
         app:played_color="@color/red"
@@ -34,12 +34,12 @@
             android:layout_centerVertical="true"
             android:gravity="center_vertical">
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/exo_prev"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:src="@drawable/exo_controls_previous" />
+                android:src="@drawable/exo_controls_previous"/>-->
 
             <!--  <ImageView
                   android:id="@+id/exo_rew"

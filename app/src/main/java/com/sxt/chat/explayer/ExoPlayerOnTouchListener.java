@@ -38,6 +38,7 @@ public class ExoPlayerOnTouchListener implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (onTouchInfoListener != null) onTouchInfoListener.onTouch();
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX = motionEvent.getX();

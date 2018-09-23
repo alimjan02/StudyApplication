@@ -24,6 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_action_search_white_24dp" />
 
             <ImageView
@@ -31,6 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_expand_arrow_down_white_24dp" />
 
             <ImageView
@@ -38,25 +40,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"
+                android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_more_vert_white_24dp" />
 
         </FrameLayout>
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tablayout"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="-1dp"
-            app:tabIndicatorColor="@color/white"
-            app:tabIndicatorHeight="3dp"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/white"
-            app:tabTextColor="@color/text_color_gray_3" />
+            android:layout_marginBottom="10dp">
 
-        <View
-            style="@style/divider_line"
-            android:layout_marginBottom="10dp"
-            android:background="@color/text_color_gray_3" />
+            <View
+                style="@style/divider_line"
+                android:layout_gravity="bottom"
+                android:background="@color/text_color_gray_3" />
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tablayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-1dp"
+                app:tabIndicatorColor="@color/white"
+                app:tabIndicatorHeight="4dp"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/white"
+                app:tabTextColor="@color/text_color_gray_3" />
+        </FrameLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
