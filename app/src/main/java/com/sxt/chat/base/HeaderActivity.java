@@ -42,7 +42,6 @@ public class HeaderActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.item_main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

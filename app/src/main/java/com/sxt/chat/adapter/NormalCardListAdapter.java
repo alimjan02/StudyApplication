@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.sxt.chat.R;
 import com.sxt.chat.activity.RoomDetailActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.json.RoomInfo;
+import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransform;
 import com.sxt.chat.utils.glide.GlideRoundTransform;
 
@@ -61,7 +63,9 @@ public class NormalCardListAdapter extends BaseRecyclerAdapter<RoomInfo> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, RoomDetailActivity.class);
-                intent.putExtra("url", data.get(position).getRoom_url());
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Prefs.ROOM_INFO, getItem(position));
+                intent.putExtra(Prefs.ROOM_INFO, bundle);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     context.startActivity(intent,
                             ActivityOptions.makeSceneTransitionAnimation

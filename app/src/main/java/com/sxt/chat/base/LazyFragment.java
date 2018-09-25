@@ -16,13 +16,13 @@ public abstract class LazyFragment extends BaseFragment {
     public boolean isInit = false;
     public boolean isFirst = true;
     private boolean flag = true;
-    protected Activity activity;
+    protected BaseActivity activity;
 
     @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.activity = activity;
+        this.activity = (BaseActivity) activity;
     }
 
     @Nullable

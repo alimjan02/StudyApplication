@@ -8,7 +8,7 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/ActionBarSize">
+        android:layout_height="@dimen/app_bar_height">
         <include layout="@layout/toolbar" />
     </android.support.design.widget.AppBarLayout>
 

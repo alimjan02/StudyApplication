@@ -14,7 +14,59 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:lineSpacingExtra="@dimen/text_margin_very_small"
-        android:text="@string/appbar_scrolling_view_behavior"
+        android:text="PEEK_HEIGHT_AUTO
+int PEEK_HEIGHT_AUTO
+Peek at the 16:9 ratio keyline of its parent.
+
+This can be used as a parameter for setPeekHeight(int). getPeekHeight() will return this when the value is set.
+
+Constant Value: -1 (0xffffffff)
+
+STATE_COLLAPSED
+int STATE_COLLAPSED
+The bottom sheet is collapsed.
+
+Constant Value: 4 (0x00000004)
+
+STATE_DRAGGING
+int STATE_DRAGGING
+The bottom sheet is dragging.
+
+Constant Value: 1 (0x00000001)
+
+STATE_EXPANDED
+int STATE_EXPANDED
+The bottom sheet is expanded.
+
+Constant Value: 3 (0x00000003)
+
+STATE_HALF_EXPANDED
+int STATE_HALF_EXPANDED
+The bottom sheet is half-expanded (used when mFitToContents is false).
+
+Constant Value: 6 (0x00000006)
+
+STATE_HIDDEN
+int STATE_HIDDEN
+The bottom sheet is hidden.
+
+Constant Value: 5 (0x00000005)
+
+STATE_SETTLING
+int STATE_SETTLING
+The bottom sheet is settling.
+
+Constant Value: 2 (0x00000002)
+
+Public constructors
+BottomSheetBehavior
+BottomSheetBehavior ()
+Default constructor for instantiating BottomSheetBehaviors.
+
+BottomSheetBehavior
+BottomSheetBehavior (Context context,
+                AttributeSet attrs)
+Default constructor for inflating BottomSheetBehaviors from layout."
         android:textIsSelectable="true" />
 
 </android.support.v4.widget.NestedScrollView>

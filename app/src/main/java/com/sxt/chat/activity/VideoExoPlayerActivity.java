@@ -116,6 +116,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
     private String[] titles = App.getCtx().getResources().getStringArray(R.array.videos_name);
     private String[] video_img_url = App.getCtx().getResources().getStringArray(R.array.video_img_url);
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -341,7 +342,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         findViewById(R.id.select).setOnClickListener(this);
         findViewById(R.id.switchScreen).setOnClickListener(this);
 
-        TabLayout tabLayout = findViewById(R.id.tablayout);
+        tabLayout = findViewById(R.id.tablayout);
         findViewById(R.id.menu_search).setOnClickListener(this);
         menuArrow = (ImageView) findViewById(R.id.menu_expand_arrow);
         menuArrow.setOnClickListener(this);
@@ -350,6 +351,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         tabLayout.addTab(tabLayout.newTab().setText("关注"));
         tabLayout.addTab(tabLayout.newTab().setText("热门"));
         tabLayout.addTab(tabLayout.newTab().setText("历史"));
+        tabLayout.setSmoothScrollingEnabled(true);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setNestedScrollingEnabled(false);
@@ -404,6 +406,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     player.setPlayWhenReady(true);
                     mediaSource.addMediaSource(getMediaSource(Uri.parse(((VideoObject) object).getVideo_url())));
                     player.prepare(mediaSource);
+                    tabLayout.setScrollPosition(position % tabLayout.getTabCount(), (position % tabLayout.getTabCount()) - tabLayout.getSelectedTabPosition(), true);
                 }
             }
         });

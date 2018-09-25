@@ -16,16 +16,13 @@
         android:id="@+id/search_top_bar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
         android:background="#FFFFFF"
-        android:layout_marginRight="2dp"
-
         android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/search_top_bar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/ActionBarSizeSmall">
+            android:layout_height="@dimen/app_bar_height">
 
             <EditText
                 android:id="@+id/searchTextView"
@@ -40,7 +37,7 @@
                 android:singleLine="true"
                 android:textColor="#212121"
                 android:textColorHint="#727272"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <ImageButton
                 android:id="@+id/action_up_btn"

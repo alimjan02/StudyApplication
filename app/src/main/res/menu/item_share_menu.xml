@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:visible="false"
-        android:id="@+id/settings"
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_action_share_white_24dp"
         android:title=""
-        app:showAsAction="collapseActionView" />
+        app:showAsAction="always" />
 
 </menu>

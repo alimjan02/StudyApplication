@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ViewSwitcher;
 
-import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.activity.RoomDetailActivity;
 import com.sxt.chat.adapter.NormalCardListAdapter;
@@ -22,6 +22,7 @@ import com.sxt.chat.adapter.config.NoScrollLinearLayoutManaget;
 import com.sxt.chat.base.LazyFragment;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.RoomInfo;
+import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.utils.glide.GlideImageLoader;
 import com.sxt.chat.ws.BmobRequest;
@@ -120,7 +121,12 @@ public class HomeFragment extends LazyFragment {
             @Override
             public void OnBannerClick(int position) {
                 Intent intent = new Intent(context, RoomDetailActivity.class);
-                intent.putExtra("url", imgs.get(position));
+                Bundle bundle = new Bundle();
+                RoomInfo roomInfo = new RoomInfo();
+                roomInfo.setHome_name("房间详情");
+                roomInfo.setRoom_url(imgs.get(position));
+                bundle.putSerializable(Prefs.ROOM_INFO, roomInfo);
+                intent.putExtra(Prefs.ROOM_INFO, bundle);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     context.startActivity(intent,
                             ActivityOptions.makeSceneTransitionAnimation

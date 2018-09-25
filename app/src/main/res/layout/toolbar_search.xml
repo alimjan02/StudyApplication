@@ -8,27 +8,23 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/ActionBarSize"
+        android:layout_height="@dimen/app_bar_height"
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:contentInsetEnd="0dp"
         app:contentInsetStart="0dp"
         app:layout_collapseMode="pin"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextAppearance="@style/text_17_color_white_style">
+        app:titleTextAppearance="@style/text_15_color_white_style">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/text_15_color_white_style"
             android:layout_gravity="center"
             android:gravity="center"
             android:maxLength="15"
             android:maxLines="1"
-            android:singleLine="true"
-            android:text=""
-            android:textColor="@color/white"
-            android:textSize="17dp" />
+            android:singleLine="true" />
 
         <FrameLayout
             android:id="@+id/right_container"
