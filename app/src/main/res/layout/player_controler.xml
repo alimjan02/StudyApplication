@@ -5,14 +5,14 @@
     android:layout_gravity="bottom"
     android:background="@color/translate_alpha"
     android:orientation="vertical"
-    android:paddingBottom="5dp">
+    android:paddingBottom="8dp"
+    android:paddingEnd="8dp"
+    android:paddingStart="8dp">
 
     <com.google.android.exoplayer2.ui.DefaultTimeBar
         android:id="@id/exo_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:background="?selectableItemBackground"
         app:bar_height="2dp"
         app:buffered_color="@color/white"
@@ -51,20 +51,19 @@
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp">
+                android:layout_marginEnd="8dp">
 
                 <ImageView
                     android:id="@+id/exo_play"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:foreground="?selectableItemBackgroundBorderless"
                     android:src="@drawable/exo_controls_play" />
 
                 <ImageView
                     android:id="@+id/exo_pause"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:foreground="?selectableItemBackgroundBorderless"
                     android:src="@drawable/exo_controls_pause"
                     android:visibility="gone" />
@@ -72,8 +71,8 @@
 
             <ImageView
                 android:id="@+id/exo_next"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:foreground="?selectableItemBackgroundBorderless"
                 android:src="@drawable/exo_controls_next" />
 
@@ -100,11 +99,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text=""
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:textSize="15dp" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:text=" / "
                 android:textColor="@android:color/white" />
 
@@ -113,7 +113,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:textSize="15dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -121,9 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:paddingBottom="2dp"
-            android:paddingTop="2dp">
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/quality"
@@ -132,7 +131,8 @@
                 android:layout_marginEnd="16dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:text="清晰度"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:textSize="15dp" />
 
             <ViewSwitcher
                 android:id="@+id/viewSwitcher"
@@ -141,9 +141,8 @@
 
                 <ImageView
                     android:id="@+id/switchScreen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_vector_zoom_out_24dp"
                     android:text="选集"
@@ -153,10 +152,11 @@
                     android:id="@+id/select"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:text="选集"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    android:textSize="15dp" />
+
             </ViewSwitcher>
 
         </LinearLayout>

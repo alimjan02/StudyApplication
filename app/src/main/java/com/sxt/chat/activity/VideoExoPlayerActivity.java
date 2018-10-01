@@ -1,5 +1,7 @@
 package com.sxt.chat.activity;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,6 +27,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -196,10 +199,12 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                 isControllerVisiable = visibility == View.VISIBLE;
                 if (bottomSheetBehavior != null) {
                     if (visibility == View.VISIBLE) {
+                        translationYAnimatorForTitleLayout(-videoTitleLayout.getHeight(), 0, 0, 1);
                         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                         }
                     } else {
+                        translationYAnimatorForTitleLayout(0, -videoTitleLayout.getHeight(), 1, 0);
                         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
                             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                         } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
@@ -374,6 +379,8 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     }
                     videoTitleLayout.setVisibility(View.VISIBLE);
                     menuArrow.setImageResource(R.drawable.ic_expand_arrow_up_white_24dp);
+                } else {
+                    menuArrow.setImageResource(R.drawable.ic_expand_arrow_down_white_24dp);
                 }
             }
 
@@ -435,6 +442,18 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 
         // This is the MediaSource representing the media to be played.
         return new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
+    }
+
+    /**
+     * title栏Y轴执行位移动画
+     */
+    private void translationYAnimatorForTitleLayout(int startTranslationY, int endTranslationY, int startAlpha, int endAlpha) {
+        ObjectAnimator translationAnimator = ObjectAnimator.ofFloat(videoTitleLayout, "translationY", startTranslationY, endTranslationY).setDuration(200);
+        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(videoTitleLayout, "alpha", startAlpha, endAlpha);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setInterpolator(new LinearInterpolator());
+        animatorSet.playTogether(translationAnimator, alphaAnimator);
+        animatorSet.start();
     }
 
     @Override
@@ -660,6 +679,9 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         }
     }
 
+    /**
+     * 阿里云视频点播 : 通过视频ID获取视频播放URl
+     */
     private void getVideoList() {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS).readTimeout(20, TimeUnit.SECONDS).writeTimeout(20, TimeUnit.SECONDS);
         //生成私有参数，不同API需要修改
