@@ -36,8 +36,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
-            multiDexEnabled false
+            minifyEnabled true
+            multiDexEnabled true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

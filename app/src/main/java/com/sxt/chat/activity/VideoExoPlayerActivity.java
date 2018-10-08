@@ -185,7 +185,8 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         player.setPlayWhenReady(true);
         exoPlayerView.setControllerAutoShow(false);
         setPlayerHandle();
-        startPlay(urls[0]);
+//        startPlay(urls[0]);
+        startPlay("http://hls.open.ys7.com/openlive/8562d7d2815a4a1f8e15e27eb086a602.hd.m3u8");
     }
 
     /**

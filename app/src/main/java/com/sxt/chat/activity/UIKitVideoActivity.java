@@ -60,9 +60,9 @@ public class UIKitVideoActivity extends BaseActivity implements SurfaceHolder.Ca
         //获取EZUIPlayer实例
         mEZUIPlayerView = (EZUIPlayerView) findViewById(R.id.player_ui);
         mEZUIPlayerView.setSurfaceHolderCallback(UIKitVideoActivity.this);
-        //mEZPlayer = EZPlayer.createPlayerWithUrl("ezopen://open.ys7.com/171483705/1.hd.live");
+        mEZPlayer = EZPlayer.createPlayerWithUrl("ezopen://open.ys7.com/143814425/1.hd.live");
 //        mEZPlayer = EZPlayer.createPlayer("171483705", 1);
-        mEZPlayer = EZPlayer.createPlayer("143814425", 1);
+//        mEZPlayer = EZPlayer.createPlayer("143814425", 1);
         mEZPlayer.openSound();
         mEZPlayer.startRealPlay();
 //        getAccessToken();
