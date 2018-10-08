@@ -84,6 +84,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             findViewById(R.id.notifycations_demo).setOnClickListener(this);
             findViewById(R.id.ar).setOnClickListener(this);
             findViewById(R.id.vr).setOnClickListener(this);
+            findViewById(R.id.uikit).setOnClickListener(this);
             findViewById(R.id.change_login).setOnClickListener(this);
             userIcon = (ImageView) findViewById(R.id.user_icon);
             userInfo = (TextView) findViewById(R.id.user_info);
@@ -244,7 +245,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.item_search_menu, menu);
         MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
+        if (searchView != null) {
+            searchView.setMenuItem(item);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -352,9 +355,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             case R.id.ar:
                 startActivity(new Intent(this, HelloArActivity.class));
                 break;
-
             case R.id.vr:
                 startActivity(new Intent(this, VideoActivity.class));
+                break;
+            case R.id.uikit:
+                startActivity(new Intent(this, UIKitVideoActivity.class));
                 break;
         }
     }

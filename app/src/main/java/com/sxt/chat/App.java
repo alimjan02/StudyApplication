@@ -10,6 +10,7 @@ import com.sxt.chat.activity.LoginActivity;
 import com.sxt.chat.utils.ActivityCollector;
 import com.sxt.chat.utils.ActivityManager;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.videogo.openapi.EZOpenSDK;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
@@ -67,6 +68,18 @@ public class App extends Application {
 
             }
         });
+        initUIKit();
+    }
+
+    private void initUIKit() {
+        /** * sdk日志开关，正式发布需要去掉 */
+        EZOpenSDK.showSDKLog(true);
+        /** * 设置是否支持P2P取流,详见api */
+        EZOpenSDK.enableP2P(true);
+        //初始化EZUIKit
+        EZOpenSDK.initSDK(this, "de05c197e58645f689ea0ab02bfef777");
+        //设置授权token
+        EZOpenSDK.setAccessToken("at.8lbpz4avb49cmej89gm9rf6abb79pkaz-2kphmpzb53-0qtjyl8-imivp9win");
     }
 
     private void initBmob() {
@@ -78,16 +91,16 @@ public class App extends Application {
         //Bmob.initialize(this, "Your Application ID","bmob");
 
         //第二：自v3.4.7版本开始,设置BmobConfig,允许设置请求超时时间、文件分片上传时每片的大小、文件的过期时间(单位为秒)，
-        BmobConfig config =new BmobConfig.Builder(this)
-        //设置appkey
-        .setApplicationId("d83d882102197404bb1fda4740c7a1aa")
-        //请求超时时间（单位为秒）：默认15s
-        .setConnectTimeout(15)
-        //文件分片上传时每片的大小（单位字节），默认512*1024
-        .setUploadBlockSize(1024*1024)
-        //文件的过期时间(单位为秒)：默认1800s
-        .setFileExpiration(2500)
-        .build();
+        BmobConfig config = new BmobConfig.Builder(this)
+                //设置appkey
+                .setApplicationId("d83d882102197404bb1fda4740c7a1aa")
+                //请求超时时间（单位为秒）：默认15s
+                .setConnectTimeout(15)
+                //文件分片上传时每片的大小（单位字节），默认512*1024
+                .setUploadBlockSize(1024 * 1024)
+                //文件的过期时间(单位为秒)：默认1800s
+                .setFileExpiration(2500)
+                .build();
         Bmob.initialize(config);
 //        BmobUpdateAgent.initAppVersion();
     }
