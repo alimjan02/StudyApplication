@@ -13,7 +13,7 @@ android {
         versionName = String.format("e1.00.%s.%03d", new Date().format('MMdd'), version)
         ndk {
             // 设置支持的SO库架构
-            abiFilters 'armeabi-v7a'//,'armeabi', 'x86'//, 'x86_64', 'arm64-v8a'
+            abiFilters 'armeabi-v7a','armeabi', 'x86'//, 'x86_64', 'arm64-v8a'
         }
         //保证app使用lib时，会自动将该proguard文件添加到本身的proguard规则中
         consumerProguardFiles 'lib-proguard-rules.txt'
@@ -136,9 +136,9 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer:2.8.0'
 //    implementation 'com.hikvision.ezviz:ezuikit:2.0'
     //
-    implementation('com.hikvision.ezviz:ezviz-sdk:5.0.0') {
-        exclude group: 'com.google.code.gson'
-    }
+//    implementation('com.hikvision.ezviz:ezviz-sdk:5.0.0') {
+//        exclude group: 'com.google.code.gson'
+//    }
 
     //    implementation 'org.altbeacon:android-beacon-library:2+'
     implementation project(':refresh-layout')

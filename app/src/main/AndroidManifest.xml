@@ -296,9 +296,6 @@
             tools:ignore="DuplicateActivity" />
 
         <activity
-            android:name=".activity.UIKitVideoActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
-        <activity
             android:name="com.videogo.main.EzvizWebViewActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"></activity>

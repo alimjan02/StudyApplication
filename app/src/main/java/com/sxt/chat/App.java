@@ -5,12 +5,12 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.multidex.MultiDex;
 
 import com.sxt.chat.activity.LoginActivity;
 import com.sxt.chat.utils.ActivityCollector;
 import com.sxt.chat.utils.ActivityManager;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.videogo.openapi.EZOpenSDK;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
@@ -68,18 +68,12 @@ public class App extends Application {
 
             }
         });
-        initUIKit();
     }
 
-    private void initUIKit() {
-        /** * sdk日志开关，正式发布需要去掉 */
-        EZOpenSDK.showSDKLog(true);
-        /** * 设置是否支持P2P取流,详见api */
-        EZOpenSDK.enableP2P(true);
-        //初始化EZUIKit
-        EZOpenSDK.initSDK(this, "de05c197e58645f689ea0ab02bfef777");
-        //设置授权token
-        EZOpenSDK.setAccessToken("at.8lbpz4avb49cmej89gm9rf6abb79pkaz-2kphmpzb53-0qtjyl8-imivp9win");
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(base);
     }
 
     private void initBmob() {
