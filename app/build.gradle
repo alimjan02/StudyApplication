@@ -38,6 +38,7 @@ android {
         release {
             minifyEnabled true
             multiDexEnabled true
+            shrinkResources true //移除无用的resource文件
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
