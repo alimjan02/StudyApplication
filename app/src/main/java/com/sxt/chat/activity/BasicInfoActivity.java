@@ -22,7 +22,7 @@ import com.sxt.chat.db.User;
 import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.Prefs;
-import com.sxt.chat.utils.glide.GlideCircleTransform;
+import com.sxt.chat.utils.glide.GlideCircleTransformer;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
@@ -129,7 +129,7 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
         Glide.with(this)
                 .load(url)
                 .error(placeHolder)
-                .bitmapTransform(new GlideCircleTransform(this))
+                .bitmapTransform(new GlideCircleTransformer(this))
 //                .skipMemoryCache(true)//跳过内存
 //                .diskCacheStrategy(DiskCacheStrategy.NONE)//想要生效必须添加 跳过内存
                 .signature(new StringSignature(Prefs.getInstance(App.getCtx()).getString(Prefs.KEY_USER_HEADER_IMAGE_FLAG, "")))
@@ -167,36 +167,36 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
 
         switch (view.getId()) {
             case R.id.user_portrait_layout:
-                Intent intent = new Intent(this, UpdateUserImgActivity.class);
+                Intent intent = new Intent(this, com.sxt.chat.activity.UpdateUserImgActivity.class);
                 startActivityForResult(intent, REQUESTCODE_IMG);
                 break;
 
             case R.id.user_name_layout:
-                startActivityForResult(new Intent(this, UpdateUserNameActivity.class), REQUESTCODE_USER_NAME);
+                startActivityForResult(new Intent(this, com.sxt.chat.activity.UpdateUserNameActivity.class), REQUESTCODE_USER_NAME);
                 break;
 
             case R.id.body_number_layout:
-                startActivityForResult(new Intent(this, SelectNumberActivity.class), REQUESTCODE_Number);
+                startActivityForResult(new Intent(this, com.sxt.chat.activity.SelectNumberActivity.class), REQUESTCODE_Number);
                 break;
 
             case R.id.user_sex_layout:
-                startActivityForResult(new Intent(this, SelectSexActivity.class), REQUESTCODE_SEX);
+                startActivityForResult(new Intent(this, com.sxt.chat.activity.SelectSexActivity.class), REQUESTCODE_SEX);
                 break;
 
             case R.id.user_age_layout:
-                Intent ageIntent = new Intent(this, SelectAgeActivity.class);
+                Intent ageIntent = new Intent(this, com.sxt.chat.activity.SelectAgeActivity.class);
                 ageIntent.putExtra(String.valueOf(REQUESTCODE_AGE), false);
                 startActivityForResult(ageIntent, REQUESTCODE_AGE);
                 break;
 
             case R.id.user_weight_layout:
-                Intent weightIntent = new Intent(this, SelectWeightActivity.class);
+                Intent weightIntent = new Intent(this, com.sxt.chat.activity.SelectWeightActivity.class);
                 weightIntent.putExtra(String.valueOf(REQUESTCODE_WEIGHT), false);
                 startActivityForResult(weightIntent, REQUESTCODE_WEIGHT);
                 break;
 
             case R.id.user_hight_layout:
-                Intent hightIntent = new Intent(this, SelectHeightActivity.class);
+                Intent hightIntent = new Intent(this, com.sxt.chat.activity.SelectHeightActivity.class);
                 hightIntent.putExtra(String.valueOf(REQUESTCODE_HIGHT), false);
                 startActivityForResult(hightIntent, REQUESTCODE_HIGHT);
                 break;

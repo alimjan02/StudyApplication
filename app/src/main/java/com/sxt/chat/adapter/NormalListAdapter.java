@@ -20,7 +20,7 @@ import com.sxt.chat.activity.RoomDetailActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.json.RoomInfo;
 import com.sxt.chat.utils.Prefs;
-import com.sxt.chat.utils.glide.GlideRoundTransform;
+import com.sxt.chat.utils.glide.GlideRoundTransformer;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class NormalListAdapter extends BaseRecyclerAdapter<RoomInfo> {
         Glide.with(context)
                 .load(data.get(position).getRoom_url())
                 .error(R.mipmap.ic_no_img)
-                .bitmapTransform(new GlideRoundTransform(context, 8))
+                .bitmapTransform(new GlideRoundTransformer(context, 8))
                 .into(holder.img);
         holder.root.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

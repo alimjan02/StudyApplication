@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.sxt.chat.App;
-
 /**
  * Created by sxt on 2018/8/1.
  */

@@ -13,7 +13,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.sxt.chat.R;
-import com.sxt.chat.utils.Px2DpUtil;
 
 /**
  * Created by sxt on 2018/6/5.

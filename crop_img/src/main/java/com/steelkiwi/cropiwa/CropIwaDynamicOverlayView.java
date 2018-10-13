@@ -14,11 +14,6 @@ import com.steelkiwi.cropiwa.util.CropIwaUtils;
 
 import java.util.Arrays;
 
-import static com.steelkiwi.cropiwa.util.CropIwaUtils.boundValue;
-import static com.steelkiwi.cropiwa.util.CropIwaUtils.dpToPx;
-import static com.steelkiwi.cropiwa.util.CropIwaUtils.enlargeRectBy;
-import static com.steelkiwi.cropiwa.util.CropIwaUtils.moveRectBounded;
-
 /**
  * @author yarolegovich
  * on 05.02.2017.
@@ -26,7 +21,7 @@ import static com.steelkiwi.cropiwa.util.CropIwaUtils.moveRectBounded;
 @SuppressLint("ViewConstructor")
 class CropIwaDynamicOverlayView extends CropIwaOverlayView {
 
-    private static final float CLICK_AREA_CORNER_POINT = dpToPx(24);
+    private static final float CLICK_AREA_CORNER_POINT = CropIwaUtils.dpToPx(24);
 
     private static final int LEFT_TOP = 0;
     private static final int RIGHT_TOP = 1;
@@ -142,15 +137,15 @@ class CropIwaDynamicOverlayView extends CropIwaOverlayView {
                 CornerPoint point = fingerToCornerMapping.get(id);
                 if (point != null) {
                     point.processDrag(
-                            boundValue(ev.getX(i), 0, getWidth()),
-                            boundValue(ev.getY(i), 0, getHeight()));
+                            CropIwaUtils.boundValue(ev.getX(i), 0, getWidth()),
+                            CropIwaUtils.boundValue(ev.getY(i), 0, getHeight()));
                 }
             }
             updateCropAreaCoordinates();
         } else if (isDraggingCropArea()) {
             float deltaX = ev.getX() - cropDragStartPoint.x;
             float deltaY = ev.getY() - cropDragStartPoint.y;
-            cropRect = moveRectBounded(
+            cropRect = CropIwaUtils.moveRectBounded(
                     cropRectBeforeDrag, deltaX, deltaY,
                     getWidth(), getHeight(),
                     cropRect);
@@ -283,7 +278,7 @@ class CropIwaDynamicOverlayView extends CropIwaOverlayView {
 
         public boolean isClicked(float x, float y) {
             clickableArea.set(thisPoint.x, thisPoint.y, thisPoint.x, thisPoint.y);
-            enlargeRectBy(CLICK_AREA_CORNER_POINT, clickableArea);
+            CropIwaUtils.enlargeRectBy(CLICK_AREA_CORNER_POINT, clickableArea);
             return clickableArea.contains(x, y);
         }
 

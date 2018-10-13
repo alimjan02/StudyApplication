@@ -94,7 +94,7 @@ public class CompoundBarcodeView extends FrameLayout {
 
         if (barcodeView == null) {
             throw new IllegalArgumentException(
-                    "There is no a com.journeyapps.barcodescanner.BarcodeView on provided layout " +
+                    "There is no a BarcodeView on provided layout " +
                             "with the id \"zxing_barcode_surface\".");
         }
 
@@ -102,7 +102,7 @@ public class CompoundBarcodeView extends FrameLayout {
 
         if (viewFinder == null) {
             throw new IllegalArgumentException(
-                    "There is no a com.journeyapps.barcodescanner.ViewfinderView on provided layout " +
+                    "There is no a ViewfinderView on provided layout " +
                             "with the id \"zxing_viewfinder_view\".");
         }
         viewFinder.drawResultBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.scar));

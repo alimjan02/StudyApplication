@@ -24,7 +24,7 @@ import com.sxt.chat.db.User;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.Prefs;
-import com.sxt.chat.utils.glide.GlideCircleTransform;
+import com.sxt.chat.utils.glide.GlideCircleTransformer;
 import com.sxt.chat.ws.BmobRequest;
 
 import cn.bmob.v3.BmobUser;
@@ -94,7 +94,7 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
         Glide.with(App.getCtx())
                 .load(url)
                 .error(placeHolder)
-                .bitmapTransform(new GlideCircleTransform(App.getCtx()))
+                .bitmapTransform(new GlideCircleTransformer(App.getCtx()))
 //                .skipMemoryCache(true)//跳过内存
 //                .diskCacheStrategy(DiskCacheStrategy.NONE)//想要生效必须添加 跳过内存
                 .signature(new StringSignature(Prefs.getInstance(App.getCtx()).getString(Prefs.KEY_USER_HEADER_IMAGE_FLAG, "")))

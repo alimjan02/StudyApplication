@@ -16,7 +16,7 @@ public class Constants {
     public static final String KEY_Authorization ="Authorization";
     public static final String KEY_UserId ="userId";
 
-    public static String APP_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.sxt.chat";
+    public static String APP_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.sxt.com.sxt.chat";
     private static String DESIGNED_BY = "Designed by xt.sun in China";
     public static String SHARE_CONTENT = "A beautiful app designed with Material Design:\n" + APP_URL + "\n- " + DESIGNED_BY;
 

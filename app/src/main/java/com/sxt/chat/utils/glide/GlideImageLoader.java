@@ -4,7 +4,8 @@ import android.content.Context;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.youth.banner.loader.ImageLoader;
+import com.sxt.chat.R;
+import com.sxt.banner.loader.ImageLoader;
 
 /**
  * Created by izhaohu on 2018/5/22.
@@ -22,7 +23,11 @@ public class GlideImageLoader extends ImageLoader {
          */
 //        eg：
         //Glide 加载图片简单用法
-        Glide.with(context).load(path).bitmapTransform(new GlideRoundTransform(context, 50)).into(imageView);
+        Glide.with(context).load(path)
+                .placeholder(R.mipmap.ic_banner_placeholder)
+                .error(R.mipmap.ic_banner_placeholder)
+                /*.bitmapTransform(new GlideRoundTransformer(context, 8))*/
+                .into(imageView);
 
         //Picasso 加载图片简单用法
 //        Picasso.with(context).load(path).into(imageView);

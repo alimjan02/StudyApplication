@@ -3,7 +3,10 @@ package com.sxt.chat.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.http.SslError;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.webkit.GeolocationPermissions;
@@ -11,10 +14,16 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
+import com.sxt.chat.base.BasePagerAdapter;
 import com.sxt.chat.base.LazyFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 11837 on 2018/4/22.
@@ -33,6 +42,7 @@ public class GitHubFragment extends LazyFragment {
     @Override
     protected void initView() {
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
+        final ViewPager viewPager = contentView.findViewById(R.id.viewPager);
         final WebView webView = contentView.findViewById(R.id.webView);
         initWebView(webView);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorAccent, R.color.main_blue, R.color.main_green);
@@ -49,10 +59,50 @@ public class GitHubFragment extends LazyFragment {
                 webView.loadUrl(GIT_HUB_URL);
             }
         });
+        //解决SwipeRefreshLayout 嵌套滑动冲突
+        AppBarLayout appBarLayout = (AppBarLayout) contentView.findViewById(R.id.app_bar_layout);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                if (verticalOffset >= 0) {
+                    swipeRefreshLayout.setEnabled(true);
+                } else {
+                    swipeRefreshLayout.setEnabled(false);
+                }
+            }
+        });
+        viewPager.setOffscreenPageLimit(3);
+        viewPager.setPageMargin((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()));
+        setViewPagerData(viewPager);
+    }
+
+    private void setViewPagerData(ViewPager viewPager) {
+        final List<String> imgs = new ArrayList<>();
+        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/dd5ca0a0400a87b7800ae9a6f107b562.jpg");
+        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/13cecf96407145708071d88037547c7f.jpg");
+        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/20799e5a4012706c80f83276a47b7f89.jpg");
+        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/21/77a27d12401d6964807090cafca10f5e.jpg");
+        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/21/51e795bc405863d5805af06327c0f208.png");
+        viewPager.setAdapter(new BasePagerAdapter<String>(activity, imgs) {
+            @Override
+            public Object instantiateItem(ViewGroup container, int position) {
+                ImageView img = new ImageView(activity);
+                Glide.with(activity).load(imgs.get(position))
+                        .placeholder(R.mipmap.ic_banner_placeholder)
+                        .error(R.mipmap.ic_banner_placeholder)
+                        .into(img);
+                container.addView(img, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                return img;
+            }
+        });
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private void initWebView(WebView webView) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            webView.setNestedScrollingEnabled(false);
+//        }
         // 设置WebView属性
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);//设置js可以直接打开窗口，如window.open()，默认为false
         webView.getSettings().setJavaScriptEnabled(true);//是否允许执行js，默认为false。设置true时，会提醒可能造成XSS漏洞

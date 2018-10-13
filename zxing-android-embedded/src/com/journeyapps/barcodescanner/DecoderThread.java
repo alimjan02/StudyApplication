@@ -10,7 +10,7 @@ import android.util.Log;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
-import com.google.zxing.client.android.R;
+
 import com.journeyapps.barcodescanner.camera.CameraInstance;
 import com.journeyapps.barcodescanner.camera.PreviewCallback;
 
@@ -34,7 +34,7 @@ public class DecoderThread {
     private final Handler.Callback callback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
-            if (message.what == R.id.zxing_decode) {
+            if (message.what == com.google.zxing.client.android.R.id.zxing_decode) {
                 decode((SourceData) message.obj);
             }
             return true;
@@ -107,7 +107,7 @@ public class DecoderThread {
             synchronized (LOCK) {
                 if (running) {
                     // Post to our thread.
-                    handler.obtainMessage(R.id.zxing_decode, sourceData).sendToTarget();
+                    handler.obtainMessage(com.google.zxing.client.android.R.id.zxing_decode, sourceData).sendToTarget();
                 }
             }
         }
@@ -143,20 +143,20 @@ public class DecoderThread {
             Log.d(TAG, "Found barcode in " + (end - start) + " ms");
             if (resultHandler != null) {
                 BarcodeResult barcodeResult = new BarcodeResult(rawResult, sourceData);
-                Message message = Message.obtain(resultHandler, R.id.zxing_decode_succeeded, barcodeResult);
+                Message message = Message.obtain(resultHandler, com.google.zxing.client.android.R.id.zxing_decode_succeeded, barcodeResult);
                 Bundle bundle = new Bundle();
                 message.setData(bundle);
                 message.sendToTarget();
             }
         } else {
             if (resultHandler != null) {
-                Message message = Message.obtain(resultHandler, R.id.zxing_decode_failed);
+                Message message = Message.obtain(resultHandler, com.google.zxing.client.android.R.id.zxing_decode_failed);
                 message.sendToTarget();
             }
         }
         if (resultHandler != null) {
             List<ResultPoint> resultPoints = decoder.getPossibleResultPoints();
-            Message message = Message.obtain(resultHandler, R.id.zxing_possible_result_points, resultPoints);
+            Message message = Message.obtain(resultHandler, com.google.zxing.client.android.R.id.zxing_possible_result_points, resultPoints);
             message.sendToTarget();
         }
         requestNextPreview();

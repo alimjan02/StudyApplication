@@ -20,8 +20,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.sxt.chat.R;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.json.VideoObject;
-import com.sxt.chat.utils.glide.GlideCircleTransform;
-import com.sxt.chat.utils.glide.GlideRoundTransform;
+import com.sxt.chat.utils.glide.GlideCircleTransformer;
+import com.sxt.chat.utils.glide.GlideRoundTransformer;
 
 import java.util.List;
 
@@ -61,12 +61,12 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
         holder.title.setText(data.get(position).getTitle());
         Glide.with(context)
                 .load(data.get(position).getVideo_img_url())
-                .bitmapTransform(new CenterCrop(context), new GlideRoundTransform(context, 8))
+                .bitmapTransform(new CenterCrop(context), new GlideRoundTransformer(context, 8))
                 .into(holder.img);
 
         Glide.with(context)
                 .load(data.get(position).getVideo_img_url())
-                .bitmapTransform(new GlideCircleTransform(context))
+                .bitmapTransform(new GlideCircleTransformer(context))
                 .into(holder.img_header);
 
         holder.root.setOnClickListener(new View.OnClickListener() {

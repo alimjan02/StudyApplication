@@ -10,6 +10,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ViewSwitcher;
@@ -25,11 +26,13 @@ import com.sxt.chat.json.RoomInfo;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.utils.glide.GlideImageLoader;
+import com.sxt.chat.utils.glide.GlideScaleInTransformer;
+import com.sxt.chat.view.CustomBanner;
 import com.sxt.chat.ws.BmobRequest;
-import com.youth.banner.Banner;
-import com.youth.banner.BannerConfig;
-import com.youth.banner.Transformer;
-import com.youth.banner.listener.OnBannerListener;
+import com.sxt.banner.Banner;
+import com.sxt.banner.BannerConfig;
+import com.sxt.banner.Transformer;
+import com.sxt.banner.listener.OnBannerListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +55,7 @@ public class HomeFragment extends LazyFragment {
     private NormalListAdapter adapterTop;
     private NormalListAdapter adapterCenter;
     private NormalCardListAdapter adapterBottom;
-    private Banner banner;
+    private CustomBanner banner;
 
     private final String CMD_GET_ROOM_LIST = this.getClass().getName() + "CMD_GET_ROOM_LIST";
 
@@ -63,7 +66,7 @@ public class HomeFragment extends LazyFragment {
 
     @Override
     protected void initView() {
-        banner = contentView.findViewById(R.id.banner);
+        banner = (CustomBanner) contentView.findViewById(R.id.banner);
         swipeRefreshLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.swipeRefreshLayout);
         recyclerViewTop = (RecyclerView) contentView.findViewById(R.id.center_recyclerView);
         recyclerViewCenter = (RecyclerView) contentView.findViewById(R.id.bottom_recyclerView);
@@ -140,12 +143,20 @@ public class HomeFragment extends LazyFragment {
                 .setBannerAnimation(Transformer.Default)
                 .setImageLoader(new GlideImageLoader())
                 .setIndicatorGravity(BannerConfig.CENTER)
+                .setPageTransformer(false, new GlideScaleInTransformer())
+                .setOffscreenPageLimit(3)
+                .setPageMargin(getPageMargin() / 2)
+                .setViewPagerMargins(getPageMargin() * 2, 0, getPageMargin() * 2, 0)
                 .setImages(imgs)
-                .setDelayTime(2000)
+                .setDelayTime(5000)
                 .isAutoPlay(true)
                 .start();
 
         BmobRequest.getInstance(activity).getRoomList(50, 0, CMD_GET_ROOM_LIST);
+    }
+
+    private int getPageMargin() {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
     }
 
     private void setAdapter(List<RoomInfo> list) {

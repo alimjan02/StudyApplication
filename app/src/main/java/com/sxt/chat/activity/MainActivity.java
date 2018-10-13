@@ -38,7 +38,7 @@ import com.sxt.chat.task.MainService;
 import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.Prefs;
-import com.sxt.chat.utils.glide.GlideCircleTransform;
+import com.sxt.chat.utils.glide.GlideCircleTransformer;
 import com.sxt.chat.view.searchview.MaterialSearchView;
 import com.sxt.chat.vr.video360.VideoActivity;
 import com.sxt.chat.ws.BmobRequest;
@@ -56,7 +56,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private LinearLayout tabGroup;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
-    private final long millis = 5 * 60 * 1000L;
+    private final long millis = 50 * 60 * 1000L;
     public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
     public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
@@ -234,7 +234,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private void loadHeader(String url, String gender) {
         Glide.with(this).load(url)
                 .error("M".equals(gender) ? R.mipmap.men : R.mipmap.female)
-                .bitmapTransform(new GlideCircleTransform(this))
+                .bitmapTransform(new GlideCircleTransformer(this))
                 .signature(new StringSignature(Prefs.getInstance(App.getCtx()).getString(Prefs.KEY_USER_HEADER_IMAGE_FLAG, "")))
                 .into(userIcon);
     }
@@ -276,6 +276,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         super.onTabCheckedChange(titles, checkedId);
         if (titles != null && titles.length > checkedId) {
             setToolbarTitle(titles[checkedId]);
+            showToolbar(checkedId != 1);
             if (menu != null) {
                 if (checkedId == 0) {
                     menu.findItem(R.id.action_search).setVisible(true);

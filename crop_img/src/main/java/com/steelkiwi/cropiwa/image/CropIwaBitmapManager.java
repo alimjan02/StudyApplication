@@ -26,8 +26,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.steelkiwi.cropiwa.util.CropIwaUtils.*;
-
 /**
  * @author Yaroslav Polyakov https://github.com/polyak01
  *         on 25.02.2017.
@@ -174,8 +172,8 @@ public class CropIwaBitmapManager {
             }
             bos.flush();
         } finally {
-            closeSilently(bis);
-            closeSilently(bos);
+            CropIwaUtils.closeSilently(bis);
+            CropIwaUtils.closeSilently(bos);
         }
         CropIwaLog.d("cached {%s} as {%s}", input.toString(), local.getAbsolutePath());
         return local;
@@ -256,7 +254,7 @@ public class CropIwaBitmapManager {
             CropIwaLog.e(e.getMessage(), e);
             return ExifInterface.ORIENTATION_UNDEFINED;
         } finally {
-            closeSilently(is);
+            CropIwaUtils.closeSilently(is);
         }
     }
 
