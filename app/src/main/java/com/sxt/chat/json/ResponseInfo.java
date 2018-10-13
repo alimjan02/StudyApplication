@@ -3,9 +3,7 @@ package com.sxt.chat.json;
 import com.sxt.chat.db.User;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class ResponseInfo implements Serializable {
 

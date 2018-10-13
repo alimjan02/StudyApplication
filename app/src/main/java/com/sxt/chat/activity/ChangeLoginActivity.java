@@ -1,6 +1,5 @@
 package com.sxt.chat.activity;
 
-
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,16 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 
-import com.sxt.chat.App;
 import com.sxt.chat.R;
-import com.sxt.chat.adapter.ChangeLoginAdapter;
-import com.sxt.chat.base.BaseRecyclerAdapter;
-import com.sxt.chat.base.HeaderActivity;
-import com.sxt.chat.db.SQLiteUserDao;
-import com.sxt.chat.db.User;
-import com.sxt.chat.utils.Prefs;
-import com.sxt.chat.utils.ToastUtil;
-import com.sxt.chat.utils.ToastUtil2;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
@@ -28,6 +18,15 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 import java.util.List;
 
+import com.sxt.chat.App;
+import com.sxt.chat.adapter.ChangeLoginAdapter;
+import com.sxt.chat.base.BaseRecyclerAdapter;
+import com.sxt.chat.base.HeaderActivity;
+import com.sxt.chat.db.SQLiteUserDao;
+import com.sxt.chat.db.User;
+import com.sxt.chat.utils.Prefs;
+import com.sxt.chat.utils.ToastUtil;
+import com.sxt.chat.utils.ToastUtil2;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;

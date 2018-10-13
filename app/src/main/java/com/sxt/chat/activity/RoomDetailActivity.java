@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,7 +47,7 @@ public class RoomDetailActivity extends BaseActivity {
                     .load(roomInfo != null ? roomInfo.getRoom_url() : "")
                     .placeholder(R.mipmap.ic_no_img)
                     .error(R.mipmap.ic_no_img)
-//                .bitmapTransform(new GlideRoundTransform(this, 8))
+//                .bitmapTransform(new GlideRoundTransformer(this, 8))
                     .into((ImageView) findViewById(R.id.image_scrolling_top));
         }
         //让点击导航的逻辑箭头与后键相同，手动finish掉 没有动画效果

@@ -5,10 +5,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.sxt.chat.utils.DateFormatUtil;
 
 public class ExoPlayerOnTouchListener implements View.OnTouchListener {
 

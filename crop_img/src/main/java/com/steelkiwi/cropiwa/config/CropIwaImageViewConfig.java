@@ -5,8 +5,6 @@ import android.content.res.TypedArray;
 import android.support.annotation.FloatRange;
 import android.util.AttributeSet;
 
-import com.steelkiwi.cropiwa.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,19 +34,19 @@ public class CropIwaImageViewConfig {
         if (attrs == null) {
             return config;
         }
-        TypedArray ta = c.obtainStyledAttributes(attrs, R.styleable.CropIwaView);
+        TypedArray ta = c.obtainStyledAttributes(attrs, com.steelkiwi.cropiwa.R.styleable.CropIwaView);
         try {
             config.setMaxScale(ta.getFloat(
-                    R.styleable.CropIwaView_ci_max_scale,
+                    com.steelkiwi.cropiwa.R.styleable.CropIwaView_ci_max_scale,
                     config.getMaxScale()));
             config.setImageTranslationEnabled(ta.getBoolean(
-                    R.styleable.CropIwaView_ci_translation_enabled,
+                    com.steelkiwi.cropiwa.R.styleable.CropIwaView_ci_translation_enabled,
                     config.isImageTranslationEnabled()));
             config.setImageScaleEnabled(ta.getBoolean(
-                    R.styleable.CropIwaView_ci_scale_enabled,
+                    com.steelkiwi.cropiwa.R.styleable.CropIwaView_ci_scale_enabled,
                     config.isImageScaleEnabled()));
             config.setImageInitialPosition(InitialPosition.values()[
-                    ta.getInt(R.styleable.CropIwaView_ci_initial_position, 0)]);
+                    ta.getInt(com.steelkiwi.cropiwa.R.styleable.CropIwaView_ci_initial_position, 0)]);
         } finally {
             ta.recycle();
         }

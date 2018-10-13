@@ -21,8 +21,6 @@ import android.opengl.Matrix;
 import com.google.vr.sdk.controller.Orientation;
 import java.nio.FloatBuffer;
 
-import static com.sxt.chat.vr.video360.rendering.Utils.checkGlError;
-
 /**
  * Renders a reticle in VR for the Daydream Controller.
  *
@@ -95,7 +93,7 @@ final class Reticle {
     program = Utils.compileProgram(vertexShaderCode, fragmentShaderCode);
     mvpMatrixHandle = GLES20.glGetUniformLocation(program, "uMvpMatrix");
     positionHandle = GLES20.glGetAttribLocation(program, "aPosition");
-    checkGlError();
+    Utils.checkGlError();
   }
 
   /**
@@ -107,15 +105,15 @@ final class Reticle {
   public void glDraw(float[] viewProjectionMatrix, float[] orientation) {
     // Configure shader.
     GLES20.glUseProgram(program);
-    checkGlError();
+    Utils.checkGlError();
 
     Matrix.multiplyMM(modelViewProjectionMatrix, 0, viewProjectionMatrix, 0, orientation, 0);
     GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, modelViewProjectionMatrix, 0);
-    checkGlError();
+    Utils.checkGlError();
 
     // Render quad.
     GLES20.glEnableVertexAttribArray(positionHandle);
-    checkGlError();
+    Utils.checkGlError();
 
     vertexBuffer.position(0);
     GLES20.glVertexAttribPointer(
@@ -125,10 +123,10 @@ final class Reticle {
         false,
         0,
         vertexBuffer);
-    checkGlError();
+    Utils.checkGlError();
 
     GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertexData.length / COORDS_PER_VERTEX);
-    checkGlError();
+    Utils.checkGlError();
 
     GLES20.glDisableVertexAttribArray(positionHandle);
   }

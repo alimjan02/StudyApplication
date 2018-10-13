@@ -21,8 +21,8 @@ import com.sxt.chat.activity.RoomDetailActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.json.RoomInfo;
 import com.sxt.chat.utils.Prefs;
-import com.sxt.chat.utils.glide.GlideCircleTransform;
-import com.sxt.chat.utils.glide.GlideRoundTransform;
+import com.sxt.chat.utils.glide.GlideCircleTransformer;
+import com.sxt.chat.utils.glide.GlideRoundTransformer;
 
 import java.util.List;
 
@@ -49,13 +49,13 @@ public class NormalCardListAdapter extends BaseRecyclerAdapter<RoomInfo> {
         Glide.with(context)
                 .load(data.get(position).getRoom_url())
                 .error(R.mipmap.ic_no_img)
-                .bitmapTransform(new GlideRoundTransform(context, 8))
+                .bitmapTransform(new GlideRoundTransformer(context, 8))
                 .into(holder.img);
 
         Glide.with(context)
                 .load(data.get(position).getRoom_url())
                 .error(R.mipmap.ic_no_img)
-                .bitmapTransform(new GlideCircleTransform(context))
+                .bitmapTransform(new GlideCircleTransformer(context))
                 .into(holder.img_header);
 
         holder.root.setOnClickListener(new View.OnClickListener() {

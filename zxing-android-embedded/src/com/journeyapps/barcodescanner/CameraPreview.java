@@ -1,7 +1,6 @@
 package com.journeyapps.barcodescanner;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;

@@ -37,12 +37,8 @@ import com.sxt.chat.vr.video360.rendering.Mesh;
 import com.sxt.chat.vr.video360.rendering.SceneRenderer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLConnection;
 import java.security.InvalidParameterException;
 

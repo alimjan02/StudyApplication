@@ -3,6 +3,7 @@ package com.steelkiwi.cropiwa.util;
 import android.content.Context;
 import android.net.Uri;
 
+import com.steelkiwi.cropiwa.CropIwaView;
 import com.steelkiwi.cropiwa.image.CropIwaBitmapManager;
 
 /**
@@ -32,7 +33,7 @@ public class LoadBitmapCommand {
     }
 
     /**
-     * If we call .setImageUri(Uri) on {@link com.steelkiwi.cropiwa.CropIwaView} from onCreate
+     * If we call .setImageUri(Uri) on {@link CropIwaView} from onCreate
      * view won't know its width and height, so we need to delay image loading until onSizeChanged.
      */
     public void tryExecute(Context context) {

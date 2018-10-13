@@ -5,8 +5,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,7 +24,6 @@ import com.qq.e.ads.splash.SplashADListener;
 import com.qq.e.comm.util.AdError;
 import com.sxt.chat.R;
 import com.sxt.chat.base.BaseActivity;
-import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.utils.Constants;
 
 import java.util.ArrayList;

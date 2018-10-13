@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide;
 import com.sxt.chat.R;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.db.User;
-import com.sxt.chat.utils.glide.GlideCircleTransform;
+import com.sxt.chat.utils.glide.GlideCircleTransformer;
 
 import java.util.List;
 
@@ -75,7 +75,7 @@ public class ChangeLoginAdapter extends BaseRecyclerAdapter<User> {
         Glide.with(context)
                 .load(url)
                 .error(placeHolder)
-                .bitmapTransform(new GlideCircleTransform(context))
+                .bitmapTransform(new GlideCircleTransformer(context))
 //                .skipMemoryCache(true)//跳过内存
 //                .diskCacheStrategy(DiskCacheStrategy.NONE)//想要生效必须添加 跳过内存
                 .into(target);

@@ -2,7 +2,6 @@ package com.journeyapps.barcodescanner.camera;
 
 import android.graphics.Rect;
 import android.util.Log;
-import android.view.Surface;
 
 import com.journeyapps.barcodescanner.Size;
 

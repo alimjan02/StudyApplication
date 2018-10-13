@@ -19,7 +19,7 @@ import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.json.OCRObject;
-import com.sxt.chat.utils.glide.GlideRoundTransform;
+import com.sxt.chat.utils.glide.GlideRoundTransformer;
 import com.sxt.chat.youtu.OCRListener;
 import com.sxt.chat.youtu.OCRTask;
 import com.sxt.chat.youtu.SDKConfig;
@@ -115,8 +115,8 @@ public class YouTuIdCardActivity extends HeaderActivity implements View.OnClickL
         File file = new File(imgPath);
         if (file.exists()) {
             Glide.with(this).load(file)
-                    .transform(new CenterCrop(this), new GlideRoundTransform(this, 4))
-                    /*.bitmapTransform(new GlideRoundTransform(this, 8))*/
+                    .transform(new CenterCrop(this), new GlideRoundTransformer(this, 4))
+                    /*.bitmapTransform(new GlideRoundTransformer(this, 8))*/
                     .error(R.mipmap.pic_ida)
                     .into(position == 0 ? imgIdCard : imgIdCard2);
 

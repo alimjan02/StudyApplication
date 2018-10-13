@@ -30,8 +30,6 @@ import com.google.vr.sdk.controller.Orientation;
 import java.nio.FloatBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.sxt.chat.vr.video360.rendering.Utils.checkGlError;
-
 /**
  * Renders a floating, textured, translucent quad in VR at a hardcoded distance.
  *
@@ -170,7 +168,7 @@ public class CanvasQuad {
     textureHandle = GLES20.glGetUniformLocation(program, "uTexture");
     textureId = Utils.glCreateExternalTexture();
     alphaHandle = GLES20.glGetUniformLocation(program, "uAlpha");
-    checkGlError();
+    Utils.checkGlError();
 
     // Create the underlying SurfaceTexture with the appropriate size.
     displaySurfaceTexture = new SurfaceTexture(textureId);
@@ -189,30 +187,30 @@ public class CanvasQuad {
   /* package */ void glDraw(float[] viewProjectionMatrix, float alpha) {
     // Configure shader.
     GLES20.glUseProgram(program);
-    checkGlError();
+    Utils.checkGlError();
 
     GLES20.glEnableVertexAttribArray(positionHandle);
     GLES20.glEnableVertexAttribArray(textureCoordsHandle);
-    checkGlError();
+    Utils.checkGlError();
 
     GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, viewProjectionMatrix, 0);
     GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
     GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textureId);
     GLES20.glUniform1i(textureHandle, 0);
     GLES20.glUniform1f(alphaHandle, alpha);
-    checkGlError();
+    Utils.checkGlError();
 
     // Load position data.
     vertexBuffer.position(0);
     GLES20.glVertexAttribPointer(positionHandle, POSITION_COORDS_PER_VERTEX, GLES20.GL_FLOAT,
                                  false, VERTEX_STRIDE_BYTES, vertexBuffer);
-    checkGlError();
+    Utils.checkGlError();
 
     // Load texture data.
     vertexBuffer.position(POSITION_COORDS_PER_VERTEX);
     GLES20.glVertexAttribPointer(textureCoordsHandle, TEXTURE_COORDS_PER_VERTEX, GLES20.GL_FLOAT,
                                  false, VERTEX_STRIDE_BYTES, vertexBuffer);
-    checkGlError();
+    Utils.checkGlError();
 
     if (surfaceDirty.compareAndSet(true, false)) {
       // If the Surface has been written to, get the new data onto the SurfaceTexture.
@@ -221,7 +219,7 @@ public class CanvasQuad {
 
     // Render.
     GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertexData.length / COORDS_PER_VERTEX);
-    checkGlError();
+    Utils.checkGlError();
 
     GLES20.glDisableVertexAttribArray(positionHandle);
     GLES20.glDisableVertexAttribArray(textureCoordsHandle);

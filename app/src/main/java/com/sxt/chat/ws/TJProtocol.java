@@ -12,26 +12,16 @@ import com.google.gson.GsonBuilder;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.download.UrlInterceptor;
-import com.sxt.chat.json.ResponseInfo;
-import com.sxt.chat.json.RoomInfo;
 import com.sxt.chat.receiver.WatchDogReceiver;
 import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.Prefs;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

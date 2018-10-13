@@ -12,7 +12,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.db.User;
-import com.sxt.chat.utils.glide.GlideCircleTransform;
+import com.sxt.chat.utils.glide.GlideCircleTransformer;
 import com.sxt.chat.view.chart.RulerView;
 
 import cn.bmob.v3.BmobUser;
@@ -71,7 +71,7 @@ public class SelectHeightActivity extends HeaderActivity {
         Glide.with(this)
                 .load(url)
                 .error(placeHolder)
-                .bitmapTransform(new GlideCircleTransform(this))
+                .bitmapTransform(new GlideCircleTransformer(this))
                 .skipMemoryCache(true)//跳过内存
                 .diskCacheStrategy(DiskCacheStrategy.NONE)//想要生效必须添加 跳过内存
                 .into((ImageView) findViewById(R.id.img));

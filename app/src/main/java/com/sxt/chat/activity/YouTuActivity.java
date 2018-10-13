@@ -17,7 +17,7 @@ import com.steelkiwi.cropiwa.util.UriUtil;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.json.OCRObject;
-import com.sxt.chat.utils.glide.GlideRoundTransform;
+import com.sxt.chat.utils.glide.GlideRoundTransformer;
 import com.sxt.chat.youtu.OCRListener;
 import com.sxt.chat.youtu.OCRTask;
 import com.sxt.chat.youtu.SDKConfig;
@@ -53,8 +53,8 @@ public class YouTuActivity extends HeaderActivity {
         File file = new File(imgPath);
         if (file.exists()) {
             Glide.with(this).load(file)/*.override(320, 198)*/
-                    .transform(new CenterCrop(this), new GlideRoundTransform(this, 4))
-                    /*.bitmapTransform(new GlideRoundTransform(this, 8))*/
+                    .transform(new CenterCrop(this), new GlideRoundTransformer(this, 4))
+                    /*.bitmapTransform(new GlideRoundTransformer(this, 8))*/
                     .into(((ImageView) findViewById(R.id.img)));
 
             if (ocrTask != null && !ocrTask.isCancelled()) {

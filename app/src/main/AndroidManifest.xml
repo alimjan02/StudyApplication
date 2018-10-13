@@ -168,13 +168,13 @@
         </activity>
 
         <activity
-            android:name=".activity.BasicInfoActivity"
+            android:name="com.sxt.chat.activity.BasicInfoActivity"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".activity.RegisterActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".activity.CropActivity"
+            android:name="com.sxt.chat.activity.CropActivity"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".activity.UpdateUserImgActivity"
@@ -198,7 +198,7 @@
             android:name=".activity.SelectNumberActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".activity.ChangeLoginActivity"
+            android:name="com.sxt.chat.activity.ChangeLoginActivity"
             android:configChanges="orientation|screenSize" />
 
         <activity

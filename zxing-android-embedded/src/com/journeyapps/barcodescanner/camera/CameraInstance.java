@@ -7,7 +7,6 @@ import android.view.SurfaceHolder;
 
 import com.google.zxing.client.android.R;
 import com.journeyapps.barcodescanner.Size;
-import com.journeyapps.barcodescanner.SourceData;
 import com.journeyapps.barcodescanner.Util;
 
 /**
