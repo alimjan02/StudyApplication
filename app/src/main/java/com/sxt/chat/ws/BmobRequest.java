@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sxt.chat.R;
 import com.sxt.chat.db.User;
+import com.sxt.chat.json.Banner;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.RoomInfo;
 
@@ -114,6 +115,32 @@ public final class BmobRequest {
             }
         });
     }
+
+    /**
+     * 获取Banner
+     */
+    public void getBanner(int newLimit, int newSkip, final String cmd) {
+        BmobQuery<Banner> query = new BmobQuery<>();
+        query.setLimit(newLimit);
+        query.setSkip(newSkip);
+        query.findObjects(new FindListener<Banner>() {
+            @Override
+            public void done(List<Banner> list, BmobException e) {
+                if (e == null) {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.OK);
+                    resp.setCmd(cmd);
+                    resp.setBannerInfos(list);
+                    EventBus.getDefault().post(resp);
+                } else {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.ERROR);
+                    resp.setCmd(cmd);
+                    resp.setError("errorCode = " + e.getErrorCode() + "\r\n message : " + e.getMessage());
+                    EventBus.getDefault().post(resp);
+                }
+            }
+        });
+    }
+
 
     /**
      * 获取房间

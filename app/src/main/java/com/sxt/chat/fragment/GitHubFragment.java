@@ -1,28 +1,42 @@
 package com.sxt.chat.fragment;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
-import android.net.http.SslError;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.GeolocationPermissions;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
-import com.sxt.chat.App;
+import com.sxt.banner.BannerConfig;
+import com.sxt.banner.BannerView;
+import com.sxt.banner.Transformer;
+import com.sxt.banner.listener.OnBannerListener;
+import com.sxt.banner.loader.UILoaderInterface;
+import com.sxt.banner.transformer.ScaleInTransformer;
 import com.sxt.chat.R;
-import com.sxt.chat.base.BasePagerAdapter;
+import com.sxt.chat.activity.RoomDetailActivity;
+import com.sxt.chat.adapter.NormalCardListAdapter;
+import com.sxt.chat.adapter.NormalListAdapter;
+import com.sxt.chat.adapter.config.NoScrollLinearLayoutManaget;
 import com.sxt.chat.base.LazyFragment;
+import com.sxt.chat.json.Banner;
+import com.sxt.chat.json.ResponseInfo;
+import com.sxt.chat.json.RoomInfo;
+import com.sxt.chat.utils.Prefs;
+import com.sxt.chat.utils.ToastUtil;
+import com.sxt.chat.ws.BmobRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,8 +45,21 @@ import java.util.List;
 
 public class GitHubFragment extends LazyFragment {
 
-    private final String GIT_HUB_URL = "https://github.com/good-good-study";
     private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView recyclerViewTop;
+    private RecyclerView recyclerViewCenter;
+    private RecyclerView recyclerViewBottom;
+    private ViewSwitcher viewSwitcherBanner;
+    private ViewSwitcher viewSwitcherTop;
+    private ViewSwitcher viewSwitcherCenter;
+    private ViewSwitcher viewSwitcherBottom;
+    private NormalListAdapter adapterTop;
+    private NormalListAdapter adapterCenter;
+    private NormalCardListAdapter adapterBottom;
+    private BannerView bannerView;
+
+    private final String CMD_GET_ROOM_LIST = this.getClass().getName() + "CMD_GET_ROOM_LIST";
+    private final String CMD_GET_Banner_LIST = this.getClass().getName() + "CMD_GET_Banner_LIST";
 
     @Override
     protected int getDisplayView(LayoutInflater inflater, ViewGroup container) {
@@ -41,24 +68,34 @@ public class GitHubFragment extends LazyFragment {
 
     @Override
     protected void initView() {
-        swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
-        final ViewPager viewPager = contentView.findViewById(R.id.viewPager);
-        final WebView webView = contentView.findViewById(R.id.webView);
-        initWebView(webView);
+        swipeRefreshLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.swipeRefreshLayout);
+        recyclerViewTop = (RecyclerView) contentView.findViewById(R.id.center_recyclerView);
+        recyclerViewCenter = (RecyclerView) contentView.findViewById(R.id.bottom_recyclerView);
+        recyclerViewBottom = (RecyclerView) contentView.findViewById(R.id.last_recyclerView);
+        viewSwitcherBanner = (ViewSwitcher) contentView.findViewById(R.id.banner_viewSwitcher);
+        viewSwitcherTop = (ViewSwitcher) contentView.findViewById(R.id.center_viewSitcher);
+        viewSwitcherCenter = (ViewSwitcher) contentView.findViewById(R.id.bottom_viewSwitcher);
+        viewSwitcherBottom = (ViewSwitcher) contentView.findViewById(R.id.last_viewSitcher);
+
+        recyclerViewTop.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
+        recyclerViewCenter.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
+        recyclerViewBottom.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
+
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorAccent, R.color.main_blue, R.color.main_green);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                webView.reload();
+                refresh();
             }
         });
         swipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                swipeRefreshLayout.setRefreshing(true);//第一次来 并不会调用onRefresh方法  android bug
-                webView.loadUrl(GIT_HUB_URL);
+                swipeRefreshLayout.setRefreshing(true);
+                refresh();
             }
         });
+
         //解决SwipeRefreshLayout 嵌套滑动冲突
         AppBarLayout appBarLayout = (AppBarLayout) contentView.findViewById(R.id.app_bar_layout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -72,84 +109,126 @@ public class GitHubFragment extends LazyFragment {
                 }
             }
         });
-        viewPager.setOffscreenPageLimit(3);
-        viewPager.setPageMargin((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()));
-        setViewPagerData(viewPager);
     }
 
-    private void setViewPagerData(ViewPager viewPager) {
-        final List<String> imgs = new ArrayList<>();
-        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/dd5ca0a0400a87b7800ae9a6f107b562.jpg");
-        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/13cecf96407145708071d88037547c7f.jpg");
-        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/20799e5a4012706c80f83276a47b7f89.jpg");
-        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/21/77a27d12401d6964807090cafca10f5e.jpg");
-        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/21/51e795bc405863d5805af06327c0f208.png");
-        viewPager.setAdapter(new BasePagerAdapter<String>(activity, imgs) {
-            @Override
-            public Object instantiateItem(ViewGroup container, int position) {
-                ImageView img = new ImageView(activity);
-                Glide.with(activity).load(imgs.get(position))
-                        .placeholder(R.mipmap.ic_banner_placeholder)
-                        .error(R.mipmap.ic_banner_placeholder)
-                        .into(img);
-                container.addView(img, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                return img;
-            }
-        });
+    private void refresh() {
+        BmobRequest.getInstance(activity).getBanner(10, 0, CMD_GET_Banner_LIST);
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
-    private void initWebView(WebView webView) {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            webView.setNestedScrollingEnabled(false);
-//        }
-        // 设置WebView属性
-        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);//设置js可以直接打开窗口，如window.open()，默认为false
-        webView.getSettings().setJavaScriptEnabled(true);//是否允许执行js，默认为false。设置true时，会提醒可能造成XSS漏洞
-        webView.getSettings().setSupportZoom(true);//是否可以缩放，默认true
-        webView.getSettings().setBuiltInZoomControls(true);//是否显示缩放按钮，默认false
-        webView.getSettings().setUseWideViewPort(true);//设置此属性，可任意比例缩放。大视图模式
-        webView.getSettings().setLoadWithOverviewMode(true);//和setUseWideViewPort(true)一起解决网页自适应问题
-        webView.getSettings().setAppCacheEnabled(true);//是否使用缓存
-        //用于显示地图 需要启用数据库
-        webView.getSettings().setDatabaseEnabled(true);
-        String path = App.getCtx().getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();
-        webView.getSettings().setGeolocationEnabled(true);//启动地理定位,
-        webView.getSettings().setGeolocationDatabasePath(path);//设置定位的数据库路径
-        webView.getSettings().setDomStorageEnabled(true);//DOM Storage
-        webView.getSettings().setAllowFileAccess(true);
-        webView.setFocusable(true);
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-            }
+    private int getPageMargin() {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
+    }
 
-            @Override
-            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-                callback.invoke(origin, true, false);
-                super.onGeolocationPermissionsShowPrompt(origin, callback);
-            }
-        });
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return super.shouldOverrideUrlLoading(view, url);
-            }
+    private void refreshBanner(final List<Banner> banners) {
+        if (bannerView == null) {
+            viewSwitcherBanner.setDisplayedChild(1);
+            bannerView = contentView.findViewById(R.id.banner);
+            bannerView.setBannerStyle(BannerConfig.CIRCLE_INDICATOR)
+                    .setIndicatorGravity(BannerConfig.CENTER)
+                    .setBannerAnimation(Transformer.Default)
+                    .setOffscreenPageLimit(3)
+                    .setPageMargin(getPageMargin() / 8)
+                    .setViewPagerMargins(getPageMargin(), 0, getPageMargin(), 0)
+                    .setPageTransformer(false, new ScaleInTransformer())
+                    .setUILoader(banners, new UILoaderInterface<View>() {
 
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
+                        @Override
+                        public void displayView(Context context, Object path, View displayView) {
+                            Glide.with(context).load(((Banner) path).getUrl())
+                                    .placeholder(R.mipmap.ic_banner_placeholder)
+                                    .error(R.mipmap.ic_banner_placeholder)
+                                    .into((ImageView) displayView.findViewById(R.id.img));
+                        }
+
+                        @Override
+                        public View createView(Context context) {
+                            View view = LayoutInflater.from(context).inflate(R.layout.item_banner, null, false);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                view.setTransitionName("shareView");
+                            }
+                            return view;
+                        }
+                    })
+                    .setOnBannerListener(new OnBannerListener() {
+                        @Override
+                        public void OnBannerClick(int position) {
+                            Intent intent = new Intent(context, RoomDetailActivity.class);
+                            Bundle bundle = new Bundle();
+                            RoomInfo roomInfo = new RoomInfo();
+                            roomInfo.setHome_name("房间详情");
+                            roomInfo.setRoom_url(banners.get(position).getUrl());
+                            bundle.putSerializable(Prefs.ROOM_INFO, roomInfo);
+                            intent.putExtra(Prefs.ROOM_INFO, bundle);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                context.startActivity(intent,
+                                        ActivityOptions.makeSceneTransitionAnimation
+                                                ((Activity) context, bannerView, "shareView").toBundle());
+                            } else {
+                                context.startActivity(intent);
+                            }
+                        }
+                    })
+                    .setDelayTime(3000)
+                    .isAutoPlay(true);
+        } else {
+            bannerView.update(banners);
+        }
+        bannerView.start();
+    }
+
+    private void refreshList(List<RoomInfo> list) {
+        if (adapterTop == null || adapterCenter == null || adapterBottom == null) {
+            adapterTop = new NormalListAdapter(activity, list);
+            adapterCenter = new NormalListAdapter(activity, list);
+            adapterBottom = new NormalCardListAdapter(activity, list);
+
+            viewSwitcherTop.setDisplayedChild(1);
+            viewSwitcherCenter.setDisplayedChild(1);
+            viewSwitcherBottom.setDisplayedChild(1);
+
+            recyclerViewTop.setNestedScrollingEnabled(false);
+            recyclerViewCenter.setNestedScrollingEnabled(false);
+            recyclerViewBottom.setNestedScrollingEnabled(false);
+
+            recyclerViewTop.setAdapter(adapterTop);
+            recyclerViewCenter.setAdapter(adapterCenter);
+            recyclerViewBottom.setAdapter(adapterBottom);
+        } else {
+            adapterTop.notifyDataSetChanged(list);
+            adapterCenter.notifyDataSetChanged(list);
+            adapterBottom.notifyDataSetChanged(list);
+        }
+    }
+
+    @Override
+    public void onMessage(ResponseInfo resp) {
+        if (ResponseInfo.OK == resp.getCode()) {
+            if (CMD_GET_Banner_LIST.equals(resp.getCmd())) {
+                refreshBanner(resp.getBannerInfos());
+                BmobRequest.getInstance(activity).getRoomList(50, 0, CMD_GET_ROOM_LIST);
+            } else if (CMD_GET_ROOM_LIST.equals(resp.getCmd())) {
+                refreshList(resp.getRoomInfoList());
                 swipeRefreshLayout.setRefreshing(false);
             }
+        } else {
+            swipeRefreshLayout.setRefreshing(false);
+            ToastUtil.showToast(activity, resp.getError());
+        }
+    }
 
-            @Override
-            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-//                    super.onReceivedSslError(view, handler, error);
-                // handler.cancel();// Android默认的处理方式
-                handler.proceed();// 接受所有网站的证书
-                // handleMessage(Message msg);// 进行其他处理
+    @Override
+    protected void checkUserVisibleHint(boolean isVisibleToUser) {
+        super.checkUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            //开始轮播
+            if (bannerView != null) {
+                bannerView.startAutoPlay();
             }
-        });
+        } else {
+            //结束轮播
+            if (bannerView != null) {
+                bannerView.stopAutoPlay();
+            }
+        }
     }
 }

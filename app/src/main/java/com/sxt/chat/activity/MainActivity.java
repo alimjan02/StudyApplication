@@ -276,7 +276,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         super.onTabCheckedChange(titles, checkedId);
         if (titles != null && titles.length > checkedId) {
             setToolbarTitle(titles[checkedId]);
-            showToolbar(checkedId != 1);
             if (menu != null) {
                 if (checkedId == 0) {
                     menu.findItem(R.id.action_search).setVisible(true);

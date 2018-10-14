@@ -29,6 +29,7 @@ public class ResponseInfo implements Serializable {
     private User user;
     private String imgUrl;
     private List<RoomInfo> roomInfoList;
+    private List<Banner> bannerInfoList;
 
     public ResponseInfo(int code) {
         this.code = code;
@@ -61,6 +62,14 @@ public class ResponseInfo implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Banner> getBannerInfos() {
+        return bannerInfoList;
+    }
+
+    public void setBannerInfos(List<Banner> bannerInfoList) {
+        this.bannerInfoList = bannerInfoList;
     }
 
     public List<RoomInfo> getRoomInfoList() {

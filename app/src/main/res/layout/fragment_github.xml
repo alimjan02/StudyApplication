@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <com.sxt.chat.view.CustomSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/main_body"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -18,34 +19,204 @@
             <android.support.design.widget.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipChildren="false"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/viewPager"
+                <ViewSwitcher
+                    android:id="@+id/banner_viewSwitcher"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginRight="60dp"
+                    android:layout_height="160dp"
                     android:clipChildren="false"
                     app:layout_collapseMode="parallax"
-                    app:layout_collapseParallaxMultiplier="0.5" />
+                    app:layout_collapseParallaxMultiplier="0.5">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_banner_placeholder" />
+
+                    <com.sxt.banner.BannerView
+                        android:id="@+id/banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipChildren="false"
+                        app:indicator_drawable_selected="@drawable/dot_blue"
+                        app:indicator_drawable_unselected="@drawable/dot_white"
+                        app:indicator_height="6dp"
+                        app:indicator_margin="2dp"
+                        app:indicator_width="6dp" />
+
+                </ViewSwitcher>
 
             </android.support.design.widget.CollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <WebView
-                android:id="@+id/webView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:overScrollMode="never" />
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="8dp">
+
+                    <TextView
+                        style="@style/text_17_color_1_style"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="风景图片"
+                        android:textColor="@color/black" />
+
+                </FrameLayout>
+
+                <ViewSwitcher
+                    android:id="@+id/last_viewSitcher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="10dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_placeholder" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/last_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="5dp" />
+                </ViewSwitcher>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/white"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="8dp">
+
+                    <TextView
+                        style="@style/text_17_color_1_style"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="风景图片"
+                        android:textColor="@color/black" />
+
+                </FrameLayout>
+
+                <ViewSwitcher
+                    android:id="@+id/center_viewSitcher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="10dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_placeholder" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/center_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="5dp" />
+
+                </ViewSwitcher>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/white"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="8dp">
+
+                    <TextView
+                        style="@style/text_17_color_1_style"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="风景图片"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/more"
+                        style="@style/text_12_color_3_style"
+                        android:layout_gravity="center_vertical|end"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:text="更多" />
+
+                </FrameLayout>
+
+                <ViewSwitcher
+                    android:id="@+id/bottom_viewSwitcher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="10dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_placeholder" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/bottom_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="5dp" />
+
+                </ViewSwitcher>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:paddingBottom="20dp">
+
+                    <View
+                        android:layout_width="50dp"
+                        android:layout_height="0.5dp"
+                        android:background="@color/text_color_3" />
+
+                    <TextView
+                        style="@style/text_14_color_3_style"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:text="我也是有底线的" />
+
+                    <View
+                        android:layout_width="50dp"
+                        android:layout_height="0.5dp"
+                        android:background="@color/text_color_3" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
 
