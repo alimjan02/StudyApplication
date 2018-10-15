@@ -79,6 +79,7 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
             case R.id.clean_cache://清除缓存
                 clearCache();
                 break;
+
             case R.id.current_version://检查更新
                 checkUpdate((int) System.currentTimeMillis());
                 break;
