@@ -108,14 +108,14 @@ public class YouTuActivity extends HeaderActivity {
     }
 
     public void startGallery(View view) {
-        boolean b = checkPermission(REQUEST_CODE_GALLERY, Manifest.permission.READ_EXTERNAL_STORAGE, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE});
+        boolean b = checkPermission(REQUEST_CODE_GALLERY, Manifest.permission_group.STORAGE, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE});
         if (b) {
             startGalleryApp();
         }
     }
 
     public void startCamera(View view) {
-        boolean b = checkPermission(REQUEST_CODE_CAMARER, Manifest.permission.CAMERA, new String[]{Manifest.permission.CAMERA});
+        boolean b = checkPermission(REQUEST_CODE_CAMARER, Manifest.permission_group.CAMERA, new String[]{Manifest.permission.CAMERA});
         if (b) {
             startCameraApp();
         }
@@ -223,9 +223,11 @@ public class YouTuActivity extends HeaderActivity {
         super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_CAMARER:
+                goToAppSettingsPage();
                 Toast(R.string.allow_CAMERA);
                 break;
             case REQUEST_CODE_GALLERY:
+                goToAppSettingsPage();
                 Toast(R.string.allow_WRITE_EXTERNAL_STORAGE);
                 break;
         }

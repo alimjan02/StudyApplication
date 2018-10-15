@@ -8,7 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -26,9 +26,7 @@ import com.sxt.banner.loader.UILoaderInterface;
 import com.sxt.banner.transformer.ScaleInTransformer;
 import com.sxt.chat.R;
 import com.sxt.chat.activity.RoomDetailActivity;
-import com.sxt.chat.adapter.NormalCardListAdapter;
-import com.sxt.chat.adapter.NormalListAdapter;
-import com.sxt.chat.adapter.config.NoScrollLinearLayoutManaget;
+import com.sxt.chat.adapter.HomeAdapter;
 import com.sxt.chat.base.LazyFragment;
 import com.sxt.chat.json.Banner;
 import com.sxt.chat.json.ResponseInfo;
@@ -43,20 +41,14 @@ import java.util.List;
  * Created by 11837 on 2018/4/22.
  */
 
-public class GitHubFragment extends LazyFragment {
+public class GithubFragment extends LazyFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView recyclerViewTop;
-    private RecyclerView recyclerViewCenter;
-    private RecyclerView recyclerViewBottom;
-    private ViewSwitcher viewSwitcherBanner;
-    private ViewSwitcher viewSwitcherTop;
-    private ViewSwitcher viewSwitcherCenter;
-    private ViewSwitcher viewSwitcherBottom;
-    private NormalListAdapter adapterTop;
-    private NormalListAdapter adapterCenter;
-    private NormalCardListAdapter adapterBottom;
     private BannerView bannerView;
+    private ViewSwitcher viewSwitcherBanner;
+    private RecyclerView recyclerView;
+    private HomeAdapter adapter;
+    private ViewSwitcher viewSwitcher;
 
     private final String CMD_GET_ROOM_LIST = this.getClass().getName() + "CMD_GET_ROOM_LIST";
     private final String CMD_GET_Banner_LIST = this.getClass().getName() + "CMD_GET_Banner_LIST";
@@ -69,18 +61,10 @@ public class GitHubFragment extends LazyFragment {
     @Override
     protected void initView() {
         swipeRefreshLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.swipeRefreshLayout);
-        recyclerViewTop = (RecyclerView) contentView.findViewById(R.id.center_recyclerView);
-        recyclerViewCenter = (RecyclerView) contentView.findViewById(R.id.bottom_recyclerView);
-        recyclerViewBottom = (RecyclerView) contentView.findViewById(R.id.last_recyclerView);
+        recyclerView = (RecyclerView) contentView.findViewById(R.id.recyclerView);
         viewSwitcherBanner = (ViewSwitcher) contentView.findViewById(R.id.banner_viewSwitcher);
-        viewSwitcherTop = (ViewSwitcher) contentView.findViewById(R.id.center_viewSitcher);
-        viewSwitcherCenter = (ViewSwitcher) contentView.findViewById(R.id.bottom_viewSwitcher);
-        viewSwitcherBottom = (ViewSwitcher) contentView.findViewById(R.id.last_viewSitcher);
-
-        recyclerViewTop.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
-        recyclerViewCenter.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
-        recyclerViewBottom.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
-
+        viewSwitcher = (ViewSwitcher) contentView.findViewById(R.id.viewSitcher);
+        recyclerView.setLayoutManager(new GridLayoutManager(activity, 2));
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorAccent, R.color.main_blue, R.color.main_green);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -112,18 +96,32 @@ public class GitHubFragment extends LazyFragment {
     }
 
     private void refresh() {
-        BmobRequest.getInstance(activity).getBanner(10, 0, CMD_GET_Banner_LIST);
+        BmobRequest.getInstance(activity).getBanner(50, 0, CMD_GET_Banner_LIST);
     }
 
     private int getPageMargin() {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
     }
 
+    private void refreshList(List<RoomInfo> list) {
+        if (adapter == null) {
+            adapter = new HomeAdapter(activity, list);
+            viewSwitcher.setDisplayedChild(1);
+            recyclerView.setNestedScrollingEnabled(false);
+            recyclerView.setAdapter(adapter);
+        } else {
+            adapter.notifyDataSetChanged(list);
+        }
+    }
+
     private void refreshBanner(final List<Banner> banners) {
+//        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/dd5ca0a0400a87b7800ae9a6f107b562.jpg");
+//        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/13cecf96407145708071d88037547c7f.jpg");
+//        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/20799e5a4012706c80f83276a47b7f89.jpg");
         if (bannerView == null) {
             viewSwitcherBanner.setDisplayedChild(1);
             bannerView = contentView.findViewById(R.id.banner);
-            bannerView.setBannerStyle(BannerConfig.CIRCLE_INDICATOR)
+            bannerView.setBannerStyle(BannerConfig.NOT_INDICATOR)
                     .setIndicatorGravity(BannerConfig.CENTER)
                     .setBannerAnimation(Transformer.Default)
                     .setOffscreenPageLimit(3)
@@ -174,30 +172,6 @@ public class GitHubFragment extends LazyFragment {
             bannerView.update(banners);
         }
         bannerView.start();
-    }
-
-    private void refreshList(List<RoomInfo> list) {
-        if (adapterTop == null || adapterCenter == null || adapterBottom == null) {
-            adapterTop = new NormalListAdapter(activity, list);
-            adapterCenter = new NormalListAdapter(activity, list);
-            adapterBottom = new NormalCardListAdapter(activity, list);
-
-            viewSwitcherTop.setDisplayedChild(1);
-            viewSwitcherCenter.setDisplayedChild(1);
-            viewSwitcherBottom.setDisplayedChild(1);
-
-            recyclerViewTop.setNestedScrollingEnabled(false);
-            recyclerViewCenter.setNestedScrollingEnabled(false);
-            recyclerViewBottom.setNestedScrollingEnabled(false);
-
-            recyclerViewTop.setAdapter(adapterTop);
-            recyclerViewCenter.setAdapter(adapterCenter);
-            recyclerViewBottom.setAdapter(adapterBottom);
-        } else {
-            adapterTop.notifyDataSetChanged(list);
-            adapterCenter.notifyDataSetChanged(list);
-            adapterBottom.notifyDataSetChanged(list);
-        }
     }
 
     @Override

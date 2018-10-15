@@ -24,7 +24,7 @@
                 <ViewSwitcher
                     android:id="@+id/banner_viewSwitcher"
                     android:layout_width="match_parent"
-                    android:layout_height="160dp"
+                    android:layout_height="150dp"
                     android:clipChildren="false"
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.5">
@@ -68,12 +68,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="2dp"
-                    android:paddingTop="8dp">
+                    android:paddingBottom="3dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp">
 
                     <TextView
-                        style="@style/text_15_color_1_style"
+                        style="@style/text_14_color_1_style"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
                         android:text="风景图片"
@@ -82,60 +83,116 @@
                 </FrameLayout>
 
                 <ViewSwitcher
-                    android:id="@+id/viewSitcher"
+                    android:id="@+id/last_viewSitcher"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <LinearLayout
+                    <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:scaleType="centerCrop"
-                            android:src="@mipmap/ic_placeholder" />
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:scaleType="centerCrop"
-                            android:src="@mipmap/ic_placeholder" />
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:scaleType="centerCrop"
-                            android:src="@mipmap/ic_placeholder" />
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:scaleType="centerCrop"
-                            android:src="@mipmap/ic_placeholder" />
-
-                    </LinearLayout>
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_placeholder" />
 
                     <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recyclerView"
+                        android:id="@+id/last_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/white"
-                        android:paddingBottom="2dp"
-                        android:paddingRight="2dp" />
+                        android:paddingLeft="5dp" />
+                </ViewSwitcher>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    android:paddingBottom="3dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp">
+
+                    <TextView
+                        style="@style/text_14_color_1_style"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="风景图片"
+                        android:textColor="@color/black" />
+
+                </FrameLayout>
+
+                <ViewSwitcher
+                    android:id="@+id/center_viewSitcher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_placeholder" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/center_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="5dp" />
+
+                </ViewSwitcher>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    android:paddingBottom="3dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="3dp">
+
+                    <TextView
+                        style="@style/text_14_color_1_style"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="风景图片"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/more"
+                        style="@style/text_12_color_3_style"
+                        android:layout_gravity="center_vertical|end"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:text="更多" />
+
+                </FrameLayout>
+
+                <ViewSwitcher
+                    android:id="@+id/bottom_viewSwitcher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_placeholder" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/bottom_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="5dp" />
 
                 </ViewSwitcher>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="16dp"
                     android:gravity="center"
-                    android:paddingBottom="10dp">
+                    android:paddingBottom="20dp">
 
                     <View
                         android:layout_width="50dp"
