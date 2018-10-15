@@ -25,7 +25,6 @@ import com.sxt.banner.loader.UILoaderInterface;
 import com.sxt.chat.R;
 import com.sxt.chat.activity.RoomDetailActivity;
 import com.sxt.chat.adapter.HomeAdapter;
-import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.base.LazyFragment;
 import com.sxt.chat.json.Banner;
 import com.sxt.chat.json.ResponseInfo;

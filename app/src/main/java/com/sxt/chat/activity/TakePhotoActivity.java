@@ -262,6 +262,12 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
             mCamera.takePicture(null, null, new Camera.PictureCallback() {
                 @Override
                 public void onPictureTaken(final byte[] bytes, Camera camera) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mCamera.stopPreview();
+                        }
+                    });
                     new Thread() {
                         @Override
                         public void run() {
