@@ -47,4 +47,10 @@ public class WiFiSettingsActivity extends HeaderActivity {
 //    protected void onGoBackClicked(View v) {
 //        onBackPressed();
 //    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+    }
 }

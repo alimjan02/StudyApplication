@@ -443,4 +443,8 @@ public class WiFiFragment extends BaseFragment implements View.OnClickListener {
         super.onDestroy();
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+    }
 }

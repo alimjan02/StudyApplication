@@ -155,7 +155,7 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
             mCamera.setPreviewDisplay(holder);
             mCamera.autoFocus(autoFocusCallback);
             mCamera.startPreview();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.d(TAG, "Error setting mCamera preview: " + e.getMessage());
         }
     }
