@@ -1,13 +1,16 @@
 package com.sxt.chat.activity;
 
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +27,7 @@ import com.sxt.chat.download.DownloadTask;
 import com.sxt.chat.receiver.WatchDogReceiver;
 import com.sxt.chat.utils.NetworkUtils;
 import com.sxt.chat.utils.Prefs;
+import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.utils.glide.CacheUtils;
 
 /**
@@ -34,6 +38,8 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
     private TextView cacheSize;
     private TextView version;
     private DownloadTask downloadTask;
+    private final int REQUEST_CODE_INSTALL_APK = 1000;
+    private final int REQUEST_MANAGE_UNKNOWN_APP_SOURCES = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +93,7 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
                 Intent intent = new Intent();
                 intent.setAction(WatchDogReceiver.ACTION_LOGOUT);
                 //android 8.0以后, 发送广播许需要添加包名和具体的接收广播类名
-                intent.setComponent(new ComponentName(getApplication().getPackageName(), App.getCtx().getPackageName()+".receiver.WatchDogReceiver"));
+                intent.setComponent(new ComponentName(getApplication().getPackageName(), App.getCtx().getPackageName() + ".receiver.WatchDogReceiver"));
                 sendBroadcast(intent);
                 break;
         }
@@ -126,7 +132,7 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
     private void checkUpdate(int serverVersion) {
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            if (serverVersion > packageInfo.versionCode) {
+            if (serverVersion < packageInfo.versionCode) {
                 //判断WIFI情况
                 if (NetworkUtils.isNetworkAvailable(this)) {//判断网络是否可用
                     if (NetworkUtils.isWifiEnabled(this)) {//判断WIFI是否打开
@@ -191,6 +197,7 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startDownloadApkDialog();
+                dialog.dismiss();
             }
         }).setRightButton(R.string.cancel, null).show();
     }
@@ -204,7 +211,20 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
             @Override
             public void onError(Exception e) {
                 dialog.dismiss();
+                e.printStackTrace();
                 Toast("下载文件失败，请重新登录进行升级");
+            }
+
+            @Override
+            public void onSuccessful(String apkFilePath) {
+                dialog.dismiss();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (getPackageManager().canRequestPackageInstalls()) {//判断用户是否已经允许了安装未知来源的apk
+                        installAPK();
+                    } else {
+                        checkInstallPermission();
+                    }
+                }
             }
 
             @Override
@@ -218,10 +238,6 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
                 }
             }
 
-            @Override
-            public void onSuccessful() {
-                dialog.dismiss();
-            }
 
             @Override
             public void onFinish() {
@@ -231,4 +247,60 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         downloadTask.execute(Prefs.getInstance(this).getServerUrl() + Prefs.getInstance(this).KEY_APP_UPDATE_URL);
     }
 
+    private void checkInstallPermission() {
+        boolean permission = checkPermission(REQUEST_CODE_INSTALL_APK, Manifest.permission.REQUEST_INSTALL_PACKAGES, new String[]{Manifest.permission.REQUEST_INSTALL_PACKAGES});
+        if (permission) {
+            installAPK();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_MANAGE_UNKNOWN_APP_SOURCES) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (getPackageManager().canRequestPackageInstalls()) {//判断用户是否已经允许了安装未知来源的apk
+                    installAPK();
+                } else {
+                    ToastUtil.showToast(this, getString(R.string.apk_install_message));
+                    checkInstallPermission();
+                }
+            }
+        }
+    }
+
+    private void installAPK() {
+        downloadTask.installApk();
+    }
+
+    private void goToInstallUnKonwAPKPage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startActivityForResult(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES), REQUEST_MANAGE_UNKNOWN_APP_SOURCES);
+        }
+    }
+
+    @Override
+    public void onPermissionsaAlowed(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsaAlowed(requestCode, permissions, grantResults);
+        if (REQUEST_CODE_INSTALL_APK == requestCode) {
+            installAPK();
+        }
+    }
+
+    @Override
+    public void onPermissionsRefused(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsRefused(requestCode, permissions, grantResults);
+        if (REQUEST_CODE_INSTALL_APK == requestCode) {
+            ToastUtil.showToast(this, getString(R.string.apk_install_message));
+        }
+    }
+
+    @Override
+    public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
+        if (REQUEST_CODE_INSTALL_APK == requestCode) {
+            ToastUtil.showToast(this, getString(R.string.apk_install_message));
+            goToInstallUnKonwAPKPage();
+        }
+    }
 }

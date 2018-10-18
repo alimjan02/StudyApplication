@@ -277,6 +277,7 @@
     <string name="search">搜索</string>
     <string name="scan">扫一扫</string>
     <string name="more">更多</string>
+    <string name="apk_install_message">您需要允许安装未知来源的应用权限,才能正常安装新版本哟~</string>
 
     <string-array name="query_suggestions">
         <item>A very very long suggestion that would span multiple lines.</item>
