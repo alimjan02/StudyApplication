@@ -41,7 +41,7 @@ import java.util.List;
  * Created by 11837 on 2018/4/22.
  */
 
-public class GithubFragment extends LazyFragment {
+public class GitHubFragment extends LazyFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private BannerView bannerView;

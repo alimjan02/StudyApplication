@@ -8,6 +8,8 @@
     android:layout_marginBottom="3dp"
     android:layout_marginLeft="3dp"
     android:layout_marginRight="3dp"
+    android:clickable="true"
+    android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="8dp"

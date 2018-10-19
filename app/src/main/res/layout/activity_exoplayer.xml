@@ -4,11 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">-->
-
     <LinearLayout
         android:id="@+id/playerLayout"
         android:layout_width="match_parent"
@@ -17,7 +12,6 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <!--
             RESIZE_MODE_FIT 表示通过减少视频的宽度或者高度，来达到想要的视频宽高比。
             RESIZE_MODE_FIXED_WIDTH 表示宽度是固定的，通过减少或者增加高度的值来实现想要的宽高比。
@@ -71,10 +65,6 @@
         </FrameLayout>
     </LinearLayout>
 
-    <!--<include layout="@layout/item_video_handle" />
-
-    </android.support.v4.widget.DrawerLayout>
--->
     <include layout="@layout/item_bottom_sheet" />
 
 </android.support.design.widget.CoordinatorLayout>

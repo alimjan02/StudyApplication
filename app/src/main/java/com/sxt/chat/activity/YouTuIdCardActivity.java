@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.google.zxing.client.android.Intents;
+import com.journeyapps.barcodescanner.CaptureActivity;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
@@ -316,14 +318,18 @@ public class YouTuIdCardActivity extends HeaderActivity implements View.OnClickL
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
-            if (data != null) {
-                Uri uri = data.getParcelableExtra(CropActivity.CROP_IMG_URI);
-                if (uri != null) {
-                    File file = new File(uri.getPath());
-                    filePath = file.getPath();
-                    startCardOCR(filePath);
-                }
-            }
+//            if (data != null) {
+//                Uri uri = data.getParcelableExtra(CropActivity.CROP_IMG_URI);
+//                if (uri != null) {
+//                    File file = new File(uri.getPath());
+//                    filePath = file.getPath();
+//                    startCardOCR(filePath);
+//                }
+//            }
+            Intent intent = new Intent(this, CaptureActivity.class);
+            intent.setAction(Intents.Scan.ACTION);
+            intent.putExtra(Intents.Scan.FORMATS, Intents.Scan.QR_CODE_MODE);
+            startActivity(intent);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

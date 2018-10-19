@@ -1,42 +1,54 @@
 package com.sxt.chat.explayer;
 
+import android.app.Activity;
 import android.content.Context;
-import android.util.DisplayMetrics;
+import android.media.AudioManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.WindowManager;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ui.PlayerView;
 
 public class ExoPlayerOnTouchListener implements View.OnTouchListener {
 
-    private float downX;
-    private float downY;
-    private float moveX;
-    private float moveY;
-    private float upX;
-    private float upY;
-    private float width;
-    private float height;
+    private String TAG = "Video";
     private long newPosition;
-    private boolean isPosition;
-    private boolean isVolume;
-    private boolean isAppha;
+    private float width, height;
+    private int currentVolume, maxVolume;
+    private float moveX, moveY, downX, downY;
+    private boolean isPosition, isVolume, isAppha;
+    private int touchSlop;
+
     private SimpleExoPlayer player;
-    private final String TAG = "onTouch";
+    private AudioManager audiomanager;
+    private Activity activity;
     private OnTouchInfoListener onTouchInfoListener;
 
-    public ExoPlayerOnTouchListener(Context context, SimpleExoPlayer player) {
+
+    public ExoPlayerOnTouchListener(Activity activity, final PlayerView exoPlayerView, final SimpleExoPlayer player) {
         this.player = player;
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        width = dm.widthPixels;
-        height = dm.heightPixels;
-        Log.e(TAG, "Width : " + width + " Height : " + height);
+        this.activity = activity;
+        exoPlayerView.post(new Runnable() {
+            @Override
+            public void run() {
+                width = exoPlayerView.getWidth();
+                height = exoPlayerView.getHeight();
+                Log.e(TAG, "width " + width + " height " + height);
+            }
+        });
+        audiomanager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
+        if (audiomanager != null) {
+            maxVolume = audiomanager.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
+            currentVolume = audiomanager.getStreamVolume(AudioManager.STREAM_MUSIC); // 获取当前值
+        }
+        touchSlop = ViewConfiguration.get(activity).getScaledTouchSlop();
     }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        if (onTouchInfoListener != null) onTouchInfoListener.onTouch();
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX = motionEvent.getX();
@@ -47,10 +59,21 @@ public class ExoPlayerOnTouchListener implements View.OnTouchListener {
                 moveY = motionEvent.getY();
                 float dx = moveX - downX;
                 float dy = moveY - downY;
-                if (isPosition || !isVolume && !isAppha && Math.abs(dx) >= Math.abs(dy) && Math.abs(dx) > 100) {//横向滑动
-                    isPosition = true;
-                    float rateWidth = dx / width;
 
+                //直播没有进度滑动 所以屏蔽进度手势
+                if (/*!isPosition &&*/ !isAppha && !isVolume && (Math.abs(dx) > touchSlop || Math.abs(dy) > touchSlop)) {
+                    if (Math.abs(dx) >= Math.abs(dy)) {
+                        isPosition = true;
+                    } else {
+                        if (moveX < width / 2) {
+                            isAppha = true;
+                        } else {
+                            isVolume = true;
+                        }
+                    }
+                }
+                if (isPosition) {
+                    float rateWidth = dx / width;
                     newPosition = (long) (rateWidth * player.getDuration());
                     long currentPosition = player.getCurrentPosition() + newPosition;
                     currentPosition = currentPosition <= 0 ? 0 : currentPosition >= player.getDuration() ? player.getDuration() : currentPosition;
@@ -59,38 +82,80 @@ public class ExoPlayerOnTouchListener implements View.OnTouchListener {
                     if (onTouchInfoListener != null) {
                         onTouchInfoListener.onProgressChanged(currentPosition, player.getDuration(), progress);
                     }
+                } else if (isAppha) {
+                    float alphaRate = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL / height * 2;//单位距离亮度值 (*2是因为加速增减亮度)
+                    WindowManager.LayoutParams lpa = activity.getWindow().getAttributes();
+                    lpa.screenBrightness -= alphaRate * dy;
 
-                } /*else {//竖向滑动
-                    if (isVolume || !isPosition && !isAppha && moveX < width / 2 && Math.abs(dy) > 100) {//左侧 竖向 调节音量
-                        isVolume = true;
-                        player.setVolume(dy / height * 100 * 255);
-                    } else {//右侧 竖向 调节亮度
-                        isVolume = true;
-                        float rateAlpha = 1 / height;
-//                        WindowManager.LayoutParams attributes = getWindow().getAttributes();
-//                        attributes.alpha = 1 - rateAlpha * dy;
-//                        getWindow().setAttributes(attributes);
+                    if (lpa.screenBrightness > 1.0f) {
+                        lpa.screenBrightness = 1.0f;
+                    } else if (lpa.screenBrightness < 0.01f) {
+                        lpa.screenBrightness = 0.01f;
                     }
-                }*/
+                    activity.getWindow().setAttributes(lpa);
+                    if (onTouchInfoListener != null) {
+                        onTouchInfoListener.onAlphaChanged(lpa.screenBrightness);
+                    }
+                } else if (isVolume) {
+                    float volumeRate = (float) maxVolume / height;
+                    currentVolume = audiomanager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                    if (dy > 0) {
+                        currentVolume -= dy * volumeRate;
+                    } else {
+                        currentVolume += dy * volumeRate;
+                    }
+                    if (currentVolume >= maxVolume) {
+                        currentVolume = maxVolume;
+                    } else if (currentVolume <= 0) {
+                        currentVolume = 0;
+                    }
+                    audiomanager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
+                    if (onTouchInfoListener != null) {
+                        onTouchInfoListener.onVolumeChanged(currentVolume, maxVolume);
+                    }
+                }
+
+                downX = moveX;
+                downY = moveY;
+
                 break;
             case MotionEvent.ACTION_UP:
-                if (isPosition && onTouchInfoListener != null) {
-                    long targetPosition = player.getCurrentPosition() + newPosition;
-                    onTouchInfoListener.onTouchUp(targetPosition >= player.getDuration() ? player.getDuration() : targetPosition);
+                if (onTouchInfoListener != null) {
+                    if (isPosition) {
+                        long targetPosition = player.getCurrentPosition() + newPosition;
+                        onTouchInfoListener.onProgressTouchUp(targetPosition >= player.getDuration() ? player.getDuration() : targetPosition);
+                    }
+                    if (isAppha) {
+                        onTouchInfoListener.onAlphaTouchUp();
+                    }
+                    if (isVolume) {
+                        onTouchInfoListener.onVolumeTouchUp();
+                    }
                 }
                 downX = 0;
                 downY = 0;
                 moveX = 0;
                 moveY = 0;
+                newPosition = 0;
                 isAppha = false;
                 isVolume = false;
                 isPosition = false;
-                newPosition = 0;
                 break;
         }
         return false;
     }
 
+    public void updateVideoUIParmeras(final View surfaceView) {
+        surfaceView.post(new Runnable() {
+            @Override
+            public void run() {
+                width = surfaceView.getMeasuredWidth();
+                height = surfaceView.getMeasuredHeight();
+                Log.e(TAG, "update : width " + width + " height " + height);
+
+            }
+        });
+    }
 
     public ExoPlayerOnTouchListener setOnTouchInfoListener(OnTouchInfoListener onTouchInfoListener) {
         this.onTouchInfoListener = onTouchInfoListener;
