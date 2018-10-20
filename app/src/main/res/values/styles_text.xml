@@ -145,7 +145,7 @@
     <style name="text_17_color_main_blue_style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">17dp</item>
         <item name="android:textColor">@color/main_blue</item>
     </style>
 

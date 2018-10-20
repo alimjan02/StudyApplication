@@ -35,9 +35,6 @@ public class LoginActivity extends HeaderActivity implements View.OnClickListene
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
         setContentView(R.layout.activity_login);
         setTitle(R.string.login);
         showToolbar(false);

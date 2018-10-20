@@ -11,12 +11,14 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.drm.DrmStore;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -103,7 +105,6 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 
     private View touchToolsLayout;
     private View progressTool;
-    private ProgressBar progressBarPosition;
     private ProgressBar progressBar;
     private TextView currentProgress;
     private TextView duration;
@@ -121,6 +122,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private int videoIndexNext = 0, videoIndexCurrent = 0;
     private ViewSwitcher viewSwitcher;
 
+    private VolumeChangeReceiver volumeChangeReceiver;
     private NetWorkReceiver netWorkReceiver;
     private MyLoadControl loadControler;
     private ConcatenatingMediaSource mediaSource;
@@ -135,14 +137,16 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
     private TabLayout tabLayout;
     private TextView videoTitle;
     private ExoPlayerOnTouchListener exoPlayerOnTouchListener;
+    private final String ACTION_VOLUME_CHANGED = "android.media.VOLUME_CHANGED_ACTION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exoplayer);
-        registerNetWorkReceiver();
         initLayout();
         initPlayer();
+        registerNetWorkReceiver();
+        registerVolumeReceiver();
     }
 
     private void initPlayer() {
@@ -236,7 +240,11 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 
                     @Override
                     public void onProgressChanged(long currentPosition, long duration, int currentProgress) {
-                        VideoExoPlayerActivity.this.progressTool.setVisibility(View.VISIBLE);
+                        touchToolsLayout.setVisibility(View.VISIBLE);
+                        progressTool.setVisibility(View.VISIBLE);
+                        alphaTool.setVisibility(View.GONE);
+                        volumeTool.setVisibility(View.GONE);
+
                         VideoExoPlayerActivity.this.currentProgress.setText(DateFormatUtil.getTimeHHMMSS(currentPosition));
                         VideoExoPlayerActivity.this.duration.setText(DateFormatUtil.getTimeHHMMSS(player.getDuration()));
                         VideoExoPlayerActivity.this.progressBar.setProgress(currentProgress);
@@ -244,24 +252,32 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 
                     @Override
                     public void onAlphaChanged(float screenBrightness) {
-                        VideoExoPlayerActivity.this.touchToolsLayout.setVisibility(View.VISIBLE);
-                        VideoExoPlayerActivity.this.progressTool.setVisibility(View.GONE);
-                        VideoExoPlayerActivity.this.volumeTool.setVisibility(View.GONE);
-                        VideoExoPlayerActivity.this.alphaTool.setVisibility(View.VISIBLE);
+                        touchToolsLayout.setVisibility(View.VISIBLE);
+                        progressTool.setVisibility(View.GONE);
+                        volumeTool.setVisibility(View.GONE);
+                        alphaTool.setVisibility(View.VISIBLE);
                         double v = ArithTool.div(screenBrightness, 1, 2) * 100;
                         if (v <= 0) v = 0;
                         if (v >= 100) v = 100;
+                        if (v > 60) {
+                            VideoExoPlayerActivity.this.alphaImg.setImageResource(R.drawable.ic_brightness_high_white_24dp);
+                        } else if (v > 30) {
+                            VideoExoPlayerActivity.this.alphaImg.setImageResource(R.drawable.ic_brightness_middle_white_24dp);
+                        } else {
+                            VideoExoPlayerActivity.this.alphaImg.setImageResource(R.drawable.ic_brightness_lower_white_24dp);
+                        }
                         alpha.setText((int) v + "%");
                     }
 
                     @Override
                     public void onVolumeChanged(float currentVolume, float maxVolume) {
-                        VideoExoPlayerActivity.this.touchToolsLayout.setVisibility(View.VISIBLE);
-                        VideoExoPlayerActivity.this.progressTool.setVisibility(View.GONE);
-                        VideoExoPlayerActivity.this.alphaTool.setVisibility(View.GONE);
-                        VideoExoPlayerActivity.this.volumeTool.setVisibility(View.VISIBLE);
-                        volume.setText((int) currentVolume + "%");
-                        if ((int) currentVolume <= 0) {
+                        touchToolsLayout.setVisibility(View.VISIBLE);
+                        progressTool.setVisibility(View.GONE);
+                        alphaTool.setVisibility(View.GONE);
+                        volumeTool.setVisibility(View.VISIBLE);
+                        double div = ArithTool.div(currentVolume, maxVolume, 2);
+                        volume.setText((int) (div * 100) + "%");
+                        if (div <= 0) {
                             volumeImg.setImageResource(R.drawable.ic_volume_off_white_24dp);
                         } else {
                             volumeImg.setImageResource(R.drawable.ic_volume_up_white_24dp);
@@ -271,27 +287,27 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
                     @Override
                     public void onProgressTouchUp(long targetPosition) {
                         player.seekTo(targetPosition);
-                        VideoExoPlayerActivity.this.progressTool.setVisibility(View.GONE);
-                        VideoExoPlayerActivity.this.progressTool.setVisibility(View.GONE);
-                        VideoExoPlayerActivity.this.alphaTool.setVisibility(View.GONE);
-                        VideoExoPlayerActivity.this.volumeTool.setVisibility(View.GONE);
+                        hideAllTouchTools();
                     }
 
                     @Override
                     public void onAlphaTouchUp() {
-                        VideoExoPlayerActivity.this.progressTool.setVisibility(View.GONE);
-                        VideoExoPlayerActivity.this.alphaTool.setVisibility(View.GONE);
-                        VideoExoPlayerActivity.this.volumeTool.setVisibility(View.GONE);
+                        hideAllTouchTools();
                     }
 
                     @Override
                     public void onVolumeTouchUp() {
-                        VideoExoPlayerActivity.this.progressTool.setVisibility(View.GONE);
-                        VideoExoPlayerActivity.this.alphaTool.setVisibility(View.GONE);
-                        VideoExoPlayerActivity.this.volumeTool.setVisibility(View.GONE);
+                        hideAllTouchTools();
                     }
                 });
         exoPlayerView.setOnTouchListener(exoPlayerOnTouchListener);
+    }
+
+    private void hideAllTouchTools() {
+        touchToolsLayout.setVisibility(View.GONE);
+        progressTool.setVisibility(View.GONE);
+        alphaTool.setVisibility(View.GONE);
+        volumeTool.setVisibility(View.GONE);
     }
 
     private void startPlay(final String videoUrl) {
@@ -376,10 +392,19 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
 
         videoTitleLayout = findViewById(R.id.video_title_layout);
         videoTitle = findViewById(R.id.video_title);
+        touchToolsLayout = findViewById(R.id.touch_tools_layout);
         progressTool = findViewById(R.id.progressTool);
         progressBar = findViewById(R.id.progressBar);
         currentProgress = findViewById(R.id.currentPosition);
         duration = findViewById(R.id.duration);
+
+        alphaTool = findViewById(R.id.alphaTool);
+        alpha = findViewById(R.id.alpha);
+        alphaImg = findViewById(R.id.img_alpha);
+
+        volumeTool = findViewById(R.id.volumeTool);
+        volume = findViewById(R.id.volume);
+        volumeImg = findViewById(R.id.img_volume);
 
         loading = findViewById(R.id.loading);
         loadingDrawable = new ProgressDrawable();
@@ -551,6 +576,13 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         }
     }
 
+    private void registerVolumeReceiver() {
+        volumeChangeReceiver = new VolumeChangeReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_VOLUME_CHANGED);
+        registerReceiver(volumeChangeReceiver, filter);
+    }
+
     private void registerNetWorkReceiver() {
         netWorkReceiver = new NetWorkReceiver();
         IntentFilter filter = new IntentFilter();
@@ -559,6 +591,51 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(netWorkReceiver, filter);
     }
+
+    private class VolumeChangeReceiver extends BroadcastReceiver {
+
+        private int maxVolume;
+        private AudioManager audiomanager;
+
+        public VolumeChangeReceiver() {
+            audiomanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (audiomanager != null) {
+                maxVolume = audiomanager.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
+            }
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // 获取当前值
+            if (ACTION_VOLUME_CHANGED.equals(intent.getAction())) {
+                int currentVolume = audiomanager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                touchToolsLayout.setVisibility(View.VISIBLE);
+                progressTool.setVisibility(View.GONE);
+                alphaTool.setVisibility(View.GONE);
+                volumeTool.setVisibility(View.VISIBLE);
+                double div = ArithTool.div(currentVolume, maxVolume, 2);
+                volume.setText((int) (div * 100) + "%");
+                if (div <= 0) {
+                    volumeImg.setImageResource(R.drawable.ic_volume_off_white_24dp);
+                } else {
+                    volumeImg.setImageResource(R.drawable.ic_volume_up_white_24dp);
+                }
+                handler.removeCallbacksAndMessages(null);
+                handler.sendEmptyMessageDelayed(0, 2000);
+            }
+        }
+    }
+
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (volumeTool != null && volumeTool.getVisibility() == View.VISIBLE) {
+                volumeTool.setVisibility(View.GONE);
+            }
+        }
+    };
 
     private class NetWorkReceiver extends BroadcastReceiver {
 
@@ -729,6 +806,12 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         }
         if (netWorkReceiver != null) {
             unregisterReceiver(netWorkReceiver);
+        }
+        if (volumeChangeReceiver != null) {
+            unregisterReceiver(volumeChangeReceiver);
+        }
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
         }
     }
 

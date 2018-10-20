@@ -17,56 +17,46 @@ import com.sxt.chat.R;
 public class ToastUtil {
 
     private static TextView mTextView;
-
+    private static TextView mTextView1;
     private static Toast toastStart;
+    private static Toast toastStart1;
+    private static View view;
+    private static View view1;
 
-    @SuppressWarnings("deprecation")
     public static void showToast(Context context, String message) {
-        //加载Toast布局
-        View toastRoot = LayoutInflater.from(context).inflate(R.layout.toast, null);
-        //初始化布局控件
-        mTextView = (TextView) toastRoot.findViewById(R.id.message);
         if (toastStart == null) {
-            //为控件设置属性
-            mTextView.setText(message);
-            //Toast的初始化
             toastStart = new Toast(context);
-        } else {
-            //为控件设置属性
-            mTextView.setText(message);
+            toastStart.setDuration(Toast.LENGTH_LONG);
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            int height = 0;
+            if (wm != null) {
+                height = wm.getDefaultDisplay().getHeight();
+            }
+            toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
         }
-        //获取屏幕高度
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        int height = wm.getDefaultDisplay().getHeight();
-        //Toast的Y坐标是屏幕高度的1/3，不会出现不适配的问题
-        toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
-        toastStart.setDuration(Toast.LENGTH_LONG);
-        toastStart.setView(toastRoot);
+        view = LayoutInflater.from(context).inflate(R.layout.toast, null);
+        mTextView = (TextView) view.findViewById(R.id.message);
+        mTextView.setText(message);
+        toastStart.setView(view);
         toastStart.show();
     }
 
-    @SuppressWarnings("deprecation")
     public static void showToast(Context context, int message) {
-        //加载Toast布局
-        View toastRoot = LayoutInflater.from(context).inflate(R.layout.toast, null);
-        //初始化布局控件
-        mTextView = (TextView) toastRoot.findViewById(R.id.message);
-        if (toastStart == null) {
-            //为控件设置属性
-            mTextView.setText(context.getResources().getString(message));
-            //Toast的初始化
-            toastStart = new Toast(context);
-        } else {
-            //为控件设置属性
-            mTextView.setText(context.getResources().getString(message));
+
+        if (toastStart1 == null || view1 == null) {
+            toastStart1 = new Toast(context);
+            toastStart.setDuration(Toast.LENGTH_LONG);
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            int height = 0;
+            if (wm != null) {
+                height = wm.getDefaultDisplay().getHeight();
+            }
+            toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
         }
-        //获取屏幕高度
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        int height = wm.getDefaultDisplay().getHeight();
-        //Toast的Y坐标是屏幕高度的1/3，不会出现不适配的问题
-        toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
-        toastStart.setDuration(Toast.LENGTH_LONG);
-        toastStart.setView(toastRoot);
+        view1 = LayoutInflater.from(context).inflate(R.layout.toast, null);
+        mTextView1 = (TextView) view1.findViewById(R.id.message);
+        mTextView1.setText(message);
+        toastStart.setView(view1);
         toastStart.show();
     }
 

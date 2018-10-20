@@ -96,7 +96,7 @@ public class GitHubFragment extends LazyFragment {
     }
 
     private void refresh() {
-        BmobRequest.getInstance(activity).getBanner(50, 0, CMD_GET_Banner_LIST);
+        BmobRequest.getInstance(activity).getBanner(50, 6, CMD_GET_Banner_LIST);
     }
 
     private int getPageMargin() {
