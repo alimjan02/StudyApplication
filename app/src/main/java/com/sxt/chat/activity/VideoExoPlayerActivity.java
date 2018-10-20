@@ -566,6 +566,9 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         if (loading != null && loadingDrawable != null) {
             loadingDrawable.start();
             loading.setVisibility(View.VISIBLE);
+            if (exoPlayerOnTouchListener != null) {//视频加载过程中 禁止触摸
+                exoPlayerOnTouchListener.setCanTouch(false);
+            }
         }
     }
 
@@ -573,6 +576,9 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         if (loading != null && loadingDrawable != null) {
             loadingDrawable.stop();
             loading.setVisibility(View.GONE);
+            if (exoPlayerOnTouchListener != null) {//视频加载完成 允许手势控制亮度、音量
+                exoPlayerOnTouchListener.setCanTouch(true);
+            }
         }
     }
 

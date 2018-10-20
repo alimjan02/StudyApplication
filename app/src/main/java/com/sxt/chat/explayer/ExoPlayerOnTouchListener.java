@@ -25,6 +25,7 @@ public class ExoPlayerOnTouchListener implements View.OnTouchListener {
     private SimpleExoPlayer player;
     private AudioManager audiomanager;
     private Activity activity;
+    private boolean isCanTouch = true;
     private OnTouchInfoListener onTouchInfoListener;
 
 
@@ -54,6 +55,9 @@ public class ExoPlayerOnTouchListener implements View.OnTouchListener {
                 downY = motionEvent.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (isCantouch()) {//视频加载过程中 禁止滑动 , 并刷新UI,隐藏音量和亮度控件
+                    return false;
+                }
                 moveX = motionEvent.getX();
                 moveY = motionEvent.getY();
                 float dx = moveX - downX;
@@ -145,6 +149,25 @@ public class ExoPlayerOnTouchListener implements View.OnTouchListener {
         return false;
     }
 
+    private boolean isCantouch() {
+        if (!isCanTouch) {
+            if (onTouchInfoListener != null) {
+                if (isPosition) {
+                    long targetPosition = player.getCurrentPosition() + newPosition;
+                    onTouchInfoListener.onProgressTouchUp(targetPosition >= player.getDuration() ? player.getDuration() : targetPosition);
+                }
+                if (isAppha) {
+                    onTouchInfoListener.onAlphaTouchUp();
+                }
+                if (isVolume) {
+                    onTouchInfoListener.onVolumeTouchUp();
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     public void updateVideoUIParmeras(final View surfaceView) {
         surfaceView.post(new Runnable() {
             @Override
@@ -155,6 +178,10 @@ public class ExoPlayerOnTouchListener implements View.OnTouchListener {
 
             }
         });
+    }
+
+    public void setCanTouch(boolean canTouch) {
+        isCanTouch = canTouch;
     }
 
     public ExoPlayerOnTouchListener setOnTouchInfoListener(OnTouchInfoListener onTouchInfoListener) {
