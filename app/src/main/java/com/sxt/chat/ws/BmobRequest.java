@@ -119,6 +119,30 @@ public final class BmobRequest {
     /**
      * 获取Banner
      */
+    public void getBannersByType(String type, final String cmd) {
+        BmobQuery<Banner> query = new BmobQuery<>();
+        query.addWhereEqualTo("type", type);
+        query.findObjects(new FindListener<Banner>() {
+            @Override
+            public void done(List<Banner> list, BmobException e) {
+                if (e == null) {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.OK);
+                    resp.setCmd(cmd);
+                    resp.setBannerInfos(list);
+                    EventBus.getDefault().post(resp);
+                } else {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.ERROR);
+                    resp.setCmd(cmd);
+                    resp.setError("errorCode = " + e.getErrorCode() + "\r\n message : " + e.getMessage());
+                    EventBus.getDefault().post(resp);
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取Banner
+     */
     public void getBanner(int newLimit, int newSkip, final String cmd) {
         BmobQuery<Banner> query = new BmobQuery<>();
         query.setLimit(newLimit);

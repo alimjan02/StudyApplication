@@ -31,7 +31,7 @@ import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.fragment.ChartFragment;
 import com.sxt.chat.fragment.HomePageFragment;
-import com.sxt.chat.fragment.GitHubFragment;
+import com.sxt.chat.fragment.HuaJiangHuFragment;
 import com.sxt.chat.fragment.NewsFragment;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.task.MainService;
@@ -102,7 +102,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private void initFragment() {
         Map<Integer, BaseFragment> fragmentMap = new HashMap<>();
         fragmentMap.put(0, new HomePageFragment());
-        fragmentMap.put(1, new GitHubFragment());
+        fragmentMap.put(1, new HuaJiangHuFragment());
         fragmentMap.put(2, new ChartFragment());
         fragmentMap.put(3, new NewsFragment());
 
@@ -318,6 +318,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     @Override
     public void onBackPressed() {
         onGoBack(null);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
     }
 
     @Override

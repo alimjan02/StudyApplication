@@ -125,8 +125,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/white"
-                        android:paddingBottom="2dp"
-                        android:paddingRight="2dp" />
+                        android:paddingStart="2dp"
+                        android:paddingBottom="2dp" />
 
                 </ViewSwitcher>
 

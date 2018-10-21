@@ -45,7 +45,7 @@ public class RoomDetailActivity extends BaseActivity {
             toolbarLayout.setTitle(roomInfo != null ? roomInfo.getHome_name() : "房间详情");
             Glide.with(this)
                     .load(roomInfo != null ? roomInfo.getRoom_url() : "")
-                    .placeholder(R.mipmap.ic_no_img)
+                    .placeholder(R.mipmap.ic_banner_placeholder)
                     .error(R.mipmap.ic_no_img)
 //                .bitmapTransform(new GlideRoundTransformer(this, 8))
                     .into((ImageView) findViewById(R.id.image_scrolling_top));

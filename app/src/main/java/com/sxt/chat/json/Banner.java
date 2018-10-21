@@ -12,6 +12,7 @@ public class Banner implements Serializable {
     private String createdAt;
     private String updatedAt;
     private String url;
+    private String type;
     private String description;
 
     public String getObjectId() {
@@ -20,6 +21,14 @@ public class Banner implements Serializable {
 
     public void setObjectId(String objectId) {
         this.objectId = objectId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getCreatedAt() {
