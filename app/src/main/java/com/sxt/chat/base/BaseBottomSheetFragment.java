@@ -26,7 +26,6 @@ public class BaseBottomSheetFragment extends BottomSheetDialogFragment {
     protected Context context;
     protected View contentView;
     protected String TAG = this.getClass().getName();
-    private BottomSheetDialog bottomSheetDialog;
     private BottomSheetBehavior<View> bottomSheetBehavior;
 
     public BaseBottomSheetFragment() {
@@ -53,10 +52,10 @@ public class BaseBottomSheetFragment extends BottomSheetDialogFragment {
         bottomSheetDialog.setContentView(contentView);
         View parent = (View) contentView.getParent();
         parent.setBackgroundColor(Color.TRANSPARENT);
-        ViewGroup.LayoutParams layoutParams = parent.getLayoutParams();
-        layoutParams.width = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.95);
-        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        parent.setLayoutParams(layoutParams);
+//        ViewGroup.LayoutParams layoutParams = parent.getLayoutParams();
+//        layoutParams.width = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.95);
+//        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+//        parent.setLayoutParams(layoutParams);
         Window window = bottomSheetDialog.getWindow();
         if (window != null) {
             View view = window.findViewById(android.support.design.R.id.design_bottom_sheet);

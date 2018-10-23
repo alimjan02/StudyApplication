@@ -116,23 +116,6 @@ public class GallaryFragment extends LazyFragment {
             adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
                 @Override
                 public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
-//                    if (object instanceof Banner) {
-//                        Banner banner = (Banner) object;
-//                        Intent intent = new Intent(context, RoomDetailActivity.class);
-//                        RoomInfo roomInfo = new RoomInfo();
-//                        roomInfo.setHome_name(banner.getDescription());
-//                        roomInfo.setRoom_url(banner.getUrl());
-//                        Bundle bundle = new Bundle();
-//                        bundle.putSerializable(Prefs.ROOM_INFO, roomInfo);
-//                        intent.putExtra(Prefs.ROOM_INFO, bundle);
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                            context.startActivity(intent,
-//                                    ActivityOptions.makeSceneTransitionAnimation
-//                                            ((Activity) context, ((GallaryAdapter.ViewHolder) holder).img, "shareView").toBundle());
-//                        } else {
-//                            context.startActivity(intent);
-//                        }
-//                    }
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(Prefs.KEY_BANNER_INFO, (Banner) object);
                     GallaryBottomSheetFragment sheetFragment = new GallaryBottomSheetFragment();
