@@ -42,6 +42,7 @@ public final class Prefs extends BasePrefs {
     public static final String KEY_LAST_RESUME_MILLIS = "KEY_LAST_RESUME_MILLIS";
     public static final String KEY_USER_HEADER_IMAGE_FLAG = "KEY_USER_HEADER_IMAGE_FLAG";
     public static final String ROOM_INFO = "ROOM_INFO";
+    public static final String KEY_BANNER_INFO="KEY_BANNER_INFO";
 
     //PATH
     public String KEY_APP_UPDATE_URL = "icare/upgrade?n=" + KEY_APP_NAME;

@@ -62,7 +62,7 @@ public class CropActivity extends BaseActivity {
             @Override
             public void onError(Throwable e) {
                 loading.dismiss();
-                ToastUtil.showToast(App.getCtx(), e.getMessage());
+                Toast(e.getMessage());
             }
         });
     }

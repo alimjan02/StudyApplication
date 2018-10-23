@@ -72,11 +72,11 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void Toast(String msg) {
-        if (msg != null) ToastUtil.showToast(App.getCtx(), msg);
+        if (msg != null) ToastUtil.showToast(this, msg);
     }
 
     protected void Toast(int resId) {
-        ToastUtil.showToast(App.getCtx(), getString(resId));
+        ToastUtil.showToast(this, getString(resId));
     }
 
     @Override

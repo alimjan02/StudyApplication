@@ -55,7 +55,7 @@ public class ChangeLoginActivity extends HeaderActivity {
         adapter = new ChangeLoginAdapter(this, userList);
         adapter.setIndex(findUser(userList));
         mRecyclerView.setAdapter(adapter);
-        adapter.setOnClickListener(new BaseRecyclerAdapter.OnClickListener() {
+        adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
                 loading.show();
@@ -196,7 +196,7 @@ public class ChangeLoginActivity extends HeaderActivity {
                 }
 
             } else if (direction == SwipeMenuRecyclerView.LEFT_DIRECTION) {
-                ToastUtil.showToast(App.getCtx(), "list第" + adapterPosition + "; 左侧菜单第" + menuPosition);
+                Toast("list第" + adapterPosition + "; 左侧菜单第" + menuPosition);
             }
         }
     };

@@ -1,6 +1,10 @@
 package com.sxt.chat.utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationManagerCompat;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,47 +21,95 @@ import com.sxt.chat.R;
 public class ToastUtil {
 
     private static TextView mTextView;
-    private static TextView mTextView1;
     private static Toast toastStart;
-    private static Toast toastStart1;
-    private static View view;
-    private static View view1;
+    private static TextView snackbarTextView;
+    private static TextView snackbarActionView;
 
-    public static void showToast(Context context, String message) {
+    public static void showToast(Activity activity, String message) {
+        if (!isNotifyEnable(activity)) {
+            showSnackBar(activity, message);
+            return;
+        }
+        //加载Toast布局
+        View toastRoot = LayoutInflater.from(activity).inflate(R.layout.toast, null);
+        //初始化布局控件
+        mTextView = (TextView) toastRoot.findViewById(R.id.message);
         if (toastStart == null) {
-            toastStart = new Toast(context);
-            toastStart.setDuration(Toast.LENGTH_LONG);
-            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            int height = 0;
-            if (wm != null) {
-                height = wm.getDefaultDisplay().getHeight();
-            }
-            toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
+            //为控件设置属性
+            mTextView.setText(message);
+            //Toast的初始化
+            toastStart = new Toast(activity);
+        } else {
+            //为控件设置属性
+            mTextView.setText(message);
         }
-        view = LayoutInflater.from(context).inflate(R.layout.toast, null);
-        mTextView = (TextView) view.findViewById(R.id.message);
-        mTextView.setText(message);
-        toastStart.setView(view);
+        //获取屏幕高度
+        WindowManager wm = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
+        int height = wm.getDefaultDisplay().getHeight();
+        //Toast的Y坐标是屏幕高度的1/3，不会出现不适配的问题
+        toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
+        toastStart.setDuration(Toast.LENGTH_LONG);
+        toastStart.setView(toastRoot);
         toastStart.show();
     }
 
-    public static void showToast(Context context, int message) {
-
-        if (toastStart1 == null || view1 == null) {
-            toastStart1 = new Toast(context);
-            toastStart.setDuration(Toast.LENGTH_LONG);
-            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            int height = 0;
-            if (wm != null) {
-                height = wm.getDefaultDisplay().getHeight();
-            }
-            toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
+    @SuppressWarnings("deprecation")
+    public static void showToast(Activity activity, int message) {
+        if (!isNotifyEnable(activity)) {
+            showSnackBar(activity, activity.getString(message));
+            return;
         }
-        view1 = LayoutInflater.from(context).inflate(R.layout.toast, null);
-        mTextView1 = (TextView) view1.findViewById(R.id.message);
-        mTextView1.setText(message);
-        toastStart.setView(view1);
+        //加载Toast布局
+        View toastRoot = LayoutInflater.from(activity).inflate(R.layout.toast, null);
+        //初始化布局控件
+        mTextView = (TextView) toastRoot.findViewById(R.id.message);
+        if (toastStart == null) {
+            //为控件设置属性
+            mTextView.setText(activity.getResources().getString(message));
+            //Toast的初始化
+            toastStart = new Toast(activity);
+        } else {
+            //为控件设置属性
+            mTextView.setText(activity.getResources().getString(message));
+        }
+        //获取屏幕高度
+        WindowManager wm = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
+        int height = wm.getDefaultDisplay().getHeight();
+        //Toast的Y坐标是屏幕高度的1/3，不会出现不适配的问题
+        toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
+        toastStart.setDuration(Toast.LENGTH_LONG);
+        toastStart.setView(toastRoot);
         toastStart.show();
     }
 
+    public static void showSnackBar(Activity activity, String message) {
+        final Snackbar snackbar = Snackbar.make(activity.findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT);
+        snackbar.addCallback(new Snackbar.Callback() {
+            @Override
+            public void onShown(Snackbar sb) {
+                super.onShown(sb);
+            }
+
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                super.onDismissed(transientBottomBar, event);
+            }
+        })
+                .setAction("关闭", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+        snackbarTextView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+        snackbarActionView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_action);
+        snackbarTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        snackbarActionView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        snackbarTextView.setText(message);
+        snackbar.show();
+    }
+
+    private static boolean isNotifyEnable(Context context) {
+        return NotificationManagerCompat.from(context).areNotificationsEnabled();
+    }
 }

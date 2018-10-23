@@ -72,8 +72,8 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onClickListener != null) {
-                    onClickListener.onClick(position, holder, getItem(position));
+                if (onItemClickListener != null) {
+                    onItemClickListener.onClick(position, holder, getItem(position));
                     holder.root.clearAnimation();
                     @SuppressLint("ResourceType") AnimatorSet animation = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.anim.anim_item_scale_alpha);
                     animation.addListener(new AnimatorListenerAdapter() {

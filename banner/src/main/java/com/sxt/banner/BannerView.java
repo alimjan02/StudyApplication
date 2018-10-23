@@ -260,8 +260,12 @@ public class BannerView extends FrameLayout implements OnPageChangeListener {
     }
 
     public void update(List<?> data) {
-        this.data.clear();
-        this.data.addAll(data);
+        if (this.data != null) {
+            this.data.clear();
+            this.data.addAll(data);
+        } else {
+            this.data = data;
+        }
         this.count = this.data.size();
         start();
     }

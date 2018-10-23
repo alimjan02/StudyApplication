@@ -31,7 +31,7 @@ import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.fragment.ChartFragment;
 import com.sxt.chat.fragment.HomePageFragment;
-import com.sxt.chat.fragment.HuaJiangHuFragment;
+import com.sxt.chat.fragment.GallaryFragment;
 import com.sxt.chat.fragment.NewsFragment;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.task.MainService;
@@ -102,7 +102,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private void initFragment() {
         Map<Integer, BaseFragment> fragmentMap = new HashMap<>();
         fragmentMap.put(0, new HomePageFragment());
-        fragmentMap.put(1, new HuaJiangHuFragment());
+        fragmentMap.put(1, new GallaryFragment());
         fragmentMap.put(2, new ChartFragment());
         fragmentMap.put(3, new NewsFragment());
 
@@ -110,7 +110,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         for (int i = 0; i < tabGroup.getChildCount(); i++) {
             tabMap.put(i, (RadioButton) tabGroup.getChildAt(i));
         }
-        String[] titles = new String[]{getString(R.string.string_tab_home), getString(R.string.string_tab_github), getString(R.string.string_tab_chart), getString(R.string.string_tab_news)};
+        String[] titles = new String[]{getString(R.string.string_tab_home), getString(R.string.string_tab_gallary), getString(R.string.string_tab_chart), getString(R.string.string_tab_news)};
         initFragment(fragmentMap, tabMap, titles, R.id.container, 0);
     }
 

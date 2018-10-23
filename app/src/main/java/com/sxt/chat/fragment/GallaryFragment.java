@@ -27,8 +27,10 @@ import com.sxt.banner.loader.UILoaderInterface;
 import com.sxt.banner.transformer.ScaleInTransformer;
 import com.sxt.chat.R;
 import com.sxt.chat.activity.RoomDetailActivity;
-import com.sxt.chat.adapter.HuaJiangHuAdapter;
+import com.sxt.chat.adapter.GallaryAdapter;
+import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.base.LazyFragment;
+import com.sxt.chat.fragment.bottonsheet.GallaryBottomSheetFragment;
 import com.sxt.chat.json.Banner;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.RoomInfo;
@@ -36,21 +38,19 @@ import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.ws.BmobRequest;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by 11837 on 2018/4/22.
  */
 
-public class HuaJiangHuFragment extends LazyFragment {
+public class GallaryFragment extends LazyFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private BannerView bannerView;
     private ViewSwitcher viewSwitcherBanner;
     private RecyclerView recyclerView;
-    private HuaJiangHuAdapter adapter;
+    private GallaryAdapter adapter;
     private ViewSwitcher viewSwitcher;
 
     private final String CMD_GET_ROOM_LIST = this.getClass().getName() + "CMD_GET_ROOM_LIST";
@@ -58,7 +58,7 @@ public class HuaJiangHuFragment extends LazyFragment {
 
     @Override
     protected int getDisplayView(LayoutInflater inflater, ViewGroup container) {
-        return R.layout.fragment_huajianghu;
+        return R.layout.fragment_gallary;
     }
 
     @Override
@@ -109,10 +109,37 @@ public class HuaJiangHuFragment extends LazyFragment {
         list.addAll(list);
         if (adapter == null) {
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(5, LinearLayoutManager.HORIZONTAL));
-            adapter = new HuaJiangHuAdapter(activity, list);
+            adapter = new GallaryAdapter(activity, list);
             viewSwitcher.setDisplayedChild(1);
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setAdapter(adapter);
+            adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
+                @Override
+                public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
+//                    if (object instanceof Banner) {
+//                        Banner banner = (Banner) object;
+//                        Intent intent = new Intent(context, RoomDetailActivity.class);
+//                        RoomInfo roomInfo = new RoomInfo();
+//                        roomInfo.setHome_name(banner.getDescription());
+//                        roomInfo.setRoom_url(banner.getUrl());
+//                        Bundle bundle = new Bundle();
+//                        bundle.putSerializable(Prefs.ROOM_INFO, roomInfo);
+//                        intent.putExtra(Prefs.ROOM_INFO, bundle);
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                            context.startActivity(intent,
+//                                    ActivityOptions.makeSceneTransitionAnimation
+//                                            ((Activity) context, ((GallaryAdapter.ViewHolder) holder).img, "shareView").toBundle());
+//                        } else {
+//                            context.startActivity(intent);
+//                        }
+//                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(Prefs.KEY_BANNER_INFO, (Banner) object);
+                    GallaryBottomSheetFragment sheetFragment = new GallaryBottomSheetFragment();
+                    sheetFragment.setArguments(bundle);
+                    sheetFragment.show(getFragmentManager());
+                }
+            });
         } else {
             adapter.notifyDataSetChanged(list);
         }

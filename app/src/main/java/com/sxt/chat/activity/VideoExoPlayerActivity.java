@@ -473,7 +473,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         adapter = new VideoListAdapter(this, videoObjects);
         recyclerView.setAdapter(adapter);
-        adapter.setOnClickListener(new BaseRecyclerAdapter.OnClickListener() {
+        adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onClick(final int position, RecyclerView.ViewHolder holder, final Object object) {
                 if (position != videoIndexCurrent) {

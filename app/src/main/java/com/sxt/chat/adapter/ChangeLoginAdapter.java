@@ -63,9 +63,9 @@ public class ChangeLoginAdapter extends BaseRecyclerAdapter<User> {
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onClickListener != null) {
+                if (onItemClickListener != null) {
                     notifyItem(position);
-                    onClickListener.onClick(position, holder, getItem(position));
+                    onItemClickListener.onClick(position, holder, getItem(position));
                 }
             }
         });

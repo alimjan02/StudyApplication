@@ -262,7 +262,7 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
                 if (getPackageManager().canRequestPackageInstalls()) {//判断用户是否已经允许了安装未知来源的apk
                     installAPK();
                 } else {
-                    ToastUtil.showToast(this, getString(R.string.apk_install_message));
+                    Toast( getString(R.string.apk_install_message));
                     checkInstallPermission();
                 }
             }
@@ -291,7 +291,7 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
     public void onPermissionsRefused(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsRefused(requestCode, permissions, grantResults);
         if (REQUEST_CODE_INSTALL_APK == requestCode) {
-            ToastUtil.showToast(this, getString(R.string.apk_install_message));
+            Toast(getString(R.string.apk_install_message));
         }
     }
 
@@ -299,7 +299,7 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
     public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
         if (REQUEST_CODE_INSTALL_APK == requestCode) {
-            ToastUtil.showToast(this, getString(R.string.apk_install_message));
+            Toast(getString(R.string.apk_install_message));
             goToInstallUnKonwAPKPage();
         }
     }

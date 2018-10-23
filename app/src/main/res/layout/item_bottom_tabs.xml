@@ -23,7 +23,7 @@
             android:id="@+id/tab_2"
             style="@style/bottom_radio"
             android:drawableTop="@drawable/tab_2_selector"
-            android:text="@string/string_tab_github" />
+            android:text="@string/string_tab_gallary" />
 
         <RadioButton
             android:id="@+id/tab_3"
