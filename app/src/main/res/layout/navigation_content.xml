@@ -47,14 +47,14 @@
         style="@style/menu_style"
         android:drawableStart="@drawable/ic_vector_notifications_24dp"
         android:text="@string/ar"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/vr"
         style="@style/menu_style"
         android:drawableStart="@drawable/ic_vector_notifications_24dp"
         android:text="@string/vr"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/normal_settings"
