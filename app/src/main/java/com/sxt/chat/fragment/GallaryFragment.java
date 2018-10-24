@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,7 @@ import com.sxt.banner.transformer.ScaleInTransformer;
 import com.sxt.chat.R;
 import com.sxt.chat.activity.RoomDetailActivity;
 import com.sxt.chat.adapter.GallaryAdapter;
+import com.sxt.chat.base.BaseBottomSheetFragment;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.base.LazyFragment;
 import com.sxt.chat.fragment.bottonsheet.GallaryBottomSheetFragment;
@@ -118,7 +120,14 @@ public class GallaryFragment extends LazyFragment {
                 public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(Prefs.KEY_BANNER_INFO, (Banner) object);
-                    GallaryBottomSheetFragment sheetFragment = new GallaryBottomSheetFragment();
+                    BaseBottomSheetFragment sheetFragment = new GallaryBottomSheetFragment()
+                            .setOnBottomSheetDialogCreateListener(new BaseBottomSheetFragment.OnBottomSheetDialogCreateListener() {
+                                @Override
+                                public void onBottomSheetDialogCreate(BaseBottomSheetFragment bottomSheetFragment, BottomSheetDialog bottomSheetDialog, View contentView) {
+                                    bottomSheetFragment.defaultSettings(bottomSheetDialog, contentView);
+                                    bottomSheetDialog.setCanceledOnTouchOutside(false);
+                                }
+                            });
                     sheetFragment.setArguments(bundle);
                     sheetFragment.show(getFragmentManager());
                 }

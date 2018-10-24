@@ -5,9 +5,11 @@ import android.content.Context;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,21 +18,27 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.bumptech.glide.Glide;
 import com.sxt.chat.R;
+import com.sxt.chat.adapter.config.BottomSheetAdapter;
 import com.sxt.chat.base.BaseBottomSheetFragment;
 import com.sxt.chat.json.Banner;
 import com.sxt.chat.utils.Prefs;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sxt on 2018/10/22.
  */
 public class GallaryBottomSheetFragment extends BaseBottomSheetFragment {
 
+    private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private Handler handler = new Handler();
+    private String URL_IZHAOHU = "http://www.izhaohu.com/#/complaint";
+    private String URL_CSDN = "https://me.csdn.net/sxt_zls";
 
     @Override
     protected View getDisplayView() {
@@ -44,22 +52,35 @@ public class GallaryBottomSheetFragment extends BaseBottomSheetFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setData() {
         Bundle bundle = getArguments();
         if (bundle != null) {
             Banner banner = (Banner) bundle.getSerializable(Prefs.KEY_BANNER_INFO);
             if (banner != null) {
-                Log.i(TAG, "banner : " + banner.getUrl());
-                Glide.with(context).load(banner.getUrl())//.transform(new CenterCrop(context), new GlideRoundTransformer(context, 8))
-                        .placeholder(R.mipmap.ic_placeholder)
-                        .error(R.mipmap.ic_banner_placeholder)
-                        .into((ImageView) contentView.findViewById(R.id.img));
-
                 progressBar = contentView.findViewById(R.id.progressBar);
-                WebView webView = contentView.findViewById(R.id.webView);
-                initWebView(webView);
+//                initWebView((WebView) contentView.findViewById(R.id.webView));
+                recyclerView = contentView.findViewById(R.id.recyclerView);
+                recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        List<String> data = new ArrayList<>();
+                        for (int i = 0; i < 20; i++) {
+                            data.add(String.valueOf(i));
+                        }
+                        recyclerView.setAdapter(new BottomSheetAdapter(context, data));
+                    }
+                }, 3000);
             }
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -116,7 +137,7 @@ public class GallaryBottomSheetFragment extends BaseBottomSheetFragment {
             }
         });
 
-        webView.loadUrl("https://blog.csdn.net/sxt_zls");
+        webView.loadUrl(URL_CSDN);
     }
 
     private class WebViewClient extends WebChromeClient {
@@ -130,6 +151,7 @@ public class GallaryBottomSheetFragment extends BaseBottomSheetFragment {
 
             if (newProgress == 100) {
                 progressBar.setVisibility(View.GONE);
+                contentView.findViewById(R.id.line).setVisibility(View.VISIBLE);
             } else {
                 progressBar.setVisibility(View.VISIBLE);
             }
@@ -139,6 +161,14 @@ public class GallaryBottomSheetFragment extends BaseBottomSheetFragment {
         public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
             callback.invoke(origin, true, false);
             super.onGeolocationPermissionsShowPrompt(origin, callback);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
         }
     }
 }

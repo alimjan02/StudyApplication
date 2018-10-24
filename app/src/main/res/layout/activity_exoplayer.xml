@@ -65,6 +65,6 @@
         </FrameLayout>
     </LinearLayout>
 
-    <include layout="@layout/item_bottom_sheet" />
+    <include layout="@layout/item_video_bottom_sheet" />
 
 </android.support.design.widget.CoordinatorLayout>
