@@ -131,6 +131,13 @@
             android:theme="@style/FullScreenTheme" />
 
         <activity
+            android:name=".activity.ThreeDActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="locked"
+            android:theme="@style/FullScreenTheme" />
+
+        <activity
             android:name=".vr.video360.VideoActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"

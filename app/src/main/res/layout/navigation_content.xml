@@ -57,6 +57,13 @@
         android:visibility="visible" />
 
     <TextView
+        android:id="@+id/openGl"
+        style="@style/menu_style"
+        android:drawableStart="@drawable/ic_vector_notifications_24dp"
+        android:text="openGl"
+        android:visibility="visible" />
+
+    <TextView
         android:id="@+id/normal_settings"
         style="@style/menu_style"
         android:drawableStart="@drawable/ic_vector_settings_24dp"
