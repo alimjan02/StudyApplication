@@ -45,14 +45,14 @@
     <TextView
         android:id="@+id/ar"
         style="@style/menu_style"
-        android:drawableStart="@drawable/ic_vector_notifications_24dp"
+        android:drawableStart="@drawable/ic_ar_photo_main_blue_24dp"
         android:text="@string/ar"
         android:visibility="visible" />
 
     <TextView
         android:id="@+id/vr"
         style="@style/menu_style"
-        android:drawableStart="@drawable/ic_vector_notifications_24dp"
+        android:drawableStart="@drawable/ic_vr_photo_main_blue_24dp"
         android:text="@string/vr"
         android:visibility="visible" />
 

@@ -30,8 +30,8 @@ import com.sxt.chat.base.BaseFragment;
 import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.fragment.ChartFragment;
-import com.sxt.chat.fragment.HomePageFragment;
 import com.sxt.chat.fragment.GallaryFragment;
+import com.sxt.chat.fragment.HomePageFragment;
 import com.sxt.chat.fragment.NewsFragment;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.task.MainService;
@@ -40,7 +40,6 @@ import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransformer;
 import com.sxt.chat.view.searchview.MaterialSearchView;
-import com.sxt.chat.vr.video360.VideoActivity;
 import com.sxt.chat.ws.BmobRequest;
 
 import java.util.HashMap;
@@ -360,7 +359,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 startActivity(new Intent(this, HelloArActivity.class));
                 break;
             case R.id.vr:
-                startActivity(new Intent(this, VideoActivity.class));
+                startActivity(new Intent(this, VR360Activity.class));
                 break;
         }
     }

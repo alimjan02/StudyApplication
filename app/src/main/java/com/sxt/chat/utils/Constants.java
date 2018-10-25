@@ -11,13 +11,13 @@ public class Constants {
 //  public static final String NativeVideoPosID = "5090421627704602";
 //  public static final String NativeExpressPosID = "7030020348049331"; //如果选择支持视频的模版样式，请使用NativeExpressSupportVideoPosID测试广告位拉取
 
-    public static final String KEY_Header ="header";
-    public static final String KEY_Ticket ="ticket";
-    public static final String KEY_Authorization ="Authorization";
-    public static final String KEY_UserId ="userId";
+    public static final String KEY_Header = "header";
+    public static final String KEY_Ticket = "ticket";
+    public static final String KEY_Authorization = "Authorization";
+    public static final String KEY_UserId = "userId";
 
-    public static String APP_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.sxt.com.sxt.chat";
-    private static String DESIGNED_BY = "Designed by xt.sun in China";
+    public static String APP_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.sxt.chat";
+    private static String DESIGNED_BY = "Developed by 孙兴涛 in China";
     public static String SHARE_CONTENT = "A beautiful app designed with Material Design:\n" + APP_URL + "\n- " + DESIGNED_BY;
 
 }

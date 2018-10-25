@@ -111,6 +111,8 @@ dependencies {
     implementation 'com.google.vr:sdk-base:1.160.0'
     implementation 'com.google.vr:sdk-common:1.160.0'
     implementation 'com.google.vr:sdk-controller:1.160.0'
+    implementation 'com.google.vr:sdk-panowidget:1.160.0'
+
     implementation project(':refresh-layout')
     implementation project(':crop_img')
     implementation files('libs/GDTUnionSDK.4.19.573.min.jar')
