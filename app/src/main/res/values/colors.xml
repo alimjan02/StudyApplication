@@ -46,6 +46,7 @@
     <color name="orange_light">#FFEA8A</color>
     <color name="orange_dark">#fe7900</color>
 
+    <color name="app_icon_color">#B9D599</color>
     <color name="alpha_sharder">#20000000</color>
     <color name="line_yellow">#F7D611</color>
     <color name="line_yellow_alpha">#FFEE87</color>

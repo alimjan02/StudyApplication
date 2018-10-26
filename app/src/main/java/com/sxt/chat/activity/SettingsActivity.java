@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,8 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
     private TextView cacheSize;
     private TextView version;
     private DownloadTask downloadTask;
+    private boolean isCancelInstall;
+    private AlertDialog alertDialog;
     private final int REQUEST_CODE_INSTALL_APK = 1000;
     private final int REQUEST_MANAGE_UNKNOWN_APP_SOURCES = 1001;
 
@@ -262,8 +265,10 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
                 if (getPackageManager().canRequestPackageInstalls()) {//判断用户是否已经允许了安装未知来源的apk
                     installAPK();
                 } else {
-                    Toast( getString(R.string.apk_install_message));
-                    checkInstallPermission();
+                    Toast(getString(R.string.apk_install_message));
+                    if (!isCancelInstall) {
+                        checkInstallPermission();
+                    }
                 }
             }
         }
@@ -291,7 +296,7 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
     public void onPermissionsRefused(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsRefused(requestCode, permissions, grantResults);
         if (REQUEST_CODE_INSTALL_APK == requestCode) {
-            Toast(getString(R.string.apk_install_message));
+            alertInstallDialog();
         }
     }
 
@@ -299,8 +304,35 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
     public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
         if (REQUEST_CODE_INSTALL_APK == requestCode) {
-            Toast(getString(R.string.apk_install_message));
-            goToInstallUnKonwAPKPage();
+            alertInstallDialog();
+        }
+    }
+
+    private void alertInstallDialog() {
+        if (alertDialog == null) {
+            alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
+            alertDialog.setTitle("温馨提示");
+            alertDialog.setMessage(getString(R.string.apk_install_message));
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    isCancelInstall = true;
+                }
+            });
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    isCancelInstall = false;
+                    goToInstallUnKonwAPKPage();
+                }
+            });
+        }
+        if (!alertDialog.isShowing()) {
+            alertDialog.show();
         }
     }
 }

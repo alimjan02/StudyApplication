@@ -38,7 +38,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 
     @Override
     protected String doInBackground(final String... strings) {
-        apkFile = new File(activity.getExternalFilesDir("com.sxt.chat") + File.separator + activity.getPackageName() + "_web.apk");
+        apkFile = new File(activity.getExternalFilesDir("apk") + File.separator + activity.getPackageName() + "_web.apk");
         apkFile.deleteOnExit();
         final long downloadedLength = apkFile.length();
         ProgressInterceptor.addListener(strings[0], new ProgressListener() {

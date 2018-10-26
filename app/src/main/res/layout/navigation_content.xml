@@ -60,7 +60,7 @@
         android:id="@+id/openGl"
         style="@style/menu_style"
         android:drawableStart="@drawable/ic_vector_notifications_24dp"
-        android:text="openGl"
+        android:text="Map"
         android:visibility="visible" />
 
     <TextView

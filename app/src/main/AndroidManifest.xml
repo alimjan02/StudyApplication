@@ -90,9 +90,10 @@
         android:name=".App"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/app_icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -136,6 +137,82 @@
             android:exported="true"
             android:screenOrientation="locked"
             android:theme="@style/FullScreenTheme" />
+
+        <activity
+            android:name=".activity.BasicInfoActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.CropActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.UpdateUserImgActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.UpdateUserNameActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.SelectSexActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.SelectHeightActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.SelectWeightActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.SelectAgeActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.SelectNumberActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.ChangeLoginActivity"
+            android:configChanges="orientation|screenSize" />
+
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:configChanges="orientation|screenSize" />
+
+        <activity
+            android:name=".activity.YouTuActivity"
+            android:configChanges="orientation|screenSize" />
+
+        <activity
+            android:name=".activity.YouTuIdCardActivity"
+            android:configChanges="orientation|screenSize" />
+
+        <activity
+            android:name=".activity.TakePhotoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullScreenTheme" />
+        <activity
+            android:name=".activity.WiFiSettingsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.VideoExoPlayerActivity"
+            android:configChanges="orientation|screenSize" />
+
+        <activity
+            android:name=".activity.RoomDetailActivity"
+            android:configChanges="orientation|screenSize" />
+
+        <activity
+            android:name=".activity.NotifycationActivity"
+            android:configChanges="orientation|screenSize" />
+
+        <receiver
+            android:name=".receiver.WatchDogReceiver"
+            android:exported="false">
+            <intent-filter android:priority="1000">
+                <action android:name="com.videogo.action.OAUTH_SUCCESS_ACTION" />
+                <action android:name="com.sxt.chat.receiver.LOGOUT" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".vr.video360.VideoActivity"
@@ -192,82 +269,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.sxt.chat.activity.BasicInfoActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
-            android:name=".activity.RegisterActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
-            android:name="com.sxt.chat.activity.CropActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
-            android:name=".activity.UpdateUserImgActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
-            android:name=".activity.UpdateUserNameActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
-            android:name=".activity.SelectSexActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
-            android:name=".activity.SelectHeightActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
-            android:name=".activity.SelectWeightActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
-            android:name=".activity.SelectAgeActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
-            android:name=".activity.SelectNumberActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
-            android:name="com.sxt.chat.activity.ChangeLoginActivity"
-            android:configChanges="orientation|screenSize" />
-
-        <activity
-            android:name=".activity.SettingsActivity"
-            android:configChanges="orientation|screenSize" />
-
-        <activity
-            android:name=".activity.YouTuActivity"
-            android:configChanges="orientation|screenSize" />
-
-        <activity
-            android:name=".activity.YouTuIdCardActivity"
-            android:configChanges="orientation|screenSize" />
-
-        <activity
-            android:name=".activity.TakePhotoActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/FullScreenTheme" />
-        <activity
-            android:name=".activity.WiFiSettingsActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activity.VideoExoPlayerActivity"
-            android:configChanges="orientation|screenSize" />
-
-        <activity
-            android:name=".activity.RoomDetailActivity"
-            android:configChanges="orientation|screenSize" />
-
-        <activity
-            android:name=".activity.NotifycationActivity"
-            android:configChanges="orientation|screenSize" />
-
-        <receiver
-            android:name=".receiver.WatchDogReceiver"
-            android:exported="false">
-            <intent-filter android:priority="1000">
-                <action android:name="com.videogo.action.OAUTH_SUCCESS_ACTION" />
-                <action android:name="com.sxt.chat.receiver.LOGOUT" />
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
         <service
             android:name=".task.BinderService"
             android:exported="false" />
@@ -321,14 +322,16 @@
             tools:ignore="DuplicateActivity" />
 
         <activity
-            android:name="com.videogo.main.EzvizWebViewActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"></activity>
+            android:name=".activity.MapActivity"
+            android:configChanges="orientation|screenSize" />
 
         <!--高德地图-->
+        <service android:name="com.amap.api.location.APSService" />
+
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="bc7d04743fd40d834d62b542490840be" />
+
     </application>
 
 </manifest>

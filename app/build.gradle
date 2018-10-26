@@ -101,6 +101,12 @@ dependencies {
         exclude group: 'com.google.code.gson'
         exclude group: 'com.squareup.okhttp3'
     }
+
+    //高德地图
+    implementation 'com.amap.api:3dmap:latest.integration'
+    implementation 'com.amap.api:search:latest.integration'
+    implementation 'com.amap.api:location:latest.integration'
+
     // ARCore library
     implementation 'com.google.ar:core:1.4.0'
     // Obj - a simple Wavefront OBJ file loader

@@ -362,8 +362,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             case R.id.vr:
                 startActivity(new Intent(this, VR360Activity.class));
                 break;
-                case R.id.openGl:
-                startActivity(new Intent(this, ThreeDActivity.class));
+            case R.id.openGl:
+                startActivity(new Intent(this, MapActivity.class));
                 break;
         }
     }
