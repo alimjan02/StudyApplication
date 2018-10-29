@@ -2,6 +2,8 @@ package com.sxt.chat.utils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
@@ -9,6 +11,7 @@ import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.animation.LinearInterpolator;
 
 /**
  * @author Miguel Catalan Bañuls
@@ -146,4 +149,73 @@ public class AnimationUtil {
             }
         });
     }
+
+    public static void fadeInScaleView(View view, int duration, final Animator.AnimatorListener listener) {
+        view.setVisibility(View.VISIBLE);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1, 0.65f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1, 0.65f);
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", 0.65f, 1);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(scaleX, scaleY, alpha);
+        set.setDuration(duration).setInterpolator(new LinearInterpolator());
+        if (listener != null) {
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    if (listener != null) listener.onAnimationStart(animation);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (listener != null) listener.onAnimationEnd(animation);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    if (listener != null) listener.onAnimationCancel(animation);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                    if (listener != null) listener.onAnimationRepeat(animation);
+                }
+            });
+        }
+        set.start();
+    }
+
+    public static void fadeOutScaleView(View view, int duration, final Animator.AnimatorListener listener) {
+        view.setVisibility(View.VISIBLE);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1, 1.65f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1, 1.65f);
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", 1, 0);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(scaleX, scaleY, alpha);
+        set.setDuration(duration).setInterpolator(new LinearInterpolator());
+        if (listener != null) {
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    if (listener != null) listener.onAnimationStart(animation);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (listener != null) listener.onAnimationEnd(animation);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    if (listener != null) listener.onAnimationCancel(animation);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                    if (listener != null) listener.onAnimationRepeat(animation);
+                }
+            });
+        }
+        set.start();
+    }
+
 }

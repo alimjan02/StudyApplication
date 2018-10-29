@@ -1,5 +1,6 @@
 package com.sxt.chat.activity;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -10,11 +11,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -36,10 +39,11 @@ import com.sxt.chat.fragment.HomePageFragment;
 import com.sxt.chat.fragment.NewsFragment;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.task.MainService;
+import com.sxt.chat.utils.AnimationUtil;
 import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.Constants;
-import com.sxt.chat.utils.LruCacheUtil;
 import com.sxt.chat.utils.Prefs;
+import com.sxt.chat.utils.ScreenCaptureUtil;
 import com.sxt.chat.utils.glide.GlideCircleTransformer;
 import com.sxt.chat.view.searchview.MaterialSearchView;
 import com.sxt.chat.ws.BmobRequest;
@@ -259,17 +263,63 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 share();
                 break;
             case R.id.action_more:
-                shortScreen();
+                screenCapture();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void shortScreen() {
-        Bitmap fromMemoryCache = LruCacheUtil.getInstance(this).getBitmapFromMemoryCache(MainActivity.this.getClass().getName());
-        if (fromMemoryCache == null) {
-            LruCacheUtil.getInstance(this).saveMirrorBitmap(MainActivity.this.getWindow().getDecorView(),MainActivity.this.getClass().getName());
-        }
+    private void screenCapture() {
+        ScreenCaptureUtil.getInstance(this)
+                .capture(this.getWindow().getDecorView())
+                .setOnScreenCaptureListener(new ScreenCaptureUtil.OnScreenCaptureListener() {
+                    @Override
+                    public void onCaptureSuccessed(Bitmap bitmap) {
+                        final FrameLayout decorView = (FrameLayout) MainActivity.this.getWindow().getDecorView();
+                        int[] decorViewLocation = new int[2];
+                        decorView.getLocationOnScreen(decorViewLocation);
+                        final ImageView imageView = new ImageView(MainActivity.this);
+                        imageView.setImageBitmap(bitmap);
+                        imageView.setX(decorViewLocation[0]);
+                        imageView.setY(decorViewLocation[1]);
+                        decorView.addView(imageView);
+                        imageView.getParent().requestDisallowInterceptTouchEvent(false);
+                        AnimationUtil.fadeInScaleView(imageView, 800, null);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                AnimationUtil.fadeOutScaleView(imageView, 800, new Animator.AnimatorListener() {
+                                    @Override
+                                    public void onAnimationStart(Animator animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        imageView.getParent().requestDisallowInterceptTouchEvent(true);
+                                        decorView.removeView(imageView);
+                                    }
+
+                                    @Override
+                                    public void onAnimationCancel(Animator animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationRepeat(Animator animation) {
+
+                                    }
+                                });
+                            }
+                        });
+                        Log.e("capture", "截屏成功 bytes : " + bitmap.getByteCount());
+                    }
+
+                    @Override
+                    public void onCaptureFailed() {
+                        Log.e("capture", "截屏失败");
+                    }
+                });
     }
 
     private void share() {
