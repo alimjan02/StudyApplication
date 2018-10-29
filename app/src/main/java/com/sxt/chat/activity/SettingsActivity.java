@@ -28,7 +28,6 @@ import com.sxt.chat.download.DownloadTask;
 import com.sxt.chat.receiver.WatchDogReceiver;
 import com.sxt.chat.utils.NetworkUtils;
 import com.sxt.chat.utils.Prefs;
-import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.utils.glide.CacheUtils;
 
 /**
@@ -135,32 +134,32 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
     private void checkUpdate(int serverVersion) {
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            if (serverVersion < packageInfo.versionCode) {
+            if (serverVersion != packageInfo.versionCode) {
                 //判断WIFI情况
                 if (NetworkUtils.isNetworkAvailable(this)) {//判断网络是否可用
                     if (NetworkUtils.isWifiEnabled(this)) {//判断WIFI是否打开
                         if (NetworkUtils.isWifi(this)) {//判断是wifi还是3g网络
-                            startDownloadApkDialog();
+                            startDownloadApkDialog(packageInfo.versionCode);
                         } else {
                             if (NetworkUtils.is3rd(this)) {
-                                showWifiAlert();
+                                showWifiAlert(packageInfo.versionCode);
                             }
                         }
                     } else {
                         if (NetworkUtils.is3rd(this)) {//判断是否是3G网络
-                            showWifiAlert();
+                            showWifiAlert(packageInfo.versionCode);
                         }
                     }
                 }
             } else {
-                Toast("当前已是最新版本");
+                Toast(getString(R.string.version_is_up_to_date));
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void startDownloadApkDialog() {
+    public void startDownloadApkDialog(final int serverVersion) {
         final Dialog dialog = new Dialog(this, R.style.CustomDialog);
         View item = LayoutInflater.from(this).inflate(R.layout.item_update, null);
         final TextView progressTitle = (TextView) item.findViewById(R.id.upgrade_title);
@@ -179,11 +178,12 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
             layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
             window.setAttributes(layoutParams);
         }
-        download(dialog, progressTitle, progressBar, tvProgress);
+        download(dialog, progressTitle, progressBar, tvProgress, serverVersion);
         item.findViewById(R.id.btn_download).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                download(dialog, progressTitle, progressBar, tvProgress);
+                downloadTask.downloadReset();
+                download(dialog, progressTitle, progressBar, tvProgress, serverVersion);
             }
         });
         item.findViewById(R.id.btn_download_cancel).setOnClickListener(new View.OnClickListener() {
@@ -195,17 +195,17 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         });
     }
 
-    private void showWifiAlert() {
-        new AlertDialogBuilder(this).setTitle(getString(R.string.prompt)).setMessage("您当前处于非WIFI状态，继续更新版本吗?").setLeftButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+    private void showWifiAlert(final int serverVersion) {
+        new AlertDialogBuilder(this).setTitle(getString(R.string.prompt)).setMessage(getString(R.string.alert_update_message_not_wifi)).setLeftButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                startDownloadApkDialog();
+                startDownloadApkDialog(serverVersion);
                 dialog.dismiss();
             }
         }).setRightButton(R.string.cancel, null).show();
     }
 
-    private void download(final Dialog dialog, final TextView progressTitle, final ProgressBar progressBar, final TextView tvProgress) {
+    private void download(final Dialog dialog, final TextView progressTitle, final ProgressBar progressBar, final TextView tvProgress, int serverVersion) {
         if (downloadTask != null && !downloadTask.isCancelled()) {
             downloadTask.cancel(true);
         }
@@ -214,8 +214,18 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
             @Override
             public void onError(Exception e) {
                 dialog.dismiss();
-                e.printStackTrace();
                 Toast("下载文件失败，请重新登录进行升级");
+            }
+
+            @Override
+            public void onProgressUpdate(int progress, long max) {
+                if (dialog != null) {
+                    double size = max / 1024.0 / 1024.0;
+                    String result = String.format("更新版本:(共%.2fMB)", size);
+                    progressTitle.setText(result);
+                    progressBar.setProgress(progress);
+                    tvProgress.setText(progress + "%");
+                }
             }
 
             @Override
@@ -231,23 +241,12 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
             }
 
             @Override
-            public void onProgressUpdate(int progress, long max) {
-                if (dialog != null) {
-                    double size = max / 1024.0 / 1024.0;
-                    String result = String.format("更新版本:(共%.2fMB)", size);
-                    progressTitle.setText(result);
-                    progressBar.setProgress(progress);
-                    tvProgress.setText(progress + "%");
-                }
-            }
-
-
-            @Override
             public void onFinish() {
                 dialog.dismiss();
             }
         });
-        downloadTask.execute(Prefs.getInstance(this).getServerUrl() + Prefs.getInstance(this).KEY_APP_UPDATE_URL);
+        String serverUrl = Prefs.getInstance(this).getServerUrl();
+        downloadTask.execute(serverUrl + Prefs.getInstance(this).KEY_APP_UPDATE_URL, String.valueOf(serverVersion));
     }
 
     private void checkInstallPermission() {

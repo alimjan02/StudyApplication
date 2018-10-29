@@ -1,6 +1,7 @@
 package com.sxt.chat.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -37,6 +38,7 @@ import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.task.MainService;
 import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.Constants;
+import com.sxt.chat.utils.LruCacheUtil;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransformer;
 import com.sxt.chat.view.searchview.MaterialSearchView;
@@ -257,10 +259,17 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 share();
                 break;
             case R.id.action_more:
-
+                shortScreen();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void shortScreen() {
+        Bitmap fromMemoryCache = LruCacheUtil.getInstance(this).getBitmapFromMemoryCache(MainActivity.this.getClass().getName());
+        if (fromMemoryCache == null) {
+            LruCacheUtil.getInstance(this).saveMirrorBitmap(MainActivity.this.getWindow().getDecorView(),MainActivity.this.getClass().getName());
+        }
     }
 
     private void share() {

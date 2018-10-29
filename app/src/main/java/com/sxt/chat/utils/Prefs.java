@@ -22,7 +22,8 @@ public final class Prefs extends BasePrefs {
     public static final String KEY_USER_NAME = "UserName";
     public static final String KEY_TICKET = "Ticket";
     public static final String PREF_ACCOUNT_ID = "AccountId";
-    public static final String DEFAULT_SERVER = "www.i-zhaohu.com";
+//    public static final String DEFAULT_SERVER = "www.i-zhaohu.com";
+    public static final String DEFAULT_SERVER = "ceshi.icloudcare.com";
 
     public static String KEY_SAVE_USER_DETAIL_INFO = "KEY_SAVE_USER_DETAIL_INFO";
     public static final String KEY_USER_ID = "KEY_USER_ID";

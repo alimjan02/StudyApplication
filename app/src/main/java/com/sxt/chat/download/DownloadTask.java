@@ -6,17 +6,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.content.FileProvider;
-
+import android.util.Log;
+import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -27,6 +24,7 @@ import okhttp3.Response;
 
 public class DownloadTask extends AsyncTask<String, Integer, String> {
 
+    private String TAG = this.getClass().getName();
     private Activity activity;
     private File apkFile;
     private OkHttpClient downloadAPKClient;
@@ -38,37 +36,63 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 
     @Override
     protected String doInBackground(final String... strings) {
-        apkFile = new File(activity.getExternalFilesDir("apk") + File.separator + activity.getPackageName() + "_web.apk");
-        apkFile.deleteOnExit();
-        final long downloadedLength = apkFile.length();
-        ProgressInterceptor.addListener(strings[0], new ProgressListener() {
-            @Override
-            public void onProgress(final int progress, final long max) {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (downloadListener != null) {
-                            downloadListener.onProgressUpdate(progress, max);
-                        }
-                    }
-                });
-            }
-        });
-        if (downloadAPKClient == null) {
-            downloadAPKClient = new OkHttpClient.Builder()
-                    .addInterceptor(new ProgressInterceptor())
-                    .build();
-        } else {
-            downloadAPKClient.dispatcher().cancelAll();
-        }
-        Request request = new Request.Builder()
-//                .header("RANGE", "bytes=" + downloadedLength + "-")
-                .get()
-                .url(strings[0])
-                .build();
         try {
-            Response response = downloadAPKClient.newCall(request).execute();
-            return parseAPK(response, apkFile);
+            apkFile = new File(activity.getExternalFilesDir("apk") + File.separator + Prefs.KEY_APP_NAME + strings[1] + ".apk");
+            final long downloadedLength = apkFile.length();
+            if (downloadAPKClient != null) {
+                downloadAPKClient.dispatcher().cancelAll();
+            }
+            downloadAPKClient = new OkHttpClient.Builder().build();
+
+            //先开启一个线程 获取apk文件的总长度
+            Response response = downloadAPKClient.newCall(new Request.Builder()
+                    .get()
+                    .url(strings[0])
+                    .build())
+                    .execute();
+
+            if (response.isSuccessful()) {
+                //本地已有完整的apk文件,直接安装
+                final long contentLength = response.body().contentLength();
+                if (downloadedLength == contentLength) {
+                    return apkFile.getPath();
+                } else {
+                    if (downloadedLength > contentLength) {
+                        apkFile.delete();
+                    }
+                    ProgressInterceptor.addListener(strings[0], new ProgressListener() {
+                        @Override
+                        public void onProgress(final int progress, final long max) {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (downloadListener != null) {
+                                        int realProgress = (int) ((downloadedLength + (float) progress / 100 * max) / contentLength * 100);
+                                        downloadListener.onProgressUpdate(realProgress, contentLength);
+                                        Log.e(TAG, "onProgress : downloadedLength : " + downloadedLength + " downloadedLength + max : " + (downloadedLength + max) + " contentLength = " + contentLength);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    response.close();
+                    downloadAPKClient = new OkHttpClient.Builder()
+                            .addInterceptor(new ProgressInterceptor())
+                            .build();
+
+                    //本地文件不完整时才开始断点续传
+                    Request request = new Request.Builder()
+                            .header("RANGE", "bytes=" + downloadedLength + "-")
+                            .get()
+                            .url(strings[0])
+                            .build();
+
+                    Response resp = downloadAPKClient.newCall(request).execute();
+                    return parseAPK(resp, apkFile);
+                }
+            } else {
+                return null;
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -96,27 +120,21 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
     }
 
     private String parseAPK(Response response, File localApkFile) {
-        BufferedWriter bw = null;
-        BufferedReader br = null;
-//        final File apkFile = new File(getExternalFilesDir("apk") + File.separator + getPackageName() + ".apk");
-        localApkFile.deleteOnExit();
-
         FileOutputStream os = null;
         InputStream is = null;
         try {
-//            RandomAccessFile savedFile = new RandomAccessFile(localApkFile, "rw");
-//            savedFile.seek(localApkFile.length());
-            os = new FileOutputStream(localApkFile);
+            Log.e(TAG, "response : " + ((float) response.body().contentLength() / 1024 / 1024) + "本地已有 : " + (localApkFile.length() / 1024 / 1024));
+
+            os = new FileOutputStream(localApkFile, true);
             is = response.body().byteStream();
-            byte[] b = new byte[1024];
+            byte[] b = new byte[1024 * 1024];
             int len;
             while ((len = is.read(b)) != -1) {
                 os.write(b, 0, len);
-//                savedFile.write(b, 0, len);
             }
-//            os.popub_close();
+            os.flush();
+            os.close();
             is.close();
-
             return localApkFile.getPath();
 
         } catch (Exception e) {
@@ -146,10 +164,14 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
         }
     }
 
-    private void downloadCancel() {
-        if (downloadAPKClient != null) {
-            downloadAPKClient.dispatcher().cancelAll();
+    public void downloadReset() {
+        if (apkFile != null && apkFile.exists()) {
+            apkFile.delete();
         }
+    }
+
+    private void downloadCancel() {
+        if (downloadAPKClient != null) downloadAPKClient.dispatcher().cancelAll();
     }
 
     @Override
@@ -165,10 +187,10 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
     public interface DownloadListener {
         void onError(Exception e);
 
+        void onProgressUpdate(final int progress, final long max);
+
         void onSuccessful(String apkFilePath);
 
         void onFinish();
-
-        void onProgressUpdate(int progress, long max);
     }
 }

@@ -66,7 +66,6 @@ public class ProgressResponseBody extends ResponseBody {
                 totalBytesRead += bytesRead;
             }
             int progress = (int) (100f * totalBytesRead / fullLength);
-            Log.d(TAG, "download progress is " + progress);
             if (listener != null && progress != currentProgress) {
                 listener.onProgress(progress,fullLength);
             }
