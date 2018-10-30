@@ -1,6 +1,7 @@
 package com.sxt.chat.activity;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -283,31 +284,20 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                         imageView.setX(decorViewLocation[0]);
                         imageView.setY(decorViewLocation[1]);
                         decorView.addView(imageView);
-                        imageView.getParent().requestDisallowInterceptTouchEvent(false);
-                        AnimationUtil.fadeInScaleView(imageView, 800, null);
+                        AnimationUtil.fadeInScaleView(MainActivity.this, imageView, 200, new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                            }
+                        });
                         imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                AnimationUtil.fadeOutScaleView(imageView, 800, new Animator.AnimatorListener() {
-                                    @Override
-                                    public void onAnimationStart(Animator animation) {
-
-                                    }
-
+                                AnimationUtil.fadeOutScaleView(imageView, 200, new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationEnd(Animator animation) {
-                                        imageView.getParent().requestDisallowInterceptTouchEvent(true);
+                                        super.onAnimationEnd(animation);
                                         decorView.removeView(imageView);
-                                    }
-
-                                    @Override
-                                    public void onAnimationCancel(Animator animation) {
-
-                                    }
-
-                                    @Override
-                                    public void onAnimationRepeat(Animator animation) {
-
                                     }
                                 });
                             }
