@@ -284,7 +284,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                         imageView.setX(decorViewLocation[0]);
                         imageView.setY(decorViewLocation[1]);
                         decorView.addView(imageView);
-                        AnimationUtil.fadeInScaleView(MainActivity.this, imageView, 200, new AnimatorListenerAdapter() {
+                        AnimationUtil.fadeInScaleView(MainActivity.this, imageView, 500, new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
@@ -302,12 +302,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                                 });
                             }
                         });
-                        Log.e("capture", "截屏成功 bytes : " + bitmap.getByteCount());
+                        Log.e("capture.mp3", "截屏成功 bytes : " + bitmap.getByteCount());
                     }
 
                     @Override
                     public void onCaptureFailed() {
-                        Log.e("capture", "截屏失败");
+                        Log.e("capture.mp3", "截屏失败");
                     }
                 });
     }

@@ -26,7 +26,7 @@ public class ScreenCaptureUtil {
 
     public ScreenCaptureUtil capture(View targetView) {
         if (targetView == null) {
-            throw new NullPointerException("this capture screen targetView must be not null");
+            throw new NullPointerException("this capture.mp3 screen targetView must be not null");
         }
         if (task != null && !task.isCancelled()) {
             task.cancel(true);

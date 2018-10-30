@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
@@ -16,6 +17,8 @@ import android.view.ViewAnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+
+import com.sxt.chat.R;
 
 /**
  * @author Miguel Catalan Bañuls
@@ -163,7 +166,7 @@ public class AnimationUtil {
 
         AnimatorSet set = new AnimatorSet();
         set.play(scaleX).with(scaleY).with(alpha);
-        set.setDuration(duration).setInterpolator(new DecelerateInterpolator());
+        set.setDuration(duration).setInterpolator(new LinearInterpolator());
         if (listener != null) {
             set.addListener(new Animator.AnimatorListener() {
 
@@ -175,10 +178,16 @@ public class AnimationUtil {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     if (listener != null) listener.onAnimationEnd(animation);
-                    float dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, context.getResources().getDisplayMetrics());
-                    ObjectAnimator translationX = ObjectAnimator.ofFloat(view, "translationX", view.getLeft(), view.getWidth() * (1 - view.getScaleX()) / 2-dimension/2);
+                    float dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, context.getResources().getDisplayMetrics());
+                    int statusBarHeight = 0;
+                    int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+                    if (resourceId > 0) {
+                        statusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
+                    }
+                    float actionBarHeight = context.getResources().getDimension(R.dimen.app_bar_height);
+                    ObjectAnimator translationX = ObjectAnimator.ofFloat(view, "translationX", view.getLeft(), view.getWidth() * (1 - view.getScaleX()) / 2 - dimension);
                     float distanceY = view.getHeight() * (1 - view.getScaleY()) / 2;
-                    ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", view.getTop(), view.getTop() - distanceY + dimension * 4);
+                    ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", view.getTop(), view.getTop() - distanceY + actionBarHeight + statusBarHeight + dimension);
                     AnimatorSet animatorSet = new AnimatorSet();
                     animatorSet.playTogether(translationX, translationY);
                     animatorSet.setDuration(duration).setInterpolator(new BounceInterpolator());
@@ -202,6 +211,7 @@ public class AnimationUtil {
                 }
             });
         }
+        AudioUtil.getInstance(context).playCaptureSound();
         set.start();
     }
 
