@@ -4,15 +4,18 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import com.sxt.chat.R;
@@ -25,6 +28,14 @@ public class AnimationUtil {
     public static int ANIMATION_DURATION_SHORT = 150;
     public static int ANIMATION_DURATION_MEDIUM = 400;
     public static int ANIMATION_DURATION_LONG = 800;
+
+    public static final String SCALE_X = "scaleX";
+    public static final String SCALE_Y = "scaleY";
+    public static final String TRANSLATION_X = "translationX";
+    public static final String TRANSLATION_Y = "translationY";
+    public static final String ROTATION_X = "rotationX";
+    public static final String ROTATION_Y = "rotationY";
+    public static final String ALPHA = "alpha";
 
     public interface AnimationListener {
         /**
@@ -157,9 +168,9 @@ public class AnimationUtil {
     public static void fadeInScaleView(final Context context, final View view, final int duration, final Animator.AnimatorListener listener) {
 
         view.setVisibility(View.VISIBLE);
-        final ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1, 0.4f);
-        final ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1, 0.3f);
-        final ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", 0.4f, 1);
+        final ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, SCALE_X, 1, 0.3f);
+        final ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, SCALE_Y, 1, 0.3f);
+        final ObjectAnimator alpha = ObjectAnimator.ofFloat(view, ALPHA, 0.8f, 1);
 
         AnimatorSet set = new AnimatorSet();
         set.play(scaleX).with(scaleY).with(alpha);
@@ -175,24 +186,33 @@ public class AnimationUtil {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     if (listener != null) listener.onAnimationEnd(animation);
-                    float dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, context.getResources().getDisplayMetrics());
+                    final float dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, context.getResources().getDisplayMetrics());
                     int statusBarHeight = 0;
                     int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
                     if (resourceId > 0) {
                         statusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
                     }
-                    float actionBarHeight = context.getResources().getDimension(R.dimen.app_bar_height);
-                    ObjectAnimator translationX = ObjectAnimator.ofFloat(view, "translationX", view.getLeft(), view.getWidth() * (1 - view.getScaleX()) / 2 - dimension);
-                    float distanceY = view.getHeight() * (1 - view.getScaleY()) / 2;
-                    ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", view.getTop(), view.getTop() - distanceY + actionBarHeight + statusBarHeight + dimension);
+                    final float actionBarHeight = context.getResources().getDimension(R.dimen.app_bar_height);
+                    float endX = view.getWidth() * (1 - view.getScaleX()) / 2 - dimension;
+                    final float distanceY = view.getHeight() * (1 - view.getScaleY()) / 2;
+                    final float endY = view.getTop() - distanceY + actionBarHeight + statusBarHeight + dimension;
+                    ObjectAnimator translationX = ObjectAnimator.ofFloat(view, TRANSLATION_X, view.getLeft(), endX);
+                    ObjectAnimator translationY = ObjectAnimator.ofFloat(view, TRANSLATION_Y, view.getTop(), endY);
 
                     AnimatorSet animatorSet = new AnimatorSet();
                     animatorSet.playTogether(translationX, translationY);
-                    animatorSet.setDuration(duration).setInterpolator(new BounceInterpolator());
+                    animatorSet.setDuration(duration).setInterpolator(new DecelerateInterpolator());
                     animatorSet.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
+                            float start = endY;
+                            ObjectAnimator translateAnimation = ObjectAnimator.ofFloat(view, TRANSLATION_Y, start, start + dimension / 2, start - dimension / 2);
+                            translateAnimation.setRepeatCount(ValueAnimator.INFINITE);
+                            translateAnimation.setRepeatMode(ValueAnimator.REVERSE);//反向重复执行,可以避免抖动
+                            translateAnimation.setDuration(1500);
+                            translateAnimation.start();
+
                         }
                     });
                     animatorSet.start();
@@ -215,9 +235,9 @@ public class AnimationUtil {
 
     public static void fadeOutScaleView(View view, int duration, final Animator.AnimatorListener listener) {
         view.setVisibility(View.VISIBLE);
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", view.getScaleX(), 0);
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", view.getScaleY(), 0);
-        ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", 1, 0);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, SCALE_X, view.getScaleX(), 0);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, SCALE_Y, view.getScaleY(), 0);
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(view, ALPHA, 1, 0);
         AnimatorSet set = new AnimatorSet();
         set.playTogether(scaleX, scaleY, alpha);
         set.setDuration(duration).setInterpolator(new LinearInterpolator());
@@ -246,5 +266,4 @@ public class AnimationUtil {
         }
         set.start();
     }
-
 }

@@ -271,6 +271,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     }
 
     private void screenCapture() {
+        menu.findItem(R.id.action_more).setEnabled(false);
         ScreenCaptureUtil.getInstance(this)
                 .capture(this.getWindow().getDecorView())
                 .setOnScreenCaptureListener(new ScreenCaptureUtil.OnScreenCaptureListener() {
@@ -298,6 +299,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                                     public void onAnimationEnd(Animator animation) {
                                         super.onAnimationEnd(animation);
                                         decorView.removeView(imageView);
+                                        menu.findItem(R.id.action_more).setEnabled(true);
                                     }
                                 });
                             }
