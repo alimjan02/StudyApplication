@@ -106,7 +106,7 @@ dependencies {
     implementation 'com.amap.api:3dmap:latest.integration'
     implementation 'com.amap.api:search:latest.integration'
     implementation 'com.amap.api:location:latest.integration'
-    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
+// 微信分享&登录   implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 
     // ARCore library
     implementation 'com.google.ar:core:1.4.0'

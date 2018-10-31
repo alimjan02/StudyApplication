@@ -28,17 +28,17 @@
         <item name="android:windowTranslucentNavigation" tools:targetApi="kitkat">true</item>
     </style>
 
+    <style name="Translucent" parent="BaseTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <!--优化启动页 修复闪屏界面出现的 短暂白屏 问题-->
     <style name="SplashTheme" parent="FullScreenTheme">
         <item name="android:windowBackground">@mipmap/splash_holder</item>
     </style>
 
     <style name="VrTheme" parent="android:Theme.Material" tools:targetApi="lollipop" />
-
-    <style name="PopContextMenu" parent="@android:style/Theme.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
 
     <style name="divider_line">
         <item name="android:background">@color/dividing_line</item>
@@ -61,7 +61,7 @@
         <item name="android:textColor">@drawable/tab_text_selector_bg</item>
     </style>
 
-    <style name="CustomDialog" parent="@android:style/Theme.Dialog">
+    <style name="Base_Dialog_Style" parent="android:style/Theme.Dialog">
         <!-- 背景透明 -->
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -75,6 +75,42 @@
         <item name="android:windowNoTitle">true</item>
         <!-- 半透明 -->
         <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="BottomSheet_Dialog_black_bg_Style" parent="Base_Dialog_Style">
+        <!-- Dialog进入及退出动画 -->
+        <item name="android:windowAnimationStyle">@style/timepopwindow_anim_style</item>
+    </style>
+
+    <style name="BottomSheet_Dialog_white_bg_Style" parent="Base_Dialog_Style">
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@color/white</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">false</item>
+        <!-- Dialog进入及退出动画 -->
+        <item name="android:windowAnimationStyle">@style/timepopwindow_anim_style</item>
+    </style>
+
+    <style name="BottomSheet_Dialog_Style" parent="@android:style/Theme.Dialog">
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">false</item>
+        <!-- Dialog进入及退出动画 -->
+        <item name="android:windowAnimationStyle">@style/timepopwindow_anim_style</item>
+    </style>
+
+    <style name="PopContextMenu" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <!-- 时间选择器popwidnow 显示消失动画 -->
+    <style name="timepopwindow_anim_style">
+        <item name="android:windowEnterAnimation">@anim/timepicker_anim_enter_bottom
+        </item> <!-- 指定显示的动画xml -->
+        <item name="android:windowExitAnimation">@anim/timepicker_anim_exit_bottom
+        </item> <!-- 指定消失的动画xml -->
     </style>
 
     <style name="Spinner_style" parent="Widget.AppCompat.Light.DropDownItem.Spinner">

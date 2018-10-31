@@ -85,6 +85,8 @@
     <string name="take_photo">拍摄</string>
     <string name="take_photo_reset">重新拍摄</string>
     <string name="just_a_moment">请稍后</string>
+    <string name="string_share_friends">朋友圈</string>
+    <string name="string_share_friend">微信好友</string>
 
     <string-array name="sleep_strings">
         <item>离床次数(次)</item>
@@ -280,6 +282,9 @@
     <string name="scan">扫一扫</string>
     <string name="more">更多</string>
     <string name="apk_install_message">您需要允许安装未知来源的应用权限,才能正常安装新版本哟~</string>
+    <string name="check_wechat_is_install">当前微信版本太低或未安装微信客户端</string>
+    <string name="string_share_successful">分享成功</string>
+    <string name="string_share_cancel">分享取消</string>
 
     <string-array name="query_suggestions">
         <item>A very very long suggestion that would span multiple lines.</item>

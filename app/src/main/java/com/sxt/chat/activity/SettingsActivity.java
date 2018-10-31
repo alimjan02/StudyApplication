@@ -160,7 +160,7 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
     }
 
     public void startDownloadApkDialog(final int serverVersion) {
-        final Dialog dialog = new Dialog(this, R.style.CustomDialog);
+        final Dialog dialog = new Dialog(this, R.style.Base_Dialog_Style);
         View item = LayoutInflater.from(this).inflate(R.layout.item_update, null);
         final TextView progressTitle = (TextView) item.findViewById(R.id.upgrade_title);
         final ProgressBar progressBar = (ProgressBar) item.findViewById(R.id.my_progress);

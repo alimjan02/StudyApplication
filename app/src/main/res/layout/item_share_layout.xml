@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:paddingBottom="20dp"
+    android:paddingTop="20dp">
+
+
+    <TextView
+        android:id="@+id/iv_friends"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="?selectableItemBackgroundBorderless"
+        android:drawablePadding="3dp"
+        android:drawableTop="@mipmap/friendsshow"
+        android:gravity="center"
+        android:text="@string/string_share_friends"
+        android:textColor="@color/text_color_2"
+        android:textSize="14dp" />
+
+    <TextView
+        android:id="@+id/iv_friend"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="?selectableItemBackgroundBorderless"
+        android:drawablePadding="3dp"
+        android:drawableTop="@mipmap/friends"
+        android:gravity="center"
+        android:text="@string/string_share_friend"
+        android:textColor="@color/text_color_2"
+        android:textSize="14dp" />
+
+</LinearLayout>

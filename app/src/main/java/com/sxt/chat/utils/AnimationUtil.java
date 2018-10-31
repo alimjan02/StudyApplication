@@ -5,17 +5,14 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.BounceInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import com.sxt.chat.R;
@@ -161,7 +158,7 @@ public class AnimationUtil {
 
         view.setVisibility(View.VISIBLE);
         final ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1, 0.4f);
-        final ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1, 0.4f);
+        final ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1, 0.3f);
         final ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", 0.4f, 1);
 
         AnimatorSet set = new AnimatorSet();
@@ -188,6 +185,7 @@ public class AnimationUtil {
                     ObjectAnimator translationX = ObjectAnimator.ofFloat(view, "translationX", view.getLeft(), view.getWidth() * (1 - view.getScaleX()) / 2 - dimension);
                     float distanceY = view.getHeight() * (1 - view.getScaleY()) / 2;
                     ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", view.getTop(), view.getTop() - distanceY + actionBarHeight + statusBarHeight + dimension);
+
                     AnimatorSet animatorSet = new AnimatorSet();
                     animatorSet.playTogether(translationX, translationY);
                     animatorSet.setDuration(duration).setInterpolator(new BounceInterpolator());

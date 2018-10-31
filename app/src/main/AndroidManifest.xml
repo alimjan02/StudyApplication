@@ -322,6 +322,13 @@
             tools:ignore="DuplicateActivity" />
 
         <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Translucent" />
+
+        <activity
             android:name=".activity.MapActivity"
             android:configChanges="orientation|screenSize" />
 

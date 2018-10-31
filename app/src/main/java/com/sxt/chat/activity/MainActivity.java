@@ -284,7 +284,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                         imageView.setX(decorViewLocation[0]);
                         imageView.setY(decorViewLocation[1]);
                         decorView.addView(imageView);
-                        AnimationUtil.fadeInScaleView(MainActivity.this, imageView, 500, new AnimatorListenerAdapter() {
+                        AnimationUtil.fadeInScaleView(MainActivity.this, imageView, 400, new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
