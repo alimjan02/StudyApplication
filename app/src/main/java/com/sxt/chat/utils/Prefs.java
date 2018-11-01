@@ -22,7 +22,7 @@ public final class Prefs extends BasePrefs {
     public static final String KEY_USER_NAME = "UserName";
     public static final String KEY_TICKET = "Ticket";
     public static final String PREF_ACCOUNT_ID = "AccountId";
-//    public static final String DEFAULT_SERVER = "www.i-zhaohu.com";
+    //    public static final String DEFAULT_SERVER = "www.i-zhaohu.com";
     public static final String DEFAULT_SERVER = "ceshi.icloudcare.com";
 
     public static String KEY_SAVE_USER_DETAIL_INFO = "KEY_SAVE_USER_DETAIL_INFO";
@@ -43,11 +43,14 @@ public final class Prefs extends BasePrefs {
     public static final String KEY_LAST_RESUME_MILLIS = "KEY_LAST_RESUME_MILLIS";
     public static final String KEY_USER_HEADER_IMAGE_FLAG = "KEY_USER_HEADER_IMAGE_FLAG";
     public static final String ROOM_INFO = "ROOM_INFO";
-    public static final String KEY_BANNER_INFO="KEY_BANNER_INFO";
+    public static final String KEY_BANNER_INFO = "KEY_BANNER_INFO";
+    public static final String KEY_BITMAP = "KEY_BITMAP";
+
 
     //PATH
     public String KEY_APP_UPDATE_URL = "icare/upgrade?n=" + KEY_APP_NAME;
     public static String KEY_APP_NAME = "copd";
+    public static final String KEY_PATH_CAPTURE_IMG = App.getCtx().getExternalCacheDir() + File.separator + "capture_img";
     public static final String KEY_PATH_CROP_IMG = App.getCtx().getExternalCacheDir() + File.separator + "crop_img";
     public static final String KEY_PATH_TAKE_PHOTO_IMG = App.getCtx().getExternalCacheDir() + File.separator + "take_photo_img";
 

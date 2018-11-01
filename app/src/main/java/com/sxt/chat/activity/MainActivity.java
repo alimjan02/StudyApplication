@@ -2,10 +2,12 @@ package com.sxt.chat.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -68,6 +70,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
     private MaterialSearchView searchView;
     private Menu menu;
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -271,40 +274,58 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     }
 
     private void screenCapture() {
+        if (menu == null) {
+            return;
+        }
         menu.findItem(R.id.action_more).setEnabled(false);
         ScreenCaptureUtil.getInstance(this)
                 .capture(this.getWindow().getDecorView())
                 .setOnScreenCaptureListener(new ScreenCaptureUtil.OnScreenCaptureListener() {
                     @Override
-                    public void onCaptureSuccessed(Bitmap bitmap) {
+                    public void onCaptureSuccessed(final String path) {
                         final FrameLayout decorView = (FrameLayout) MainActivity.this.getWindow().getDecorView();
                         int[] decorViewLocation = new int[2];
                         decorView.getLocationOnScreen(decorViewLocation);
                         final ImageView imageView = new ImageView(MainActivity.this);
-                        imageView.setImageBitmap(bitmap);
-                        imageView.setX(decorViewLocation[0]);
-                        imageView.setY(decorViewLocation[1]);
-                        decorView.addView(imageView);
-                        AnimationUtil.fadeInScaleView(MainActivity.this, imageView, 400, new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                            }
-                        });
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                AnimationUtil.fadeOutScaleView(imageView, 200, new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        super.onAnimationEnd(animation);
-                                        decorView.removeView(imageView);
-                                        menu.findItem(R.id.action_more).setEnabled(true);
+                        Bitmap bitmap = ScreenCaptureUtil.getInstance(MainActivity.this).getBitmapFromMemory(path);
+                        if (bitmap != null) {
+                            imageView.setImageBitmap(bitmap);
+                            imageView.setX(decorViewLocation[0]);
+                            imageView.setY(decorViewLocation[1]);
+                            decorView.addView(imageView);
+                            AnimationUtil.fadeInScaleView(MainActivity.this, imageView, 400, new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    super.onAnimationEnd(animation);
+                                }
+                            });
+                            imageView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                        imageView.setTransitionName("shareView");
                                     }
-                                });
-                            }
-                        });
-                        Log.e("capture.mp3", "截屏成功 bytes : " + bitmap.getByteCount());
+                                    Intent intent = new Intent(MainActivity.this, ShareCaptureActivity.class);
+                                    intent.putExtra(Prefs.KEY_BITMAP, path);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                        startActivity(intent,
+                                                ActivityOptions.makeSceneTransitionAnimation
+                                                        (MainActivity.this, imageView, "shareView").toBundle());
+                                    } else {
+                                        startActivity(intent);
+                                    }
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            decorView.removeView(imageView);
+                                            menu.findItem(R.id.action_more).setEnabled(true);
+                                        }
+                                    }, 500);
+                                }
+                            });
+                            Log.e("capture.mp3", String.format("截屏成功 path : %s", path));
+                        }
                     }
 
                     @Override

@@ -107,11 +107,19 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".activity.ShareCaptureActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="true"
+            android:launchMode="singleTop" />
+
         <activity
             android:name=".activity.LoginActivity"
             android:configChanges="orientation|screenSize"
@@ -320,13 +328,6 @@
             android:name="com.qq.e.ads.ADActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             tools:ignore="DuplicateActivity" />
-
-        <activity
-            android:name=".wxapi.WXEntryActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/Translucent" />
 
         <activity
             android:name=".activity.MapActivity"

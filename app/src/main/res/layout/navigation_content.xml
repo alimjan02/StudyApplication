@@ -66,7 +66,7 @@
     <TextView
         android:id="@+id/normal_settings"
         style="@style/menu_style"
-        android:drawableStart="@drawable/ic_vector_settings_24dp"
+        android:drawableStart="@drawable/ic_settings_mian_blue_24dp"
         android:text="@string/nomal_settings" />
 
     <View

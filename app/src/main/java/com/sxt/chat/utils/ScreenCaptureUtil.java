@@ -6,8 +6,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.View;
 import android.webkit.WebView;
+
+import java.io.File;
 
 /**
  * Created by sxt on 2018/3/26.
@@ -18,10 +21,34 @@ public class ScreenCaptureUtil {
     private static Activity activity;
     private static ScreenCaptureUtil screenCaptureUtil = new ScreenCaptureUtil();
     private OnScreenCaptureListener onScreenCaptureListener;
+    private static LruCache<String, Bitmap> lruCache;
 
     public static ScreenCaptureUtil getInstance(Activity activity) {
         ScreenCaptureUtil.activity = activity;
+        if (lruCache == null) {
+            lruCache = new LruCache<String, Bitmap>((int) (Runtime.getRuntime().maxMemory() / 5)) {
+                @Override
+                protected int sizeOf(String key, Bitmap bitmap) {
+                    return bitmap.getByteCount();
+                }
+            };
+        }
         return screenCaptureUtil;
+    }
+
+    private void saveCapture2Memory(String path, Bitmap bitmap) {
+        if (bitmap != null && path != null) {
+            if (lruCache.get(path) == null) {
+                lruCache.put(path, bitmap);
+            }
+        }
+    }
+
+    public Bitmap getBitmapFromMemory(String path) {
+        if (path != null) {
+            return lruCache.get(path);
+        }
+        return null;
     }
 
     public ScreenCaptureUtil capture(View targetView) {
@@ -37,8 +64,8 @@ public class ScreenCaptureUtil {
         return this;
     }
 
-    private Bitmap captureScreen(Activity activity, View targetView) {
-
+    private String captureScreen(Activity activity, View targetView) {
+        Bitmap bitmap;
         if (activity != null & targetView != null) {
             if (!(targetView instanceof WebView)) {
                 targetView.destroyDrawingCache();
@@ -46,19 +73,19 @@ public class ScreenCaptureUtil {
                  * 在调用getDrawingCache()方法从ImageView对象获取图像之前，否则无法获取到
                  */
                 targetView.setDrawingCacheEnabled(true);
-                Bitmap bitmap = Bitmap.createBitmap(targetView.getDrawingCache());
+                bitmap = Bitmap.createBitmap(targetView.getDrawingCache());
                 /**
                  * 在调用getDrawingCache()方法从ImageView对象获取图像之后，一定要调用setDrawingCacheEnabled(false)方法：
                  * iv_photo.setDrawingCacheEnabled(false);以清空画图缓冲区，否则，下一次从ImageView对象iv_photo中获取的图像，还是原来的图像。
                  */
                 targetView.setDrawingCacheEnabled(false);
-                return bitmap;
+
             } else {
 
                 WebView webView = (WebView) targetView;
                 float scaleX = webView.getScaleX();
                 float scaleY = webView.getScaleY();
-                Bitmap bitmap = Bitmap.createBitmap((int) (webView.getWidth() * scaleX),
+                bitmap = Bitmap.createBitmap((int) (webView.getWidth() * scaleX),
                         (int) (webView.getHeight() * scaleY), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(bitmap);
                 Paint paint = new Paint();
@@ -66,26 +93,46 @@ public class ScreenCaptureUtil {
                 webView.draw(canvas);
 
                 Log.i("webView", "captureScreen ");
-
-                return bitmap;
             }
+            File files = new File(Prefs.KEY_PATH_CAPTURE_IMG);
+            if (!files.exists()) {
+                files.mkdirs();
+            }
+            String path = files.getPath() + File.separator + System.currentTimeMillis() + ".png";
+            saveCapture2Memory(path, bitmap);
+//            try {
+//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                FileOutputStream fos = new FileOutputStream(file);
+//                bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//                fos.write(baos.toByteArray());
+//                fos.flush();
+//                fos.close();
+//                baos.close();
+//                if (!bitmap.isRecycled()) {
+//                    bitmap.recycle();
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                return null;
+//            }
+            return path;
         }
         return null;
     }
 
-    class ShortScreenTask extends AsyncTask<View, Integer, Bitmap> {
+    class ShortScreenTask extends AsyncTask<View, Integer, String> {
 
         @Override
-        protected Bitmap doInBackground(View... views) {
+        protected String doInBackground(View... views) {
             return captureScreen(activity, views[0]);
         }
 
         @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-            if (bitmap != null) {
+        protected void onPostExecute(String path) {
+            super.onPostExecute(path);
+            if (path != null) {
                 if (onScreenCaptureListener != null)
-                    onScreenCaptureListener.onCaptureSuccessed(bitmap);
+                    onScreenCaptureListener.onCaptureSuccessed(path);
             } else {
                 if (onScreenCaptureListener != null) onScreenCaptureListener.onCaptureFailed();
             }
@@ -105,7 +152,7 @@ public class ScreenCaptureUtil {
 
     public interface OnScreenCaptureListener {
 
-        void onCaptureSuccessed(Bitmap bitmap);
+        void onCaptureSuccessed(String path);
 
         void onCaptureFailed();
     }
