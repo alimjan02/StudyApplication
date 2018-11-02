@@ -15,13 +15,13 @@ import android.widget.ViewSwitcher;
 
 import com.sxt.chat.R;
 import com.sxt.chat.base.LazyFragment;
-import com.sxt.chat.view.chart.BeizerCurveLine;
-import com.sxt.chat.view.chart.ChartBar;
-import com.sxt.chat.view.chart.ChartBean;
-import com.sxt.chat.view.chart.ChartPie;
-import com.sxt.chat.view.chart.ChartPieBean;
-import com.sxt.chat.view.chart.CircleProgressView;
-import com.sxt.chat.view.chart.LineOnScrollChangeListener;
+import com.sxt.library.chart.bean.ChartBean;
+import com.sxt.library.chart.bean.ChartPieBean;
+import com.sxt.library.chart.listener.LineOnScrollChangeListener;
+import com.sxt.library.chart.view.BeizerCurveLine;
+import com.sxt.library.chart.view.ChartBar;
+import com.sxt.library.chart.view.ChartPie;
+import com.sxt.library.chart.view.CircleProgressView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,6 @@ import java.util.Random;
 /**
  * Created by 11837 on 2018/4/22.
  */
-@RequiresApi(api = Build.VERSION_CODES.M)
 public class ChartFragment extends LazyFragment {
 
     private Handler handler = new Handler();
@@ -148,9 +147,8 @@ public class ChartFragment extends LazyFragment {
                 .start();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             onScrollChangeListener.addLine(chartBar);
-        } else {
-            chartBar.start();
         }
+        chartBar.start();
     }
 
     private void initData() {
@@ -198,9 +196,8 @@ public class ChartFragment extends LazyFragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //将当前曲线添加到ScrollView的滑动监听中
             onScrollChangeListener.addLine(chartPie);
-        } else {
-            chartPie.start();
         }
+        chartPie.start();
     }
 
     private void drawLine() {
@@ -229,8 +226,7 @@ public class ChartFragment extends LazyFragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //将当前曲线添加到ScrollView的滑动监听中
             onScrollChangeListener.addLine(chartLine);
-        } else {
-            chartLine.start();
         }
+        chartLine.start();
     }
 }

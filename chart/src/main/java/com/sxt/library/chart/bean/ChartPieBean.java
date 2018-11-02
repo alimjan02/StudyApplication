@@ -1,4 +1,4 @@
-package com.sxt.chat.view.chart;
+package com.sxt.library.chart.bean;
 
 /**
  * Created by izhaohu on 2017/12/27.

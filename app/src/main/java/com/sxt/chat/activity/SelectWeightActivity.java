@@ -12,7 +12,7 @@ import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.utils.glide.GlideCircleTransformer;
-import com.sxt.chat.view.chart.RulerView;
+import com.sxt.chat.view.picker.RulerView;
 
 import cn.bmob.v3.BmobUser;
 

@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/banner" />
+            <option value="$PROJECT_DIR$/chart" />
             <option value="$PROJECT_DIR$/crop_img" />
             <option value="$PROJECT_DIR$/refresh-layout" />
             <option value="$PROJECT_DIR$/zxing-android-embedded" />

@@ -1,9 +1,11 @@
-package com.sxt.chat.view.chart;
+package com.sxt.library.chart.listener;
 
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
+
+import com.sxt.library.chart.base.BaseChart;
 
 import java.util.ArrayList;
 import java.util.List;

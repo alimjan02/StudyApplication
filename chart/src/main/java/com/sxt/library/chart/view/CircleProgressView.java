@@ -1,4 +1,4 @@
-package com.sxt.chat.view.chart;
+package com.sxt.library.chart.view;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -26,17 +26,26 @@ import java.math.MathContext;
 @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 public class CircleProgressView extends View {
 
+    private Paint basePaint, baseLabelPaint;
+    private float progress, maxValue;
+    private float basePadding = 30;
+    private float startX, endX, startY, endY;
+    private float radius, radiusX, radiusY;
+
+    /**
+     * 顶部的Label 文字
+     */
+    private String[] labelStrs;
+    /**
+     * 顶部的Label 颜色
+     */
+    private int[] labelColors;
     /**
      * 动画持续的时长
      */
     private long duration = 3000;
-    /**
-     *
-     */
     private String subTitle;
     private int roundBgColor;
-    private Path path;
-    private PathMeasure measure;
 
     public CircleProgressView(Context context) {
         super(context);
@@ -52,28 +61,6 @@ public class CircleProgressView extends View {
         super(context, attrs, defStyleAttr);
         init();
     }
-
-    private Paint basePaint;
-    private Paint baseLabelPaint;
-    private float progress;
-    private float maxValue;
-    private float basePadding = 30;
-    private float startX;
-    private float endX;
-    private float startY;
-    private float endY;
-    private float radius;
-    private float radiusX;
-    private float radiusY;
-
-    /**
-     * 顶部的Label 文字
-     */
-    private String[] labelStrs;
-    /**
-     * 顶部的Label 颜色
-     */
-    private int[] labelColors;
 
     private void init() {
         basePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -107,7 +94,6 @@ public class CircleProgressView extends View {
         }
     }
 
-
     public void setProgress(int progress, int maxValue, String subTitle) {
         this.progress = progress;
         this.maxValue = maxValue;
@@ -127,7 +113,6 @@ public class CircleProgressView extends View {
     }
 
     private void drawCircleRound(Canvas canvas) {
-
         //画圆弧背景
         Paint paint = new Paint(basePaint);
         paint.setColor(Color.GRAY);
@@ -136,7 +121,6 @@ public class CircleProgressView extends View {
         canvas.drawCircle(radiusX, radiusY, radius, paint);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void drawCircleProgress(final Canvas canvas) {
         updateUi(canvas);
     }
@@ -178,13 +162,9 @@ public class CircleProgressView extends View {
         float x = (float) (radiusX + radius * Math.cos(arcPI * angle));
         float y = (float) (radiusY + radius * Math.sin(arcPI * angle));
 
-//        paint.setColor(Color.WHITE);
-//        canvas.drawPoint(x, y, paint);
         //画中心 放射点
         Paint radioPaint = new Paint(basePaint);
         radioPaint.setColor(Color.WHITE);
-//        int[] colors = new int[]{Color.BLUE, Color.YELLOW, Color.GREEN, Color.YELLOW, Color.GREEN};
-//        radioPaint.setShader(new RadialGradient(x, y, 20, colors, null, Shader.TileMode.CLAMP));
         canvas.drawCircle(x, y, 7, radioPaint);
 
         Paint textPaint = new Paint(basePaint);
@@ -193,7 +173,6 @@ public class CircleProgressView extends View {
         textPaint.setColor(Color.RED);
         Typeface font0 = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD);
         textPaint.setTypeface(font0);
-        //textPaint.setFakeBoldText(true);
 
         BigDecimal divide1 = new BigDecimal(Float.toString(0.8f)).add(new BigDecimal(Float.toString(0.2f * mAnimatorValue)));
         float result = new BigDecimal(maxValue).multiply(new BigDecimal(divide1.floatValue()), new MathContext(5)).floatValue();
@@ -247,47 +226,6 @@ public class CircleProgressView extends View {
         rectPaint.setStyle(Paint.Style.FILL);
         rectPaint.setColor(ContextCompat.getColor(getContext(), labelColors[0]));
         canvas.drawRect(startX, labelCenterY + top0 * 0.8f, startX + basePadding / 3, labelCenterY + descent0 / 2, rectPaint);
-
-        //if (labelStrs.length != 3 || labelColors.length != 3) return;
-        if (labelStrs.length != 3) return;
-        //右上角的label
-        float left = endX - basePadding * 7;
-        float baseY = endY + basePadding * 2;
-        float right = left + 4 * basePadding;
-        float DX = basePadding / 2;
-
-        Paint paint = new Paint(basePaint);
-        paint.setTextSize(dip2px(12));
-        paint.setColor(Color.BLACK);
-        paint.setTextAlign(Paint.Align.LEFT);
-
-        canvas.drawText(labelStrs[1], left, baseY, paint);//低压
-        float top1 = paint.getFontMetrics().top;
-        float descent1 = paint.getFontMetrics().descent;
-
-        canvas.drawText(labelStrs[2], right, baseY, paint);//高压
-        float top2 = paint.getFontMetrics().top;
-        float descent2 = paint.getFontMetrics().descent;
-
-        rectPaint.setColor(ContextCompat.getColor(getContext(), labelColors[1]));
-        float top11 = top1 * 0.8f;
-        float descent11 = descent1 * 0.6f;
-        canvas.drawRect(
-                left - DX + top11 - descent11,
-                baseY + top11,
-                left - DX,
-                baseY + descent11,
-                rectPaint);
-
-        float top22 = top2 * 0.8f;
-        //float descent22 = descent2 * 0.6f;
-        rectPaint.setColor(ContextCompat.getColor(getContext(), labelColors[2]));
-        canvas.drawRect(
-                right - DX + top11 - descent11,
-                baseY + top22,
-                right - DX,
-                baseY + descent11,
-                rectPaint);
     }
 
     public CircleProgressView setLabels(String[] labelStrs, int[] labelColors) {

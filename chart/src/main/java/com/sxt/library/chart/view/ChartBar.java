@@ -1,10 +1,11 @@
-package com.sxt.chat.view.chart;
+package com.sxt.library.chart.view;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -21,8 +22,10 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 
-import com.sxt.chat.R;
-import com.sxt.chat.utils.DateFormatUtil;
+import com.sxt.library.chart.R;
+import com.sxt.library.chart.base.BaseChart;
+import com.sxt.library.chart.bean.ChartBean;
+import com.sxt.library.chart.utils.DateFormatUtil;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -32,21 +35,14 @@ import java.util.Map;
 /**
  * Created by sxt on 2017/7/13.
  */
-@RequiresApi(api = Build.VERSION_CODES.M)
 public class ChartBar extends BaseChart {
 
-
-    private Paint basePaint;
-    private Paint baseLabelPaint;
-    private Paint xyPaint;
-    private Paint hintPaint;
-    private Paint rectPaint;
     private List<ChartBean> datas;
     private float basePadding = 30;
-    private float startX;
-    private float endX;
-    private float startY;
-    private float endY;
+    private float startX, endX, startY, endY;
+    private boolean onTouch, isCanTouch, isUserAnimator;
+    private float downX = 0.0f, downY = 0.0f, moveX = 0.0f, moveY = 0.0f;
+    private Paint basePaint, baseLabelPaint, xyPaint, hintPaint, rectPaint;
     /**
      * 顶部的Label 文字
      */
@@ -65,6 +61,12 @@ public class ChartBar extends BaseChart {
      */
     private Map<Integer, Integer> touchColors = new HashMap<>();
 
+    private boolean starting = false;
+    private boolean isFirst = true;
+    private float mAnimatedValue;
+    private float mAnimatedValueMax = 1.0f;
+    private ValueAnimator valueAnimator;
+
     public ChartBar(Context context) {
         super(context);
     }
@@ -77,8 +79,29 @@ public class ChartBar extends BaseChart {
         super(context, attrs, defStyleAttr);
     }
 
-    public void init(Context context) {
-        super.init(context);
+    public void init(Context context, AttributeSet attrs) {
+        super.init(context, attrs);
+        initPaint();
+        if (attrs != null) {
+            TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ChartBar, 0, 0);
+            try {
+                duration = typedArray.getInteger(R.styleable.ChartBar_bar_duration, 800);
+                isCanTouch = typedArray.getBoolean(R.styleable.ChartBar_bar_isCanTouch, false);
+                isUserAnimator = typedArray.getBoolean(R.styleable.ChartBar_bar_isUseAnimator, false);
+                int lineXyColor = typedArray.getColor(R.styleable.ChartBar_bar_line_xy_color, Color.GRAY);
+                int lineHintColor = typedArray.getColor(R.styleable.ChartBar_bar_line_xy_color, Color.GRAY);
+                xyPaint.setColor(lineXyColor);
+                hintPaint.setColor(lineHintColor);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(TAG, e.toString());
+            } finally {
+                typedArray.recycle();
+            }
+        }
+    }
+
+    private void initPaint() {
         basePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         basePaint.setColor(Color.GRAY);
         basePaint.setStrokeWidth(dip2px(0.5f));
@@ -88,7 +111,7 @@ public class ChartBar extends BaseChart {
         basePaint.setDither(true);
 
         baseLabelPaint = new Paint();
-        baseLabelPaint.setColor(ContextCompat.getColor(getContext(), R.color.text_color_1));
+        baseLabelPaint.setColor(ContextCompat.getColor(getContext(), R.color.black));
         baseLabelPaint.setTextSize(dip2px(14));
         baseLabelPaint.setTextAlign(Paint.Align.LEFT);
         Typeface font0 = Typeface.create(Typeface.SANS_SERIF, Typeface.DEFAULT_BOLD.getStyle());
@@ -103,7 +126,7 @@ public class ChartBar extends BaseChart {
 
         touchPaint = new Paint(hintPaint);
         touchPaint.setStyle(Paint.Style.FILL);
-        touchPaint.setColor(ContextCompat.getColor(getContext(), R.color.alpha_2));
+        touchPaint.setColor(ContextCompat.getColor(getContext(), R.color.alpha));
     }
 
     @Override
@@ -125,8 +148,12 @@ public class ChartBar extends BaseChart {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        drawLabels(canvas);//画顶部Label
+        drawLine(canvas);//画横线
+
+        if (mAnimatedValue == 0) return;
         drawNoTouch(canvas);
-        if (onTouch && animatedValue == 1.0) {//曲线绘制完成之后才能进行触摸绘制
+        if (isCanTouch && onTouch && mAnimatedValue == mAnimatedValueMax) {//曲线绘制完成之后才能进行触摸绘制
             drawOnTouch(canvas);
         }
         super.onDraw(canvas);
@@ -154,8 +181,8 @@ public class ChartBar extends BaseChart {
 
 //        canvas.drawLine(x1, startY, x1, endY, touchPaint);//辅助线 Y
 //        canvas.drawLine(startX + 2 * basePadding, y1, endX, y1, touchPaint);//辅助线 X
-
-        //画指示点
+//
+//        //画指示点
 //        Paint paint = new Paint(touchPaint);
 //        paint.setColor(Color.WHITE);
 //        paint.setStrokeWidth(dip2px(9.5f));
@@ -166,54 +193,42 @@ public class ChartBar extends BaseChart {
 //        canvas.drawPoint(x1, y1, paint);//画圆点
     }
 
-
-    private float downX = 0.0f;
-    private float downY = 0.0f;
-    private float moveX = 0.0f;
-    private float moveY = 0.0f;
-    private boolean onTouch = false;
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!isCanTouch) return super.onTouchEvent(event);
 
         switch (event.getAction()) {
-
             case MotionEvent.ACTION_DOWN:
-
-                if (animatedValue == 1.0) {//曲线绘制完成才能绘制辅助线
+                if (mAnimatedValue == mAnimatedValueMax) {//曲线绘制完成才能绘制辅助线
                     onTouch = true;
                     downX = event.getX();
                     downY = event.getY();
                     moveX = downX;
                     moveY = downY;
                 }
-
                 Log.i("line", "Down");
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (animatedValue == 1.0) {
+                if (mAnimatedValue == mAnimatedValueMax) {
                     moveX = event.getX();
                     moveY = event.getY();
                     if (moveX >= getLeft() && moveX <= getRight() && moveY >= getTop() && moveY <= getBottom()) {
                         getParent().requestDisallowInterceptTouchEvent(true);//绘制区域内 允许子view响应触摸事件
                         invalidate();
-
                     } else {
                         postDelayedInvalidate();
                     }
                 }
-
                 Log.i("line", "Move");
                 break;
             case MotionEvent.ACTION_UP:
                 moveX = event.getX();
                 moveY = event.getY();
                 postDelayedInvalidate();
-
                 Log.i("line", "Up");
                 break;
         }
-        if (onTouch && animatedValue == 1.0) {
+        if (onTouch && mAnimatedValue == mAnimatedValueMax) {
             return true;
         } else {
             return super.onTouchEvent(event);
@@ -235,8 +250,6 @@ public class ChartBar extends BaseChart {
     private Handler handler = new Handler();
 
     private void drawNoTouch(Canvas canvas) {
-        drawLabels(canvas);//画顶部Label
-        drawLine(canvas);//画横线
         if (datas == null || datas.size() == 0 || xyPaint == null) return;
         drawX(canvas); //画X轴
         //drawY(canvas); //画Y轴
@@ -321,7 +334,8 @@ public class ChartBar extends BaseChart {
         float dx = getDx();
         float dy = (startY - endY - basePadding) / 100;
         for (int i = 0; i < datas.size(); i++) {
-            RectF rectf = new RectF(startX + dx * i, startY - datas.get(i).y * dy * animatedValue, startX + dx * (i + 1), startY);
+
+            RectF rectf = new RectF(startX + dx * i, startY - datas.get(i).y * dy * (isUserAnimator ? mAnimatedValue : 1), startX + dx * (i + 1), startY);
             rectPaint = new Paint(basePaint);
             if (datas.get(i).y > 90 || datas.get(i).y <= 10) {
                 rectPaint.setColor(ContextCompat.getColor(getContext(), labelColors[2]));
@@ -462,22 +476,22 @@ public class ChartBar extends BaseChart {
         }
     }
 
-    private boolean starting = false;
-    private boolean isFirst = true;
-    private float animatedValue;
-    private ValueAnimator valueAnimator;
-
     private void startAnimator() {
-        if (!isFirst) return;//只能绘制一次
-        if (starting) {
+        if (!isUserAnimator) {
+            mAnimatedValue = mAnimatedValueMax;
+            invalidate();
+            isFirst = false;
+            return;
+        }
+        if (!isFirst || starting) {//只能绘制一次 或者正在绘制过程中的话不能再次绘制
             return;
         }
         starting = true;
-        valueAnimator = ValueAnimator.ofFloat(0, 1).setDuration(duration);
+        valueAnimator = ValueAnimator.ofFloat(0, mAnimatedValueMax).setDuration(duration);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                animatedValue = (float) valueAnimator.getAnimatedValue();
+                mAnimatedValue = (float) valueAnimator.getAnimatedValue();
                 if (starting) {
                     invalidate();
                 }
@@ -507,5 +521,11 @@ public class ChartBar extends BaseChart {
             }
         });
         valueAnimator.start();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        if (valueAnimator != null && valueAnimator.isRunning()) valueAnimator.cancel();
+        super.onDetachedFromWindow();
     }
 }

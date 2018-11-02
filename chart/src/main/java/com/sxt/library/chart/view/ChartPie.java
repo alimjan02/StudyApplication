@@ -1,9 +1,10 @@
-package com.sxt.chat.view.chart;
+package com.sxt.library.chart.view;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,12 +12,13 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.TypedValue;
+import android.util.Log;
 
-import com.sxt.chat.R;
+import com.sxt.library.chart.R;
+import com.sxt.library.chart.base.BaseChart;
+import com.sxt.library.chart.bean.ChartPieBean;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,26 +33,18 @@ import java.util.Map;
  * 3.辅助线位置限定
  * 4.辅助文字坐标纠正
  */
-@RequiresApi(api = Build.VERSION_CODES.M)
 public class ChartPie extends BaseChart {
 
-    private Paint basePaint;
-    private Paint piePaint;
-    private Paint centerPiePaint;
-    private Paint linePaint;
-    private Paint pointPaint;
-    private Paint textPaint;
-
+    private Paint basePaint, centerPiePaint, linePaint, pointPaint, textPaint;
     private float basePadding = 30;
-    private float startX;
-    private float endX;
-    private float startY;
-    private float endY;
+    private float startX, endX, startY, endY;
 
-    private boolean starting = false;
-    private boolean isFirst = true;
+    private boolean isDrawLines, isDrawCenter, isUserAnimator;
+    private boolean starting = false, isFirst = true;
     private float mAnimatorValue = 0;
+    private int endAnimatorValue = 360;
     private ValueAnimator valueAnimator;
+
     /**
      * 动画执行的时长
      */
@@ -83,8 +77,6 @@ public class ChartPie extends BaseChart {
      * 存储各个扇形的数据对象
      */
     private Map<Integer, ChartPieBean> pieBeanMap = new HashMap<>();
-    private int startAnimatorValue = 0;
-    private int endAnimatorValue = 360;
 
     public ChartPie(Context context) {
         super(context);
@@ -98,8 +90,28 @@ public class ChartPie extends BaseChart {
         super(context, attrs, defStyleAttr);
     }
 
-    public void init(Context context) {
-        super.init(context);
+    public void init(Context context, AttributeSet attrs) {
+        super.init(context, attrs);
+        initPaint();
+        if (attrs != null) {
+            TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ChartPie);
+            try {
+                duration = (long) typedArray.getFloat(R.styleable.ChartPie_pie_duration, 1500);
+                isDrawCenter = typedArray.getBoolean(R.styleable.ChartPie_pie_isDrawCenter, false);
+                isDrawLines = typedArray.getBoolean(R.styleable.ChartPie_pie_isDrawLines, false);
+                isUserAnimator = typedArray.getBoolean(R.styleable.ChartPie_pie_isUseAnimator, false);
+                int textColor = typedArray.getColor(R.styleable.ChartPie_pie_text_color, ContextCompat.getColor(context, R.color.text_color_2));
+                textPaint.setColor(textColor);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(TAG, e.toString());
+            } finally {
+                typedArray.recycle();
+            }
+        }
+    }
+
+    private void initPaint() {
         basePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         basePaint.setColor(Color.GRAY);
         basePaint.setStrokeWidth(dip2px(0.5f));
@@ -107,8 +119,6 @@ public class ChartPie extends BaseChart {
         basePaint.setTextAlign(Paint.Align.LEFT);
         basePaint.setStrokeCap(Paint.Cap.ROUND);
         basePaint.setDither(true);
-
-        piePaint = new Paint(basePaint);
 
         centerPiePaint = new Paint(basePaint);
         centerPiePaint.setColor(Color.WHITE);
@@ -119,7 +129,7 @@ public class ChartPie extends BaseChart {
         pointPaint.setStrokeWidth(dip2px(5));
 
         textPaint = new Paint(basePaint);
-        textPaint.setColor(ContextCompat.getColor(getContext(), R.color.text_color_3));
+        textPaint.setColor(Color.GRAY);
         textPaint.setTextAlign(Paint.Align.LEFT);
         Typeface font0 = Typeface.create(Typeface.SANS_SERIF, Typeface.DEFAULT_BOLD.getStyle());
         textPaint.setTypeface(font0);
@@ -138,8 +148,8 @@ public class ChartPie extends BaseChart {
             float R2 = endX - -startX;
             radius[0] = startX + R2 / 2;
             radius[1] = endY + R1 / 2;
-            whiteR = R1 > R2 ? R2 / 10 : R1 / 12;//宽度>高度  选择高度 , 宽度<高度 选择宽度  , 能避免在大屏下坐标越界
-            pieR = R1 > R2 ? R2 / 4 : R1 / 4;
+            whiteR = Math.min(R1, R2) / 10;//宽度>高度  选择高度 , 宽度<高度 选择宽度  , 能避免在大屏下坐标越界
+            pieR = Math.min(R1, R2) / 4;
             areaArc = new RectF(radius[0] - pieR, radius[1] - pieR, radius[0] + pieR, radius[1] + pieR);
         }
     }
@@ -150,8 +160,12 @@ public class ChartPie extends BaseChart {
 
         if (mAnimatorValue == 0) return;
         drawPie(canvas);//画饼图
-        drawCenter(canvas);//画中心
-        drawLines(canvas);//画折线
+        if (!isDrawCenter) {
+            drawCenter(canvas);//画中心覆盖层
+        }
+        if (isDrawLines) {
+            drawLines(canvas);//画折线
+        }
     }
 
     private void drawPie(Canvas canvas) {
@@ -339,23 +353,23 @@ public class ChartPie extends BaseChart {
         return this;
     }
 
-    float size2sp(float sp, Context context) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                sp, context.getResources().getDisplayMetrics());
-    }
-
     int dip2px(float dipValue) {
         final float scale = Resources.getSystem().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
 
     private void startAnimator() {
+        if (!isUserAnimator) {
+            mAnimatorValue = endAnimatorValue;
+            invalidate();
+            isFirst = false;
+        }
         if (!isFirst) return;//只能绘制一次
         if (starting) {
             return;
         }
         starting = true;
-        valueAnimator = ValueAnimator.ofFloat(startAnimatorValue, endAnimatorValue).setDuration(duration);
+        valueAnimator = ValueAnimator.ofFloat(0, endAnimatorValue).setDuration(duration);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {

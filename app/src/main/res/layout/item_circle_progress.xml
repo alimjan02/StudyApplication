@@ -7,7 +7,7 @@
     android:paddingRight="16dp"
     android:paddingTop="10dp">
 
-    <com.sxt.chat.view.chart.CircleProgressView
+    <com.sxt.library.chart.view.CircleProgressView
         android:id="@+id/chart_circle_progress"
         android:layout_width="wrap_content"
         android:layout_height="244dp"

@@ -2,16 +2,21 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingBottom="10dp"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingBottom="10dp">
+    android:paddingRight="16dp">
 
-    <com.sxt.chat.view.chart.ChartBar
+    <com.sxt.library.chart.view.ChartBar xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/chartbar"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_gravity="center_horizontal|bottom"
-        android:background="@drawable/white_solid_round_10" />
+        android:background="@drawable/white_solid_round_10"
+        app:bar_duration="800"
+        app:bar_isCanTouch="true"
+        app:bar_isUseAnimator="true"
+        app:bar_line_hint_color="@color/text_color_gray_3"
+        app:bar_line_xy_color="@color/text_color_gray_3" />
 
 </FrameLayout>
 

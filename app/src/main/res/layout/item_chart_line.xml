@@ -6,7 +6,7 @@
     android:paddingRight="16dp"
     android:paddingBottom="10dp">
 
-    <com.sxt.chat.view.chart.BeizerCurveLine xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.sxt.library.chart.view.BeizerCurveLine xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/chart_line"
         android:layout_width="match_parent"
         android:layout_height="250dp"

@@ -32,7 +32,7 @@
                 android:textSize="26dp" />
         </LinearLayout>
 
-        <com.sxt.chat.view.chart.RulerView
+        <com.sxt.chat.view.picker.RulerView
             android:id="@+id/rulerView"
             android:layout_width="120dp"
             android:layout_height="300dp"

@@ -1,4 +1,4 @@
-package com.sxt.chat.view.chart;
+package com.sxt.library.chart.view;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -24,8 +24,10 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 
-import com.sxt.chat.R;
-import com.sxt.chat.utils.DateFormatUtil;
+import com.sxt.library.chart.bean.ChartBean;
+import com.sxt.library.chart.R;
+import com.sxt.library.chart.base.BaseChart;
+import com.sxt.library.chart.utils.DateFormatUtil;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,7 +38,6 @@ import java.util.Map;
 /**
  * Created by sxt on 2017/8/5.
  */
-@RequiresApi(api = Build.VERSION_CODES.M)
 public class BeizerCurveLine extends BaseChart {
 
     private Paint basePaint;
@@ -162,8 +163,8 @@ public class BeizerCurveLine extends BaseChart {
     }
 
     @Override
-    public void init(Context context) {
-        super.init(context);
+    public void init(Context context, AttributeSet attrs) {
+        super.init(context, attrs);
         basePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         basePaint.setColor(Color.GRAY);
         basePaint.setStrokeWidth(dip2px(0.5f));
@@ -173,7 +174,7 @@ public class BeizerCurveLine extends BaseChart {
         basePaint.setDither(true);
 
         baseLabelPaint = new Paint();
-        baseLabelPaint.setColor(ContextCompat.getColor(getContext(), R.color.text_color_1));
+        baseLabelPaint.setColor(ContextCompat.getColor(getContext(), R.color.black));
         baseLabelPaint.setTextSize(dip2px(14));
         baseLabelPaint.setTextAlign(Paint.Align.LEFT);
         Typeface font0 = Typeface.create(Typeface.SANS_SERIF, Typeface.DEFAULT_BOLD.getStyle());
@@ -834,8 +835,7 @@ public class BeizerCurveLine extends BaseChart {
     private void startDraw() {
         if (curveDataLists == null || curveDataLists.size() == 0 || curvePaintColors == null || curvePaintColors.size() == 0)
             return;
-        if (!isFirst) return;
-        if (starting) {
+        if (!isFirst || starting) {
             return;
         }
         starting = true;

@@ -1,4 +1,4 @@
-package com.sxt.chat.view.chart;
+package com.sxt.chat.view.picker;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -1,4 +1,4 @@
-package com.sxt.chat.view.chart;
+package com.sxt.library.chart.base;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -12,22 +12,23 @@ import android.view.View;
  */
 
 public class BaseChart extends View {
+
+    public final String TAG = this.getClass().getName();
+
     public BaseChart(Context context) {
-        super(context);
-        init(context);
+        this(context, null);
     }
 
     public BaseChart(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+        this(context, attrs, 0);
     }
 
     public BaseChart(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init(context, attrs);
     }
 
-    public void init(Context context) {
+    public void init(Context context, AttributeSet attrs) {
     }
 
     @Override
@@ -47,7 +48,7 @@ public class BaseChart extends View {
     public boolean isCover(View view) {
         Rect rect = new Rect();
         if (view.getGlobalVisibleRect(rect)) {
-            if (rect.width() >= view.getMeasuredWidth() && rect.height() >= view.getMeasuredHeight()) {
+            if (rect.width() >= view.getMeasuredWidth() && rect.height() >= view.getMeasuredHeight() * 0.8) {
                 return true;
             }
         }
