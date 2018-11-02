@@ -6,7 +6,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp">
 
-    <com.sxt.library.chart.view.ChartBar xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.sxt.library.chart.ChartBar xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/chartbar"
         android:layout_width="match_parent"
         android:layout_height="250dp"
@@ -14,9 +14,7 @@
         android:background="@drawable/white_solid_round_10"
         app:bar_duration="800"
         app:bar_isCanTouch="true"
-        app:bar_isUseAnimator="true"
-        app:bar_line_hint_color="@color/text_color_gray_3"
-        app:bar_line_xy_color="@color/text_color_gray_3" />
+        app:bar_isUseAnimator="true"/>
 
 </FrameLayout>
 

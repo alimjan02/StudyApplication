@@ -3,7 +3,6 @@ package com.sxt.chat.fragment;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -15,13 +14,13 @@ import android.widget.ViewSwitcher;
 
 import com.sxt.chat.R;
 import com.sxt.chat.base.LazyFragment;
+import com.sxt.library.chart.BeizerCurveLine;
+import com.sxt.library.chart.ChartBar;
+import com.sxt.library.chart.ChartPie;
+import com.sxt.library.chart.CircleProgressView;
 import com.sxt.library.chart.bean.ChartBean;
 import com.sxt.library.chart.bean.ChartPieBean;
 import com.sxt.library.chart.listener.LineOnScrollChangeListener;
-import com.sxt.library.chart.view.BeizerCurveLine;
-import com.sxt.library.chart.view.ChartBar;
-import com.sxt.library.chart.view.ChartPie;
-import com.sxt.library.chart.view.CircleProgressView;
 
 import java.util.ArrayList;
 import java.util.List;

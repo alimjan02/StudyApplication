@@ -6,7 +6,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp">
 
-    <com.sxt.library.chart.view.ChartPie xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.sxt.library.chart.ChartPie xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/chart_pie"
         android:layout_width="match_parent"
         android:layout_height="280dp"
