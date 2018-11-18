@@ -285,6 +285,7 @@
     <string name="check_wechat_is_install">当前微信版本太低或未安装微信客户端</string>
     <string name="string_share_successful">分享成功</string>
     <string name="string_share_cancel">分享取消</string>
+    <string name="key_word_is_empty">关键字不能为空</string>
 
     <string-array name="query_suggestions">
         <item>A very very long suggestion that would span multiple lines.</item>

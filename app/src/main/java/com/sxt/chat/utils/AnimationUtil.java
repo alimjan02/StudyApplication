@@ -5,27 +5,31 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 
 import com.sxt.chat.R;
+
+import static android.view.View.GONE;
 
 /**
  * @author Miguel Catalan Bañuls
  */
 public class AnimationUtil {
     public static final String TAG = "AnimationUtil";
-    public static int ANIMATION_DURATION_SHORT = 150;
+    public static int ANIMATION_DURATION_SHORT = 200;
     public static int ANIMATION_DURATION_MEDIUM = 400;
     public static int ANIMATION_DURATION_LONG = 800;
 
@@ -154,7 +158,7 @@ public class AnimationUtil {
             @Override
             public void onAnimationEnd(View view) {
                 if (listener == null || !listener.onAnimationEnd(view)) {
-                    view.setVisibility(View.GONE);
+                    view.setVisibility(GONE);
                     view.setDrawingCacheEnabled(false);
                 }
             }
@@ -265,5 +269,36 @@ public class AnimationUtil {
             });
         }
         set.start();
+    }
+
+    public static void rotation(final View view, final boolean isShown) {
+        if (isShown && view.getVisibility() == View.VISIBLE) {
+            return;
+        }
+        view.setVisibility(View.VISIBLE);
+        RotateAnimation rotateAnimation = new RotateAnimation(isShown ? 0 : 90, isShown ? 90 : 0, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+        AlphaAnimation alphaAnimation = new AlphaAnimation(isShown ? 0.5f : 1, isShown ? 1 : 0);
+        AnimationSet animatorSet = new AnimationSet(true);
+        animatorSet.setInterpolator(new LinearInterpolator());
+        animatorSet.addAnimation(rotateAnimation);
+        animatorSet.addAnimation(alphaAnimation);
+        animatorSet.setDuration(ANIMATION_DURATION_SHORT);
+        animatorSet.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setVisibility(isShown ? View.VISIBLE : View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        view.startAnimation(animatorSet);
     }
 }

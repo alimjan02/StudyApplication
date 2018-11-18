@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.sxt.chat.R;
 import com.sxt.chat.db.User;
 import com.sxt.chat.json.Banner;
+import com.sxt.chat.json.LocationInfo;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.RoomInfo;
 
@@ -180,6 +181,29 @@ public final class BmobRequest {
                     ResponseInfo resp = new ResponseInfo(ResponseInfo.OK);
                     resp.setCmd(cmd);
                     resp.setRoomInfoList(list);
+                    EventBus.getDefault().post(resp);
+                } else {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.ERROR);
+                    resp.setCmd(cmd);
+                    resp.setError("errorCode = " + e.getErrorCode() + "\r\n message : " + e.getMessage());
+                    EventBus.getDefault().post(resp);
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取Banner
+     */
+    public void getLocationInfos(final String cmd) {
+        BmobQuery<LocationInfo> query = new BmobQuery<>();
+        query.findObjects(new FindListener<LocationInfo>() {
+            @Override
+            public void done(List<LocationInfo> list, BmobException e) {
+                if (e == null) {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.OK);
+                    resp.setCmd(cmd);
+                    resp.setLocationInfoList(list);
                     EventBus.getDefault().post(resp);
                 } else {
                     ResponseInfo resp = new ResponseInfo(ResponseInfo.ERROR);

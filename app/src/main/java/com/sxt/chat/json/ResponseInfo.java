@@ -30,6 +30,7 @@ public class ResponseInfo implements Serializable {
     private String imgUrl;
     private List<RoomInfo> roomInfoList;
     private List<Banner> bannerInfoList;
+    private List<LocationInfo> locationInfoList;
 
     public ResponseInfo(int code) {
         this.code = code;
@@ -70,6 +71,14 @@ public class ResponseInfo implements Serializable {
 
     public void setBannerInfos(List<Banner> bannerInfoList) {
         this.bannerInfoList = bannerInfoList;
+    }
+
+    public List<LocationInfo> getLocationInfoList() {
+        return locationInfoList;
+    }
+
+    public void setLocationInfoList(List<LocationInfo> locationInfoList) {
+        this.locationInfoList = locationInfoList;
     }
 
     public List<RoomInfo> getRoomInfoList() {

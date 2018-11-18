@@ -331,7 +331,8 @@
 
         <activity
             android:name=".activity.MapActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" />
 
         <!--高德地图-->
         <service android:name="com.amap.api.location.APSService" />

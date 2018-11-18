@@ -41,10 +41,12 @@
     <color name="blue_b3c4f9">#B3C4F9</color>
     <color name="green_white">#ACD8EB</color>
     <color name="translate_alpha">#80000000</color>
+    <color name="translate_white">#80FFFFFF</color>
     <color name="orange">#FFBB4D</color>
     <color name="orange_1">#FFE9C5</color>
     <color name="orange_light">#FFEA8A</color>
     <color name="orange_dark">#fe7900</color>
+    <color name="ic_launcher_background">#B9D599</color>
 
     <color name="app_icon_color">#B9D599</color>
     <color name="alpha_sharder">#20000000</color>
@@ -76,7 +78,7 @@
     <color name="red_rgb_255_127_87">#FF7F57</color>
 
     <color name="yellow_sharder">#4DFDCA4E</color>
-    <color name="blue_sharder">#CC17A1FF</color>
+    <color name="blue_sharder">#3317A1FF</color>
     <color name="violet_sharder">#ba9ad5</color>
     <color name="red_sharder">#4DFA1E00</color>
     <color name="green_sharder">#4D28DCA2</color>

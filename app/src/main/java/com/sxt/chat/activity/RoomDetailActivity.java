@@ -58,7 +58,7 @@ public class RoomDetailActivity extends BaseActivity {
             }
         });
 
-        FloatingActionButton fab = findViewById(R.id.fab_scrolling);
+        FloatingActionButton fab = findViewById(R.id.fab_my_location);
 //        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yellow_rgb_253_202_78)));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

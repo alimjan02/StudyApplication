@@ -8,7 +8,12 @@
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:dividerHeight">0.5dp</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:editTextStyle">@style/MyEditText</item>
+    </style>
 
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/main_body</item>
+        <item name="colorControlActivated">@color/main_red_dark</item>
         <!--设置默认的 提示文字颜色 和 EdiText光标样式-->
         <item name="android:cursorVisible">true</item>
         <item name="android:textColorHint">@color/text_color_gray_3</item>

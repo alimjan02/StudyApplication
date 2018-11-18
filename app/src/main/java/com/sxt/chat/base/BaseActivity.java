@@ -1,6 +1,7 @@
 package com.sxt.chat.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -10,14 +11,15 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
-import com.sxt.chat.App;
 import com.sxt.chat.dialog.LoadingDialog;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.ActivityCollector;
@@ -34,7 +36,7 @@ import org.greenrobot.eventbus.ThreadMode;
 public class BaseActivity extends AppCompatActivity {
 
     protected LoadingDialog loading;
-    private String TAG = this.getClass().getName();
+    protected String TAG = this.getClass().getName();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,7 +78,20 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void Toast(int resId) {
-        ToastUtil.showToast(this, getString(resId));
+        Toast(getString(resId));
+    }
+
+    protected void Toast(CoordinatorLayout coordinatorLayout, String msg) {
+        if (msg != null) ToastUtil.showSnackBar(coordinatorLayout, msg);
+    }
+
+    protected void Toast(CoordinatorLayout coordinatorLayout, int resId) {
+        Toast(coordinatorLayout, getString(resId));
+    }
+
+    protected void hideSoft(View view) {
+        InputMethodManager systemService = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (systemService != null) systemService.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override

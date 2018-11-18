@@ -2,6 +2,7 @@ package com.sxt.chat.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.TypedValue;
@@ -109,7 +110,38 @@ public class ToastUtil {
         snackbar.show();
     }
 
+    public static void showSnackBar(CoordinatorLayout coordinatorLayout, String message) {
+        if (coordinatorLayout == null) {
+            return;
+        }
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT);
+        snackbar.addCallback(new Snackbar.Callback() {
+            @Override
+            public void onShown(Snackbar sb) {
+                super.onShown(sb);
+            }
+
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                super.onDismissed(transientBottomBar, event);
+            }
+        })
+                .setAction("关闭", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+        snackbarTextView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+        snackbarActionView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_action);
+        snackbarTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        snackbarActionView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        snackbarTextView.setText(message);
+        snackbar.show();
+    }
+
     private static boolean isNotifyEnable(Context context) {
         return NotificationManagerCompat.from(context).areNotificationsEnabled();
     }
+
 }

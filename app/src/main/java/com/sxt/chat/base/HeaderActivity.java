@@ -27,6 +27,7 @@ public class HeaderActivity extends BaseActivity {
     private FrameLayout rightContainer;
     protected AppBarLayout appBarLayout;
     protected Toolbar toolbar;
+    private FrameLayout container;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class HeaderActivity extends BaseActivity {
 
     private void initView() {
         RootView = LayoutInflater.from(this).inflate(R.layout.activity_header, null);
+        container = ((FrameLayout) this.RootView.findViewById(R.id.content_frameLayout));
         appBarLayout = (AppBarLayout) RootView.findViewById(R.id.app_bar_layout);
         setToolbar();
     }
@@ -61,8 +63,8 @@ public class HeaderActivity extends BaseActivity {
     @Override
     public void setContentView(View view) {
         if (view != null) {
-            if (this.RootView != null) {
-                ((FrameLayout) this.RootView.findViewById(R.id.content_frameLayout)).addView(view, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            if (this.container != null) {
+                container.addView(view, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
                 super.setContentView(this.RootView);
             }
         }
@@ -71,8 +73,8 @@ public class HeaderActivity extends BaseActivity {
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
         if (view != null) {
-            if (this.RootView != null) {
-                ((FrameLayout) this.RootView.findViewById(R.id.content_frameLayout)).addView(view, params);
+            if (this.container != null) {
+                container.addView(view, params);
                 super.setContentView(this.RootView, params);
             }
         }
@@ -80,9 +82,9 @@ public class HeaderActivity extends BaseActivity {
 
     @Override
     public void setContentView(int layoutResID) {
-        if (this.RootView != null) {
+        if (this.container != null) {
             View view = LayoutInflater.from(this).inflate(layoutResID, null);
-            ((FrameLayout) this.RootView.findViewById(R.id.content_frameLayout)).addView(view, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            container.addView(view, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
             super.setContentView(this.RootView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
     }
@@ -113,6 +115,11 @@ public class HeaderActivity extends BaseActivity {
 
     public void showToolbar(boolean show) {
         appBarLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+        if (!show && container != null) {
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) container.getLayoutParams();
+            layoutParams.topMargin = 0;
+            container.setLayoutParams(layoutParams);
+        }
     }
 
     private void setToolbar() {
