@@ -72,7 +72,7 @@ import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.VideoObject;
 import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.DateFormatUtil;
-import com.sxt.chat.utils.NetworkUtils;
+import com.sxt.chat.utils.Utils;
 import com.sxt.chat.utils.Px2DpUtil;
 import com.sxt.chat.youtu.SignatureUtil;
 
@@ -687,7 +687,7 @@ public class VideoExoPlayerActivity extends BaseActivity implements View.OnClick
      * 可以在这里判断 当前是否处于无线网环境 , 可以提示用户是否耗费手机流量播放视频
      */
     private void alertMobileDataDialog() {
-        if (!NetworkUtils.isWifi(this) && !isUsePhoneData) {
+        if (!Utils.isWifi(this) && !isUsePhoneData) {
             if (alertDialog == null) {
                 alertDialog = new AlertDialog.Builder(VideoExoPlayerActivity.this).create();
                 alertDialog.setCanceledOnTouchOutside(false);

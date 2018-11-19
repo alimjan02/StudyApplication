@@ -26,7 +26,7 @@ import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.download.DownloadTask;
 import com.sxt.chat.receiver.WatchDogReceiver;
-import com.sxt.chat.utils.NetworkUtils;
+import com.sxt.chat.utils.Utils;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.CacheUtils;
 
@@ -136,17 +136,17 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             if (serverVersion != packageInfo.versionCode) {
                 //判断WIFI情况
-                if (NetworkUtils.isNetworkAvailable(this)) {//判断网络是否可用
-                    if (NetworkUtils.isWifiEnabled(this)) {//判断WIFI是否打开
-                        if (NetworkUtils.isWifi(this)) {//判断是wifi还是3g网络
+                if (Utils.isNetworkAvailable(this)) {//判断网络是否可用
+                    if (Utils.isWifiEnabled(this)) {//判断WIFI是否打开
+                        if (Utils.isWifi(this)) {//判断是wifi还是3g网络
                             startDownloadApkDialog(packageInfo.versionCode);
                         } else {
-                            if (NetworkUtils.is3rd(this)) {
+                            if (Utils.is3rd(this)) {
                                 showWifiAlert(packageInfo.versionCode);
                             }
                         }
                     } else {
-                        if (NetworkUtils.is3rd(this)) {//判断是否是3G网络
+                        if (Utils.is3rd(this)) {//判断是否是3G网络
                             showWifiAlert(packageInfo.versionCode);
                         }
                     }

@@ -450,7 +450,7 @@ public class WifiUtils {
                         if (mWifiManager.getConnectionInfo() != null && !TextUtils.isEmpty(mWifiManager.getConnectionInfo().getSSID())
                                 && (mWifiManager.getConnectionInfo().getSSID().contains(SSID))) {
 
-                            if (NetworkUtils.isWifi(App.getCtx()) && NetworkUtils.isNetworkAvailable(App.getCtx())) {
+                            if (Utils.isWifi(App.getCtx()) && Utils.isNetworkAvailable(App.getCtx())) {
                                 flag = true;
                                 break;
                             }
@@ -459,7 +459,7 @@ public class WifiUtils {
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            if (NetworkUtils.isWifi(App.getCtx()) && NetworkUtils.isNetworkAvailable(App.getCtx())) {
+                            if (Utils.isWifi(App.getCtx()) && Utils.isNetworkAvailable(App.getCtx())) {
                                 flag = true;
                             }
                             break;
