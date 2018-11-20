@@ -21,8 +21,15 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
 import com.sxt.chat.R;
 
@@ -30,66 +37,73 @@ import com.sxt.chat.R;
  * Helper class to manage notification channels, and create notifications.
  */
 public class NotificationHelper extends ContextWrapper {
+    private Context context;
     private NotificationManager manager;
     public static final String PRIMARY_CHANNEL = "default";
     public static final String SECONDARY_CHANNEL = "second";
+    public static final String CUSTOM_NOTIFY_CHANNEL = "CUSTOM_NOTIFY_CHANNEL";
+    public static final String GROUP_KEY_WORK_CHAT = "com.sxt.chat";
 
     /**
      * Registers notification channels, which can be used later by individual notifications.
-     *
-     * @param ctx The application context
      */
     public NotificationHelper(Context ctx) {
         super(ctx);
-
+        context = ctx;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel chan1 = new NotificationChannel(PRIMARY_CHANNEL,
-                    "通知1Channel", NotificationManager.IMPORTANCE_DEFAULT);
+                    "通知1未分组的Channel", NotificationManager.IMPORTANCE_HIGH);
             chan1.setLightColor(Color.GREEN);
+            Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.notify_message);
+            AudioAttributes att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build();
+
+            chan1.setSound(sound, att);
+            chan1.setShowBadge(true);//设置桌面上的app启动图标是否显示未读圆点
             chan1.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             getManager().createNotificationChannel(chan1);
 
             NotificationChannel chan2 = new NotificationChannel(SECONDARY_CHANNEL,
-                    "通知2Channel", NotificationManager.IMPORTANCE_HIGH);
-            chan2.setLightColor(Color.BLUE);
+                    "通知2已分组的Channel", NotificationManager.IMPORTANCE_HIGH);
+            chan2.setLightColor(Color.RED);
             chan2.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             getManager().createNotificationChannel(chan2);
+
+            NotificationChannel chanCustom = new NotificationChannel(CUSTOM_NOTIFY_CHANNEL,
+                    "Custom Layout Channel", NotificationManager.IMPORTANCE_HIGH);
+            chanCustom.setLightColor(Color.BLUE);
+            chanCustom.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            getManager().createNotificationChannel(chanCustom);
         }
     }
 
     /**
-     * Get a notification of type 1
-     * <p>
-     * Provide the builder rather than the notification it's self as useful for making notification
-     * changes.
-     *
-     * @param title the title of the notification
-     * @param body  the body text for the notification
-     * @return the builder as it keeps a reference to the notification (since API 24)
+     * 创建通道1的通知
      */
     public Notification.Builder getNotification1(String title, String body) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return new Notification.Builder(getApplicationContext(), PRIMARY_CHANNEL)
                     .setContentTitle(title)
                     .setContentText(body)
-                    .setSmallIcon(getSmallIcon())
+                    .setLargeIcon(getLargeIcon())
+//                    .setBadgeIconType(Notification.BADGE_ICON_LARGE)
+                    .setSmallIcon(R.drawable.ic_ar_photo_main_blue_24dp)
                     .setAutoCancel(true);
         }
         return null;
     }
 
     /**
-     * Build notification for secondary channel.
-     *
-     * @param title Title for notification.
-     * @param body  Message for notification.
-     * @return A Notification.Builder configured with the selected channel and details
+     * 创建通道2的通知
      */
     public Notification.Builder getNotification2(String title, String body) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return new Notification.Builder(getApplicationContext(), SECONDARY_CHANNEL)
                     .setContentTitle(title)
                     .setContentText(body)
+                    .setLargeIcon(getLargeIcon())
                     .setSmallIcon(getSmallIcon())
                     .setAutoCancel(true);
         }
@@ -97,30 +111,53 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     /**
-     * Send a notification.
+     * 创建自定义通知
+     */
+    public NotificationCompat.Builder getCustomNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // 获取自定义通知的布局
+            RemoteViews notificationLayout = new RemoteViews(getPackageName(), R.layout.notification_small);
+            RemoteViews notificationLayoutExpanded = new RemoteViews(getPackageName(), R.layout.notification_large);
+            //将布局设置到通知上
+            return new NotificationCompat.Builder(context, CUSTOM_NOTIFY_CHANNEL)
+                    .setSmallIcon(getSmallIcon())
+                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                    .setCustomContentView(notificationLayout)
+                    .setCustomBigContentView(notificationLayoutExpanded);
+        }
+        return null;
+    }
+
+    /**
+     * 发送通知
      *
-     * @param id           The ID of the notification
+     * @param id           当前通知的ID
      * @param notification The notification object
      */
     public void notify(int id, Notification.Builder notification) {
         getManager().notify(id, notification.build());
     }
 
+    public void notify(int id, NotificationCompat.Builder notification) {
+        getManager().notify(id, notification.build());
+    }
+
     /**
-     * Get the small icon for this app
-     *
-     * @return The small icon resource id
+     * 通知栏显示大图标
+     */
+    private Bitmap getLargeIcon() {
+        return BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher_round);
+    }
+
+    /**
+     * 通知栏显示的小图标
      */
     private int getSmallIcon() {
         return R.drawable.ic_vector_notifications_24dp;
     }
 
     /**
-     * Get the notification manager.
-     * <p>
-     * Utility method as this helper works with it a lot.
-     *
-     * @return The system service NotificationManager
+     * 获取 notification manager.
      */
     private NotificationManager getManager() {
         if (manager == null) {

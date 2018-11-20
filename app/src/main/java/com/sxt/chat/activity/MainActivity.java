@@ -28,8 +28,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
-import com.google.zxing.client.android.Intents;
-import com.journeyapps.barcodescanner.CaptureActivity;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.ar.HelloArActivity;
@@ -90,10 +88,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             findViewById(R.id.ocr_scan).setOnClickListener(this);
             findViewById(R.id.exoplayer).setOnClickListener(this);
             findViewById(R.id.wifi).setOnClickListener(this);
-            findViewById(R.id.notifycations_demo).setOnClickListener(this);
+            findViewById(R.id.notifycation).setOnClickListener(this);
             findViewById(R.id.ar).setOnClickListener(this);
             findViewById(R.id.vr).setOnClickListener(this);
-            findViewById(R.id.openGl).setOnClickListener(this);
+            findViewById(R.id.map).setOnClickListener(this);
             findViewById(R.id.change_login).setOnClickListener(this);
             userIcon = (ImageView) findViewById(R.id.user_icon);
             userInfo = (TextView) findViewById(R.id.user_info);
@@ -421,12 +419,12 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             case R.id.exoplayer:
                 startActivity(new Intent(this, VideoExoPlayerActivity.class));
                 break;
-            case R.id.notifycations_demo:
-                Intent intent = new Intent(this, CaptureActivity.class);
-                intent.setAction(Intents.Scan.ACTION);
-                intent.putExtra(Intents.Scan.FORMATS, Intents.Scan.QR_CODE_MODE);
-                startActivity(intent);
-//                startActivity(new Intent(this, NotifycationActivity.class));
+            case R.id.notifycation:
+//                Intent intent = new Intent(this, CaptureActivity.class);
+//                intent.setAction(Intents.Scan.ACTION);
+//                intent.putExtra(Intents.Scan.FORMATS, Intents.Scan.QR_CODE_MODE);
+//                startActivity(intent);
+                startActivity(new Intent(this, NotifycationActivity.class));
                 break;
             case R.id.ar:
                 startActivity(new Intent(this, HelloArActivity.class));
@@ -434,7 +432,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             case R.id.vr:
                 startActivity(new Intent(this, VR360Activity.class));
                 break;
-            case R.id.openGl:
+            case R.id.map:
                 startActivity(new Intent(this, MapActivity.class));
                 break;
         }

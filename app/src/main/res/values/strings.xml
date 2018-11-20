@@ -286,6 +286,8 @@
     <string name="string_share_successful">分享成功</string>
     <string name="string_share_cancel">分享取消</string>
     <string name="key_word_is_empty">关键字不能为空</string>
+    <string name="map">高德地图</string>
+    <string name="notifycation">通知栏</string>
 
     <string-array name="query_suggestions">
         <item>A very very long suggestion that would span multiple lines.</item>

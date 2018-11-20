@@ -35,8 +35,8 @@ public class MainService extends Service {
         Notification notification;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            CharSequence name = "MyStreamingApplication";
-            String description = "radio";
+            CharSequence name = "畅玩";
+            String description = "畅玩一下";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel mChannel = new NotificationChannel(String.valueOf(NOTIFY_ID), name, importance);
             mChannel.setSound(null, null);

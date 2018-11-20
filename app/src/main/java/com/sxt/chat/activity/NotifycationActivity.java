@@ -20,10 +20,7 @@ import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.sxt.chat.R;
@@ -33,149 +30,136 @@ import com.sxt.chat.utils.NotificationHelper;
 /**
  * Display main screen for sample. Displays controls for sending test notifications.
  */
-public class NotifycationActivity extends HeaderActivity {
+public class NotifycationActivity extends HeaderActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int NOTI_PRIMARY1 = 1100;
     private static final int NOTI_PRIMARY2 = 1101;
     private static final int NOTI_SECONDARY1 = 1200;
     private static final int NOTI_SECONDARY2 = 1201;
+    private TextView titlePrimary;
+    private TextView titleSecondary;
 
-    /*
-     * A view model for interacting with the UI elements.
-     */
-    private MainUi ui;
-
-    /*
-     * A
-     */
-    private NotificationHelper noti;
+    private NotificationHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifycation);
         setTitle("通知演示");
-        noti = new NotificationHelper(this);
-        ui = new MainUi(findViewById(R.id.activity_main));
+        titlePrimary = findViewById(R.id.main_primary_title);
+        findViewById(R.id.main_primary_send1).setOnClickListener(this);
+        findViewById(R.id.main_primary_send2).setOnClickListener(this);
+        findViewById(R.id.main_primary_config).setOnClickListener(this);
+
+        titleSecondary = (TextView) findViewById(R.id.main_secondary_title);
+        findViewById(R.id.main_secondary_send1).setOnClickListener(this);
+        findViewById(R.id.main_secondary_send2).setOnClickListener(this);
+        findViewById(R.id.main_secondary_config).setOnClickListener(this);
+        findViewById(R.id.btnA).setOnClickListener(this);
+
+        helper = new NotificationHelper(this);
     }
 
     /**
-     * Send activity notifications.
+     * 发送通知
      *
-     * @param id    The ID of the notification to create
-     * @param title The title of the notification
+     * @param id    创建的通知的ID
+     * @param title 通知的Title
      */
     public void sendNotification(int id, String title) {
         Notification.Builder nb = null;
         switch (id) {
             case NOTI_PRIMARY1:
-                nb = noti.getNotification1(title, getString(R.string.primary1_body));
+                nb = helper.getNotification1(title, getString(R.string.primary1_body));
                 break;
 
             case NOTI_PRIMARY2:
-                nb = noti.getNotification1(title, getString(R.string.primary2_body));
+                nb = helper.getNotification1(title, getString(R.string.primary2_body));
                 break;
 
             case NOTI_SECONDARY1:
-                nb = noti.getNotification2(title, getString(R.string.secondary1_body));
+                nb = helper.getNotification2(title, getString(R.string.secondary1_body));
                 break;
 
             case NOTI_SECONDARY2:
-                nb = noti.getNotification2(title, getString(R.string.secondary2_body));
+//                nb = helper.getNotification2(title, getString(R.string.secondary2_body));
+                helper.notify(id, helper.getCustomNotification());
                 break;
         }
         if (nb != null) {
-            noti.notify(id, nb);
+            helper.notify(id, nb);
         }
     }
 
     /**
-     * Send Intent to load system Notification Settings for this app.
+     * 跳转到当前app系统通知设置界面
      */
     public void goToNotificationSettings() {
-        Intent i = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
-        i.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
-        startActivity(i);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Intent i = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            i.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+            startActivity(i);
+        }
     }
 
     /**
-     * Send intent to load system Notification Settings UI for a particular channel.
+     * 跳转到当前app系统通知设置界面 (具体的某一条通道channel)
      *
-     * @param channel Name of channel to configure
+     * @param channel 通道名称
      */
     public void goToNotificationSettings(String channel) {
-        Intent i = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
-        i.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
-        i.putExtra(Settings.EXTRA_CHANNEL_ID, channel);
-        startActivity(i);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Intent i = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+            i.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+            i.putExtra(Settings.EXTRA_CHANNEL_ID, channel);
+            startActivity(i);
+        }
     }
 
-    /**
-     * View model for interacting with Activity UI elements. (Keeps core logic for sample
-     * seperate.)
-     */
-    class MainUi implements View.OnClickListener {
-        final TextView titlePrimary;
-        final TextView titleSecondary;
-
-        private MainUi(View root) {
-            titlePrimary = (TextView) root.findViewById(R.id.main_primary_title);
-            ((Button) root.findViewById(R.id.main_primary_send1)).setOnClickListener(this);
-            ((Button) root.findViewById(R.id.main_primary_send2)).setOnClickListener(this);
-            ((ImageButton) root.findViewById(R.id.main_primary_config)).setOnClickListener(this);
-
-            titleSecondary = (TextView) root.findViewById(R.id.main_secondary_title);
-            ((Button) root.findViewById(R.id.main_secondary_send1)).setOnClickListener(this);
-            ((Button) root.findViewById(R.id.main_secondary_send2)).setOnClickListener(this);
-            ((ImageButton) root.findViewById(R.id.main_secondary_config)).setOnClickListener(this);
-
-            ((Button) root.findViewById(R.id.btnA)).setOnClickListener(this);
+    private String getTitlePrimaryText() {
+        if (titlePrimary != null) {
+            return titlePrimary.getText().toString();
         }
+        return "";
+    }
 
-        private String getTitlePrimaryText() {
-            if (titlePrimary != null) {
-                return titlePrimary.getText().toString();
-            }
-            return "";
+    private String getTitleSecondaryText() {
+        if (titlePrimary != null) {
+            return titleSecondary.getText().toString();
         }
+        return "";
+    }
 
-        private String getTitleSecondaryText() {
-            if (titlePrimary != null) {
-                return titleSecondary.getText().toString();
-            }
-            return "";
-        }
+    int ID;
 
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()) {
-                case R.id.main_primary_send1:
-                    sendNotification(NOTI_PRIMARY1, getTitlePrimaryText());
-                    break;
-                case R.id.main_primary_send2:
-                    sendNotification(NOTI_PRIMARY2, getTitlePrimaryText());
-                    break;
-                case R.id.main_primary_config:
-                    goToNotificationSettings(NotificationHelper.PRIMARY_CHANNEL);
-                    break;
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.main_primary_send1:
+                sendNotification(NOTI_PRIMARY1, getTitlePrimaryText());
+                break;
+            case R.id.main_primary_send2:
+                sendNotification(NOTI_PRIMARY2, getTitlePrimaryText());
+                break;
+            case R.id.main_primary_config:
+                goToNotificationSettings(NotificationHelper.PRIMARY_CHANNEL);
+                break;
 
-                case R.id.main_secondary_send1:
-                    sendNotification(NOTI_SECONDARY1, getTitleSecondaryText());
-                    break;
-                case R.id.main_secondary_send2:
-                    sendNotification(NOTI_SECONDARY2, getTitleSecondaryText());
-                    break;
-                case R.id.main_secondary_config:
-                    goToNotificationSettings(NotificationHelper.SECONDARY_CHANNEL);
-                    break;
-                case R.id.btnA:
-                    goToNotificationSettings();
-                    break;
-                default:
-                    Log.e(TAG, "Unknown click event.");
-                    break;
-            }
+            case R.id.main_secondary_send1:
+                sendNotification(NOTI_SECONDARY1, getTitleSecondaryText());
+                break;
+            case R.id.main_secondary_send2:
+                sendNotification(1080, getTitleSecondaryText());
+                break;
+            case R.id.main_secondary_config:
+                goToNotificationSettings(NotificationHelper.SECONDARY_CHANNEL);
+                break;
+            case R.id.btnA:
+                goToNotificationSettings();
+                break;
+            default:
+                break;
         }
     }
 }
