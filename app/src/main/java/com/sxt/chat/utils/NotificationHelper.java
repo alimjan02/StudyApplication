@@ -45,7 +45,7 @@ public class NotificationHelper extends ContextWrapper {
     public static final String GROUP_KEY_WORK_CHAT = "com.sxt.chat";
 
     /**
-     * Registers notification channels, which can be used later by individual notifications.
+     * 注册通道
      */
     public NotificationHelper(Context ctx) {
         super(ctx);
