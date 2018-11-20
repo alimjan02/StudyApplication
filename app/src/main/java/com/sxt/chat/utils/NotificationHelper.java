@@ -34,7 +34,7 @@ import android.widget.RemoteViews;
 import com.sxt.chat.R;
 
 /**
- * Helper class to manage notification channels, and create notifications.
+ *created by sxt at 2018/11/20
  */
 public class NotificationHelper extends ContextWrapper {
     private Context context;
