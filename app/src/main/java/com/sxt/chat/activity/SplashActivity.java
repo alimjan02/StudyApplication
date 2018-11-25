@@ -86,7 +86,7 @@ public class SplashActivity extends BaseActivity implements SplashADListener {
      * 如果targetSDKVersion >= 23，那么必须要申请到所需要的权限，再调用广点通SDK，否则广点通SDK不会工作。
      * <p>
      * Demo代码里是一个基本的权限申请示例，请开发者根据自己的场景合理地编写这部分代码来实现权限申请。
-     * 注意：下面的`checkSelfPermission`和`requestPermissions`方法都是在Android6.0的SDK中增加的API，如果您的App还没有适配到Android6.0以上，则不需要调用这些方法，直接调用广点通SDK即可。
+     * 注意：下面 的`checkSelfPermission`和`requestPermissions`方法都是在Android6.0的SDK中增加的API，如果您的App还没有适配到Android6.0以上，则不需要调用这些方法，直接调用广点通SDK即可。
      */
     @TargetApi(Build.VERSION_CODES.M)
     private void checkAndRequestPermission() {
@@ -99,9 +99,9 @@ public class SplashActivity extends BaseActivity implements SplashADListener {
             lackedPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
 
-        if (!(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-            lackedPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        }
+//        if (!(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+//            lackedPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
+//        }
 
         // 权限都已经有了，那么直接调用SDK
         if (lackedPermission.size() == 0) {

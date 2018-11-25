@@ -1,98 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_main"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
-
-    <EditText
-        android:id="@+id/main_primary_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="fill_horizontal"
-        android:hint="@string/main_primary_title"
-        android:text="@string/main_primary_title" />
+    android:fillViewport="true">
 
     <LinearLayout
+        android:id="@+id/activity_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/img"
+                android:layout_width="wrap_content"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="8dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="startGallery"
+                android:text="从相册中选择" />
+
+        </FrameLayout>
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/editeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:hint="请输入通知内容" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/send1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="文本通知" />
+
+            <Button
+                android:id="@+id/send2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="图片通知" />
+
+            <Button
+                android:id="@+id/send3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="自定义通知" />
+
+        </LinearLayout>
 
         <Button
-            android:id="@+id/main_primary_send1"
-            android:layout_width="wrap_content"
+            android:id="@+id/config"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/main_primary_send1" />
+            android:text="进入频道设置" />
 
-        <Button
-            android:id="@+id/main_primary_send2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/main_footer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/main_primary_send2" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnA"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="系统设置" />
+        </LinearLayout>
 
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/main_primary_config"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="fill_horizontal"
-        android:contentDescription="@string/main_primary_config"
-        android:src="@android:drawable/ic_menu_preferences" />
-
-    <EditText
-        android:id="@+id/main_secondary_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="fill_horizontal"
-        android:layout_marginTop="60dp"
-        android:hint="@string/main_secondary_title"
-        android:text="@string/main_secondary_title" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-        <Button
-            android:id="@+id/main_secondary_send1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/main_secondary_send1" />
-
-        <Button
-            android:id="@+id/main_secondary_send2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/main_secondary_send2" />
-
-
-    </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/main_secondary_config"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/main_secondary_config"
-        android:src="@android:drawable/ic_menu_preferences" />
-
-    <LinearLayout
-        android:id="@+id/main_footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnA"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btnA_title" />
-    </LinearLayout>
-
-
-</LinearLayout>
+</android.support.v4.widget.NestedScrollView>

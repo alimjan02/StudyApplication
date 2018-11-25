@@ -1,6 +1,5 @@
 package com.steelkiwi.cropiwa.util;
 
-import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -16,7 +15,6 @@ import android.provider.MediaStore;
 
 public class UriUtil {
 
-    @SuppressLint("NewApi")
     public static String uri2Path(final Context context, final Uri uri) {
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
@@ -90,6 +88,8 @@ public class UriUtil {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             if (cursor != null)
                 cursor.close();

@@ -420,10 +420,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 startActivity(new Intent(this, VideoExoPlayerActivity.class));
                 break;
             case R.id.notifycation:
-//                Intent intent = new Intent(this, CaptureActivity.class);
-//                intent.setAction(Intents.Scan.ACTION);
-//                intent.putExtra(Intents.Scan.FORMATS, Intents.Scan.QR_CODE_MODE);
-//                startActivity(intent);
                 startActivity(new Intent(this, NotifycationActivity.class));
                 break;
             case R.id.ar:

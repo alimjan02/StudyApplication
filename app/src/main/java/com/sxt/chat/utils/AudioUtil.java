@@ -22,7 +22,7 @@ public class AudioUtil {
 
     public void playCaptureSound() {
         try {
-            MediaPlayer player = MediaPlayer.create(context, R.raw.capture);
+            MediaPlayer player = MediaPlayer.create(context, R.raw.notify_message);
             player.setLooping(false);
             player.setVolume(1, 1);
             player.start();

@@ -2,17 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:padding="8dp">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_map_blue_24dp" />
+
     <TextView
+        android:id="@+id/notification_title"
         style="@style/TextAppearance.Compat.Notification.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:drawablePadding="15dp"
-        android:drawableStart="@drawable/ic_map_blue_24dp"
-        android:gravity="center_vertical"
-        android:text="都是坑: 自定义通知 标题" />
+        android:layout_marginStart="16dp"
+        android:text="都是坑: 自定义View的通知 Title" />
 
 </LinearLayout>

@@ -141,7 +141,7 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.root:
-                boolean b = checkPermission(REQUEST_CHOOSE_PHOTO, Manifest.permission.READ_EXTERNAL_STORAGE, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE});
+                boolean b = checkPermission(REQUEST_CHOOSE_PHOTO, Manifest.permission_group.STORAGE, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE});
                 if (b) {
                     startGalleryApp();
                 }

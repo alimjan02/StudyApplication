@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -198,8 +199,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                } else {
+                if (newState != BottomSheetBehavior.STATE_DRAGGING) {
                     ViewGroup.LayoutParams layoutParams = bottomSheet.getLayoutParams();
                     if (bottomSheet.getHeight() > heightPixels - marginTop) {
                         layoutParams.height = heightPixels - marginTop;
@@ -627,6 +627,12 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
                 initLocationOption();
             }
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        heightPixels = getResources().getDisplayMetrics().heightPixels;
     }
 
     @Override

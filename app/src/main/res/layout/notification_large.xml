@@ -2,29 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:padding="8dp">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_map_blue_24dp" />
 
-        <TextView
-            style="@style/TextAppearance.Compat.Notification.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:drawablePadding="15dp"
-            android:drawableStart="@drawable/ic_map_blue_24dp"
-            android:gravity="center_vertical"
-            android:text="都是坑: 自定义通知 展开后的 内容" />
+    <TextView
+        android:id="@+id/title_large"
+        style="@style/TextAppearance.Compat.Notification.Title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_weight="1"
+        android:text="都是坑: 自定义通知 展开后的 内容 自定义通知 展开后的 内容 自定义通知 展开后的 内容 自定义通知 展开后的 内容  展开后的 内容" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
-            android:src="@mipmap/ic_launcher_foreground" />
-
-    </FrameLayout>
+    <ImageView
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"
+        android:src="@mipmap/ic_launcher" />
 
 </LinearLayout>
