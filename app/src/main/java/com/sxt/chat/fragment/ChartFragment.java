@@ -14,6 +14,7 @@ import android.widget.ViewSwitcher;
 
 import com.sxt.chat.R;
 import com.sxt.chat.base.LazyFragment;
+import com.sxt.chat.view.ChartLine;
 import com.sxt.library.chart.BeizerCurveLine;
 import com.sxt.library.chart.ChartBar;
 import com.sxt.library.chart.ChartPie;
@@ -98,21 +99,22 @@ public class ChartFragment extends LazyFragment {
             }
         }
         for (int i = 0; i < 20; i++) {
-            if (i == 0) {
-                drawPie();
-            } else if (i == 1) {
-                drawBar();
-            } else if (i == 2) {
-                drawLine();
-            } else if (i == 3) {
-                drawCircleProgress();
-            } else if (i % 2 == 0) {
-                drawBar();
-            } else if (i % 3 == 0) {
-                drawLine();
-            } else {
-                drawPie();
-            }
+            drawLine();
+//            if (i == 0) {
+//                drawPie();
+//            } else if (i == 1) {
+//                drawBar();
+//            } else if (i == 2) {
+//                drawLine();
+//            } else if (i == 3) {
+//                drawCircleProgress();
+//            } else if (i % 2 == 0) {
+//                drawBar();
+//            } else if (i % 3 == 0) {
+//                drawCurveLine();
+//            } else {
+//                drawPie();
+//            }
         }
     }
 
@@ -157,25 +159,24 @@ public class ChartFragment extends LazyFragment {
         lineUnit = new String[]{getString(R.string.string_unit_xt), getString(R.string.string_unit_hb), getString(R.string.string_unit_press), getString(R.string.string_unit_bt)};
 
         chartBeanList = new ArrayList<>();
-        chartBeanList.add(new ChartBean("9月", 20));
-        chartBeanList.add(new ChartBean("1", 80));
-        chartBeanList.add(new ChartBean("2", 58));
-        chartBeanList.add(new ChartBean("3", 100));
-        chartBeanList.add(new ChartBean("4", 20));
-        chartBeanList.add(new ChartBean("5", 70));
-        chartBeanList.add(new ChartBean("6", 10));
-
+        chartBeanList.add(new ChartBean("9月", 35.5f));
+        chartBeanList.add(new ChartBean("1", 36));
+        chartBeanList.add(new ChartBean("2", 37.5f));
+        chartBeanList.add(new ChartBean("3", 39));
+        chartBeanList.add(new ChartBean("4", 38));
+        chartBeanList.add(new ChartBean("5", 39));
+        chartBeanList.add(new ChartBean("6", 39.5f));
 
         chartBeanList0 = new ArrayList<>();
-        chartBeanList0.add(new ChartBean("9月", 20));
-        chartBeanList0.add(new ChartBean("1", 80));
-        chartBeanList0.add(new ChartBean("2", 58));
-        chartBeanList0.add(new ChartBean("3", 100));
-        chartBeanList0.add(new ChartBean("4", 20));
-        chartBeanList0.add(new ChartBean("5", 70));
-        chartBeanList0.add(new ChartBean("6", 10));
-        chartBeanList0.add(new ChartBean("7", 30));
-        chartBeanList0.add(new ChartBean("8", 5));
+        chartBeanList0.add(new ChartBean("9月", 30));
+        chartBeanList0.add(new ChartBean("1", 33));
+        chartBeanList0.add(new ChartBean("2", 35));
+        chartBeanList0.add(new ChartBean("3", 38));
+        chartBeanList0.add(new ChartBean("4", 34));
+        chartBeanList0.add(new ChartBean("5", 38));
+        chartBeanList0.add(new ChartBean("6", 37));
+        chartBeanList0.add(new ChartBean("7", 36));
+        chartBeanList0.add(new ChartBean("8", 35));
 
         pieBeanList = new ArrayList<>();
         pieBeanList.add(new ChartPieBean(3090, "押金使用", R.color.main_green));
@@ -200,10 +201,38 @@ public class ChartFragment extends LazyFragment {
     }
 
     private void drawLine() {
-        //底部的曲线图
+        //底部的折线图
         View childAt = View.inflate(activity, R.layout.item_chart_line, null);
         lineLayoutList.addView(childAt);
-        BeizerCurveLine chartLine = (BeizerCurveLine) childAt.findViewById(R.id.chart_line);
+        ChartLine chartLine = childAt.findViewById(R.id.chart_line);
+        ChartLine.ChartLineBuilder builder = new ChartLine.ChartLineBuilder();
+        List<ChartBean> chartBeans = new ArrayList<>();
+        List<ChartBean> chartBeans2 = new ArrayList<>();
+
+        for (int y = 0; y < chartBeanList.size(); y++) {
+            ChartBean chartBean = chartBeanList.get(y);
+            ChartBean chartBean2 = chartBeanList0.get(y);
+            chartBeans.add(new ChartBean(chartBean.x, chartLine.parseFloat(String.valueOf(chartBean.y))));
+            chartBeans2.add(new ChartBean(chartBean2.x, chartLine.parseFloat(String.valueOf(chartBean2.y))));
+        }
+        chartLine.setMaxXNum(6);
+        builder.builder(chartBeans, lineColor[0], shaderColor[0])
+                .builder(chartBeans2, lineColor[1], shaderColor[1])
+        ;
+
+        builder.build(chartLine);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //将当前曲线添加到ScrollView的滑动监听中
+            onScrollChangeListener.addLine(chartLine);
+        }
+        chartLine.start();
+    }
+
+    private void drawCurveLine() {
+        //底部的曲线图
+        View childAt = View.inflate(activity, R.layout.item_chart_curve_line, null);
+        lineLayoutList.addView(childAt);
+        BeizerCurveLine chartLine = (BeizerCurveLine) childAt.findViewById(R.id.chart_curve_line);
         BeizerCurveLine.CurveLineBuilder builder = new BeizerCurveLine.CurveLineBuilder();
         List<ChartBean> chartBeans = new ArrayList<>();
 
