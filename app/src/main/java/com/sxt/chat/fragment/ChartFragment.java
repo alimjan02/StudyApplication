@@ -99,22 +99,22 @@ public class ChartFragment extends LazyFragment {
             }
         }
         for (int i = 0; i < 20; i++) {
-            drawLine();
-//            if (i == 0) {
-//                drawPie();
-//            } else if (i == 1) {
-//                drawBar();
-//            } else if (i == 2) {
+            if (i == 0) {
+                drawPie();
+            } else if (i == 1) {
+                drawBar();
+            } else if (i == 2) {
+                drawLine();
+            } else if (i == 3) {
+                drawCircleProgress();
+            } else if (i % 2 == 0) {
+                drawBar();
+            } else if (i % 3 == 0) {
+                drawCurveLine();
+            } else {
+                drawPie();
 //                drawLine();
-//            } else if (i == 3) {
-//                drawCircleProgress();
-//            } else if (i % 2 == 0) {
-//                drawBar();
-//            } else if (i % 3 == 0) {
-//                drawCurveLine();
-//            } else {
-//                drawPie();
-//            }
+            }
         }
     }
 

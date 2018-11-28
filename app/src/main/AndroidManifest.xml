@@ -211,6 +211,9 @@
         <activity
             android:name=".activity.NotifycationActivity"
             android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.RecyclerViewActivity"
+            android:configChanges="orientation|screenSize" />
 
         <receiver
             android:name=".receiver.WatchDogReceiver"

@@ -12,11 +12,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,8 +30,8 @@ import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.download.DownloadTask;
 import com.sxt.chat.receiver.WatchDogReceiver;
-import com.sxt.chat.utils.Utils;
 import com.sxt.chat.utils.Prefs;
+import com.sxt.chat.utils.Utils;
 import com.sxt.chat.utils.glide.CacheUtils;
 
 /**
@@ -54,6 +58,7 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         findViewById(R.id.clean_cache).setOnClickListener(this);//清除缓存
         findViewById(R.id.current_version).setOnClickListener(this);//清除缓存
         findViewById(R.id.login_out).setOnClickListener(this);//退出登录
+        findViewById(R.id.recyclerView_layout).setOnClickListener(this);
         cacheSize.setText(CacheUtils.getInstance().getCacheSize());
         version.setText("当前版本:" + Prefs.getVersionName(App.getCtx()) + "");
 //        spinner.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -86,6 +91,9 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         switch (view.getId()) {
             case R.id.clean_cache://清除缓存
                 clearCache();
+                break;
+                case R.id.recyclerView_layout:
+                startActivity(new Intent(this, RecyclerViewActivity.class));
                 break;
 
             case R.id.current_version://检查更新
