@@ -106,7 +106,8 @@ public class ChartFragment extends LazyFragment {
             } else if (i == 2) {
                 drawLine();
             } else if (i == 3) {
-                drawCircleProgress();
+//                drawCircleProgress();
+                drawCurveLine();
             } else if (i % 2 == 0) {
                 drawBar();
             } else if (i % 3 == 0) {
@@ -118,7 +119,6 @@ public class ChartFragment extends LazyFragment {
         }
     }
 
-    @SuppressLint("CutPasteId")
     private void drawCircleProgress() {
         View view = View.inflate(activity, R.layout.item_circle_progress, null);
         lineLayoutList.addView(view);
@@ -159,24 +159,24 @@ public class ChartFragment extends LazyFragment {
         lineUnit = new String[]{getString(R.string.string_unit_xt), getString(R.string.string_unit_hb), getString(R.string.string_unit_press), getString(R.string.string_unit_bt)};
 
         chartBeanList = new ArrayList<>();
-        chartBeanList.add(new ChartBean("9月", 35.5f));
-        chartBeanList.add(new ChartBean("1", 36));
-        chartBeanList.add(new ChartBean("2", 37.5f));
-        chartBeanList.add(new ChartBean("3", 39));
-        chartBeanList.add(new ChartBean("4", 38));
-        chartBeanList.add(new ChartBean("5", 39));
-        chartBeanList.add(new ChartBean("6", 39.5f));
+        chartBeanList.add(new ChartBean("9月", 1));
+        chartBeanList.add(new ChartBean("1", 33));
+        chartBeanList.add(new ChartBean("2", 35));
+        chartBeanList.add(new ChartBean("3", 100));
+        chartBeanList.add(new ChartBean("4", 34));
+        chartBeanList.add(new ChartBean("5", 38));
+        chartBeanList.add(new ChartBean("6", 90));
 
         chartBeanList0 = new ArrayList<>();
-        chartBeanList0.add(new ChartBean("9月", 30));
+        chartBeanList0.add(new ChartBean("9月", 1));
         chartBeanList0.add(new ChartBean("1", 33));
         chartBeanList0.add(new ChartBean("2", 35));
-        chartBeanList0.add(new ChartBean("3", 38));
+        chartBeanList0.add(new ChartBean("3", 100));
         chartBeanList0.add(new ChartBean("4", 34));
         chartBeanList0.add(new ChartBean("5", 38));
-        chartBeanList0.add(new ChartBean("6", 37));
+        chartBeanList0.add(new ChartBean("6", 90));
         chartBeanList0.add(new ChartBean("7", 36));
-        chartBeanList0.add(new ChartBean("8", 35));
+        chartBeanList0.add(new ChartBean("8", 10));
 
         pieBeanList = new ArrayList<>();
         pieBeanList.add(new ChartPieBean(3090, "押金使用", R.color.main_green));

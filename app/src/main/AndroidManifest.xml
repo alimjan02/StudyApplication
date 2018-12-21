@@ -211,6 +211,11 @@
         <activity
             android:name=".activity.NotifycationActivity"
             android:configChanges="orientation|screenSize" />
+
+        <activity
+            android:name=".activity.PdfActivity"
+            android:configChanges="orientation|screenSize" />
+
         <activity
             android:name=".activity.RecyclerViewActivity"
             android:configChanges="orientation|screenSize" />
