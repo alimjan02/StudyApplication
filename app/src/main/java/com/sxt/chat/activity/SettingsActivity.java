@@ -58,7 +58,6 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         findViewById(R.id.clean_cache).setOnClickListener(this);//清除缓存
         findViewById(R.id.current_version).setOnClickListener(this);//清除缓存
         findViewById(R.id.login_out).setOnClickListener(this);//退出登录
-        findViewById(R.id.recyclerView_layout).setOnClickListener(this);
         cacheSize.setText(CacheUtils.getInstance().getCacheSize());
         version.setText("当前版本:" + Prefs.getVersionName(App.getCtx()) + "");
 //        spinner.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -91,9 +90,6 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         switch (view.getId()) {
             case R.id.clean_cache://清除缓存
                 clearCache();
-                break;
-                case R.id.recyclerView_layout:
-                startActivity(new Intent(this, RecyclerViewActivity.class));
                 break;
 
             case R.id.current_version://检查更新

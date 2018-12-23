@@ -94,25 +94,6 @@
             <View style="@style/divider_line" />
         </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/recyclerView_layout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="?selectableItemBackground">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:drawablePadding="10dp"
-                android:maxLines="1"
-                android:text="RecyclerView"
-                android:textColor="@color/text_color_1"
-                android:textSize="17dp" />
-
-        </RelativeLayout>
-
         <TextView
             android:id="@+id/login_out"
             android:layout_width="match_parent"
