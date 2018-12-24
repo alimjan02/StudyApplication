@@ -31,6 +31,7 @@ import java.util.List;
 public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
 
     private int index;
+    private Animation scaleAnimation;
 
     public void notifyIndex(int index) {
         this.index = index;
@@ -91,8 +92,11 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
                         if (upMillis - downMillis <= 200) {//小于200ms 算点击事件
                             if (onItemClickListener != null) {
                                 holder.root.clearAnimation();
-                                Animation animation = AnimationUtils.loadAnimation(context, R.anim.anim_item_scale_alpha);
-                                animation.setAnimationListener(new Animation.AnimationListener() {
+                                if (scaleAnimation != null) {
+                                    scaleAnimation.cancel();
+                                }
+                                scaleAnimation = AnimationUtils.loadAnimation(context, R.anim.anim_item_scale_alpha);
+                                scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
                                     @Override
                                     public void onAnimationStart(Animation animation) {
 
@@ -109,7 +113,7 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
 
                                     }
                                 });
-                                holder.root.startAnimation(animation);
+                                holder.root.startAnimation(scaleAnimation);
                                 Log.e("onTouch", "小于200ms 算点击事件");
                             }
                         } else {//大于200ms 算触摸事件
