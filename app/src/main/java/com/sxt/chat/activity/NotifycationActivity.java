@@ -17,6 +17,8 @@
 package com.sxt.chat.activity;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +27,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,6 +43,8 @@ import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.utils.NotificationHelper;
 import com.sxt.chat.utils.glide.GlideRoundTransformer;
+
+import static com.sxt.chat.utils.NotificationHelper.DEFAULT_CHANNEL;
 
 /**
  * Display main screen for sample. Displays controls for sending test notifications.
@@ -79,6 +85,14 @@ public class NotifycationActivity extends HeaderActivity implements View.OnClick
      * @param id 创建的通知的ID
      */
     public void sendNotification(int id, final String body) {
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel hahahah = helper.getManager().getNotificationChannel(DEFAULT_CHANNEL);
+            Log.e("NotificationChannel", String.format("importance %s , flag %s", hahahah.getImportance() == NotificationManager.IMPORTANCE_NONE, hahahah.getImportance()));
+
+        }
+
+
         final NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_ar_photo_main_blue_24dp, String.valueOf("点我哦~"), getPendingIntent(this, MainActivity.class));
         switch (id) {
             case NOTI_1:
@@ -174,7 +188,7 @@ public class NotifycationActivity extends HeaderActivity implements View.OnClick
                 sendNotification(NOTI_3, getTitleText());
                 break;
             case R.id.config:
-                goToNotificationSettings(NotificationHelper.DEFAULT_CHANNEL);
+                goToNotificationSettings(DEFAULT_CHANNEL);
                 break;
             case R.id.btnA:
                 goToNotificationSettings();

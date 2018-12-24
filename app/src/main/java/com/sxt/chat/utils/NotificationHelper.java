@@ -49,7 +49,7 @@ public class NotificationHelper extends ContextWrapper {
     /**
      * 获取 notification manager.
      */
-    private NotificationManager getManager() {
+    public NotificationManager getManager() {
         if (manager == null) {
             manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         }

@@ -1,16 +1,15 @@
 package com.sxt.chat.adapter;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -69,23 +68,59 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
                 .bitmapTransform(new GlideCircleTransformer(context))
                 .into(holder.img_header);
 
-        holder.root.setOnClickListener(new View.OnClickListener() {
+        holder.root.setTag(position);
+        holder.root.setOnTouchListener(new View.OnTouchListener() {
+
+            private long downMillis;
+            private long upMillis;
+
             @Override
-            public void onClick(View view) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.onClick(position, holder, getItem(position));
-                    holder.root.clearAnimation();
-                    @SuppressLint("ResourceType") AnimatorSet animation = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.anim.anim_item_scale_alpha);
-                    animation.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            notifyIndex(position);
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        downMillis = System.currentTimeMillis();
+                        Log.e("onTouch", "downMillis : " + downMillis);
+                        holder.root.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        holder.root.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        holder.root.getParent().requestDisallowInterceptTouchEvent(false);
+                        upMillis = System.currentTimeMillis();
+                        if (upMillis - downMillis <= 200) {//小于200ms 算点击事件
+                            if (onItemClickListener != null) {
+                                holder.root.clearAnimation();
+                                Animation animation = AnimationUtils.loadAnimation(context, R.anim.anim_item_scale_alpha);
+                                animation.setAnimationListener(new Animation.AnimationListener() {
+                                    @Override
+                                    public void onAnimationStart(Animation animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animation animation) {
+                                        notifyIndex(position);
+                                        onItemClickListener.onClick(position, holder, getItem(position));
+                                    }
+
+                                    @Override
+                                    public void onAnimationRepeat(Animation animation) {
+
+                                    }
+                                });
+                                holder.root.startAnimation(animation);
+                                Log.e("onTouch", "小于200ms 算点击事件");
+                            }
+                        } else {//大于200ms 算触摸事件
+                            Log.e("onTouch", "大于200ms 算触摸事件");
                         }
-                    });
-                    animation.setTarget(holder.root);
-                    animation.start();
+                        downMillis = 0;
+                        upMillis = 0;
+                        break;
                 }
+                holder.root.performClick();
+                return false;
             }
         });
     }
