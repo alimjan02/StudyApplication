@@ -18,6 +18,8 @@
     <string name="ar">ARCore</string>
     <string name="vr">VR360°</string>
     <string name="ocr_scan_id_card">证件识别</string>
+    <string name="pdf_parse">PDF解析</string>
+    <string name="pdf_create">生成PDF</string>
     <string name="exoplayer">视频专区</string>
     <string name="change_login">切换账号</string>
     <string name="clean_cache">清理缓存</string>
@@ -270,6 +272,7 @@
     <string name="key_word_is_empty">关键字不能为空</string>
     <string name="map">高德地图</string>
     <string name="notifycation">通知栏</string>
+    <string name="select_file">选择文件</string>
 
     <string-array name="query_suggestions">
         <item>A very very long suggestion that would span multiple lines.</item>

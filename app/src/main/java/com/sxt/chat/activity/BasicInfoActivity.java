@@ -80,12 +80,6 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
         findViewById(R.id.user_age_layout).setOnClickListener(this);
         findViewById(R.id.user_weight_layout).setOnClickListener(this);
         findViewById(R.id.user_hight_layout).setOnClickListener(this);
-        findViewById(R.id.pdf).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(App.getCtx(),PdfActivity.class));
-            }
-        });
 
         userPortait = (ImageView) findViewById(R.id.user_portrait);
         userName = (TextView) findViewById(R.id.user_name);

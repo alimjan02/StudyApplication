@@ -87,6 +87,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             findViewById(R.id.ocr_scan_id_card).setOnClickListener(this);
             findViewById(R.id.ocr_scan).setOnClickListener(this);
             findViewById(R.id.exoplayer).setOnClickListener(this);
+            findViewById(R.id.pdf_parse).setOnClickListener(this);
             findViewById(R.id.wifi).setOnClickListener(this);
             findViewById(R.id.notifycation).setOnClickListener(this);
             findViewById(R.id.ar).setOnClickListener(this);
@@ -418,6 +419,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 break;
             case R.id.exoplayer:
                 startActivity(new Intent(this, VideoExoPlayerActivity.class));
+                break;
+            case R.id.pdf_parse:
+                startActivity(new Intent(this, PdfActivity.class));
                 break;
             case R.id.notifycation:
                 startActivity(new Intent(this, NotifycationActivity.class));

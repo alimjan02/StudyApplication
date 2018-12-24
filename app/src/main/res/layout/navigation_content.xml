@@ -1,83 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="15dp"
-    android:paddingRight="15dp">
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
-        android:id="@+id/basic_info"
-        style="@style/menu_style"
-        android:drawableStart="@drawable/ic_vector_basic_info_24dp"
-        android:text="@string/basic_info" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:paddingRight="15dp">
 
-    <TextView
-        android:id="@+id/exoplayer"
-        style="@style/menu_style"
-        android:drawableStart="@drawable/ic_vector_video_24dp"
-        android:text="@string/exoplayer" />
+        <TextView
+            android:id="@+id/basic_info"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_vector_basic_info_24dp"
+            android:text="@string/basic_info" />
 
-    <TextView
-        android:id="@+id/ocr_scan"
-        style="@style/menu_style"
-        android:drawableStart="@drawable/ic_vector_img_scanner_24dp"
-        android:text="@string/ocr_scan" />
+        <TextView
+            android:id="@+id/exoplayer"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_vector_video_24dp"
+            android:text="@string/exoplayer" />
 
-    <TextView
-        android:id="@+id/ocr_scan_id_card"
-        style="@style/menu_style"
-        android:drawableStart="@drawable/ic_vector_idcard_scanner_24dp"
-        android:text="@string/ocr_scan_id_card" />
+        <TextView
+            android:id="@+id/ocr_scan"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_vector_img_scanner_24dp"
+            android:text="@string/ocr_scan" />
 
-    <TextView
-        android:id="@+id/wifi"
-        style="@style/menu_style"
-        android:drawableStart="@drawable/ic_vector_wifi_24dp"
-        android:text="@string/wifi" />
+        <TextView
+            android:id="@+id/ocr_scan_id_card"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_vector_idcard_scanner_24dp"
+            android:text="@string/ocr_scan_id_card" />
 
-    <TextView
-        android:id="@+id/map"
-        style="@style/menu_style"
-        android:drawableStart="@drawable/ic_map_blue_24dp"
-        android:text="@string/map"
-        android:visibility="visible" />
+        <TextView
+            android:id="@+id/pdf_parse"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_pdf_blue_24dp"
+            android:text="@string/pdf_parse" />
 
-    <TextView
-        android:id="@+id/notifycation"
-        style="@style/menu_style"
-        android:drawableStart="@drawable/ic_vector_notifications_24dp"
-        android:text="@string/notifycation" />
+        <TextView
+            android:id="@+id/wifi"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_vector_wifi_24dp"
+            android:text="@string/wifi" />
 
-    <TextView
-        android:id="@+id/ar"
-        style="@style/menu_style"
-        android:drawableStart="@drawable/ic_ar_photo_main_blue_24dp"
-        android:text="@string/ar"
-        android:visibility="visible" />
+        <TextView
+            android:id="@+id/map"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_map_blue_24dp"
+            android:text="@string/map"
+            android:visibility="visible" />
 
-    <TextView
-        android:id="@+id/vr"
-        style="@style/menu_style"
-        android:drawableStart="@drawable/ic_vr_photo_main_blue_24dp"
-        android:text="@string/vr"
-        android:visibility="visible" />
+        <TextView
+            android:id="@+id/notifycation"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_vector_notifications_24dp"
+            android:text="@string/notifycation" />
 
-    <TextView
-        android:id="@+id/normal_settings"
-        style="@style/menu_style"
-        android:drawableStart="@drawable/ic_settings_mian_blue_24dp"
-        android:text="@string/nomal_settings" />
+        <TextView
+            android:id="@+id/ar"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_ar_photo_main_blue_24dp"
+            android:text="@string/ar"
+            android:visibility="visible" />
 
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        <TextView
+            android:id="@+id/vr"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_vr_photo_main_blue_24dp"
+            android:text="@string/vr"
+            android:visibility="visible" />
 
-    <TextView
-        android:id="@+id/change_login"
-        style="@style/menu_style"
-        android:drawableStart="@drawable/ic_vector_switch_24dp"
-        android:text="@string/change_login" />
+        <TextView
+            android:id="@+id/normal_settings"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_settings_mian_blue_24dp"
+            android:text="@string/nomal_settings" />
 
-</LinearLayout>
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/change_login"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_vector_switch_24dp"
+            android:text="@string/change_login" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
