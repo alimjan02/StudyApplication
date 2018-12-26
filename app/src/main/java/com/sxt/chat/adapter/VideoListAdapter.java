@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -69,8 +70,13 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
                 .bitmapTransform(new GlideCircleTransformer(context))
                 .into(holder.img_header);
 
-        holder.root.setTag(position);
-        holder.root.setOnTouchListener(new View.OnTouchListener() {
+        holder.itemView.setTag(position);
+
+        if (scaleAnimation != null) {
+            scaleAnimation.cancel();
+        }
+        holder.itemView.clearAnimation();
+        holder.itemView.setOnTouchListener(new View.OnTouchListener() {
 
             private long downMillis;
             private long upMillis;
@@ -81,21 +87,20 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
                     case MotionEvent.ACTION_DOWN:
                         downMillis = System.currentTimeMillis();
                         Log.e("onTouch", "downMillis : " + downMillis);
-                        holder.root.getParent().requestDisallowInterceptTouchEvent(true);
+                        holder.itemView.getParent().requestDisallowInterceptTouchEvent(true);
+
+
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        holder.root.getParent().requestDisallowInterceptTouchEvent(false);
-                        break;
+                        holder.itemView.getParent().requestDisallowInterceptTouchEvent(false);
+                        return false;//如果触摸移动,此时应该屏蔽 ACTION_UP 事件
                     case MotionEvent.ACTION_UP:
-                        holder.root.getParent().requestDisallowInterceptTouchEvent(false);
+                        holder.itemView.getParent().requestDisallowInterceptTouchEvent(false);
                         upMillis = System.currentTimeMillis();
-                        if (upMillis - downMillis <= 200) {//小于200ms 算点击事件
+                        if (!holder.itemView.isPressed()&&upMillis - downMillis <= 100) {//小于100ms 算点击事件
                             if (onItemClickListener != null) {
-                                holder.root.clearAnimation();
-                                if (scaleAnimation != null) {
-                                    scaleAnimation.cancel();
-                                }
                                 scaleAnimation = AnimationUtils.loadAnimation(context, R.anim.anim_item_scale_alpha);
+                                scaleAnimation.setInterpolator(new DecelerateInterpolator());
                                 scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
                                     @Override
                                     public void onAnimationStart(Animation animation) {
@@ -104,8 +109,10 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
 
                                     @Override
                                     public void onAnimationEnd(Animation animation) {
-                                        notifyIndex(position);
-                                        onItemClickListener.onClick(position, holder, getItem(position));
+                                        if (index != position) {
+                                            notifyIndex(position);
+                                            onItemClickListener.onClick(position, holder, getItem(position));
+                                        }
                                     }
 
                                     @Override
@@ -113,7 +120,10 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
 
                                     }
                                 });
-                                holder.root.startAnimation(scaleAnimation);
+                                View view = holder.itemView.getRootView().findViewWithTag(position);
+                                if (view != null) {
+                                    view.startAnimation(scaleAnimation);
+                                }
                                 Log.e("onTouch", "小于200ms 算点击事件");
                             }
                         } else {//大于200ms 算触摸事件
@@ -131,6 +141,7 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        public View itemView;
         public View root;
         public TextView title;
         public RatingBar ratingBar;
@@ -139,6 +150,7 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
 
         public ViewHolder(View itemView) {
             super(itemView);
+            this.itemView = itemView;
             root = itemView.findViewById(R.id.root);
             title = itemView.findViewById(R.id.title);
             ratingBar = itemView.findViewById(R.id.ratingBar);

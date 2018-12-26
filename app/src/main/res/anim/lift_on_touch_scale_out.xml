@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?><!-- animate the translationZ property of a view when pressed -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@android:integer/config_shortAnimTime">
+    <objectAnimator
+        android:propertyName="scaleX"
+        android:valueFrom="0.95"
+        android:valueTo="1"
+        android:valueType="floatType" />
+    <objectAnimator
+        android:propertyName="scaleY"
+        android:valueFrom="0.95"
+        android:valueTo="1"
+        android:valueType="floatType" />
+</set>
