@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -138,9 +139,8 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
 
     private void initTitle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent));
+            getWindow().setNavigationBarColor(Color.WHITE);
         }
         heightPixels = getResources().getDisplayMetrics().heightPixels;
         final CardView cardView = findViewById(R.id.cardView);

@@ -27,10 +27,8 @@ public class RoomDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_view);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION/*虚拟按键的导航栏半透明*/);
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(Color.WHITE);
             getWindow().setStatusBarColor(Color.TRANSPARENT);/*设置状态栏全透明*/
             findViewById(R.id.image_scrolling_top).setTransitionName("shareView");
         }

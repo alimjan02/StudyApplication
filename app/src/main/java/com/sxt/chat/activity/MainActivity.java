@@ -7,6 +7,7 @@ import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -79,7 +80,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(0, 0);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(Color.WHITE);
+        }
         if (BmobUser.getCurrentUser(User.class) == null) {
             startActivity(new Intent(App.getCtx(), LoginActivity.class));
             finish();
