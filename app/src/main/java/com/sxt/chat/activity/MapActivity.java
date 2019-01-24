@@ -205,6 +205,11 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
                         layoutParams.height = heightPixels - marginTop;
                         bottomSheet.setLayoutParams(layoutParams);
                     }
+                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                        if (nestedScrollView != null && nestedScrollView.getScrollX() != 0) {
+                            nestedScrollView.setScrollX(0);//列表滑动到顶端
+                        }
+                    }
                 }
             }
 
@@ -241,6 +246,12 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
                 AnimationUtil.rotation(close, !TextUtils.isEmpty(s.toString().trim()));
             }
         });
+        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                searchView.setCursorVisible(hasFocus);
+            }
+        });
         searchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -259,6 +270,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
                         poiSearch.setQuery(query);
                     }
                     poiSearch.searchPOIAsyn();
+                    searchView.setCursorVisible(false);
                 }
                 return false;
             }

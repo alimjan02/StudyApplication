@@ -63,7 +63,7 @@ public class ChangeLoginActivity extends HeaderActivity {
                 if (user != null) {
                     final List<User> userList = SQLiteUserDao.getInstance(App.getCtx()).queryUserByUserName(user.getUserName());
                     if (userList != null && userList.size() > 0) {
-                        if (BmobUser.getCurrentUser().getUsername().equals(userList.get(0).getUserName())) {
+                        if (BmobUser.getCurrentUser(User.class).getUsername().equals(userList.get(0).getUserName())) {
                             Toast("当前账号已登录,无需切换");
                         } else {
                             if (userList.get(0).getUserName() != null && userList.get(0).getUserPwd() != null) {
@@ -93,7 +93,7 @@ public class ChangeLoginActivity extends HeaderActivity {
 
     private int findUser(List<User> userList) {
         if (userList != null) {
-            BmobUser currentUser = BmobUser.getCurrentUser();
+            BmobUser currentUser = BmobUser.getCurrentUser(User.class);
             String userName = null;
             if (currentUser != null) {
                 userName = currentUser.getUsername();

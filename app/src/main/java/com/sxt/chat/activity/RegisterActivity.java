@@ -36,7 +36,10 @@ public class RegisterActivity extends HeaderActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         setTitle(R.string.register);
         showToolbar(false);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(Color.WHITE);
+            setWindowStatusBarColor(this, R.color.white);
+        }
         input_user_name = findViewById(R.id.input_user_name);
         input_password = findViewById(R.id.input_password);
         editTextUser = findViewById(R.id.tv_user_name);

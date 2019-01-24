@@ -318,7 +318,7 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
 
     private void updateUserInfo(final User newUser, final String cmd) {
         loading.show();
-        BmobUser bmobUser = BmobUser.getCurrentUser();
+        BmobUser bmobUser = BmobUser.getCurrentUser(User.class);
         newUser.update(bmobUser.getObjectId(), new UpdateListener() {
             @Override
             public void done(BmobException e) {

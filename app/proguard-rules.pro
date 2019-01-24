@@ -96,7 +96,9 @@
 
 #-------------------------gson---------------------------------------------
 #如果用用到Gson解析包的，直接添加下面这几行就能成功混淆，不然会报错。
+-keepattributes Annotation
 -keepattributes Signature
+-keep class com.idea.fifaalarmclock.entity.*
 # Gson specific classes
 -keep class sun.misc.Unsafe { *; }
 # Application classes that will be serialized/deserialized over Gson
@@ -106,6 +108,7 @@
     <fields>;
     <methods>;
 }
+
 # 如果使用了Gson之类的工具要使被它解析的JavaBean类即实体类不被混淆。
 -keep class com.matrix.app.entity.json.** { *; }
 -keep class com.matrix.appsdk.network.model.** { *; }
@@ -118,6 +121,22 @@
 #NoHttp
 -dontwarn com.yolanda.nohttp.**
 -keep class com.yolanda.nohttp.**{*;}
+
+#Retrofit
+-dontnote retrofit2.Platform
+-dontnote retrofit2.Platform$IOS$MainThreadExecutor
+-dontwarn retrofit2.Platform$Java8
+-keepattributes Signature
+-keepattributes Exceptions
+# okhttp 因为Retrofit是用的okhttp来请求的
+-dontwarn okio.**
+
+#Glide图片加载库
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
 
 #高德地图
 #3D 地图 V5.0.0之后：
@@ -136,29 +155,6 @@
 -keep class com.superrtc.** {*;}
 -keep class com.hyphenate.** {*;}
 -dontwarn  com.hyphenate.**
-
-#LitePal开源数据库框架 添加混淆
--dontwarn org.litepal.*
--keep class org.litepal.** { *; }
--keep enum org.litepal.**
--keep interface org.litepal.** { *; }
--keep public class * extends org.litepal.**
--keepattributes *Annotation*
--keepclassmembers class * extends org.litepal.crud.DataSupport{*;}
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
-}
-
-#Mob分享添加混淆
--keep class cn.sharesdk.**{*;}
--keep class com.sina.**{*;}
--keep class **.R$* {*;}
--keep class **.R{*;}
--keep class com.mob.**{*;}
--dontwarn com.mob.**
--dontwarn cn.sharesdk.**
--dontwarn **.R$*
 
 #EventBus3.0混淆规则
 -keepattributes *Annotation*
@@ -179,22 +175,6 @@
 -keep class com.tencent.mm.opensdk.** {*;}
 -keep class com.tencent.wxop.** {*;}
 -keep class com.tencent.mm.sdk.** {*;}
-
-#Retrofit
--dontnote retrofit2.Platform
--dontnote retrofit2.Platform$IOS$MainThreadExecutor
--dontwarn retrofit2.Platform$Java8
--keepattributes Signature
--keepattributes Exceptions
-# okhttp 因为Retrofit是用的okhttp来请求的
--dontwarn okio.**
-
-#Glide图片加载库
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
 
 #com.youth.banner 的混淆代码
 -keep class com.youth.banner.** {
@@ -268,44 +248,6 @@
 -keep class android.support.v7.**{
     public *;
 }
-
-#UIKit直播 添加混淆规则
--dontwarn com.ezviz.player.**
--keep class com.ezviz.player.** { *;}
-
--dontwarn com.ezviz.statistics.**
--keep class com.ezviz.statistics.** { *;}
-
--dontwarn com.ezviz.stream.**
--keep class com.ezviz.stream.** { *;}
-
--dontwarn com.ezviz.hcnetsdk.**
--keep class com.ezviz.hcnetsdk.** { *;}
-
-
--dontwarn com.ezviz.opensdk.**
--keep class com.ezviz.opensdk.** { *;}
-
--dontwarn com.hik.**
--keep class com.hik.** { *;}
-
--dontwarn com.hikvision.**
--keep class com.hikvision.** { *;}
-
--dontwarn com.videogo.**
--keep class com.videogo.** { *;}
-
--dontwarn org.MediaPlayer.PlayM4.**
--keep class org.MediaPlayer.PlayM4.** { *;}
-
--dontwarn com.sun.jna.**
--keep class com.sun.jna.**{*;}
-
-#Gson混淆配置
--keepattributes Annotation
--keep class sun.misc.Unsafe { *; }
--keep class com.idea.fifaalarmclock.entity.*
--keep class com.google.gson.stream.* { *; }
 
 #引用mars的xlog，混淆配置
 -keep class com.tencent.mars.** {

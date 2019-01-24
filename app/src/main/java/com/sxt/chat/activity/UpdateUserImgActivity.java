@@ -66,7 +66,7 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
     private void updateUser(final String url) {
         User newUser = new User();
         newUser.setImgUri(url);
-        final BmobUser bmobUser = BmobUser.getCurrentUser();
+        final BmobUser bmobUser = BmobUser.getCurrentUser(User.class);
         newUser.update(bmobUser.getObjectId(), new UpdateListener() {
             @Override
             public void done(BmobException e) {

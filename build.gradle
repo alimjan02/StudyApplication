@@ -38,16 +38,4 @@ project.ext {
     supportLibraryVersion = '27.1.0'
     junitVersion = '4.12'
 
-//    playServicesLibraryVersion = '15.0.1'
-//    dexmakerVersion = '1.2'
-//    mockitoVersion = '1.9.5'
-//    truthVersion = '0.39'
-//    robolectricVersion = '3.7.1'
-//    autoValueVersion = '1.6'
-//    checkerframeworkVersion = '2.5.0'
-//    testRunnerVersion = '1.0.2'
-//    modulePrefix = ':'
-//    if (gradle.ext.has('exoplayerModulePrefix')) {
-//        modulePrefix += gradle.ext.exoplayerModulePrefix
-//    }
 }

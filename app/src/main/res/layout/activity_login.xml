@@ -11,7 +11,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layoutAnimation="@anim/layout_animation_vertical"
         android:orientation="vertical">
 
         <ImageView
@@ -40,6 +39,7 @@
                 android:maxLength="20"
                 android:maxLines="1"
                 android:singleLine="true" />
+
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -47,8 +47,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginTop="8dp"
+            android:layout_marginRight="20dp"
             app:passwordToggleEnabled="true">
 
             <EditText
@@ -69,8 +69,8 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginTop="50dp"
+            android:layout_marginRight="20dp"
             android:background="@drawable/login_btn_pressed_bg"
             android:focusable="true"
             android:gravity="center"

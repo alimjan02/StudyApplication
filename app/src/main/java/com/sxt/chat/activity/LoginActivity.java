@@ -37,6 +37,10 @@ public class LoginActivity extends HeaderActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         setTitle(R.string.login);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(Color.WHITE);
+        }
+        setWindowStatusBarColor(this, R.color.white);
         showToolbar(false);
         User currentUser = BmobUser.getCurrentUser(User.class);
         if (currentUser == null) {

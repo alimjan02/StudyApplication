@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-version = "1.4.10"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -24,7 +23,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:support-v4:' + rootProject.ext.supportLibraryVersion
+    implementation "com.android.support:support-v4:${rootProject.ext.supportLibraryVersion}"
 }
 
 

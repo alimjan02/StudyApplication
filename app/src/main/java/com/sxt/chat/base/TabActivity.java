@@ -43,9 +43,9 @@ public abstract class TabActivity extends HeaderActivity {
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (prefragment != null && hasFocus && prefragment.isResumed()) {
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        if (prefragment != null && prefragment.isResumed()) {
             prefragment.setUserVisibleHint(prefragment.getUserVisibleHint());
         }
     }
@@ -57,6 +57,7 @@ public abstract class TabActivity extends HeaderActivity {
             changeTab(checkedId);
             if (prefragment != null) {
                 transaction.hide(prefragment);
+                prefragment.setUserVisibleHint(false);
             }
             if (!fragment.isAdded()) {
                 transaction.add(containerId, fragment, fragment.getClass().getName());
@@ -67,7 +68,7 @@ public abstract class TabActivity extends HeaderActivity {
                 onCheckedChangeListener.onCheckedChange(checkedId);
             }
             prefragment = fragment;
-            prefragment.setUserVisibleHint(prefragment.getUserVisibleHint());
+            prefragment.setUserVisibleHint(true);
             transaction.commit();
 
         }
@@ -76,7 +77,7 @@ public abstract class TabActivity extends HeaderActivity {
     private void changeTab(int checkedId) {
         if (tabs != null) {
             if (titles != null && titles.length > checkedId) {
-                onTabCheckedChange(titles,checkedId);
+                onTabCheckedChange(titles, checkedId);
             }
             for (Map.Entry<Integer, RadioButton> entry : tabs.entrySet()) {
                 if (entry.getKey() == checkedId) {

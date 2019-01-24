@@ -95,7 +95,9 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/BaseTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+
         <activity
             android:name=".activity.SplashActivity"
             android:configChanges="orientation|screenSize"
@@ -123,7 +125,8 @@
         <activity
             android:name=".activity.LoginActivity"
             android:configChanges="orientation|screenSize"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ar.HelloArActivity"
             android:configChanges="orientation|screenSize"
@@ -151,7 +154,8 @@
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".activity.RegisterActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.CropActivity"
             android:configChanges="orientation|screenSize" />
@@ -214,10 +218,6 @@
 
         <activity
             android:name=".activity.PdfActivity"
-            android:configChanges="orientation|screenSize" />
-
-        <activity
-            android:name=".activity.RecyclerViewActivity"
             android:configChanges="orientation|screenSize" />
 
         <receiver
@@ -324,6 +324,11 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <!--Bmob配置provider-->
+        <provider
+            android:name="cn.bmob.v3.util.BmobContentProvider"
+            android:authorities="${applicationId}.BmobContentProvider"></provider>
+
         <meta-data
             android:name="com.sxt.chat.utils.glide.GlideCatchConfig"
             android:value="GlideModule" />
@@ -340,6 +345,7 @@
         <activity
             android:name=".activity.MapActivity"
             android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" />
 
         <!--高德地图-->

@@ -1,8 +1,10 @@
 package com.sxt.chat.activity;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityOptions;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -15,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -34,6 +37,7 @@ import com.sxt.chat.ar.HelloArActivity;
 import com.sxt.chat.base.BaseFragment;
 import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.db.User;
+import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.fragment.ChartFragment;
 import com.sxt.chat.fragment.GallaryFragment;
 import com.sxt.chat.fragment.HomePageFragment;
@@ -69,13 +73,14 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private MaterialSearchView searchView;
     private Menu menu;
     private Handler handler = new Handler();
+    private final int REQUEST_CODE_LOCATION = 201;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(0, 0);
 
-        if (BmobUser.getCurrentUser() == null) {
+        if (BmobUser.getCurrentUser(User.class) == null) {
             startActivity(new Intent(App.getCtx(), LoginActivity.class));
             finish();
         } else {
@@ -433,9 +438,60 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 startActivity(new Intent(this, VR360Activity.class));
                 break;
             case R.id.map:
-                startActivity(new Intent(this, MapActivity.class));
+                if (checkPermission(REQUEST_CODE_LOCATION, Manifest.permission_group.LOCATION, new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,})) {
+
+                }
                 break;
         }
+    }
+
+    @Override
+    public void onPermissionsaAlowed(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsaAlowed(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_CODE_LOCATION:
+                openMapActivity();
+                break;
+        }
+    }
+
+    @Override
+    public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_CODE_LOCATION:
+                showPermissionRefusedNeverDialog(String.format(getString(R.string.permission_request_LOCATION), getString(R.string.app_name)));
+                break;
+        }
+    }
+
+    private void openMapActivity() {
+        startActivity(new Intent(this, MapActivity.class));
+    }
+
+    /**
+     * 权限被彻底禁止后 , 弹框提醒用户去开启
+     */
+    private void showPermissionRefusedNeverDialog(String message) {
+        new AlertDialogBuilder(this).setTitle(R.string.message_alert)
+                .setMessage(message)
+                .setMessageSize(TypedValue.COMPLEX_UNIT_DIP, 15)
+                .setLeftButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setRightButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        goToAppSettingsPage();
+                    }
+                })
+                .show();
     }
 
 }
