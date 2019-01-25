@@ -89,6 +89,9 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
         userWeight = (TextView) findViewById(R.id.user_weight);
         userHight = (TextView) findViewById(R.id.user_hight);
         userBmi = (TextView) findViewById(R.id.user_bmi);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            userPortait.setTransitionName("shareView");
+        }
 
         loadUserDetailInfo();
         initAdBanner();
@@ -162,6 +165,12 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
         bannerContainer.addView(banner);
         /* 发起广告请求，收到广告数据后会展示数据   */
         banner.loadAD();
+    }
+
+    @Override
+    public void onGoBack(View view) {
+//        super.onGoBack(view);
+        onBackPressed();
     }
 
     @Override

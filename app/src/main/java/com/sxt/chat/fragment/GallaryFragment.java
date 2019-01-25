@@ -8,6 +8,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,6 +52,7 @@ public class GallaryFragment extends LazyFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private BannerView bannerView;
+    private NestedScrollView nestedScrollView;
     private ViewSwitcher viewSwitcherBanner;
     private RecyclerView recyclerView;
     private GallaryAdapter adapter;
@@ -65,11 +68,12 @@ public class GallaryFragment extends LazyFragment {
 
     @Override
     protected void initView() {
-        swipeRefreshLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.swipeRefreshLayout);
-        recyclerView = (RecyclerView) contentView.findViewById(R.id.recyclerView);
-        viewSwitcherBanner = (ViewSwitcher) contentView.findViewById(R.id.banner_viewSwitcher);
-        viewSwitcher = (ViewSwitcher) contentView.findViewById(R.id.viewSitcher);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorAccent, R.color.main_blue, R.color.main_green);
+        swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
+        nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
+        recyclerView = contentView.findViewById(R.id.recyclerView);
+        viewSwitcherBanner = contentView.findViewById(R.id.banner_viewSwitcher);
+        viewSwitcher = contentView.findViewById(R.id.viewSitcher);
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

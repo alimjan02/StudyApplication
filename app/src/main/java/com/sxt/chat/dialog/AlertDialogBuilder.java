@@ -2,7 +2,10 @@ package com.sxt.chat.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnDismissListener;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +14,9 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.sxt.chat.R;
+
 
 public class AlertDialogBuilder {
     private Activity mActivity = null;
@@ -26,6 +31,7 @@ public class AlertDialogBuilder {
     private TextView titleTV;
     private ImageView img;
     private ImageView close;
+    private View line;
     private TextView bottomBtn;
 
     public AlertDialogBuilder(Activity activity) {
@@ -41,6 +47,7 @@ public class AlertDialogBuilder {
         close = (ImageView) rootView.findViewById(R.id.close);
         bottomBtn = (TextView) rootView.findViewById(R.id.bottom_btn);
         dialogMsgText = (TextView) rootView.findViewById(R.id.message);
+        line = rootView.findViewById(R.id.line);
         leftButton = (TextView) rootView.findViewById(R.id.left_button);
         rightButton = (TextView) rootView.findViewById(R.id.right_button);
         leftButtonLayout = (RelativeLayout) rootView.findViewById(R.id.left_button_layout);
@@ -64,6 +71,20 @@ public class AlertDialogBuilder {
     public AlertDialogBuilder setTitle(String text) {
         titleTV.setText(text);
         titleTV.setVisibility(View.VISIBLE);
+        return this;
+    }
+
+    public AlertDialogBuilder setTitle(String text, boolean bold) {
+        titleTV.setText(text);
+        titleTV.setVisibility(View.VISIBLE);
+        titleTV.getPaint().setFakeBoldText(bold);
+        return this;
+    }
+
+    public AlertDialogBuilder setTitleDrawableLeft(int drawableLeftResId) {
+        titleTV.setVisibility(View.VISIBLE);
+        Drawable left = ContextCompat.getDrawable(mActivity, drawableLeftResId);
+        titleTV.setCompoundDrawablesWithIntrinsicBounds(left, null, null, null);
         return this;
     }
 
@@ -91,12 +112,42 @@ public class AlertDialogBuilder {
         return this;
     }
 
+    public AlertDialogBuilder setMessageColor(int colorResId) {
+        dialogMsgText.setVisibility(View.VISIBLE);
+        dialogMsgText.setTextColor(ContextCompat.getColor(mActivity, colorResId));
+        return this;
+    }
+
     public AlertDialogBuilder setView(View view) {
         rootView = view;
         return this;
     }
 
-    public AlertDialogBuilder setRightButton(int textId, final DialogInterface.OnClickListener listener) {
+    public AlertDialogBuilder setLeftButtonResBg(int resId) {
+        leftButtonLayout.setVisibility(View.VISIBLE);
+        leftButton.setBackgroundResource(resId);
+        return this;
+    }
+
+    public AlertDialogBuilder setLeftButtonColor(int colorResId) {
+        leftButtonLayout.setVisibility(View.VISIBLE);
+        leftButton.setTextColor(ContextCompat.getColor(mActivity, colorResId));
+        return this;
+    }
+
+    public AlertDialogBuilder setRightButtonResBg(int resId) {
+        rightButtonLayout.setVisibility(View.VISIBLE);
+        rightButton.setBackgroundResource(resId);
+        return this;
+    }
+
+    public AlertDialogBuilder setRightButtonColor(int colorResId) {
+        rightButtonLayout.setVisibility(View.VISIBLE);
+        rightButton.setTextColor(ContextCompat.getColor(mActivity, colorResId));
+        return this;
+    }
+
+    public AlertDialogBuilder setRightButton(int textId, final OnClickListener listener) {
         rightButtonLayout.setVisibility(View.VISIBLE);
         rightButton.setText(textId);
         if (listener != null) {
@@ -117,7 +168,7 @@ public class AlertDialogBuilder {
         return this;
     }
 
-    public AlertDialogBuilder setRightButton(String text, final DialogInterface.OnClickListener listener) {
+    public AlertDialogBuilder setRightButton(String text, final OnClickListener listener) {
         rightButtonLayout.setVisibility(View.VISIBLE);
         rightButton.setText(text);
         if (listener != null) {
@@ -138,7 +189,7 @@ public class AlertDialogBuilder {
         return this;
     }
 
-    public AlertDialogBuilder setLeftButton(int textId, final DialogInterface.OnClickListener listener) {
+    public AlertDialogBuilder setLeftButton(int textId, final OnClickListener listener) {
         leftButtonLayout.setVisibility(View.VISIBLE);
         leftButton.setText(textId);
         if (listener != null) {
@@ -159,7 +210,7 @@ public class AlertDialogBuilder {
         return this;
     }
 
-    public AlertDialogBuilder setLeftButton(String text, final DialogInterface.OnClickListener listener) {
+    public AlertDialogBuilder setLeftButton(String text, final OnClickListener listener) {
         leftButtonLayout.setVisibility(View.VISIBLE);
         leftButton.setText(text);
         if (listener != null) {
@@ -180,7 +231,7 @@ public class AlertDialogBuilder {
         return this;
     }
 
-    public AlertDialogBuilder setBottomButton(String text, final DialogInterface.OnClickListener listener) {
+    public AlertDialogBuilder setBottomButton(String text, final OnClickListener listener) {
         bottomBtn.setVisibility(View.VISIBLE);
         bottomBtn.setText(text);
         if (listener != null) {
@@ -204,6 +255,13 @@ public class AlertDialogBuilder {
     public AlertDialogBuilder setCancelable(boolean cancelable) {
         if (mDialog != null) {
             mDialog.setCancelable(cancelable);
+        }
+        return this;
+    }
+
+    public AlertDialogBuilder setCanceledOnTouchOutside(boolean canceledOnTouchOutside) {
+        if (mDialog != null) {
+            mDialog.setCanceledOnTouchOutside(canceledOnTouchOutside);
         }
         return this;
     }
@@ -241,7 +299,7 @@ public class AlertDialogBuilder {
     }
 
     public AlertDialogBuilder setOnDismissListener(
-            final DialogInterface.OnDismissListener listener) {
+            final OnDismissListener listener) {
         if (mDialog != null) {
             mDialog.setOnDismissListener(listener);
         }
@@ -273,5 +331,10 @@ public class AlertDialogBuilder {
 
     public boolean isShowing() {
         return mDialog.isShowing();
+    }
+
+    public AlertDialogBuilder setShowLine(boolean showLine) {
+        line.setVisibility(showLine ? View.VISIBLE : View.GONE);
+        return this;
     }
 }

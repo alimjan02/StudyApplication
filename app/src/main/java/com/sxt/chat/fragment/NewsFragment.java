@@ -3,6 +3,8 @@ package com.sxt.chat.fragment;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +20,7 @@ import com.qq.e.ads.nativ.NativeExpressAD;
 import com.qq.e.ads.nativ.NativeExpressADView;
 import com.qq.e.comm.util.AdError;
 import com.sxt.chat.R;
+import com.sxt.chat.activity.MainActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.base.LazyFragment;
 import com.sxt.chat.utils.Constants;
@@ -46,6 +49,7 @@ public class NewsFragment extends LazyFragment implements
     private HashMap<NativeExpressADView, Integer> mAdViewPositionMap = new HashMap();
     private SwipeRefreshLayout swipeRefreshLayout;
     private View preBannerView;
+    private NestedScrollView nestedScrollView;
 
     @Override
     protected int getDisplayView(LayoutInflater inflater, ViewGroup container) {
@@ -54,9 +58,11 @@ public class NewsFragment extends LazyFragment implements
 
     @Override
     protected void initView() {
-        mRecyclerView = (CustomRecyclerView) contentView.findViewById(R.id.recyclerView);
+        nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
+        mRecyclerView = contentView.findViewById(R.id.recyclerView);
+        mRecyclerView.getRecyclerView().setNestedScrollingEnabled(false);
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorAccent, R.color.main_blue, R.color.main_green);
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -71,6 +77,15 @@ public class NewsFragment extends LazyFragment implements
             }
         });
         refresh();
+        //设置滑动监听,使得底部tab栏竖直滑动
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                Log.e("scrollY", String.format("oldScrollY = %s ; scrollY = %s", oldScrollY, scrollY));
+                MainActivity activity = (MainActivity) NewsFragment.this.activity;
+                activity.setBottomBarTranslateY(scrollY, scrollY > oldScrollY);
+            }
+        });
     }
 
     private void refresh() {

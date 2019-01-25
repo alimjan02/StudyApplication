@@ -1,10 +1,11 @@
 package com.sxt.chat.fragment;
 
-import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ViewSwitcher;
 
 import com.sxt.chat.R;
+import com.sxt.chat.activity.MainActivity;
 import com.sxt.chat.base.LazyFragment;
 import com.sxt.chat.view.ChartLine;
 import com.sxt.library.chart.BeizerCurveLine;
@@ -42,7 +44,7 @@ public class ChartFragment extends LazyFragment {
     private LinearLayout lineLayoutList;
     private List<ChartBean> chartBeanList0;
     private List<ChartBean> chartBeanList;
-    private NestedScrollView scrollView;
+    private NestedScrollView nestedScrollView;
     private LineOnScrollChangeListener onScrollChangeListener;
     private List<ChartPieBean> pieBeanList;
 
@@ -53,11 +55,11 @@ public class ChartFragment extends LazyFragment {
 
     @Override
     protected void initView() {
-        scrollView = contentView.findViewById(R.id.scrollview);
+        nestedScrollView = contentView.findViewById(R.id.nesredScrollview);
         viewSwitcher = contentView.findViewById(R.id.viewSwitcher);
-        lineLayoutList = (LinearLayout) contentView.findViewById(R.id.line_layout_list);
+        lineLayoutList = contentView.findViewById(R.id.line_layout_list);
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorAccent, R.color.main_blue, R.color.main_green);
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -87,13 +89,22 @@ public class ChartFragment extends LazyFragment {
                 }, 2000);
             }
         });
+        //设置滑动监听,使得底部tab栏竖直滑动
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                Log.e("scrollY", String.format("oldScrollY = %s ; scrollY = %s", oldScrollY, scrollY));
+                MainActivity activity = (MainActivity) ChartFragment.this.activity;
+                activity.setBottomBarTranslateY(scrollY, scrollY > oldScrollY);
+            }
+        });
     }
 
     private void init() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (onScrollChangeListener == null) {
                 onScrollChangeListener = new LineOnScrollChangeListener();
-                scrollView.setOnScrollChangeListener(onScrollChangeListener);
+                nestedScrollView.setOnScrollChangeListener(onScrollChangeListener);
             } else {
                 onScrollChangeListener.clearLines();
             }

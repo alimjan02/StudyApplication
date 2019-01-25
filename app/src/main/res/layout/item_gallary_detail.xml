@@ -20,10 +20,9 @@
 
         <ImageView
             android:id="@+id/img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_vector_notifications_24dp" />
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true" />
 
         <TextView
             android:id="@+id/title"
@@ -33,7 +32,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_toEndOf="@id/img"
-            android:text="城隍庙的小鸭子" />
+            android:text="" />
 
         <ImageView
             style="@style/text_15_color_1_style"
@@ -41,8 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_vector_video_24dp"
+            android:src="@drawable/ic_ar_photo_main_blue_24dp"
             android:text="" />
 
     </RelativeLayout>

@@ -68,16 +68,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:paddingBottom="3dp"
                     android:paddingLeft="10dp"
+                    android:paddingTop="5dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="5dp">
+                    android:paddingBottom="3dp">
 
                     <TextView
                         style="@style/text_14_color_1_style"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="风景图片"
+                        android:text="上海一角"
                         android:textColor="@color/black" />
 
                 </FrameLayout>
@@ -85,7 +86,8 @@
                 <ViewSwitcher
                     android:id="@+id/last_viewSitcher"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:background="@color/white">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -97,7 +99,6 @@
                         android:id="@+id/last_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/white"
                         android:paddingLeft="5dp" />
                 </ViewSwitcher>
 
@@ -106,13 +107,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:background="@color/white"
-                    android:paddingBottom="3dp"
                     android:paddingLeft="10dp"
+                    android:paddingTop="5dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="5dp">
+                    android:paddingBottom="3dp">
 
                     <TextView
                         style="@style/text_14_color_1_style"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
                         android:text="风景图片"
@@ -123,7 +125,8 @@
                 <ViewSwitcher
                     android:id="@+id/center_viewSitcher"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:background="@color/white">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -135,7 +138,6 @@
                         android:id="@+id/center_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/white"
                         android:paddingLeft="5dp" />
 
                 </ViewSwitcher>
@@ -145,10 +147,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:background="@color/white"
-                    android:paddingBottom="3dp"
                     android:paddingLeft="10dp"
+                    android:paddingTop="3dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="3dp">
+                    android:paddingBottom="3dp">
 
                     <TextView
                         style="@style/text_14_color_1_style"
@@ -161,8 +163,8 @@
                         android:id="@+id/more"
                         style="@style/text_12_color_3_style"
                         android:layout_gravity="center_vertical|end"
-                        android:paddingBottom="5dp"
                         android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
                         android:text="更多" />
 
                 </FrameLayout>
@@ -170,7 +172,8 @@
                 <ViewSwitcher
                     android:id="@+id/bottom_viewSwitcher"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:background="@color/white">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -182,7 +185,51 @@
                         android:id="@+id/bottom_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/white"
+                        android:paddingLeft="5dp" />
+
+                </ViewSwitcher>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="3dp">
+
+                    <TextView
+                        style="@style/text_14_color_1_style"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="风景图片"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        style="@style/text_12_color_3_style"
+                        android:layout_gravity="center_vertical|end"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp" />
+
+                </FrameLayout>
+
+                <ViewSwitcher
+                    android:id="@+id/gallary_viewSwitcher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_placeholder" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/gallary_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:paddingLeft="5dp" />
 
                 </ViewSwitcher>

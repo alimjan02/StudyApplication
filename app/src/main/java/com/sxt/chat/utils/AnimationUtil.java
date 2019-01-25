@@ -301,4 +301,10 @@ public class AnimationUtil {
         });
         view.startAnimation(animatorSet);
     }
+
+    public static void translationYAnimator(View target, int startTranslationY, int endTranslationY, long duration) {
+        ObjectAnimator translationAnimator = ObjectAnimator.ofFloat(target, "translationY", startTranslationY, endTranslationY).setDuration(duration);
+        translationAnimator.setInterpolator(new LinearInterpolator());
+        translationAnimator.start();
+    }
 }

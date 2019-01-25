@@ -3,6 +3,9 @@ package com.sxt.chat.activity;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,13 +20,18 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -67,14 +75,23 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private LinearLayout tabGroup;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
+    private View bottomBarLayout;
+    private MaterialSearchView searchView;
+    private Menu menu;
+
+    private ImageView itemFloatView;
+    private FrameLayout dectorView;
+    private float bottomBarHeight, toolBarHeight, statusBarHeight;//底部Tab高度,ToolBar高度,状态栏高度
+    private int widthPixels, heightPixels;//手机屏幕的宽高
+    private int itemFloatViewWidth, itemFloatViewHeight;//浮动按钮的宽高
+
+    private Handler handler = new Handler();
     private final long millis = 5 * 60 * 1000L;
+    private final int REQUEST_CODE_LOCATION = 201;
     public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
     public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
-    private MaterialSearchView searchView;
-    private Menu menu;
-    private Handler handler = new Handler();
-    private final int REQUEST_CODE_LOCATION = 201;
+    private Prefs prefs;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,6 +107,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             setContentView(R.layout.activity_main);
             drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
             tabGroup = (LinearLayout) findViewById(R.id.radio_group);
+            bottomBarLayout = findViewById(R.id.bottom_bar_layout);
             findViewById(R.id.basic_info).setOnClickListener(this);
             findViewById(R.id.normal_settings).setOnClickListener(this);
             findViewById(R.id.ocr_scan_id_card).setOnClickListener(this);
@@ -108,6 +126,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
             initDrawer();
             initFragment();
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(new Intent(App.getCtx(), MainService.class));
             } else {
@@ -180,6 +199,160 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         });
     }
 
+    /**
+     * 浮动按钮
+     *
+     * @param user
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    private void initFloatButton(final User user) {
+        if (dectorView == null || itemFloatView == null) {
+            widthPixels = getResources().getDisplayMetrics().widthPixels;
+            heightPixels = getResources().getDisplayMetrics().heightPixels;
+            bottomBarHeight = getResources().getDimension(R.dimen.bottom_app_bar_height);
+            toolBarHeight = getResources().getDimension(R.dimen.app_bar_height);
+            //获取状态栏的高度
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+            }
+            prefs = Prefs.getInstance(MainActivity.this);
+            dectorView = (FrameLayout) getWindow().getDecorView();
+            itemFloatView = new ImageView(this);
+            itemFloatView.setClickable(true);
+            itemFloatView.setFocusable(true);
+            itemFloatView.setVisibility(View.VISIBLE);
+
+            dectorView.post(new Runnable() {
+                @Override
+                public void run() {
+                    int with = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, getResources().getDisplayMetrics());
+                    dectorView.addView(itemFloatView, new FrameLayout.LayoutParams(with, with));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        itemFloatView.setTranslationZ(32);
+                        itemFloatView.setElevation(16);
+                    }
+                    updateItemFloat(user);
+
+                    itemFloatView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                        @Override
+                        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                            itemFloatView.removeOnLayoutChangeListener(this);
+                            itemFloatViewWidth = itemFloatView.getWidth();
+                            itemFloatViewHeight = itemFloatView.getHeight();
+                            //从本地取出上次的坐标 设置进去 ; 默认坐标为右下角
+                            float x = prefs.getFloat(Prefs.KEY_FLOAT_X, widthPixels - itemFloatViewWidth);
+                            float y = prefs.getFloat(Prefs.KEY_FLOAT_Y, heightPixels / 3f * 2);
+                            itemFloatView.setX(x);
+                            itemFloatView.setY(y);
+                            Log.e(TAG, String.format("恢复 x = %s , y = %s", x, y));
+                            Log.e(TAG, String.format("测量Float宽高 width = %s , height = %s", itemFloatViewWidth, itemFloatViewHeight));
+                        }
+                    });
+                }
+            });
+
+            itemFloatView.setOnTouchListener(new View.OnTouchListener() {
+
+                private float downX, downY, moveX, moveY;
+                private long downMillis, upMillis;
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            downX = event.getX();
+                            downY = event.getY();
+                            downMillis = System.currentTimeMillis();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            moveX = event.getX();
+                            moveY = event.getY();
+                            float distanceX = moveX - downX;
+                            float distanceY = moveY - downY;
+                            distanceX += itemFloatView.getX();
+                            distanceY += itemFloatView.getY();
+
+                            if (distanceX <= 0) distanceX = 0;//屏幕左侧边界
+                            if (distanceX + itemFloatViewWidth > widthPixels) {
+                                distanceX = widthPixels - itemFloatViewWidth;//屏幕右侧边界
+                            }
+                            if (distanceY < statusBarHeight + toolBarHeight) {//状态栏边界
+                                distanceY = statusBarHeight + toolBarHeight;
+                            }
+                            if (distanceY + itemFloatViewHeight > heightPixels - bottomBarHeight) {//底部Tab栏边界
+                                distanceY = heightPixels - bottomBarHeight - itemFloatViewHeight;
+                            }
+
+                            itemFloatView.setX(distanceX);
+                            itemFloatView.setY(distanceY);
+
+                            moveX = distanceX;
+                            moveY = distanceY;
+
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            upMillis = System.currentTimeMillis();
+                            if (upMillis - downMillis <= 100) {//触摸时长小于100默认为点击事件
+                                Intent intent = new Intent(MainActivity.this, BasicInfoActivity.class);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    startActivity(intent,
+                                            ActivityOptions.makeSceneTransitionAnimation
+                                                    (MainActivity.this, itemFloatView, "shareView").toBundle());
+                                } else {
+                                    startActivity(intent);
+                                }
+                            }
+                            //在这儿存储最后的坐标
+                            prefs.putFloat(Prefs.KEY_FLOAT_X, moveX);
+                            prefs.putFloat(Prefs.KEY_FLOAT_Y, moveY);
+                            Log.e(TAG, String.format("更新 x = %s , y = %s", moveX, moveY));
+                            downX = 0;
+                            downY = 0;
+                            moveX = 0;
+                            moveY = 0;
+                            break;
+                    }
+                    itemFloatView.performClick();
+                    return false;
+                }
+            });
+        } else {
+            updateItemFloat(user);
+        }
+    }
+
+    private void updateItemFloat(User user) {
+        Glide.with(App.getCtx())
+                .load(R.drawable.ic_launcher_round)
+                .into(itemFloatView);
+    }
+
+    private boolean isBottom2Top;//临时记录上次的滑动状态
+    private ObjectAnimator translationAnimator;
+
+    public void setBottomBarTranslateY(float scrollY, boolean isBottom2Top) {
+        if (this.isBottom2Top == isBottom2Top) return;//防止不停的动画
+        this.isBottom2Top = isBottom2Top;
+        int measuredHeight = bottomBarLayout.getMeasuredHeight();
+        translationYAnimator(bottomBarLayout, (int) bottomBarLayout.getTranslationY(), isBottom2Top ? measuredHeight : 0, 300);
+    }
+
+    private void translationYAnimator(View target, int startTranslationY, int endTranslationY, long duration) {
+        if (translationAnimator != null) {
+            translationAnimator.cancel();
+        }
+        translationAnimator = ObjectAnimator.ofFloat(bottomBarLayout, "translationY", startTranslationY, endTranslationY).setDuration(duration);
+        translationAnimator.setInterpolator(new LinearInterpolator());
+        translationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+
+            }
+        });
+        translationAnimator.start();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -223,6 +396,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
     private void updateUserInfo(User user) {
         if (user != null) {
+            initFloatButton(user);
             userName.setText(user.getName());
             String info = "";
             if (0 != (user.getAge() == null ? 0 : user.getAge())) {
@@ -353,6 +527,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     @Override
     protected void onTabCheckedChange(String[] titles, int checkedId) {
         super.onTabCheckedChange(titles, checkedId);
+        if (itemFloatView != null) {
+            itemFloatView.setVisibility(checkedId == 0 ? View.VISIBLE : View.GONE);
+        }
         if (titles != null && titles.length > checkedId) {
             setToolbarTitle(titles[checkedId]);
             if (menu != null) {
@@ -465,7 +642,14 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_LOCATION:
-                showPermissionRefusedNeverDialog(String.format(getString(R.string.permission_request_LOCATION), getString(R.string.app_name)));
+                String appName = getString(R.string.app_name);
+                String message = String.format(getString(R.string.permission_request_LOCATION), appName);
+                SpannableString span = new SpannableString(message);
+                span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_black_bold_style), message.indexOf(appName), message.indexOf(appName) + appName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), message.indexOf(appName) + appName.length(), message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                showPermissionRefusedNeverDialog(span);
+
                 break;
         }
     }
@@ -477,10 +661,10 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     /**
      * 权限被彻底禁止后 , 弹框提醒用户去开启
      */
-    private void showPermissionRefusedNeverDialog(String message) {
-        new AlertDialogBuilder(this).setTitle(R.string.message_alert)
+    private void showPermissionRefusedNeverDialog(CharSequence message) {
+        new AlertDialogBuilder(this)
+                .setTitle(R.string.message_alert, true)
                 .setMessage(message)
-                .setMessageSize(TypedValue.COMPLEX_UNIT_DIP, 15)
                 .setLeftButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -494,6 +678,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                         goToAppSettingsPage();
                     }
                 })
+                .setShowLine(true)
+                .setCanceledOnTouchOutside(false)
                 .show();
     }
 

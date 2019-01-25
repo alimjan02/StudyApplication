@@ -7,9 +7,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,11 +28,16 @@ import com.sxt.banner.BannerView;
 import com.sxt.banner.listener.OnBannerListener;
 import com.sxt.banner.loader.UILoaderInterface;
 import com.sxt.chat.R;
+import com.sxt.chat.activity.MainActivity;
 import com.sxt.chat.activity.RoomDetailActivity;
+import com.sxt.chat.adapter.GallaryAdapter;
 import com.sxt.chat.adapter.NormalCardListAdapter;
 import com.sxt.chat.adapter.NormalListAdapter;
 import com.sxt.chat.adapter.config.NoScrollLinearLayoutManaget;
+import com.sxt.chat.base.BaseBottomSheetFragment;
+import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.base.LazyFragment;
+import com.sxt.chat.fragment.bottonsheet.GallaryBottomSheetFragment;
 import com.sxt.chat.json.Banner;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.RoomInfo;
@@ -35,6 +45,7 @@ import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.ws.BmobRequest;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -44,20 +55,25 @@ import java.util.List;
 public class HomePageFragment extends LazyFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
+    private NestedScrollView nestedScrollView;
     private RecyclerView recyclerViewTop;
     private RecyclerView recyclerViewCenter;
     private RecyclerView recyclerViewBottom;
+    private RecyclerView recyclerViewGallary;
     private ViewSwitcher viewSwitcherBanner;
     private ViewSwitcher viewSwitcherTop;
     private ViewSwitcher viewSwitcherCenter;
     private ViewSwitcher viewSwitcherBottom;
+    private ViewSwitcher viewSwitcherGallary;
     private NormalListAdapter adapterTop;
     private NormalListAdapter adapterCenter;
     private NormalCardListAdapter adapterBottom;
+    private GallaryAdapter adapterGallary;
     private BannerView bannerView;
 
-    private final String CMD_GET_ROOM_LIST = this.getClass().getName() + "CMD_GET_ROOM_LIST";
-    private final String CMD_GET_Banner_LIST = this.getClass().getName() + "CMD_GET_Banner_LIST";
+    private final String CMD_GET_BANNER = this.getClass().getName() + "CMD_GET_BANNER";
+    private final String CMD_GET_ROOM = this.getClass().getName() + "CMD_GET_ROOM";
+    private final String CMD_GET_GALLARY = this.getClass().getName() + "CMD_GET_GALLARY";
 
     @Override
     protected int getDisplayView(LayoutInflater inflater, ViewGroup container) {
@@ -66,33 +82,27 @@ public class HomePageFragment extends LazyFragment {
 
     @Override
     protected void initView() {
-        swipeRefreshLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.swipeRefreshLayout);
-        recyclerViewTop = (RecyclerView) contentView.findViewById(R.id.center_recyclerView);
-        recyclerViewCenter = (RecyclerView) contentView.findViewById(R.id.bottom_recyclerView);
-        recyclerViewBottom = (RecyclerView) contentView.findViewById(R.id.last_recyclerView);
-        viewSwitcherBanner = (ViewSwitcher) contentView.findViewById(R.id.banner_viewSwitcher);
-        viewSwitcherTop = (ViewSwitcher) contentView.findViewById(R.id.center_viewSitcher);
-        viewSwitcherCenter = (ViewSwitcher) contentView.findViewById(R.id.bottom_viewSwitcher);
-        viewSwitcherBottom = (ViewSwitcher) contentView.findViewById(R.id.last_viewSitcher);
+        swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
+        nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
+        recyclerViewTop = contentView.findViewById(R.id.center_recyclerView);
+        recyclerViewCenter = contentView.findViewById(R.id.bottom_recyclerView);
+        recyclerViewBottom = contentView.findViewById(R.id.last_recyclerView);
+        recyclerViewGallary = contentView.findViewById(R.id.gallary_recyclerView);
+        viewSwitcherBanner = contentView.findViewById(R.id.banner_viewSwitcher);
+        viewSwitcherTop = contentView.findViewById(R.id.center_viewSitcher);
+        viewSwitcherCenter = contentView.findViewById(R.id.bottom_viewSwitcher);
+        viewSwitcherBottom = contentView.findViewById(R.id.last_viewSitcher);
+        viewSwitcherGallary = contentView.findViewById(R.id.gallary_viewSwitcher);
 
         recyclerViewTop.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
         recyclerViewCenter.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
         recyclerViewBottom.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
+        recyclerViewGallary.setLayoutManager(new StaggeredGridLayoutManager(5, LinearLayoutManager.HORIZONTAL));
 
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorAccent, R.color.main_blue, R.color.main_green);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);
-                refresh();
-            }
-        });
+        recyclerViewTop.setNestedScrollingEnabled(false);
+        recyclerViewCenter.setNestedScrollingEnabled(false);
+        recyclerViewBottom.setNestedScrollingEnabled(false);
+        recyclerViewGallary.setNestedScrollingEnabled(false);
 
         //解决SwipeRefreshLayout 嵌套滑动冲突
         AppBarLayout appBarLayout = (AppBarLayout) contentView.findViewById(R.id.app_bar_layout);
@@ -107,10 +117,61 @@ public class HomePageFragment extends LazyFragment {
                 }
             }
         });
+        //初始化刷新控件
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshData();
+            }
+        });
+        //设置滑动监听,使得底部tab栏竖直滑动
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                Log.e("scrollY", String.format("oldScrollY = %s ; scrollY = %s", oldScrollY, scrollY));
+                MainActivity activity = (MainActivity) HomePageFragment.this.activity;
+                activity.setBottomBarTranslateY(scrollY, scrollY > oldScrollY);
+            }
+        });
+    }
+
+    @Override
+    protected void loadData() {
+        super.loadData();
+        refresh();
+    }
+
+    @Override
+    protected void checkUserVisibleHint(boolean isVisibleToUser) {
+        super.checkUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            //开始轮播
+            if (bannerView != null) {
+                bannerView.startAutoPlay();
+            }
+        } else {
+            //结束轮播
+            if (bannerView != null) {
+                bannerView.stopAutoPlay();
+            }
+        }
     }
 
     private void refresh() {
-        BmobRequest.getInstance(activity).getBannersByType("0", CMD_GET_Banner_LIST);
+        if (swipeRefreshLayout != null)
+            //为什么要手动刷新? , 因为swipRefreshLayout初始化并不会调用onRefresh
+            swipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(true);
+                    refreshData();
+                }
+            });
+    }
+
+    private void refreshData() {
+        BmobRequest.getInstance(activity).getBannersByType("0", CMD_GET_BANNER);
     }
 
     private int getPageMargin() {
@@ -172,7 +233,7 @@ public class HomePageFragment extends LazyFragment {
         bannerView.start();
     }
 
-    private void refreshList(List<RoomInfo> list) {
+    private void refreshRoom(List<RoomInfo> list) {
         if (adapterTop == null || adapterCenter == null || adapterBottom == null) {
             adapterTop = new NormalListAdapter(activity, list);
             adapterCenter = new NormalListAdapter(activity, list);
@@ -181,10 +242,6 @@ public class HomePageFragment extends LazyFragment {
             viewSwitcherTop.setDisplayedChild(1);
             viewSwitcherCenter.setDisplayedChild(1);
             viewSwitcherBottom.setDisplayedChild(1);
-
-            recyclerViewTop.setNestedScrollingEnabled(false);
-            recyclerViewCenter.setNestedScrollingEnabled(false);
-            recyclerViewBottom.setNestedScrollingEnabled(false);
 
             recyclerViewTop.setAdapter(adapterTop);
             recyclerViewCenter.setAdapter(adapterCenter);
@@ -199,11 +256,14 @@ public class HomePageFragment extends LazyFragment {
     @Override
     public void onMessage(ResponseInfo resp) {
         if (ResponseInfo.OK == resp.getCode()) {
-            if (CMD_GET_Banner_LIST.equals(resp.getCmd())) {
+            if (CMD_GET_BANNER.equals(resp.getCmd())) {
                 refreshBanner(resp.getBannerInfos());
-                BmobRequest.getInstance(activity).getRoomList(50, 0, CMD_GET_ROOM_LIST);
-            } else if (CMD_GET_ROOM_LIST.equals(resp.getCmd())) {
-                refreshList(resp.getRoomInfoList());
+                BmobRequest.getInstance(activity).getRoomList(50, 0, CMD_GET_ROOM);
+            } else if (CMD_GET_ROOM.equals(resp.getCmd())) {
+                refreshRoom(resp.getRoomInfoList());
+                BmobRequest.getInstance(activity).getBanner(50, 0, CMD_GET_GALLARY);
+            } else if (CMD_GET_GALLARY.equals(resp.getCmd())) {
+                refreshGallary(resp.getBannerInfos());
                 swipeRefreshLayout.setRefreshing(false);
             }
         } else {
@@ -212,19 +272,37 @@ public class HomePageFragment extends LazyFragment {
         }
     }
 
-    @Override
-    protected void checkUserVisibleHint(boolean isVisibleToUser) {
-        super.checkUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            //开始轮播
-            if (bannerView != null) {
-                bannerView.startAutoPlay();
-            }
+    private void refreshGallary(final List<Banner> list) {
+        if (list == null || list.size() == 0) {
+            viewSwitcherGallary.setDisplayedChild(0);
         } else {
-            //结束轮播
-            if (bannerView != null) {
-                bannerView.stopAutoPlay();
-            }
+            viewSwitcherGallary.setDisplayedChild(1);
+        }
+        if (adapterGallary == null) {
+            recyclerViewGallary.setLayoutManager(new StaggeredGridLayoutManager(5, LinearLayoutManager.HORIZONTAL));
+            adapterGallary = new GallaryAdapter(activity, list);
+            viewSwitcherGallary.setDisplayedChild(1);
+            recyclerViewGallary.setNestedScrollingEnabled(false);
+            recyclerViewGallary.setAdapter(adapterGallary);
+            adapterGallary.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
+                @Override
+                public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(Prefs.KEY_BANNER_INFO, (Serializable) list);
+                    BaseBottomSheetFragment sheetFragment = new GallaryBottomSheetFragment()
+                            .setOnBottomSheetDialogCreateListener(new BaseBottomSheetFragment.OnBottomSheetDialogCreateListener() {
+                                @Override
+                                public void onBottomSheetDialogCreate(BaseBottomSheetFragment bottomSheetFragment, BottomSheetDialog bottomSheetDialog, View contentView) {
+                                    bottomSheetFragment.defaultSettings(bottomSheetDialog, contentView);
+                                    bottomSheetDialog.setCanceledOnTouchOutside(false);
+                                }
+                            });
+                    sheetFragment.setArguments(bundle);
+                    sheetFragment.show(getFragmentManager());
+                }
+            });
+        } else {
+            adapterGallary.notifyDataSetChanged(list);
         }
     }
 }

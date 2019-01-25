@@ -45,6 +45,8 @@ public final class Prefs extends BasePrefs {
     public static final String ROOM_INFO = "ROOM_INFO";
     public static final String KEY_BANNER_INFO = "KEY_BANNER_INFO";
     public static final String KEY_BITMAP = "KEY_BITMAP";
+    public static final String KEY_FLOAT_X = "KEY_FLOAT_X";
+    public static final String KEY_FLOAT_Y = "KEY_FLOAT_Y";
 
 
     //PATH
