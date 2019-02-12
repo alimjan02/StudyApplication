@@ -1,4 +1,4 @@
-# WeChartApplication-master
+# StudyApplication-master
 闲来无事,搞点事情
 
 1 .Android 原生曲线图、饼状图、柱状图 , 特性 : 绘制过程动画显示 & 仅绘制可视区域 & 触摸反馈  
