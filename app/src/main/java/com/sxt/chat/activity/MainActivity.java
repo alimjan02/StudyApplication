@@ -51,6 +51,7 @@ import com.sxt.chat.fragment.ChartFragment;
 import com.sxt.chat.fragment.GallaryFragment;
 import com.sxt.chat.fragment.HomePageFragment;
 import com.sxt.chat.fragment.NewsFragment;
+import com.sxt.chat.fragment.RecyclerTabFragment;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.task.MainService;
 import com.sxt.chat.utils.AnimationUtil;
@@ -138,7 +139,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private void initFragment() {
         Map<Integer, BaseFragment> fragmentMap = new HashMap<>();
         fragmentMap.put(0, new HomePageFragment());
-        fragmentMap.put(1, new GallaryFragment());
+//        fragmentMap.put(1, new GallaryFragment());
+        fragmentMap.put(1, new RecyclerTabFragment());
         fragmentMap.put(2, new ChartFragment());
         fragmentMap.put(3, new NewsFragment());
 

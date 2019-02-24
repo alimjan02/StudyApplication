@@ -2,7 +2,6 @@ package com.sxt.chat.fragment.bottonsheet;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Paint;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,7 +19,6 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.sxt.chat.R;
@@ -31,6 +28,7 @@ import com.sxt.chat.base.BaseBottomSheetFragment;
 import com.sxt.chat.json.Banner;
 import com.sxt.chat.utils.Prefs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,18 +58,13 @@ public class GallaryBottomSheetFragment extends BaseBottomSheetFragment {
     private void setData() {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            final List<Banner> bannerList = (List<Banner>) bundle.getSerializable(Prefs.KEY_BANNER_INFO);
+            final Banner banner = (Banner) bundle.getSerializable(Prefs.KEY_BANNER_INFO);
+            final List<Banner> bannerList = new ArrayList<>();
+            for (int i = 0; i < 20; i++) {
+                bannerList.add(banner);
+            }
+
             progressBar = contentView.findViewById(R.id.progressBar);
-//            progress = new CircularProgressDrawable(context);
-//            progress.setStrokeWidth(4f);
-//            progress.setStrokeCap(Paint.Cap.ROUND);
-//            progress.setCenterRadius(40f);
-//            progress.setArrowEnabled(true);
-//            progress.setArrowDimensions(4, 4);
-//            progress.setArrowScale(4);
-//            progress.setColorSchemeColors(ContextCompat.getColor(context, R.color.main_blue), ContextCompat.getColor(context, R.color.red), ContextCompat.getColor(context, R.color.line_yellow), ContextCompat.getColor(context, R.color.main_green), ContextCompat.getColor(context, R.color.red));
-//            progressBar.setImageDrawable(progress);
-//                initWebView((WebView) contentView.findViewById(R.id.webView));
             recyclerView = contentView.findViewById(R.id.recyclerView);
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.addItemDecoration(new DividerItemDecoration(context, ContextCompat.getDrawable(context, R.drawable.divider_colors)));

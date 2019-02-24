@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/title_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="15dp">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/text_15_color_black_style"
+        android:layout_gravity="center_vertical"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/subTitle"
+        style="@style/text_15_color_black_style"
+        android:layout_gravity="end|center_vertical"
+        android:text="共计22单 150元" />
+
+
+</FrameLayout>
