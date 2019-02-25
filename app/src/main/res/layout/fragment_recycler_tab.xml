@@ -4,19 +4,9 @@
     android:layout_height="wrap_content"
     android:background="@color/main_body">
 
-    <android.support.v7.widget.RecyclerView
+    <com.sxt.chat.adapter.hover.PinnedHeaderRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:id="@+id/top_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
-
-        <include layout="@layout/item_recycler_tab_top" />
-
-    </LinearLayout>
 
 </RelativeLayout>

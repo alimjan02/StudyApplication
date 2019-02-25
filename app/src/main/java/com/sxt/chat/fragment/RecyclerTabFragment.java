@@ -1,29 +1,27 @@
 package com.sxt.chat.fragment;
 
-import android.os.Bundle;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sxt.chat.R;
 import com.sxt.chat.activity.MainActivity;
-import com.sxt.chat.adapter.RecyclerTabAdapter;
-import com.sxt.chat.base.BaseBottomSheetFragment;
-import com.sxt.chat.base.BaseRecyclerAdapter;
+import com.sxt.chat.adapter.LinearRecyclerAdapter;
+import com.sxt.chat.adapter.hover.PinnedHeaderItemDecoration;
+import com.sxt.chat.adapter.hover.PinnedHeaderRecyclerView;
 import com.sxt.chat.base.LazyFragment;
-import com.sxt.chat.fragment.bottonsheet.GallaryBottomSheetFragment;
 import com.sxt.chat.json.Banner;
 import com.sxt.chat.json.ResponseInfo;
-import com.sxt.chat.utils.DateFormatUtil;
-import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.ws.BmobRequest;
 
 import java.util.List;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Created by 11837 on 2018/4/22.
@@ -31,15 +29,11 @@ import java.util.List;
 
 public class RecyclerTabFragment extends LazyFragment {
 
-    private RecyclerView recyclerView;
-    private RecyclerTabAdapter adapter;
+    private PinnedHeaderRecyclerView recyclerView;
+    private LinearRecyclerAdapter adapter;
 
     private final String CMD_GET_ROOM_LIST = this.getClass().getName() + "CMD_GET_ROOM_LIST";
-    private LinearLayoutManager layoutManager;
     private List<Banner> bannerInfos;
-    private TextView tabTitle;
-    private TextView tabSubTitle;
-    private View titleLayout;
 
     @Override
     protected int getDisplayView(LayoutInflater inflater, ViewGroup container) {
@@ -48,9 +42,6 @@ public class RecyclerTabFragment extends LazyFragment {
 
     @Override
     protected void initView() {
-        titleLayout = contentView.findViewById(R.id.title_layout);
-        tabTitle = titleLayout.findViewById(R.id.title);
-        tabSubTitle = titleLayout.findViewById(R.id.subTitle);
         recyclerView = contentView.findViewById(R.id.recyclerView);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -60,6 +51,21 @@ public class RecyclerTabFragment extends LazyFragment {
                 activity.setBottomBarTranslateY(dy, dy > 0);
             }
         });
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new PinnedHeaderItemDecoration());
+        recyclerView.setOnPinnedHeaderClickListener(new PinnedHeaderRecyclerView.OnPinnedHeaderClickListener() {
+            @Override
+            public void onPinnedHeaderClick(int adapterPosition) {
+                Toast.makeText(context, "点击了悬浮标题 position = " + adapterPosition, LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    protected void loadData() {
+        super.loadData();
+        refresh();
     }
 
     @Override
@@ -74,44 +80,10 @@ public class RecyclerTabFragment extends LazyFragment {
 
     private void refreshList() {
         if (adapter == null) {
-            layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setNestedScrollingEnabled(false);
-            adapter = new RecyclerTabAdapter(activity, bannerInfos);
-            adapter.setScrollContainers(recyclerView, layoutManager).setOnRecyclerViewScrollStateChangedListener(
-                    new RecyclerTabAdapter.OnRecyclerViewScrollStateChangedListener() {
-                        @Override
-                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
-                        }
-
-                        @Override
-                        public void onTabStateChanged(int preTabPosition, int currentTabPosition) {
-                            long secondsCurrent = DateFormatUtil.getSecondsFromDate(bannerInfos.get(currentTabPosition).getCreatedAt());
-                            String time = DateFormatUtil.getDateFromSeconds(String.valueOf(secondsCurrent), "MM-dd");
-                            String[] split = time.split("-");
-                            tabTitle.setText(String.format("%s月%s日", split[0], split[1]));
-                        }
-                    }).setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
-                @Override
-                public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(Prefs.KEY_BANNER_INFO, (Banner) object);
-                    BaseBottomSheetFragment sheetFragment = new GallaryBottomSheetFragment()
-                            .setOnBottomSheetDialogCreateListener(new BaseBottomSheetFragment.OnBottomSheetDialogCreateListener() {
-                                @Override
-                                public void onBottomSheetDialogCreate(BaseBottomSheetFragment bottomSheetFragment, BottomSheetDialog bottomSheetDialog, View contentView) {
-                                    bottomSheetFragment.defaultSettings(bottomSheetDialog, contentView);
-                                    bottomSheetDialog.setCanceledOnTouchOutside(false);
-                                }
-                            });
-                    sheetFragment.setArguments(bundle);
-                    sheetFragment.show(getFragmentManager());
-                }
-            });
+            adapter = new LinearRecyclerAdapter(bannerInfos);
             recyclerView.setAdapter(adapter);
         } else {
-            adapter.notifyDataSetChanged(bannerInfos);
+            adapter.setData(bannerInfos);
         }
     }
 
@@ -121,10 +93,8 @@ public class RecyclerTabFragment extends LazyFragment {
             if (CMD_GET_ROOM_LIST.equals(resp.getCmd())) {
                 bannerInfos = resp.getBannerInfos();
                 refreshList();
-//                swipeRefreshLayout.setRefreshing(false);
             }
         } else {
-//            swipeRefreshLayout.setRefreshing(false);
             ToastUtil.showToast(activity, resp.getError());
         }
     }
