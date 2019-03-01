@@ -40,7 +40,7 @@ public class RoomDetailActivity extends BaseActivity {
         if (bundle != null) {
             RoomInfo roomInfo = (RoomInfo) bundle.getSerializable(Prefs.ROOM_INFO);
             CollapsingToolbarLayout toolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
-            toolbarLayout.setTitle(roomInfo != null ? roomInfo.getHome_name() : "房间详情");
+//            toolbarLayout.setTitle(roomInfo != null ? roomInfo.getHome_name() : "房间详情");
             Glide.with(this)
                     .load(roomInfo != null ? roomInfo.getRoom_url() : "")
                     .placeholder(R.mipmap.ic_banner_placeholder)

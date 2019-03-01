@@ -48,11 +48,11 @@ import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.fragment.ChartFragment;
-import com.sxt.chat.fragment.GallaryFragment;
 import com.sxt.chat.fragment.HomePageFragment;
 import com.sxt.chat.fragment.NewsFragment;
 import com.sxt.chat.fragment.RecyclerTabFragment;
 import com.sxt.chat.json.ResponseInfo;
+import com.sxt.chat.record.RecordService;
 import com.sxt.chat.task.MainService;
 import com.sxt.chat.utils.AnimationUtil;
 import com.sxt.chat.utils.ArithTool;
@@ -65,6 +65,7 @@ import com.sxt.chat.ws.BmobRequest;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import cn.bmob.v3.BmobUser;
 
@@ -89,6 +90,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private Handler handler = new Handler();
     private final long millis = 5 * 60 * 1000L;
     private final int REQUEST_CODE_LOCATION = 201;
+    private final int REQUEST_CODE_RECORD = 202;
     public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
     public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
@@ -133,6 +135,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             } else {
                 startService(new Intent(App.getCtx(), MainService.class));
             }
+
+            checkRecordPermission();//检测录音权限
         }
     }
 
@@ -636,6 +640,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             case REQUEST_CODE_LOCATION:
                 openMapActivity();
                 break;
+            case REQUEST_CODE_RECORD:
+                startRecord();
+                break;
         }
     }
 
@@ -652,6 +659,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), message.indexOf(appName) + appName.length(), message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 showPermissionRefusedNeverDialog(span);
 
+                break;
+            case REQUEST_CODE_RECORD:
+                Toast(String.format("还未获取到相应权限哦,您可以在应用设置中允许%s使用麦克风的权限哟", getString(R.string.app_name)));
                 break;
         }
     }
@@ -683,6 +693,29 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 .setShowLine(true)
                 .setCanceledOnTouchOutside(false)
                 .show();
+    }
+
+    /**
+     * 检测录音权限
+     */
+    private void checkRecordPermission() {
+        if (checkPermission(REQUEST_CODE_RECORD, Manifest.permission.RECORD_AUDIO, new String[]{Manifest.permission.RECORD_AUDIO})) {
+            startRecord();
+        }
+    }
+
+    /**
+     * 启动服务,并开始录音
+     */
+    private void startRecord() {
+        this.stopService(new Intent(this, RecordService.class));
+        Intent intent = new Intent(App.getCtx(), RecordService.class);
+        intent.putExtra(RecordService.RECORD_FLAG, new Random().nextInt());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.startForegroundService(intent);
+        } else {
+            this.startService(intent);
+        }
     }
 
 }

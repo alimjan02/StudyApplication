@@ -18,6 +18,7 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:collapsedTitleGravity="left"
+            app:title="@string/feedback"
             app:collapsedTitleTextAppearance="@style/text_17_color_white_style"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleGravity="center"

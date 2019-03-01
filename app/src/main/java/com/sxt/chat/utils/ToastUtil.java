@@ -31,23 +31,18 @@ public class ToastUtil {
             showSnackBar(activity, message);
             return;
         }
-        //加载Toast布局
         View toastRoot = LayoutInflater.from(activity).inflate(R.layout.toast, null);
-        //初始化布局控件
         mTextView = (TextView) toastRoot.findViewById(R.id.message);
         if (toastStart == null) {
-            //为控件设置属性
             mTextView.setText(message);
-            //Toast的初始化
             toastStart = new Toast(activity);
         } else {
-            //为控件设置属性
             mTextView.setText(message);
         }
         //获取屏幕高度
         WindowManager wm = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
         int height = wm.getDefaultDisplay().getHeight();
-        //Toast的Y坐标是屏幕高度的1/3，不会出现不适配的问题
+        //Toast的Y坐标是屏幕高度的1/3
         toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
         toastStart.setDuration(Toast.LENGTH_LONG);
         toastStart.setView(toastRoot);
@@ -60,23 +55,18 @@ public class ToastUtil {
             showSnackBar(activity, activity.getString(message));
             return;
         }
-        //加载Toast布局
         View toastRoot = LayoutInflater.from(activity).inflate(R.layout.toast, null);
-        //初始化布局控件
         mTextView = (TextView) toastRoot.findViewById(R.id.message);
         if (toastStart == null) {
-            //为控件设置属性
             mTextView.setText(activity.getResources().getString(message));
-            //Toast的初始化
             toastStart = new Toast(activity);
         } else {
-            //为控件设置属性
             mTextView.setText(activity.getResources().getString(message));
         }
         //获取屏幕高度
         WindowManager wm = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
         int height = wm.getDefaultDisplay().getHeight();
-        //Toast的Y坐标是屏幕高度的1/3，不会出现不适配的问题
+        //Toast的Y坐标是屏幕高度的1/3
         toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
         toastStart.setDuration(Toast.LENGTH_LONG);
         toastStart.setView(toastRoot);
