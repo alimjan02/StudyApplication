@@ -349,6 +349,7 @@
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" />
+        <activity android:name=".activity.FlutterDemoActivity" />
 
         <!--高德地图-->
         <service android:name="com.amap.api.location.APSService" />

@@ -12,15 +12,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -33,6 +29,8 @@ import com.sxt.chat.receiver.WatchDogReceiver;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.Utils;
 import com.sxt.chat.utils.glide.CacheUtils;
+
+import io.flutter.app.FlutterActivity;
 
 /**
  * Created by izhaohu on 2018/3/13.
@@ -57,32 +55,10 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         version = (TextView) findViewById(R.id.version);
         findViewById(R.id.clean_cache).setOnClickListener(this);//清除缓存
         findViewById(R.id.current_version).setOnClickListener(this);//清除缓存
+        findViewById(R.id.flutter_layout).setOnClickListener(this);
         findViewById(R.id.login_out).setOnClickListener(this);//退出登录
         cacheSize.setText(CacheUtils.getInstance().getCacheSize());
         version.setText("当前版本:" + Prefs.getVersionName(App.getCtx()) + "");
-//        spinner.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//
-//            @Override
-//            public void onGlobalLayout() {
-//                TextView textView = (TextView) spinner.getChildAt(0);
-//                if (textView != null) {
-//                    textView.setTextColor(ContextCompat.getColor(App.getCtx(), R.color.main_blue_press));
-//                }
-//            }
-//        });
-//        final AppCompatSpinner spinner = findViewById(R.id.spinner);
-//        spinner.setAdapter(new SpinnerAdapter(Arrays.asList(getResources().getStringArray(R.array.spinner_list)), this));
-//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                Log.i("position", String.valueOf(position));
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//
-//            }
-//        });
     }
 
     @Override
@@ -91,7 +67,9 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
             case R.id.clean_cache://清除缓存
                 clearCache();
                 break;
-
+            case R.id.flutter_layout:
+                startActivity(new Intent(this, FlutterDemoActivity.class));
+                break;
             case R.id.current_version://检查更新
                 checkUpdate((int) System.currentTimeMillis());
                 break;

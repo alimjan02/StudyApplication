@@ -116,4 +116,5 @@ dependencies {
     implementation project(':crop_img')
     implementation files('libs/GDTUnionSDK.4.19.573.min.jar')
     implementation project(':banner')
+    implementation project(':flutter')
 }

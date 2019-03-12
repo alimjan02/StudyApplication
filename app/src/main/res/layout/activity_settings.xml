@@ -94,18 +94,36 @@
             <View style="@style/divider_line" />
         </LinearLayout>
 
+        <FrameLayout
+            android:id="@+id/flutter_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:padding="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxLines="1"
+                android:text="Flutter"
+                android:textColor="@color/text_color_1"
+                android:textSize="17dp" />
+
+        </FrameLayout>
+
         <TextView
             android:id="@+id/login_out"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="45dp"
             android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:layout_marginTop="30dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="45dp"
             android:background="@drawable/login_btn_pressed_bg"
             android:gravity="center"
-            android:paddingBottom="13dp"
             android:paddingTop="13dp"
+            android:paddingBottom="13dp"
             android:text="@string/login_out"
             android:textColor="@color/white"
             android:textSize="17dp" />

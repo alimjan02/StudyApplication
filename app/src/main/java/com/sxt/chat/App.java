@@ -15,6 +15,8 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
+import io.flutter.app.FlutterActivity;
+import io.flutter.facade.Flutter;
 
 /**
  * Created by Administrator on 2017/3/20.
