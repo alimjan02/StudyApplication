@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.protobuf'
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -57,6 +59,13 @@ android {
         main {
             jniLibs.srcDir('libs')
             res.srcDirs = ['src/main/res', 'src/main/res/raw']
+            java {
+                srcDir 'src/main/java'
+            }
+            proto {
+                srcDir 'src/main/proto'
+                include '**/*.proto'
+            }
         }
     }
 
@@ -68,6 +77,27 @@ android {
     }
     useLibrary 'org.apache.http.legacy'
 }
+
+protobuf {
+    protoc { artifact = 'com.google.protobuf:protoc:3.6.1' }
+    plugins {
+        javalite { artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0" }
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.7.0' // CURRENT_GRPC_VERSION
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                javalite {}
+                grpc { // Options added to --grpc_out
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation "junit:junit:${rootProject.ext.junitVersion}"
@@ -117,4 +147,10 @@ dependencies {
     implementation files('libs/GDTUnionSDK.4.19.573.min.jar')
     implementation project(':banner')
     implementation project(':flutter')
+
+    //grpc相关
+    implementation 'io.grpc:grpc-okhttp:1.7.0'
+    implementation 'io.grpc:grpc-protobuf-lite:1.7.0'
+    implementation 'io.grpc:grpc-stub:1.7.0'
+    implementation 'javax.annotation:javax.annotation-api:1.2'
 }
