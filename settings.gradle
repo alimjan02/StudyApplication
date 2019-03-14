@@ -1,4 +1,4 @@
-include ':app', ':refresh-layout', ':crop_img', ':banner', ':flutter_module'
+include ':app', ':refresh-layout', ':crop_img', ':banner'
 setBinding(new Binding([gradle: this]))
 evaluate(new File(
         settingsDir.parentFile,
