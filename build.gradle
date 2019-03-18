@@ -37,7 +37,7 @@ project.ext {
     buildToolsVersion = '27.0.3'
 
     testSupportLibraryVersion = '0.5'
-    supportLibraryVersion = '27.1.0'
+    supportLibraryVersion = '27.1.1'
     junitVersion = '4.12'
 
 }

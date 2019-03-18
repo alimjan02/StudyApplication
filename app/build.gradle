@@ -147,7 +147,6 @@ dependencies {
     implementation files('libs/GDTUnionSDK.4.19.573.min.jar')
     implementation project(':banner')
     implementation project(':flutter')
-
     //grpc相关
     implementation 'io.grpc:grpc-okhttp:1.7.0'
     implementation 'io.grpc:grpc-protobuf-lite:1.7.0'
