@@ -2,10 +2,8 @@ package com.sxt.chat;
 
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.sxt.chat.activity.LoginActivity;
@@ -15,8 +13,6 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
-import io.flutter.app.FlutterActivity;
-import io.flutter.facade.Flutter;
 
 /**
  * Created by Administrator on 2017/3/20.

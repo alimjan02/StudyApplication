@@ -5,11 +5,9 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,7 +15,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
@@ -99,10 +96,6 @@ public class SplashActivity extends BaseActivity implements SplashADListener {
             lackedPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
 
-//        if (!(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-//            lackedPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
-//        }
-
         // 权限都已经有了，那么直接调用SDK
         if (lackedPermission.size() == 0) {
             loadAD();
@@ -131,12 +124,13 @@ public class SplashActivity extends BaseActivity implements SplashADListener {
         if (requestCode == 1024 && hasAllPermissionsGranted(grantResults)) {
             loadAD();
         } else {
-            // 如果用户没有授权，那么应该说明意图，引导用户去设置里面授权。
-            Toast.makeText(this, "应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            startActivity(intent);
-            finish();
+//            // 如果用户没有授权，那么应该说明意图，引导用户去设置里面授权。
+//            Toast.makeText(this, "应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。", Toast.LENGTH_LONG).show();
+//            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//            intent.setData(Uri.parse("package:" + getPackageName()));
+//            startActivity(intent);
+//            finish();
+            startActivity(new Intent(this, MainActivity.class));
         }
     }
 

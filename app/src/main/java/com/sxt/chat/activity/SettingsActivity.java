@@ -30,8 +30,6 @@ import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.Utils;
 import com.sxt.chat.utils.glide.CacheUtils;
 
-import io.flutter.app.FlutterActivity;
-
 /**
  * Created by izhaohu on 2018/3/13.
  */
