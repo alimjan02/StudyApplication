@@ -27,7 +27,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
@@ -46,10 +45,7 @@ import com.sxt.chat.utils.glide.GlideRoundTransformer;
 
 import static com.sxt.chat.utils.NotificationHelper.DEFAULT_CHANNEL;
 
-/**
- * Display main screen for sample. Displays controls for sending test notifications.
- */
-public class NotifycationActivity extends HeaderActivity implements View.OnClickListener {
+public class NotificationActivity extends HeaderActivity implements View.OnClickListener {
 
     private Uri uri;
     private EditText editText;
@@ -61,8 +57,7 @@ public class NotifycationActivity extends HeaderActivity implements View.OnClick
     private int NOTI_ID_2 = NOTI_2;
     private int NOTI_ID_3 = NOTI_3;
     private final int REQUEST_CODE_GALLERY = 100;
-    private final String URL0 = "http://bmob-cdn-18541.b0.upaiyun.com/2018/10/14/53754835404593e68021286e340d9d6e.jpg";
-    private final String URL1 = "http://bmob-cdn-18541.b0.upaiyun.com/2018/10/14/06e128cf40717a69805ee61fc9201842.jpg";
+    private final String URL1 = "http://bmob-cdn-25616.b0.upaiyun.com/2019/05/11/18964015403dfc5e8012e7ce547aca05.webp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,9 +108,7 @@ public class NotifycationActivity extends HeaderActivity implements View.OnClick
 //                                paint.setShader(new BitmapShader(source, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
 //                                RectF rectF = new RectF(0f, 0f, source.getWidth(), source.getHeight());
 //                                canvas.drawRoundRect(rectF, radius, radius, paint);
-//
-//                                ImageView img = findViewById(R.id.img);
-//                                img.setImageBitmap(bitmap);
+                                loadImage();
                                 helper.notify(NOTI_ID_2++, helper.buildNotificationImage("图片通知 Title", body,
                                         source,
                                         getPendingIntent(App.getCtx(), MainActivity.class)));
@@ -128,6 +121,13 @@ public class NotifycationActivity extends HeaderActivity implements View.OnClick
                 helper.notify(NOTI_ID_3, helper.buildCustomNotificationDefault("自定义通知  Title", body, getPendingIntent(this, MainActivity.class)));
                 break;
         }
+    }
+
+    private void loadImage() {
+        Glide.with(App.getCtx())
+                .load(uri != null ? uri : URL1)
+                .transform(new CenterCrop(App.getCtx()), new GlideRoundTransformer(App.getCtx(), 8))
+                .into((ImageView) findViewById(R.id.img));
     }
 
     private PendingIntent getPendingIntent(Context context, Class<?> cls) {
@@ -226,10 +226,7 @@ public class NotifycationActivity extends HeaderActivity implements View.OnClick
             if (requestCode == REQUEST_CODE_GALLERY) {
                 if (data != null && data.getData() != null) {
                     this.uri = data.getData();
-                    Glide.with(this)
-                            .load(data.getData())
-                            .transform(new CenterCrop(this), new GlideRoundTransformer(this, 8))
-                            .into((ImageView) findViewById(R.id.img));
+                    loadImage();
                 }
             } else {
                 Toast("所选图片有误,请选择其他图片");
@@ -238,8 +235,8 @@ public class NotifycationActivity extends HeaderActivity implements View.OnClick
     }
 
     @Override
-    public void onPermissionsaAlowed(int requestCode, String[] permissions, int[] grantResults) {
-        super.onPermissionsaAlowed(requestCode, permissions, grantResults);
+    public void onPermissionsAllowed(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsAllowed(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_GALLERY:
                 startGalleryApp();

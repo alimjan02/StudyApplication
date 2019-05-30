@@ -53,7 +53,6 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         version = (TextView) findViewById(R.id.version);
         findViewById(R.id.clean_cache).setOnClickListener(this);//清除缓存
         findViewById(R.id.current_version).setOnClickListener(this);//清除缓存
-        findViewById(R.id.flutter_layout).setOnClickListener(this);
         findViewById(R.id.login_out).setOnClickListener(this);//退出登录
         cacheSize.setText(CacheUtils.getInstance().getCacheSize());
         version.setText("当前版本:" + Prefs.getVersionName(App.getCtx()) + "");
@@ -64,9 +63,6 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         switch (view.getId()) {
             case R.id.clean_cache://清除缓存
                 clearCache();
-                break;
-            case R.id.flutter_layout:
-                startActivity(new Intent(this, FlutterDemoActivity.class));
                 break;
             case R.id.current_version://检查更新
                 checkUpdate((int) System.currentTimeMillis());
@@ -264,8 +260,8 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
     }
 
     @Override
-    public void onPermissionsaAlowed(int requestCode, String[] permissions, int[] grantResults) {
-        super.onPermissionsaAlowed(requestCode, permissions, grantResults);
+    public void onPermissionsAllowed(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsAllowed(requestCode, permissions, grantResults);
         if (REQUEST_CODE_INSTALL_APK == requestCode) {
             installAPK();
         }

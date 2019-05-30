@@ -93,10 +93,11 @@ public class NotificationHelper extends ContextWrapper {
      */
     private NotificationCompat.Builder getNotificationBuilderByChannel(String... channel) {
         NotificationCompat.Builder builder;
+        String channelId = channel == null || channel.length == 0 ? DEFAULT_CHANNEL : channel[0];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder = new NotificationCompat.Builder(getApplicationContext(), channel == null || channel.length == 0 ? DEFAULT_CHANNEL : channel[0]);
+            builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
         } else {
-            builder = new NotificationCompat.Builder(this).setSound(soundUri);
+            builder = new NotificationCompat.Builder(this, channelId).setSound(soundUri);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//8.0以下 && 7.0及以上 设置优先级
                 builder.setPriority(NotificationManager.IMPORTANCE_HIGH);
             } else {
@@ -221,7 +222,7 @@ public class NotificationHelper extends ContextWrapper {
         } else {
             builder.setSound(soundUri)
                     .setStyle(new NotificationCompat.BigTextStyle()
-                    .setBigContentTitle(title).bigText(body));
+                            .setBigContentTitle(title).bigText(body));
         }
         return builder
                 .setAutoCancel(true)

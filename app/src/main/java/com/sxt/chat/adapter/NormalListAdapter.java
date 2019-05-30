@@ -1,12 +1,13 @@
 package com.sxt.chat.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,37 +34,34 @@ public class NormalListAdapter extends BaseRecyclerAdapter<RoomInfo> {
         super(context, data);
     }
 
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(getInflater().inflate(R.layout.item_normal, parent, false));
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         final ViewHolder holder = (ViewHolder) viewHolder;
-        holder.title.setText(data.get(position).getAddress());
-        holder.subTitle.setText("六居室-南卧-" + data.get(position).getRoom_size() + "㎡ 距7号线上海的大学361米");
-        holder.price.setText(data.get(position).getPrice() + " 元/月");
+        holder.title.setText(data.get(position).getHome_name());
+        holder.price.setText(String.valueOf(data.get(position).getPrice()));
         Glide.with(context)
                 .load(data.get(position).getRoom_url())
                 .error(R.mipmap.ic_no_img)
                 .bitmapTransform(new GlideRoundTransformer(context, 8))
                 .into(holder.img);
-        holder.root.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, RoomDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(Prefs.ROOM_INFO, getItem(position));
-                intent.putExtra(Prefs.ROOM_INFO, bundle);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    context.startActivity(intent,
-                            ActivityOptions.makeSceneTransitionAnimation
-                                    ((Activity) context, holder.img, "shareView").toBundle());
-                } else {
-                    context.startActivity(intent);
-                }
+        holder.root.setOnClickListener(v -> {
+            Intent intent = new Intent(context, RoomDetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Prefs.ROOM_INFO, getItem(position));
+            intent.putExtra(Prefs.ROOM_INFO, bundle);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                context.startActivity(intent,
+                        ActivityOptions.makeSceneTransitionAnimation
+                                ((Activity) context, holder.img, "shareView").toBundle());
+            } else {
+                context.startActivity(intent);
             }
         });
         holder.root.startAnimation(AnimationUtils.loadAnimation(context, R.anim.anim_item_horizontal_percent_20));
@@ -73,8 +71,6 @@ public class NormalListAdapter extends BaseRecyclerAdapter<RoomInfo> {
 
         public View root;
         public TextView title;
-        public TextView subTitle;
-        public TextView address;
         public TextView price;
         public ImageView img;
 
@@ -82,9 +78,7 @@ public class NormalListAdapter extends BaseRecyclerAdapter<RoomInfo> {
             super(itemView);
             root = itemView.findViewById(R.id.root);
             title = itemView.findViewById(R.id.title);
-            subTitle = itemView.findViewById(R.id.subTitle);
             price = itemView.findViewById(R.id.price);
-            address = itemView.findViewById(R.id.address);
             img = itemView.findViewById(R.id.img);
         }
     }

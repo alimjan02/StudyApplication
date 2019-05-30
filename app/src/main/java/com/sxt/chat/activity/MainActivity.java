@@ -4,10 +4,7 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -24,12 +21,10 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
@@ -48,11 +43,10 @@ import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.fragment.ChartFragment;
+import com.sxt.chat.fragment.GalleryFragment;
 import com.sxt.chat.fragment.HomePageFragment;
 import com.sxt.chat.fragment.NewsFragment;
-import com.sxt.chat.fragment.RecyclerTabFragment;
 import com.sxt.chat.json.ResponseInfo;
-import com.sxt.chat.record.RecordService;
 import com.sxt.chat.task.MainService;
 import com.sxt.chat.utils.AnimationUtil;
 import com.sxt.chat.utils.ArithTool;
@@ -60,12 +54,12 @@ import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ScreenCaptureUtil;
 import com.sxt.chat.utils.glide.GlideCircleTransformer;
+import com.sxt.chat.view.FloatButton;
 import com.sxt.chat.view.searchview.MaterialSearchView;
 import com.sxt.chat.ws.BmobRequest;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
 
 import cn.bmob.v3.BmobUser;
 
@@ -80,21 +74,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private View bottomBarLayout;
     private MaterialSearchView searchView;
     private Menu menu;
-
-    private ImageView itemFloatView;
-    private FrameLayout dectorView;
-    private float bottomBarHeight, toolBarHeight, statusBarHeight;//底部Tab高度,ToolBar高度,状态栏高度
-    private int widthPixels, heightPixels;//手机屏幕的宽高
-    private int itemFloatViewWidth, itemFloatViewHeight;//浮动按钮的宽高
-
+    private FloatButton floatButton;
     private Handler handler = new Handler();
     private final long millis = 5 * 60 * 1000L;
     private final int REQUEST_CODE_LOCATION = 201;
-    private final int REQUEST_CODE_RECORD = 202;
     public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
     public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
-    private Prefs prefs;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,47 +94,65 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             finish();
         } else {
             setContentView(R.layout.activity_main);
-            drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-            tabGroup = (LinearLayout) findViewById(R.id.radio_group);
-            bottomBarLayout = findViewById(R.id.bottom_bar_layout);
-            findViewById(R.id.basic_info).setOnClickListener(this);
-            findViewById(R.id.normal_settings).setOnClickListener(this);
-            findViewById(R.id.ocr_scan_id_card).setOnClickListener(this);
-            findViewById(R.id.ocr_scan).setOnClickListener(this);
-            findViewById(R.id.exoplayer).setOnClickListener(this);
-            findViewById(R.id.pdf_parse).setOnClickListener(this);
-            findViewById(R.id.wifi).setOnClickListener(this);
-            findViewById(R.id.notifycation).setOnClickListener(this);
-            findViewById(R.id.ar).setOnClickListener(this);
-            findViewById(R.id.vr).setOnClickListener(this);
-            findViewById(R.id.map).setOnClickListener(this);
-            findViewById(R.id.change_login).setOnClickListener(this);
-            userIcon = (ImageView) findViewById(R.id.user_icon);
-            userInfo = (TextView) findViewById(R.id.user_info);
-            userName = (TextView) findViewById(R.id.user_name);
-
+            initVIew();
             initDrawer();
             initFragment();
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(new Intent(App.getCtx(), MainService.class));
             } else {
                 startService(new Intent(App.getCtx(), MainService.class));
             }
+        }
+    }
 
-            checkRecordPermission();//检测录音权限
+    private void initVIew() {
+        drawerLayout = findViewById(R.id.drawerLayout);
+        tabGroup = findViewById(R.id.radio_group);
+        bottomBarLayout = findViewById(R.id.bottom_bar_layout);
+        findViewById(R.id.basic_info).setOnClickListener(this);
+        findViewById(R.id.normal_settings).setOnClickListener(this);
+        findViewById(R.id.ocr_scan_id_card).setOnClickListener(this);
+        findViewById(R.id.ocr_scan).setOnClickListener(this);
+        findViewById(R.id.exoplayer).setOnClickListener(this);
+        findViewById(R.id.pdf_parse).setOnClickListener(this);
+        findViewById(R.id.wifi).setOnClickListener(this);
+        findViewById(R.id.notifycation).setOnClickListener(this);
+        findViewById(R.id.ar).setOnClickListener(this);
+        findViewById(R.id.vr).setOnClickListener(this);
+        findViewById(R.id.map).setOnClickListener(this);
+        findViewById(R.id.change_login).setOnClickListener(this);
+        userIcon = findViewById(R.id.user_icon);
+        userInfo = findViewById(R.id.user_info);
+        userName = findViewById(R.id.user_name);
+        initFloatButton();
+    }
+
+    /**
+     * 初始化浮动按钮
+     */
+    private void initFloatButton() {
+        if (floatButton == null) {
+            floatButton = new FloatButton(this).setOnClickListener(view -> {
+                Intent intent = new Intent(this, BasicInfoActivity.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    startActivity(intent,
+                            ActivityOptions.makeSceneTransitionAnimation
+                                    (MainActivity.this, floatButton.getItemFloatView(), "shareView").toBundle());
+                } else {
+                    startActivity(intent);
+                }
+            });
         }
     }
 
     private void initFragment() {
-        Map<Integer, BaseFragment> fragmentMap = new HashMap<>();
+        Map<Integer, BaseFragment> fragmentMap = new LinkedHashMap<>();
         fragmentMap.put(0, new HomePageFragment());
-//        fragmentMap.put(1, new GallaryFragment());
-        fragmentMap.put(1, new RecyclerTabFragment());
+        fragmentMap.put(1, new GalleryFragment());
         fragmentMap.put(2, new ChartFragment());
         fragmentMap.put(3, new NewsFragment());
 
-        Map<Integer, RadioButton> tabMap = new HashMap<>();
+        Map<Integer, RadioButton> tabMap = new LinkedHashMap<>();
         for (int i = 0; i < tabGroup.getChildCount(); i++) {
             tabMap.put(i, (RadioButton) tabGroup.getChildAt(i));
         }
@@ -205,160 +209,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         });
     }
 
-    /**
-     * 浮动按钮
-     *
-     * @param user
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    private void initFloatButton(final User user) {
-        if (dectorView == null || itemFloatView == null) {
-            widthPixels = getResources().getDisplayMetrics().widthPixels;
-            heightPixels = getResources().getDisplayMetrics().heightPixels;
-            bottomBarHeight = getResources().getDimension(R.dimen.bottom_app_bar_height);
-            toolBarHeight = getResources().getDimension(R.dimen.app_bar_height);
-            //获取状态栏的高度
-            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-            if (resourceId > 0) {
-                statusBarHeight = getResources().getDimensionPixelSize(resourceId);
-            }
-            prefs = Prefs.getInstance(MainActivity.this);
-            dectorView = (FrameLayout) getWindow().getDecorView();
-            itemFloatView = new ImageView(this);
-            itemFloatView.setClickable(true);
-            itemFloatView.setFocusable(true);
-            itemFloatView.setVisibility(View.VISIBLE);
-
-            dectorView.post(new Runnable() {
-                @Override
-                public void run() {
-                    int with = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, getResources().getDisplayMetrics());
-                    dectorView.addView(itemFloatView, new FrameLayout.LayoutParams(with, with));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        itemFloatView.setTranslationZ(32);
-                        itemFloatView.setElevation(16);
-                    }
-                    updateItemFloat(user);
-
-                    itemFloatView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                        @Override
-                        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                            itemFloatView.removeOnLayoutChangeListener(this);
-                            itemFloatViewWidth = itemFloatView.getWidth();
-                            itemFloatViewHeight = itemFloatView.getHeight();
-                            //从本地取出上次的坐标 设置进去 ; 默认坐标为右下角
-                            float x = prefs.getFloat(Prefs.KEY_FLOAT_X, widthPixels - itemFloatViewWidth);
-                            float y = prefs.getFloat(Prefs.KEY_FLOAT_Y, heightPixels / 3f * 2);
-                            itemFloatView.setX(x);
-                            itemFloatView.setY(y);
-                            Log.e(TAG, String.format("恢复 x = %s , y = %s", x, y));
-                            Log.e(TAG, String.format("测量Float宽高 width = %s , height = %s", itemFloatViewWidth, itemFloatViewHeight));
-                        }
-                    });
-                }
-            });
-
-            itemFloatView.setOnTouchListener(new View.OnTouchListener() {
-
-                private float downX, downY, moveX, moveY;
-                private long downMillis, upMillis;
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            downX = event.getX();
-                            downY = event.getY();
-                            downMillis = System.currentTimeMillis();
-                            break;
-                        case MotionEvent.ACTION_MOVE:
-                            moveX = event.getX();
-                            moveY = event.getY();
-                            float distanceX = moveX - downX;
-                            float distanceY = moveY - downY;
-                            distanceX += itemFloatView.getX();
-                            distanceY += itemFloatView.getY();
-
-                            if (distanceX <= 0) distanceX = 0;//屏幕左侧边界
-                            if (distanceX + itemFloatViewWidth > widthPixels) {
-                                distanceX = widthPixels - itemFloatViewWidth;//屏幕右侧边界
-                            }
-                            if (distanceY < statusBarHeight + toolBarHeight) {//状态栏边界
-                                distanceY = statusBarHeight + toolBarHeight;
-                            }
-                            if (distanceY + itemFloatViewHeight > heightPixels - bottomBarHeight) {//底部Tab栏边界
-                                distanceY = heightPixels - bottomBarHeight - itemFloatViewHeight;
-                            }
-
-                            itemFloatView.setX(distanceX);
-                            itemFloatView.setY(distanceY);
-
-                            moveX = distanceX;
-                            moveY = distanceY;
-
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            upMillis = System.currentTimeMillis();
-                            if (upMillis - downMillis <= 100) {//触摸时长小于100默认为点击事件
-                                Intent intent = new Intent(MainActivity.this, BasicInfoActivity.class);
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                    startActivity(intent,
-                                            ActivityOptions.makeSceneTransitionAnimation
-                                                    (MainActivity.this, itemFloatView, "shareView").toBundle());
-                                } else {
-                                    startActivity(intent);
-                                }
-                            }
-                            //在这儿存储最后的坐标
-                            prefs.putFloat(Prefs.KEY_FLOAT_X, moveX);
-                            prefs.putFloat(Prefs.KEY_FLOAT_Y, moveY);
-                            Log.e(TAG, String.format("更新 x = %s , y = %s", moveX, moveY));
-                            downX = 0;
-                            downY = 0;
-                            moveX = 0;
-                            moveY = 0;
-                            break;
-                    }
-                    itemFloatView.performClick();
-                    return false;
-                }
-            });
-        } else {
-            updateItemFloat(user);
-        }
-    }
-
-    private void updateItemFloat(User user) {
-        Glide.with(App.getCtx())
-                .load(R.drawable.ic_launcher_round)
-                .into(itemFloatView);
-    }
-
-    private boolean isBottom2Top;//临时记录上次的滑动状态
-    private ObjectAnimator translationAnimator;
-
-    public void setBottomBarTranslateY(float scrollY, boolean isBottom2Top) {
-        if (this.isBottom2Top == isBottom2Top) return;//防止不停的动画
-        this.isBottom2Top = isBottom2Top;
-        int measuredHeight = bottomBarLayout.getMeasuredHeight();
-        translationYAnimator(bottomBarLayout, (int) bottomBarLayout.getTranslationY(), isBottom2Top ? measuredHeight : 0, 300);
-    }
-
-    private void translationYAnimator(View target, int startTranslationY, int endTranslationY, long duration) {
-        if (translationAnimator != null) {
-            translationAnimator.cancel();
-        }
-        translationAnimator = ObjectAnimator.ofFloat(bottomBarLayout, "translationY", startTranslationY, endTranslationY).setDuration(duration);
-        translationAnimator.setInterpolator(new LinearInterpolator());
-        translationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-
-            }
-        });
-        translationAnimator.start();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -385,6 +235,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         }
     }
 
+    /**
+     * 加载广告
+     */
     private void loadAD() {
         if (isFirst) {
             isFirst = false;
@@ -400,11 +253,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         }
     }
 
+    /**
+     * 更新用户信息
+     */
     private void updateUserInfo(User user) {
         if (user != null) {
-            initFloatButton(user);
             userName.setText(user.getName());
-            String info = "";
+            String info;
             if (0 != (user.getAge() == null ? 0 : user.getAge())) {
                 if ("F".equals(user.getGender())) {
                     info = user.getAge() + "岁" + "  女  ";
@@ -428,6 +283,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         }
     }
 
+    /**
+     * 显示头像
+     */
     private void loadHeader(String url, String gender) {
         Glide.with(this).load(url)
                 .error("M".equals(gender) ? R.mipmap.men : R.mipmap.female)
@@ -460,6 +318,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * 截屏
+     */
     private void screenCapture() {
         if (menu == null) {
             return;
@@ -486,30 +347,24 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                                     super.onAnimationEnd(animation);
                                 }
                             });
-                            imageView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                        imageView.setTransitionName("shareView");
-                                    }
-                                    Intent intent = new Intent(MainActivity.this, ShareCaptureActivity.class);
-                                    intent.putExtra(Prefs.KEY_BITMAP, path);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                        startActivity(intent,
-                                                ActivityOptions.makeSceneTransitionAnimation
-                                                        (MainActivity.this, imageView, "shareView").toBundle());
-                                    } else {
-                                        startActivity(intent);
-                                    }
-                                    handler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            decorView.removeView(imageView);
-                                            menu.findItem(R.id.action_more).setEnabled(true);
-                                        }
-                                    }, 500);
+                            imageView.setOnClickListener(v -> {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    imageView.setTransitionName("shareView");
                                 }
+                                Intent intent = new Intent(MainActivity.this, ShareCaptureActivity.class);
+                                intent.putExtra(Prefs.KEY_BITMAP, path);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    startActivity(intent,
+                                            ActivityOptions.makeSceneTransitionAnimation
+                                                    (MainActivity.this, imageView, "shareView").toBundle());
+                                } else {
+                                    startActivity(intent);
+                                }
+                                handler.postDelayed(() -> {
+                                    decorView.removeView(imageView);
+                                    menu.findItem(R.id.action_more).setEnabled(true);
+                                }, 500);
                             });
                             Log.e("capture.mp3", String.format("截屏成功 path : %s", path));
                         }
@@ -522,6 +377,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 });
     }
 
+    /**
+     * 分享
+     */
     private void share() {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
@@ -530,11 +388,30 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         startActivity(Intent.createChooser(intent, getString(R.string.share_with)));
     }
 
+    private boolean isBottom2Top;//临时记录上次的滑动状态
+    private ObjectAnimator translationAnimator;
+
+    public void setBottomBarTranslateY(float scrollY, boolean isBottom2Top) {
+        if (this.isBottom2Top == isBottom2Top) return;//防止不停的动画
+        this.isBottom2Top = isBottom2Top;
+        int measuredHeight = bottomBarLayout.getMeasuredHeight();
+        translationYAnimator(bottomBarLayout, (int) bottomBarLayout.getTranslationY(), isBottom2Top ? measuredHeight : 0);
+    }
+
+    private void translationYAnimator(View target, int startTranslationY, int endTranslationY) {
+        if (translationAnimator != null) {
+            translationAnimator.cancel();
+        }
+        translationAnimator = ObjectAnimator.ofFloat(target, "translationY", startTranslationY, endTranslationY).setDuration(300);
+        translationAnimator.setInterpolator(new LinearInterpolator());
+        translationAnimator.start();
+    }
+
     @Override
     protected void onTabCheckedChange(String[] titles, int checkedId) {
         super.onTabCheckedChange(titles, checkedId);
-        if (itemFloatView != null) {
-            itemFloatView.setVisibility(checkedId == 0 ? View.VISIBLE : View.GONE);
+        if (floatButton != null) {
+            floatButton.setVisibility(checkedId == 0 ? View.VISIBLE : View.GONE);
         }
         if (titles != null && titles.length > checkedId) {
             setToolbarTitle(titles[checkedId]);
@@ -583,11 +460,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.basic_info:
@@ -615,7 +487,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 startActivity(new Intent(this, PdfActivity.class));
                 break;
             case R.id.notifycation:
-                startActivity(new Intent(this, NotifycationActivity.class));
+                startActivity(new Intent(this, NotificationActivity.class));
                 break;
             case R.id.ar:
                 startActivity(new Intent(this, HelloArActivity.class));
@@ -627,42 +499,32 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 if (checkPermission(REQUEST_CODE_LOCATION, Manifest.permission_group.LOCATION, new String[]{
                         Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.ACCESS_FINE_LOCATION,})) {
-
+                    openMapActivity();
                 }
                 break;
         }
     }
 
     @Override
-    public void onPermissionsaAlowed(int requestCode, String[] permissions, int[] grantResults) {
-        super.onPermissionsaAlowed(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_CODE_LOCATION:
-                openMapActivity();
-                break;
-            case REQUEST_CODE_RECORD:
-                startRecord();
-                break;
+    public void onPermissionsAllowed(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsAllowed(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_LOCATION) {
+            openMapActivity();
         }
     }
 
     @Override
     public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_CODE_LOCATION:
-                String appName = getString(R.string.app_name);
-                String message = String.format(getString(R.string.permission_request_LOCATION), appName);
-                SpannableString span = new SpannableString(message);
-                span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_black_bold_style), message.indexOf(appName), message.indexOf(appName) + appName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), message.indexOf(appName) + appName.length(), message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                showPermissionRefusedNeverDialog(span);
-
-                break;
-            case REQUEST_CODE_RECORD:
-                Toast(String.format("还未获取到相应权限哦,您可以在应用设置中允许%s使用麦克风的权限哟", getString(R.string.app_name)));
-                break;
+        if (requestCode == REQUEST_CODE_LOCATION) {
+            String appName = getString(R.string.app_name);
+            String message = String.format(getString(R.string.permission_request_LOCATION), appName);
+            SpannableString span = new SpannableString(message);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            int start = message.indexOf(appName) + appName.length();
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_black_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            showPermissionRefusedNeverDialog(span);
         }
     }
 
@@ -677,45 +539,21 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         new AlertDialogBuilder(this)
                 .setTitle(R.string.message_alert, true)
                 .setMessage(message)
-                .setLeftButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setRightButton(R.string.confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        goToAppSettingsPage();
-                    }
+                .setLeftButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setRightButton(R.string.confirm, (dialog, which) -> {
+                    dialog.dismiss();
+                    goToAppSettingsPage();
                 })
                 .setShowLine(true)
                 .setCanceledOnTouchOutside(false)
                 .show();
     }
 
-    /**
-     * 检测录音权限
-     */
-    private void checkRecordPermission() {
-        if (checkPermission(REQUEST_CODE_RECORD, Manifest.permission.RECORD_AUDIO, new String[]{Manifest.permission.RECORD_AUDIO})) {
-            startRecord();
+    @Override
+    protected void onDestroy() {
+        if (floatButton != null) {
+            floatButton.onDestory();
         }
+        super.onDestroy();
     }
-
-    /**
-     * 启动服务,并开始录音
-     */
-    private void startRecord() {
-        this.stopService(new Intent(this, RecordService.class));
-        Intent intent = new Intent(App.getCtx(), RecordService.class);
-        intent.putExtra(RecordService.RECORD_FLAG, new Random().nextInt());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            this.startForegroundService(intent);
-        } else {
-            this.startService(intent);
-        }
-    }
-
 }

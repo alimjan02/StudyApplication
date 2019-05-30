@@ -183,8 +183,8 @@ public class VR360Activity extends BaseActivity {
     }
 
     @Override
-    public void onPermissionsaAlowed(int requestCode, String[] permissions, int[] grantResults) {
-        super.onPermissionsaAlowed(requestCode, permissions, grantResults);
+    public void onPermissionsAllowed(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsAllowed(requestCode, permissions, grantResults);
         if (REQUEST_CODE_GALLERY == requestCode) {
             startGalleryApp();
         }

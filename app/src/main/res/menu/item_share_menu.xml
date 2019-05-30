@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_share"
-        android:icon="@drawable/ic_action_share_white_15dp"
+        android:icon="@drawable/ic_action_share_white_17dp"
         android:title=""
         app:showAsAction="always" />
 

@@ -177,7 +177,7 @@ public class ImageUtil {
             count++;
         }
         // 字，开始未知x,y采用那只笔绘制
-        canvas.save(Canvas.ALL_SAVE_FLAG);
+        canvas.save();
         canvas.restore();
         return Bitmap2file(file, icon, quality);
     }

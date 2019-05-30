@@ -1,6 +1,7 @@
 package com.sxt.chat.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,13 @@ import java.util.List;
  * Created by izhaohu on 2018/4/23.
  */
 
-public class GallaryAdapter extends BaseRecyclerAdapter<Banner> {
+public class GalleryAdapter extends BaseRecyclerAdapter<Banner> {
 
-    public GallaryAdapter(Context context, List<Banner> data) {
+    public GalleryAdapter(Context context, List<Banner> data) {
         super(context, data);
     }
 
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(getInflater().inflate(R.layout.item_normal_vertical, parent, false));
@@ -39,12 +41,9 @@ public class GallaryAdapter extends BaseRecyclerAdapter<Banner> {
                 .error(R.mipmap.ic_banner_placeholder)
                 .into(holder.img);
 
-        holder.root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.onClick(position, holder, getItem(position));
-                }
+        holder.root.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onClick(position, holder, getItem(position));
             }
         });
     }

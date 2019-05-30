@@ -136,8 +136,8 @@ public class PdfActivity extends HeaderActivity {
     }
 
     @Override
-    public void onPermissionsaAlowed(int requestCode, String[] permissions, int[] grantResults) {
-        super.onPermissionsaAlowed(requestCode, permissions, grantResults);
+    public void onPermissionsAllowed(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsAllowed(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_PERMISSION_STORAGE) {
             openStorage();
         }

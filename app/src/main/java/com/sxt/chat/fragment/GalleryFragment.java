@@ -1,5 +1,6 @@
 package com.sxt.chat.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -7,9 +8,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,14 +24,12 @@ import com.bumptech.glide.Glide;
 import com.sxt.banner.BannerConfig;
 import com.sxt.banner.BannerView;
 import com.sxt.banner.Transformer;
-import com.sxt.banner.listener.OnBannerListener;
 import com.sxt.banner.loader.UILoaderInterface;
 import com.sxt.banner.transformer.ScaleInTransformer;
 import com.sxt.chat.R;
 import com.sxt.chat.activity.RoomDetailActivity;
-import com.sxt.chat.adapter.GallaryAdapter;
+import com.sxt.chat.adapter.GalleryAdapter;
 import com.sxt.chat.base.BaseBottomSheetFragment;
-import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.base.LazyFragment;
 import com.sxt.chat.fragment.bottonsheet.GallaryBottomSheetFragment;
 import com.sxt.chat.json.Banner;
@@ -48,14 +45,13 @@ import java.util.List;
  * Created by 11837 on 2018/4/22.
  */
 
-public class GallaryFragment extends LazyFragment {
+public class GalleryFragment extends LazyFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private BannerView bannerView;
-    private NestedScrollView nestedScrollView;
     private ViewSwitcher viewSwitcherBanner;
     private RecyclerView recyclerView;
-    private GallaryAdapter adapter;
+    private GalleryAdapter adapter;
     private ViewSwitcher viewSwitcher;
 
     private final String CMD_GET_ROOM_LIST = this.getClass().getName() + "CMD_GET_ROOM_LIST";
@@ -69,36 +65,24 @@ public class GallaryFragment extends LazyFragment {
     @Override
     protected void initView() {
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
-        nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
         recyclerView = contentView.findViewById(R.id.recyclerView);
         viewSwitcherBanner = contentView.findViewById(R.id.banner_viewSwitcher);
         viewSwitcher = contentView.findViewById(R.id.viewSitcher);
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);
-                refresh();
-            }
+        swipeRefreshLayout.setOnRefreshListener(this::refresh);
+        swipeRefreshLayout.post(() -> {
+            swipeRefreshLayout.setRefreshing(true);
+            refresh();
         });
 
         //解决SwipeRefreshLayout 嵌套滑动冲突
-        AppBarLayout appBarLayout = (AppBarLayout) contentView.findViewById(R.id.app_bar_layout);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        AppBarLayout appBarLayout = contentView.findViewById(R.id.app_bar_layout);
+        appBarLayout.addOnOffsetChangedListener((appBarLayout1, verticalOffset) -> {
 
-                if (verticalOffset >= 0) {
-                    swipeRefreshLayout.setEnabled(true);
-                } else {
-                    swipeRefreshLayout.setEnabled(false);
-                }
+            if (verticalOffset >= 0) {
+                swipeRefreshLayout.setEnabled(true);
+            } else {
+                swipeRefreshLayout.setEnabled(false);
             }
         });
     }
@@ -112,29 +96,22 @@ public class GallaryFragment extends LazyFragment {
     }
 
     private void refreshList(List<Banner> list) {
-        list.addAll(list);
         if (adapter == null) {
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(5, LinearLayoutManager.HORIZONTAL));
-            adapter = new GallaryAdapter(activity, list);
+            adapter = new GalleryAdapter(activity, list);
             viewSwitcher.setDisplayedChild(1);
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setAdapter(adapter);
-            adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
-                @Override
-                public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(Prefs.KEY_BANNER_INFO, (Banner) object);
-                    BaseBottomSheetFragment sheetFragment = new GallaryBottomSheetFragment()
-                            .setOnBottomSheetDialogCreateListener(new BaseBottomSheetFragment.OnBottomSheetDialogCreateListener() {
-                                @Override
-                                public void onBottomSheetDialogCreate(BaseBottomSheetFragment bottomSheetFragment, BottomSheetDialog bottomSheetDialog, View contentView) {
-                                    bottomSheetFragment.defaultSettings(bottomSheetDialog, contentView);
-                                    bottomSheetDialog.setCanceledOnTouchOutside(false);
-                                }
-                            });
-                    sheetFragment.setArguments(bundle);
-                    sheetFragment.show(getFragmentManager());
-                }
+            adapter.setOnItemClickListener((position, holder, object) -> {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Prefs.KEY_BANNER_INFO, (Banner) object);
+                BaseBottomSheetFragment sheetFragment = new GallaryBottomSheetFragment()
+                        .setOnBottomSheetDialogCreateListener((bottomSheetFragment, bottomSheetDialog, contentView) -> {
+                            bottomSheetFragment.defaultSettings(bottomSheetDialog, contentView);
+                            bottomSheetDialog.setCanceledOnTouchOutside(false);
+                        });
+                sheetFragment.setArguments(bundle);
+                sheetFragment.show(getFragmentManager());
             });
         } else {
             adapter.notifyDataSetChanged(list);
@@ -142,9 +119,6 @@ public class GallaryFragment extends LazyFragment {
     }
 
     private void refreshBanner(final List<Banner> banners) {
-//        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/dd5ca0a0400a87b7800ae9a6f107b562.jpg");
-//        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/13cecf96407145708071d88037547c7f.jpg");
-//        imgs.add("http://bmob-cdn-18541.b0.upaiyun.com/2018/05/22/20799e5a4012706c80f83276a47b7f89.jpg");
         if (bannerView == null) {
             viewSwitcherBanner.setDisplayedChild(1);
             bannerView = contentView.findViewById(R.id.banner);
@@ -167,30 +141,27 @@ public class GallaryFragment extends LazyFragment {
 
                         @Override
                         public View createView(Context context) {
-                            View view = LayoutInflater.from(context).inflate(R.layout.item_banner, null, false);
+                            @SuppressLint("InflateParams") View view = LayoutInflater.from(context).inflate(R.layout.item_banner, null, false);
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 view.setTransitionName("shareView");
                             }
                             return view;
                         }
                     })
-                    .setOnBannerListener(new OnBannerListener() {
-                        @Override
-                        public void OnBannerClick(int position) {
-                            Intent intent = new Intent(context, RoomDetailActivity.class);
-                            Bundle bundle = new Bundle();
-                            RoomInfo roomInfo = new RoomInfo();
-                            roomInfo.setHome_name(banners.get(position).getDescription());
-                            roomInfo.setRoom_url(banners.get(position).getUrl());
-                            bundle.putSerializable(Prefs.ROOM_INFO, roomInfo);
-                            intent.putExtra(Prefs.ROOM_INFO, bundle);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                context.startActivity(intent,
-                                        ActivityOptions.makeSceneTransitionAnimation
-                                                ((Activity) context, bannerView, "shareView").toBundle());
-                            } else {
-                                context.startActivity(intent);
-                            }
+                    .setOnBannerListener(position -> {
+                        Intent intent = new Intent(context, RoomDetailActivity.class);
+                        Bundle bundle = new Bundle();
+                        RoomInfo roomInfo = new RoomInfo();
+                        roomInfo.setHome_name(banners.get(position).getDescription());
+                        roomInfo.setRoom_url(banners.get(position).getUrl());
+                        bundle.putSerializable(Prefs.ROOM_INFO, roomInfo);
+                        intent.putExtra(Prefs.ROOM_INFO, bundle);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            context.startActivity(intent,
+                                    ActivityOptions.makeSceneTransitionAnimation
+                                            ((Activity) context, bannerView, "shareView").toBundle());
+                        } else {
+                            context.startActivity(intent);
                         }
                     })
                     .setDelayTime(3000)

@@ -59,7 +59,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:maxWidth="100dp"
-                    android:text="六居室-南卧-33㎡" />
+                    android:text="" />
 
                 <RatingBar
                     android:id="@+id/ratingBar"

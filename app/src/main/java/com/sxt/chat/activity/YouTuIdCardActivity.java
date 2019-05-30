@@ -330,8 +330,8 @@ public class YouTuIdCardActivity extends HeaderActivity implements View.OnClickL
     }
 
     @Override
-    public void onPermissionsaAlowed(int requestCode, String[] permissions, int[] grantResults) {
-        super.onPermissionsaAlowed(requestCode, permissions, grantResults);
+    public void onPermissionsAllowed(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsAllowed(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_CAMARER:
                 startCameraApp();

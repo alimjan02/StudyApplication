@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -25,17 +24,15 @@ import android.widget.ViewSwitcher;
 import com.bumptech.glide.Glide;
 import com.sxt.banner.BannerConfig;
 import com.sxt.banner.BannerView;
-import com.sxt.banner.listener.OnBannerListener;
 import com.sxt.banner.loader.UILoaderInterface;
 import com.sxt.chat.R;
 import com.sxt.chat.activity.MainActivity;
 import com.sxt.chat.activity.RoomDetailActivity;
-import com.sxt.chat.adapter.GallaryAdapter;
+import com.sxt.chat.adapter.GalleryAdapter;
 import com.sxt.chat.adapter.NormalCardListAdapter;
 import com.sxt.chat.adapter.NormalListAdapter;
 import com.sxt.chat.adapter.config.NoScrollLinearLayoutManaget;
 import com.sxt.chat.base.BaseBottomSheetFragment;
-import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.base.LazyFragment;
 import com.sxt.chat.fragment.bottonsheet.GallaryBottomSheetFragment;
 import com.sxt.chat.json.Banner;
@@ -55,7 +52,6 @@ import java.util.List;
 public class HomePageFragment extends LazyFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
-    private NestedScrollView nestedScrollView;
     private RecyclerView recyclerViewTop;
     private RecyclerView recyclerViewCenter;
     private RecyclerView recyclerViewBottom;
@@ -68,7 +64,7 @@ public class HomePageFragment extends LazyFragment {
     private NormalListAdapter adapterTop;
     private NormalListAdapter adapterCenter;
     private NormalCardListAdapter adapterBottom;
-    private GallaryAdapter adapterGallary;
+    private GalleryAdapter adapterGallary;
     private BannerView bannerView;
 
     private final String CMD_GET_BANNER = this.getClass().getName() + "CMD_GET_BANNER";
@@ -83,7 +79,7 @@ public class HomePageFragment extends LazyFragment {
     @Override
     protected void initView() {
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
-        nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
+        NestedScrollView nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
         recyclerViewTop = contentView.findViewById(R.id.center_recyclerView);
         recyclerViewCenter = contentView.findViewById(R.id.bottom_recyclerView);
         recyclerViewBottom = contentView.findViewById(R.id.last_recyclerView);
@@ -94,7 +90,7 @@ public class HomePageFragment extends LazyFragment {
         viewSwitcherBottom = contentView.findViewById(R.id.last_viewSitcher);
         viewSwitcherGallary = contentView.findViewById(R.id.gallary_viewSwitcher);
 
-        recyclerViewTop.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
+        recyclerViewTop.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, true).setCanScrollVertically(false));
         recyclerViewCenter.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
         recyclerViewBottom.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
         recyclerViewGallary.setLayoutManager(new StaggeredGridLayoutManager(5, LinearLayoutManager.HORIZONTAL));
@@ -105,34 +101,23 @@ public class HomePageFragment extends LazyFragment {
         recyclerViewGallary.setNestedScrollingEnabled(false);
 
         //解决SwipeRefreshLayout 嵌套滑动冲突
-        AppBarLayout appBarLayout = (AppBarLayout) contentView.findViewById(R.id.app_bar_layout);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        AppBarLayout appBarLayout = contentView.findViewById(R.id.app_bar_layout);
+        appBarLayout.addOnOffsetChangedListener((appBarLayout1, verticalOffset) -> {
 
-                if (verticalOffset >= 0) {
-                    swipeRefreshLayout.setEnabled(true);
-                } else {
-                    swipeRefreshLayout.setEnabled(false);
-                }
+            if (verticalOffset >= 0) {
+                swipeRefreshLayout.setEnabled(true);
+            } else {
+                swipeRefreshLayout.setEnabled(false);
             }
         });
         //初始化刷新控件
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshData();
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
         //设置滑动监听,使得底部tab栏竖直滑动
-        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                Log.e("scrollY", String.format("oldScrollY = %s ; scrollY = %s", oldScrollY, scrollY));
-                MainActivity activity = (MainActivity) HomePageFragment.this.activity;
-                activity.setBottomBarTranslateY(scrollY, scrollY > oldScrollY);
-            }
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            Log.e("scrollY", String.format("oldScrollY = %s ; scrollY = %s", oldScrollY, scrollY));
+            MainActivity activity = (MainActivity) HomePageFragment.this.activity;
+            activity.setBottomBarTranslateY(scrollY, scrollY > oldScrollY);
         });
     }
 
@@ -161,12 +146,9 @@ public class HomePageFragment extends LazyFragment {
     private void refresh() {
         if (swipeRefreshLayout != null)
             //为什么要手动刷新? , 因为swipRefreshLayout初始化并不会调用onRefresh
-            swipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefreshLayout.setRefreshing(true);
-                    refreshData();
-                }
+            swipeRefreshLayout.post(() -> {
+                swipeRefreshLayout.setRefreshing(true);
+                refreshData();
             });
     }
 
@@ -206,23 +188,20 @@ public class HomePageFragment extends LazyFragment {
                             return view;
                         }
                     })
-                    .setOnBannerListener(new OnBannerListener() {
-                        @Override
-                        public void OnBannerClick(int position) {
-                            Intent intent = new Intent(context, RoomDetailActivity.class);
-                            Bundle bundle = new Bundle();
-                            RoomInfo roomInfo = new RoomInfo();
-                            roomInfo.setHome_name(banners.get(position).getDescription());
-                            roomInfo.setRoom_url(banners.get(position).getUrl());
-                            bundle.putSerializable(Prefs.ROOM_INFO, roomInfo);
-                            intent.putExtra(Prefs.ROOM_INFO, bundle);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                context.startActivity(intent,
-                                        ActivityOptions.makeSceneTransitionAnimation
-                                                ((Activity) context, bannerView, "shareView").toBundle());
-                            } else {
-                                context.startActivity(intent);
-                            }
+                    .setOnBannerListener(position -> {
+                        Intent intent = new Intent(context, RoomDetailActivity.class);
+                        Bundle bundle = new Bundle();
+                        RoomInfo roomInfo = new RoomInfo();
+                        roomInfo.setHome_name(banners.get(position).getDescription());
+                        roomInfo.setRoom_url(banners.get(position).getUrl());
+                        bundle.putSerializable(Prefs.ROOM_INFO, roomInfo);
+                        intent.putExtra(Prefs.ROOM_INFO, bundle);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            context.startActivity(intent,
+                                    ActivityOptions.makeSceneTransitionAnimation
+                                            ((Activity) context, bannerView, "shareView").toBundle());
+                        } else {
+                            context.startActivity(intent);
                         }
                     })
                     .setDelayTime(3000)
@@ -263,7 +242,7 @@ public class HomePageFragment extends LazyFragment {
                 refreshRoom(resp.getRoomInfoList());
                 BmobRequest.getInstance(activity).getBanner(50, 0, CMD_GET_GALLARY);
             } else if (CMD_GET_GALLARY.equals(resp.getCmd())) {
-                refreshGallary(resp.getBannerInfos());
+                refreshGallery(resp.getBannerInfos());
                 swipeRefreshLayout.setRefreshing(false);
             }
         } else {
@@ -272,7 +251,7 @@ public class HomePageFragment extends LazyFragment {
         }
     }
 
-    private void refreshGallary(final List<Banner> list) {
+    private void refreshGallery(final List<Banner> list) {
         if (list == null || list.size() == 0) {
             viewSwitcherGallary.setDisplayedChild(0);
         } else {
@@ -280,26 +259,20 @@ public class HomePageFragment extends LazyFragment {
         }
         if (adapterGallary == null) {
             recyclerViewGallary.setLayoutManager(new StaggeredGridLayoutManager(5, LinearLayoutManager.HORIZONTAL));
-            adapterGallary = new GallaryAdapter(activity, list);
+            adapterGallary = new GalleryAdapter(activity, list);
             viewSwitcherGallary.setDisplayedChild(1);
             recyclerViewGallary.setNestedScrollingEnabled(false);
             recyclerViewGallary.setAdapter(adapterGallary);
-            adapterGallary.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
-                @Override
-                public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(Prefs.KEY_BANNER_INFO, (Serializable) list);
-                    BaseBottomSheetFragment sheetFragment = new GallaryBottomSheetFragment()
-                            .setOnBottomSheetDialogCreateListener(new BaseBottomSheetFragment.OnBottomSheetDialogCreateListener() {
-                                @Override
-                                public void onBottomSheetDialogCreate(BaseBottomSheetFragment bottomSheetFragment, BottomSheetDialog bottomSheetDialog, View contentView) {
-                                    bottomSheetFragment.defaultSettings(bottomSheetDialog, contentView);
-                                    bottomSheetDialog.setCanceledOnTouchOutside(false);
-                                }
-                            });
-                    sheetFragment.setArguments(bundle);
-                    sheetFragment.show(getFragmentManager());
-                }
+            adapterGallary.setOnItemClickListener((position, holder, object) -> {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Prefs.KEY_BANNER_INFO, (Serializable) object);
+                BaseBottomSheetFragment sheetFragment = new GallaryBottomSheetFragment()
+                        .setOnBottomSheetDialogCreateListener((bottomSheetFragment, bottomSheetDialog, contentView) -> {
+                            bottomSheetFragment.defaultSettings(bottomSheetDialog, contentView);
+                            bottomSheetDialog.setCanceledOnTouchOutside(false);
+                        });
+                sheetFragment.setArguments(bundle);
+                sheetFragment.show(getFragmentManager());
             });
         } else {
             adapterGallary.notifyDataSetChanged(list);

@@ -78,7 +78,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="上海一角"
+                        android:text="少年歌行"
                         android:textColor="@color/black" />
 
                 </FrameLayout>
@@ -117,7 +117,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="风景图片"
+                        android:text="画江湖"
                         android:textColor="@color/black" />
 
                 </FrameLayout>
@@ -156,7 +156,7 @@
                         style="@style/text_14_color_1_style"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="风景图片"
+                        android:text="血色苍穹"
                         android:textColor="@color/black" />
 
                     <TextView
@@ -203,7 +203,7 @@
                         style="@style/text_14_color_1_style"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="风景图片"
+                        android:text="一些风景"
                         android:textColor="@color/black" />
 
                     <TextView

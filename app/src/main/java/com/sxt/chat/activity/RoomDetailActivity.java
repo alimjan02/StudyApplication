@@ -40,7 +40,7 @@ public class RoomDetailActivity extends BaseActivity {
         if (bundle != null) {
             RoomInfo roomInfo = (RoomInfo) bundle.getSerializable(Prefs.ROOM_INFO);
             CollapsingToolbarLayout toolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
-//            toolbarLayout.setTitle(roomInfo != null ? roomInfo.getHome_name() : "房间详情");
+            toolbarLayout.setTitle(roomInfo != null ? roomInfo.getHome_name() : "");
             Glide.with(this)
                     .load(roomInfo != null ? roomInfo.getRoom_url() : "")
                     .placeholder(R.mipmap.ic_banner_placeholder)
@@ -49,19 +49,11 @@ public class RoomDetailActivity extends BaseActivity {
                     .into((ImageView) findViewById(R.id.image_scrolling_top));
         }
         //让点击导航的逻辑箭头与后键相同，手动finish掉 没有动画效果
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
         FloatingActionButton fab = findViewById(R.id.fab_my_location);
 //        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yellow_rgb_253_202_78)));
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
+        fab.setOnClickListener(view -> {
         });
     }
 

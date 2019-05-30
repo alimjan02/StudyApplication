@@ -58,21 +58,17 @@ public class NormalCardListAdapter extends BaseRecyclerAdapter<RoomInfo> {
                 .bitmapTransform(new GlideCircleTransformer(context))
                 .into(holder.img_header);
 
-        holder.root.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, RoomDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(Prefs.ROOM_INFO, getItem(position));
-                intent.putExtra(Prefs.ROOM_INFO, bundle);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    context.startActivity(intent,
-                            ActivityOptions.makeSceneTransitionAnimation
-                                    ((Activity) context, holder.img, "shareView").toBundle());
-                } else {
-                    context.startActivity(intent);
-                }
+        holder.root.setOnClickListener(v -> {
+            Intent intent = new Intent(context, RoomDetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Prefs.ROOM_INFO, getItem(position));
+            intent.putExtra(Prefs.ROOM_INFO, bundle);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                context.startActivity(intent,
+                        ActivityOptions.makeSceneTransitionAnimation
+                                ((Activity) context, holder.img, "shareView").toBundle());
+            } else {
+                context.startActivity(intent);
             }
         });
         holder.root.startAnimation(AnimationUtils.loadAnimation(context, R.anim.anim_item_horizontal_percent_20));

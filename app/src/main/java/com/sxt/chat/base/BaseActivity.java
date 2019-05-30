@@ -156,7 +156,7 @@ public class BaseActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (hasAllPermissionsGranted(grantResults)) {
-            onPermissionsaAlowed(requestCode, permissions, grantResults);
+            onPermissionsAllowed(requestCode, permissions, grantResults);
         } else {
             if (!shouldShowRequestPermissionRationale(permissions[0])) {
                 onPermissionsRefusedNever(requestCode, permissions, grantResults);
@@ -166,8 +166,8 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void onPermissionsaAlowed(int requestCode, String[] permissions, int[] grantResults) {
-        Log.e(TAG, "onPermissionsaAlowed --> requestCode:" + requestCode);
+    public void onPermissionsAllowed(int requestCode, String[] permissions, int[] grantResults) {
+        Log.e(TAG, "onPermissionsAllowed --> requestCode:" + requestCode);
     }
 
     public void onPermissionsRefused(int requestCode, String[] permissions, int[] grantResults) {

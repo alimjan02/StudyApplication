@@ -42,12 +42,7 @@ public class BottomSheetAdapter extends BaseRecyclerAdapter<Banner> {
                 .error(R.mipmap.ic_launcher_round)
                 .bitmapTransform(new GlideCircleTransformer(context))
                 .into(holder.img);
-        holder.root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.showSnackBar((Activity) context, "祠堂里的小英子");
-            }
-        });
+        holder.root.setOnClickListener(v -> ToastUtil.showSnackBar((Activity) context, "祠堂里的小英子"));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
