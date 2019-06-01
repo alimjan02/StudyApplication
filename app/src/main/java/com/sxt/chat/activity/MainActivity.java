@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -29,8 +30,6 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -68,8 +67,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private boolean isFirst = true;
     private ImageView userIcon;
     private TextView userInfo, userName;
-    private LinearLayout tabGroup;
     private DrawerLayout drawerLayout;
+    private BottomNavigationView bottomNavigationView;
     private ActionBarDrawerToggle drawerToggle;
     private View bottomBarLayout;
     private MaterialSearchView searchView;
@@ -94,7 +93,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             finish();
         } else {
             setContentView(R.layout.activity_main);
-            initVIew();
+            initView();
             initDrawer();
             initFragment();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -105,9 +104,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         }
     }
 
-    private void initVIew() {
+    private void initView() {
         drawerLayout = findViewById(R.id.drawerLayout);
-        tabGroup = findViewById(R.id.radio_group);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomBarLayout = findViewById(R.id.bottom_bar_layout);
         findViewById(R.id.basic_info).setOnClickListener(this);
         findViewById(R.id.normal_settings).setOnClickListener(this);
@@ -147,17 +146,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
     private void initFragment() {
         Map<Integer, BaseFragment> fragmentMap = new LinkedHashMap<>();
-        fragmentMap.put(0, new HomePageFragment());
-        fragmentMap.put(1, new GalleryFragment());
-        fragmentMap.put(2, new ChartFragment());
-        fragmentMap.put(3, new NewsFragment());
-
-        Map<Integer, RadioButton> tabMap = new LinkedHashMap<>();
-        for (int i = 0; i < tabGroup.getChildCount(); i++) {
-            tabMap.put(i, (RadioButton) tabGroup.getChildAt(i));
-        }
-        String[] titles = new String[]{getString(R.string.string_tab_home), getString(R.string.string_tab_gallary), getString(R.string.string_tab_chart), getString(R.string.string_tab_news)};
-        initFragment(fragmentMap, tabMap, titles, R.id.container, 0);
+        fragmentMap.put(R.id.home, new HomePageFragment());
+        fragmentMap.put(R.id.gallery, new GalleryFragment());
+        fragmentMap.put(R.id.chart, new ChartFragment());
+        fragmentMap.put(R.id.ad, new NewsFragment());
+        initFragment(fragmentMap, bottomNavigationView, R.id.container, 0);
     }
 
     private void initDrawer() {
@@ -408,19 +401,17 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     }
 
     @Override
-    protected void onTabCheckedChange(String[] titles, int checkedId) {
-        super.onTabCheckedChange(titles, checkedId);
+    protected void onTabCheckedChange(MenuItem menuItem) {
+        super.onTabCheckedChange(menuItem);
         if (floatButton != null) {
-            floatButton.setVisibility(checkedId == 0 ? View.VISIBLE : View.GONE);
+            floatButton.setVisibility(menuItem.getItemId() == R.id.home ? View.VISIBLE : View.GONE);
         }
-        if (titles != null && titles.length > checkedId) {
-            setToolbarTitle(titles[checkedId]);
-            if (menu != null) {
-                if (checkedId == 0) {
-                    menu.findItem(R.id.action_search).setVisible(true);
-                } else {
-                    menu.findItem(R.id.action_search).setVisible(false);
-                }
+        setToolbarTitle(menuItem.getTitle());
+        if (menu != null) {
+            if (menuItem.getItemId() == R.id.home) {
+                menu.findItem(R.id.action_search).setVisible(true);
+            } else {
+                menu.findItem(R.id.action_search).setVisible(false);
             }
         }
     }
@@ -552,7 +543,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         if (floatButton != null) {
-            floatButton.onDestory();
+            floatButton.onDestroy();
         }
         super.onDestroy();
     }

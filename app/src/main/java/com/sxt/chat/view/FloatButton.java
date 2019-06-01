@@ -157,7 +157,7 @@ public class FloatButton {
         void onClick(View view);
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         if (itemFloatView != null && dectorView != null) {
             dectorView.removeView(itemFloatView);
         }

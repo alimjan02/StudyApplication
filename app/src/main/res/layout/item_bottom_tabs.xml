@@ -10,35 +10,16 @@
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="false">
 
-    <LinearLayout
-        android:id="@+id/radio_group"
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_app_bar_height">
-
-        <RadioButton
-            android:id="@+id/tab_1"
-            style="@style/bottom_radio"
-            android:drawableTop="@drawable/tab_1_selector"
-            android:text="@string/string_tab_home" />
-
-        <RadioButton
-            android:id="@+id/tab_2"
-            style="@style/bottom_radio"
-            android:drawableTop="@drawable/tab_2_selector"
-            android:text="@string/string_tab_gallary" />
-
-        <RadioButton
-            android:id="@+id/tab_3"
-            style="@style/bottom_radio"
-            android:drawableTop="@drawable/tab_3_selector"
-            android:text="@string/string_tab_chart" />
-
-        <RadioButton
-            android:id="@+id/tab_4"
-            style="@style/bottom_radio"
-            android:drawableTop="@drawable/tab_4_selector"
-            android:text="@string/string_tab_news" />
-
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        app:itemHorizontalTranslationEnabled="true"
+        app:itemIconTint="@drawable/bottom_navigation_colors"
+        app:itemTextAppearanceActive="@style/bottom_navigation_bar_text_active_style"
+        app:itemTextAppearanceInactive="@style/bottom_navigation_bar_text_inactive_style"
+        app:itemTextColor="@drawable/bottom_navigation_colors"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_navigation_menu" />
 
 </android.support.v7.widget.CardView>

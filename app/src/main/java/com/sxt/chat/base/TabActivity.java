@@ -1,11 +1,11 @@
 package com.sxt.chat.base;
 
 import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
-import android.widget.RadioButton;
+import android.view.MenuItem;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -14,50 +14,42 @@ import java.util.Map;
  * Created by sxt on 2018/1/17.
  */
 public abstract class TabActivity extends HeaderActivity {
-    private Fragment prefragment;
+    private Fragment preFragment;
     private FragmentManager fragmentManager;
     private Map<Integer, BaseFragment> fragmentMap;
     private OnCheckedChangeListener onCheckedChangeListener;
     private int containerId;
-    private Map<Integer, RadioButton> tabs;
-    private String[] titles;
 
-    protected void initFragment(Map<Integer, BaseFragment> fragmentMap, Map<Integer, RadioButton> tabs, String[] titles, int containerId, int defaultChecked) {
+    protected void initFragment(Map<Integer, BaseFragment> fragmentMap, BottomNavigationView bottomNavigationView, int containerId, int defaultChecked) {
         fragmentManager = getSupportFragmentManager();
         this.fragmentMap = fragmentMap;
         this.containerId = containerId;
-        this.tabs = tabs;
-        this.titles = titles;
-        if (tabs != null && fragmentMap != null && tabs.size() == fragmentMap.size()) {
-            for (Map.Entry<Integer, RadioButton> entry : tabs.entrySet()) {
-                entry.getValue().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        changeFragment((Integer) view.getTag());
-                    }
-                });
-                entry.getValue().setTag(entry.getKey());
-            }
-            changeFragment(defaultChecked);
+        if (bottomNavigationView != null && fragmentMap != null && bottomNavigationView.getMenu().size() == fragmentMap.size()) {
+            bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+                changeFragment(menuItem);
+                menuItem.setChecked(true);
+                return false;
+            });
+            changeFragment(bottomNavigationView.getMenu().getItem(defaultChecked));
         }
     }
 
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
-        if (prefragment != null && prefragment.isResumed()) {
-            prefragment.setUserVisibleHint(prefragment.getUserVisibleHint());
+        if (preFragment != null && preFragment.isResumed()) {
+            preFragment.setUserVisibleHint(preFragment.getUserVisibleHint());
         }
     }
 
-    protected void changeFragment(int checkedId) {
+    protected void changeFragment(MenuItem menuItem) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        BaseFragment fragment = fragmentMap.get(checkedId);
-        if (fragment != null && !fragment.equals(prefragment)) {
-            changeTab(checkedId);
-            if (prefragment != null) {
-                transaction.hide(prefragment);
-                prefragment.setUserVisibleHint(false);
+        BaseFragment fragment = fragmentMap.get(menuItem.getItemId());
+        if (fragment != null && !fragment.equals(preFragment)) {
+            onTabCheckedChange(menuItem);
+            if (preFragment != null) {
+                transaction.hide(preFragment);
+                preFragment.setUserVisibleHint(false);
             }
             if (!fragment.isAdded()) {
                 transaction.add(containerId, fragment, fragment.getClass().getName());
@@ -65,31 +57,15 @@ public abstract class TabActivity extends HeaderActivity {
                 transaction.show(fragment);
             }
             if (onCheckedChangeListener != null) {
-                onCheckedChangeListener.onCheckedChange(checkedId);
+                onCheckedChangeListener.onCheckedChange(menuItem.getItemId());
             }
-            prefragment = fragment;
-            prefragment.setUserVisibleHint(true);
+            preFragment = fragment;
+            preFragment.setUserVisibleHint(true);
             transaction.commit();
-
         }
     }
 
-    private void changeTab(int checkedId) {
-        if (tabs != null) {
-            if (titles != null && titles.length > checkedId) {
-                onTabCheckedChange(titles, checkedId);
-            }
-            for (Map.Entry<Integer, RadioButton> entry : tabs.entrySet()) {
-                if (entry.getKey() == checkedId) {
-                    entry.getValue().setChecked(true);
-                } else {
-                    entry.getValue().setChecked(false);
-                }
-            }
-        }
-    }
-
-    protected void onTabCheckedChange(String[] titles, int checkedId) {
+    protected void onTabCheckedChange(MenuItem menuItem) {
 
     }
 

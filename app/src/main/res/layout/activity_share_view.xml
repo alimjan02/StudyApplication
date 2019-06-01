@@ -21,8 +21,7 @@
             app:collapsedTitleTextAppearance="@style/text_17_color_white_style"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleGravity="center"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title="@string/feedback">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
                 android:id="@+id/image_scrolling_top"

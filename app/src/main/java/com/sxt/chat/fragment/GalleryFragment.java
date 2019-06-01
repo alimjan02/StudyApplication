@@ -9,10 +9,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ import com.sxt.banner.Transformer;
 import com.sxt.banner.loader.UILoaderInterface;
 import com.sxt.banner.transformer.ScaleInTransformer;
 import com.sxt.chat.R;
+import com.sxt.chat.activity.MainActivity;
 import com.sxt.chat.activity.RoomDetailActivity;
 import com.sxt.chat.adapter.GalleryAdapter;
 import com.sxt.chat.base.BaseBottomSheetFragment;
@@ -51,6 +54,7 @@ public class GalleryFragment extends LazyFragment {
     private BannerView bannerView;
     private ViewSwitcher viewSwitcherBanner;
     private RecyclerView recyclerView;
+    private NestedScrollView nestedScrollView;
     private GalleryAdapter adapter;
     private ViewSwitcher viewSwitcher;
 
@@ -67,6 +71,7 @@ public class GalleryFragment extends LazyFragment {
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = contentView.findViewById(R.id.recyclerView);
         viewSwitcherBanner = contentView.findViewById(R.id.banner_viewSwitcher);
+        nestedScrollView=contentView.findViewById(R.id.nestedScrollView);
         viewSwitcher = contentView.findViewById(R.id.viewSitcher);
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
         swipeRefreshLayout.setOnRefreshListener(this::refresh);
@@ -84,6 +89,12 @@ public class GalleryFragment extends LazyFragment {
             } else {
                 swipeRefreshLayout.setEnabled(false);
             }
+        });
+        //设置滑动监听,使得底部tab栏竖直滑动
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            Log.e("scrollY", String.format("oldScrollY = %s ; scrollY = %s", oldScrollY, scrollY));
+            MainActivity activity = (MainActivity) context;
+            activity.setBottomBarTranslateY(scrollY, scrollY > oldScrollY);
         });
     }
 

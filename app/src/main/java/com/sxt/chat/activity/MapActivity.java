@@ -24,7 +24,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
@@ -61,7 +60,6 @@ import com.sxt.chat.R;
 import com.sxt.chat.adapter.LocationAdapter;
 import com.sxt.chat.adapter.config.DividerItemDecoration;
 import com.sxt.chat.base.BaseActivity;
-import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.json.LocationInfo;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.AnimationUtil;
@@ -108,7 +106,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     private List<Circle> listCircle = new ArrayList<>();
     private Map<Integer, Marker> markers = new HashMap<>();
     private LatLng centerLatLng = new LatLng(31.236255, 121.470231);
-    private GpsReceivcer gpsReceivcer;
+    private GpsReceiver gpsReceiver;
     private final String ACTION_GPS_STATE = "android.location.PROVIDERS_CHANGED";
     private String CMD_GET_LOCATION_INTOS = this.getClass().getName() + "CMD_GET_LOCATION_INTOS";
 
@@ -132,8 +130,8 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     }
 
     private void registerReceiver() {
-        gpsReceivcer = new GpsReceivcer();
-        registerReceiver(gpsReceivcer, new IntentFilter(ACTION_GPS_STATE));
+        gpsReceiver = new GpsReceiver();
+        registerReceiver(gpsReceiver, new IntentFilter(ACTION_GPS_STATE));
     }
 
     private void initTitle() {
@@ -143,17 +141,14 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         }
         heightPixels = getResources().getDisplayMetrics().heightPixels;
         final CardView cardView = findViewById(R.id.cardView);
-        cardView.post(new Runnable() {
-            @Override
-            public void run() {
-                CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) cardView.getLayoutParams();
-                int statusBarHeight = 0;
-                int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-                if (resourceId > 0) {
-                    statusBarHeight = getResources().getDimensionPixelSize(resourceId);
-                }
-                marginTop = cardView.getHeight() + lp.topMargin + lp.bottomMargin / 2 + statusBarHeight;
+        cardView.post(() -> {
+            CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) cardView.getLayoutParams();
+            int statusBarHeight = 0;
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                statusBarHeight = getResources().getDimensionPixelSize(resourceId);
             }
+            marginTop = cardView.getHeight() + lp.topMargin + lp.bottomMargin / 2 + statusBarHeight;
         });
     }
 
@@ -170,25 +165,19 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         final FloatingActionButton fabScrolling = findViewById(R.id.fab_scrolling);
         fabScrolling.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white)));
         fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white)));
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mLocationClient != null) {
-                    mLocationClient.startLocation();
-                }
+        fab.setOnClickListener(view -> {
+            if (mLocationClient != null) {
+                mLocationClient.startLocation();
             }
         });
-        fabScrolling.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LatLng latLng;
-                if (aMapLocation != null) {
-                    latLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-                } else {
-                    latLng = centerLatLng;
-                }
-                openGaoDeMap(latLng, getString(R.string.app_name));
+        fabScrolling.setOnClickListener(v -> {
+            LatLng latLng;
+            if (aMapLocation != null) {
+                latLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+            } else {
+                latLng = centerLatLng;
             }
+            openGaoDeMap(latLng, getString(R.string.app_name));
         });
         bottomSheetBehavior = BottomSheetBehavior.from(nestedScrollView);
         peekHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
@@ -232,12 +221,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
                 Log.e(TAG, String.format("slideOffset -->>> %s bottomSheet.getHeight() -->>> %s heightPixels -->>> %s", slideOffset, bottomSheet.getHeight(), heightPixels));
             }
         });
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchView.setText("");
-            }
-        });
+        close.setOnClickListener(v -> searchView.setText(""));
         searchView.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -245,34 +229,26 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
                 AnimationUtil.rotation(close, !TextUtils.isEmpty(s.toString().trim()));
             }
         });
-        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                searchView.setCursorVisible(hasFocus);
-            }
-        });
-        searchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    hideSoft(searchView);
-                    String keyWord = searchView.getText().toString().trim();
-                    if (TextUtils.isEmpty(keyWord)) {
-                        Toast(coordinatorLayout, R.string.key_word_is_empty);
-                        return false;
-                    }
-                    PoiSearch.Query query = new PoiSearch.Query(keyWord, "", "");
-                    if (poiSearch == null) {
-                        poiSearch = new PoiSearch(MapActivity.this, query);
-                        poiSearch.setOnPoiSearchListener(MapActivity.this);
-                    } else {
-                        poiSearch.setQuery(query);
-                    }
-                    poiSearch.searchPOIAsyn();
-                    searchView.setCursorVisible(false);
+        searchView.setOnFocusChangeListener((v, hasFocus) -> searchView.setCursorVisible(hasFocus));
+        searchView.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideSoft(searchView);
+                String keyWord = searchView.getText().toString().trim();
+                if (TextUtils.isEmpty(keyWord)) {
+                    Toast(coordinatorLayout, R.string.key_word_is_empty);
+                    return false;
                 }
-                return false;
+                PoiSearch.Query query = new PoiSearch.Query(keyWord, "", "");
+                if (poiSearch == null) {
+                    poiSearch = new PoiSearch(MapActivity.this, query);
+                    poiSearch.setOnPoiSearchListener(MapActivity.this);
+                } else {
+                    poiSearch.setQuery(query);
+                }
+                poiSearch.searchPOIAsyn();
+                searchView.setCursorVisible(false);
             }
+            return false;
         });
     }
 
@@ -425,16 +401,13 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
 
     private void refresh(List<LocationInfo> list) {
         if (list != null) {
-            Collections.sort(list, new Comparator<LocationInfo>() {
-                @Override
-                public int compare(LocationInfo o1, LocationInfo o2) {
-                    if (o1.getDistance() > o2.getDistance()) {
-                        return 1;
-                    } else if (o1.getDistance() < o2.getDistance()) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
+            Collections.sort(list, (o1, o2) -> {
+                if (o1.getDistance() > o2.getDistance()) {
+                    return 1;
+                } else if (o1.getDistance() < o2.getDistance()) {
+                    return -1;
+                } else {
+                    return 0;
                 }
             });
         }
@@ -442,37 +415,34 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
             recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             recyclerView.addItemDecoration(new DividerItemDecoration(this, ContextCompat.getDrawable(this, R.drawable.divider_colors)));
             locationAdapter = new LocationAdapter(this, list);
-            locationAdapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
-                @Override
-                public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
-                    locationAdapter.refreshIndex(position);
-                    if (markers.get(position + 1) != null && (markers.get(position + 1).equals(markerPre)))
-                        return;//点击的是同一条数据
-                    if (markerPre != null) {//先将上次的标记reset
-                        View view = View.inflate(MapActivity.this, R.layout.item_marker, null);
-                        ((TextView) view.findViewById(R.id.num)).setText(String.valueOf(markerIndexPre));
-                        ((ImageView) view.findViewById(R.id.img)).setImageResource(R.drawable.ic_location_blue_small);
-                        markerPre.remove();
-                        markers.put(markerIndexPre, aMap.addMarker(new MarkerOptions()
-                                .icon(BitmapDescriptorFactory.fromView(view))
-                                .position(markerPre.getPosition())));
-                    }
-                    markerIndexPre = position + 1;
-                    if (markers.get(markerIndexPre) != null) {
-                        aMap.moveCamera(CameraUpdateFactory.zoomTo(ZOOM_MAP));
-                        aMap.moveCamera(CameraUpdateFactory.changeLatLng(markers.get(markerIndexPre).getPosition()));
-                        View view = View.inflate(MapActivity.this, R.layout.item_marker, null);
-                        ((TextView) view.findViewById(R.id.num)).setText(String.valueOf(markerIndexPre));
-                        ((ImageView) view.findViewById(R.id.img)).setImageResource(R.drawable.ic_location_blue_big);
-                        markers.get(markerIndexPre).remove();
-                        markers.put(markerIndexPre, aMap.addMarker(new MarkerOptions()
-                                .icon(BitmapDescriptorFactory.fromView(view))
-                                .position(markers.get(markerIndexPre).getPosition())));
-                        startAnimation(markers.get(markerIndexPre));
-                        markerPre = markers.get(markerIndexPre);
-                    }
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            locationAdapter.setOnItemClickListener((position, holder, object) -> {
+                locationAdapter.refreshIndex(position);
+                if (markers.get(position + 1) != null && (markers.get(position + 1).equals(markerPre)))
+                    return;//点击的是同一条数据
+                if (markerPre != null) {//先将上次的标记reset
+                    View view = View.inflate(MapActivity.this, R.layout.item_marker, null);
+                    ((TextView) view.findViewById(R.id.num)).setText(String.valueOf(markerIndexPre));
+                    ((ImageView) view.findViewById(R.id.img)).setImageResource(R.drawable.ic_location_blue_small);
+                    markerPre.remove();
+                    markers.put(markerIndexPre, aMap.addMarker(new MarkerOptions()
+                            .icon(BitmapDescriptorFactory.fromView(view))
+                            .position(markerPre.getPosition())));
                 }
+                markerIndexPre = position + 1;
+                if (markers.get(markerIndexPre) != null) {
+                    aMap.moveCamera(CameraUpdateFactory.zoomTo(ZOOM_MAP));
+                    aMap.moveCamera(CameraUpdateFactory.changeLatLng(markers.get(markerIndexPre).getPosition()));
+                    View view = View.inflate(MapActivity.this, R.layout.item_marker, null);
+                    ((TextView) view.findViewById(R.id.num)).setText(String.valueOf(markerIndexPre));
+                    ((ImageView) view.findViewById(R.id.img)).setImageResource(R.drawable.ic_location_blue_big);
+                    markers.get(markerIndexPre).remove();
+                    markers.put(markerIndexPre, aMap.addMarker(new MarkerOptions()
+                            .icon(BitmapDescriptorFactory.fromView(view))
+                            .position(markers.get(markerIndexPre).getPosition())));
+                    startAnimation(markers.get(markerIndexPre));
+                    markerPre = markers.get(markerIndexPre);
+                }
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             });
             recyclerView.setAdapter(locationAdapter);
         } else {
@@ -550,23 +520,16 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     }
 
     private void clearCircle() {
-        if (valueAnimator != null && valueAnimator.isRunning()) {
-            valueAnimator.cancel();
-        }
-        for (int i = 0; i < listCircle.size(); i++) {
-            listCircle.get(i).remove();
-            listCircle.remove(i);
-        }
+        if (valueAnimator != null && valueAnimator.isRunning()) valueAnimator.cancel();
+        for (int i = 0; i < listCircle.size(); i++) listCircle.get(i).remove();
+        listCircle.clear();
     }
 
     private void startAnimator(final Circle circle) {
         valueAnimator = ValueAnimator.ofFloat(10, maxRadius).setDuration(3000);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mAnimatorValue = (float) animation.getAnimatedValue();
-                circle.setRadius(mAnimatorValue);
-            }
+        valueAnimator.addUpdateListener(animation -> {
+            mAnimatorValue = (float) animation.getAnimatedValue();
+            circle.setRadius(mAnimatorValue);
         });
         valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
         valueAnimator.setRepeatMode(ValueAnimator.REVERSE);//反向重复执行,可以避免抖动
@@ -629,7 +592,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         releaseClient();
     }
 
-    private class GpsReceivcer extends BroadcastReceiver {
+    private class GpsReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -694,8 +657,8 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         super.onDestroy();
         if (mapView != null) mapView.onDestroy();
         releaseClient();
-        if (gpsReceivcer != null) {
-            unregisterReceiver(gpsReceivcer);
+        if (gpsReceiver != null) {
+            unregisterReceiver(gpsReceiver);
         }
         if (valueAnimator != null && valueAnimator.isRunning()) {
             valueAnimator.cancel();

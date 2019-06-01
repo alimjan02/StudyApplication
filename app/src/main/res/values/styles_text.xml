@@ -244,4 +244,12 @@
         <item name="android:paddingRight">@dimen/search_icon_padding</item>
     </style>
 
+    <style name="bottom_navigation_bar_text_active_style">
+        <item name="android:textSize">13dp</item>
+    </style>
+
+    <style name="bottom_navigation_bar_text_inactive_style">
+        <item name="android:textSize">13dp</item>
+    </style>
+
 </resources>
