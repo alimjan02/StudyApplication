@@ -1,50 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/root"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?selectableItemBackground"
-        android:paddingBottom="15dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <TextView
-            style="@style/text_15_color_1_style"
-            android:layout_centerVertical="true"
-            android:clickable="false"
-            android:focusable="false"
-            android:text="头像" />
-
-        <ImageView
-            android:id="@+id/arrow"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/root"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:clickable="false"
-            android:focusable="false"
-            android:src="@mipmap/common_icon_more" />
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackground"
+            android:paddingLeft="15dp"
+            android:paddingTop="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp">
 
-        <ImageView
-            android:id="@+id/img"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@id/arrow"
-            android:clickable="false"
-            android:focusable="false" />
+            <TextView
+                style="@style/text_15_color_1_style"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="头像" />
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:focusable="false"
+                android:src="@mipmap/common_icon_more" />
+
+            <ImageView
+                android:id="@+id/img"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@id/arrow"
+                android:clickable="false"
+                android:focusable="false" />
+
+        </RelativeLayout>
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/ad_banner_container"
@@ -52,4 +61,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" />
 
-</FrameLayout>
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/ad_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/adsense_app_ad_banner" />
+
+</LinearLayout>

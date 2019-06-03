@@ -109,6 +109,7 @@ dependencies {
     testImplementation "junit:junit:${rootProject.ext.junitVersion}"
     configurations.all {
         resolutionStrategy.force "com.android.support:support-media-compat:${rootProject.ext.supportLibraryVersion}"
+        resolutionStrategy.force "com.android.support:support-v4:${rootProject.ext.supportLibraryVersion}"
     }
     implementation "com.android.support:design:${rootProject.ext.supportLibraryVersion}"
     implementation "com.android.support:cardview-v7:${rootProject.ext.supportLibraryVersion}"
@@ -140,10 +141,16 @@ dependencies {
     implementation 'com.amap.api:search:6.5.0.1'
     implementation 'com.amap.api:location:4.6.0'
     // 微信分享&登录   implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
-    // ARCore library
+
+    implementation project(':refresh-layout')
+    implementation project(':crop_img')
+    implementation files('libs/GDTUnionSDK.4.19.573.min.jar')
+    implementation project(':banner')
+
+    //google 广告
+    implementation 'com.google.android.gms:play-services-ads:17.2.1'
+    //google ARCore library
     implementation 'com.google.ar:core:1.9.0'
-    // Obj - a simple Wavefront OBJ file loader
-    // https://github.com/javagl/Obj
     implementation 'de.javagl:obj:0.2.1'
     //google VR
     implementation 'com.google.android.exoplayer:extension-gvr:2.6.1'
@@ -151,11 +158,7 @@ dependencies {
     implementation 'com.google.vr:sdk-common:1.160.0'
     implementation 'com.google.vr:sdk-controller:1.160.0'
     implementation 'com.google.vr:sdk-panowidget:1.160.0'
-    implementation project(':refresh-layout')
-    implementation project(':crop_img')
-    implementation files('libs/GDTUnionSDK.4.19.573.min.jar')
-    implementation project(':banner')
-    //grpc相关
+    //google grpc相关
     implementation 'io.grpc:grpc-okhttp:1.7.0'
     implementation 'io.grpc:grpc-protobuf-lite:1.7.0'
     implementation 'io.grpc:grpc-stub:1.7.0'

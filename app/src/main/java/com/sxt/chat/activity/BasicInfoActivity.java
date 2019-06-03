@@ -1,7 +1,6 @@
 package com.sxt.chat.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +12,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.qq.e.ads.banner.AbstractBannerADListener;
 import com.qq.e.ads.banner.BannerView;
 import com.qq.e.comm.util.AdError;
@@ -37,20 +38,11 @@ import cn.bmob.v3.listener.UpdateListener;
 public class BasicInfoActivity extends HeaderActivity implements View.OnClickListener {
 
     private ImageView userPortait;
-    private TextView userName;
-    private TextView bodyNumber;
-    private TextView userSex;
-    private TextView userAge;
-    private TextView userWeight;
-    private TextView userHight;
-    private TextView userBmi;
+    private TextView userName, bodyNumber, userSex, userAge, userWeight, userHeight, userBmi;
     public static final int REQUESTCODE_USER_NAME = 998;
-    public static final int REQUESTCODE_IMG = 999;
-    public static final int REQUESTCODE_AGE = 1000;
-    public static final int REQUESTCODE_Number = 1001;
-    public static final int REQUESTCODE_SEX = 1002;
-    public static final int REQUESTCODE_WEIGHT = 1003;
-    public static final int REQUESTCODE_HIGHT = 1004;
+    public static final int REQUESTCODE_IMG = 999, REQUESTCODE_AGE = 1000;
+    public static final int REQUESTCODE_Number = 1001, REQUESTCODE_SEX = 1002;
+    public static final int REQUESTCODE_WEIGHT = 1003, REQUESTCODE_HIGHT = 1004;
 
     private final String CMD_SAVE_USER_IMG = "CMD_SAVE_USER_IMG";
     private final String CMD_SAVE_ID_CARD = "CMD_SAVE_ID_CARD";
@@ -59,12 +51,9 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
     private final String CMD_SAVE_USER_AGE = "CMD_SAVE_USER_AGE";
     private final String CMD_SAVE_USER_Weight = "CMD_SAVE_USER_Weight";
     private final String CMD_SAVE_USER_Height = "CMD_SAVE_USER_Height";
-    private String name;
-    private String age;
-    private String sex;
-    private String idCard;
-    private float weight;
-    private float hight;
+    private String name, age, sex, idCard;
+    private float weight, hight;
+    private AdView adGoogleBannerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,7 +61,12 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
         setContentView(R.layout.activity_basic_info);
 
         setTitle(R.string.basic_info);
+        initView();
+        loadUserDetailInfo();
+        initGoogleAdBanner();
+    }
 
+    private void initView() {
         findViewById(R.id.user_portrait_layout).setOnClickListener(this);
         findViewById(R.id.user_name_layout).setOnClickListener(this);
         findViewById(R.id.body_number_layout).setOnClickListener(this);
@@ -81,20 +75,17 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
         findViewById(R.id.user_weight_layout).setOnClickListener(this);
         findViewById(R.id.user_hight_layout).setOnClickListener(this);
 
-        userPortait = (ImageView) findViewById(R.id.user_portrait);
-        userName = (TextView) findViewById(R.id.user_name);
-        bodyNumber = (TextView) findViewById(R.id.body_number);
-        userSex = (TextView) findViewById(R.id.user_sex);
-        userAge = (TextView) findViewById(R.id.user_age);
-        userWeight = (TextView) findViewById(R.id.user_weight);
-        userHight = (TextView) findViewById(R.id.user_hight);
-        userBmi = (TextView) findViewById(R.id.user_bmi);
+        userPortait = findViewById(R.id.user_portrait);
+        userName = findViewById(R.id.user_name);
+        bodyNumber = findViewById(R.id.body_number);
+        userSex = findViewById(R.id.user_sex);
+        userAge = findViewById(R.id.user_age);
+        userWeight = findViewById(R.id.user_weight);
+        userHeight = findViewById(R.id.user_hight);
+        userBmi = findViewById(R.id.user_bmi);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             userPortait.setTransitionName("shareView");
         }
-
-        loadUserDetailInfo();
-        initAdBanner();
     }
 
     private void loadUserDetailInfo() {
@@ -105,18 +96,12 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
             userSex.setText(user.getGender() == null ? "" : user.getGender().equals("M") ? "男" : "女");
             userAge.setText((user.getAge() == null ? 0 : user.getAge()) <= 0 ? "" : user.getAge() + "岁");
             userWeight.setText((user.getWeight() == null ? 0 : user.getWeight()) <= 0.0 ? "" : String.valueOf(user.getWeight() + "KG"));
-            userHight.setText((user.getHeight() == null ? 0 : user.getHeight()) <= 0.0 ? "" : String.valueOf(user.getHeight() + "CM"));
+            userHeight.setText((user.getHeight() == null ? 0 : user.getHeight()) <= 0.0 ? "" : String.valueOf(user.getHeight() + "CM"));
             double pow = Math.pow(user.getHeight() == null ? 0 : user.getHeight(), 2);
             if (pow > 0.0) {
                 userBmi.setText(ArithTool.div((user.getWeight() == null ? 0 : user.getWeight()) * 10000, pow, 1) + "");
             }
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateHeadPortrait();
     }
 
     private void updateHeadPortrait() {
@@ -141,7 +126,10 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
                 .into(userPortait);
     }
 
-    private void initAdBanner() {
+    /**
+     * 腾讯Banner广告位
+     */
+    private void initTencentAdBanner() {
         FrameLayout bannerContainer = (FrameLayout) findViewById(R.id.ad_banner_container);
         // 创建Banner广告AdView对象
         // appId : 在 http://e.qq.com/dev/ 能看到的app唯一字符串
@@ -165,6 +153,47 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
         bannerContainer.addView(banner);
         /* 发起广告请求，收到广告数据后会展示数据   */
         banner.loadAD();
+    }
+
+    /**
+     * Google Banner广告位
+     */
+    private void initGoogleAdBanner() {
+        adGoogleBannerView = findViewById(R.id.ad_view);
+        //製作廣告請求。檢查您的logcat輸出中的散列設備ID，
+        // 以在物理設備上獲取測試廣告。例如
+        // “使用AdRequest.Builder.addTestDevice（”ABCDEF012345“）在此設備上獲取測試廣告。”
+        AdRequest adRequest = new AdRequest.Builder()
+//                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+
+        // 開始在後台加載廣告。
+        adGoogleBannerView.loadAd(adRequest);
+    }
+
+    @Override
+    public void onPause() {
+        if (adGoogleBannerView != null) {
+            adGoogleBannerView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateHeadPortrait();
+        if (adGoogleBannerView != null) {
+            adGoogleBannerView.resume();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (adGoogleBannerView != null) {
+            adGoogleBannerView.destroy();
+        }
+        super.onDestroy();
     }
 
     @Override
@@ -291,7 +320,7 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
             userSex.setText(user.getGender() == null ? "" : user.getGender().equals("M") ? "男" : "女");
             userAge.setText((user.getAge() == null ? 0 : user.getAge()) <= 0 ? "" : user.getAge() + "岁");
             userWeight.setText((user.getWeight() == null ? 0 : user.getWeight()) <= 0.0 ? "" : String.valueOf(user.getWeight() + "KG"));
-            userHight.setText((user.getHeight() == null ? 0 : user.getHeight()) <= 0.0 ? "" : String.valueOf(user.getHeight() + "CM"));
+            userHeight.setText((user.getHeight() == null ? 0 : user.getHeight()) <= 0.0 ? "" : String.valueOf(user.getHeight() + "CM"));
             if (weight > 0.0 && hight > 0.0) {
                 userBmi.setText(String.valueOf(ArithTool.div(weight * 10000, Math.pow(hight, 2), 1)));
             }
@@ -351,4 +380,6 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
             }
         });
     }
+
+
 }

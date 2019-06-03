@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sxt.chat.utils.AnimationUtil;
+
 /**
  * Created by sxt on 2016/5/17.
  */
@@ -60,8 +62,7 @@ public abstract class LazyFragment extends BaseFragment {
      * 每次点击tab都会调用该方法
      */
     protected void checkUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser) {
-        }
+        if (isVisibleToUser) loadWithAlpha(0.5f, 1.0f);
     }
 
     @Override
@@ -73,6 +74,13 @@ public abstract class LazyFragment extends BaseFragment {
      * fragment创建后 主动加载数据 一次
      */
     protected void loadData() {
+        loadWithAlpha(0, 1);
+    }
+
+    private void loadWithAlpha(float fromAlpha, float toAlpha) {
+        if (contentView != null) {
+            AnimationUtil.fadeInView(contentView, fromAlpha, toAlpha, AnimationUtil.ANIMATION_DURATION_MEDIUM, null);
+        }
     }
 
     protected abstract int getDisplayView(LayoutInflater inflater, ViewGroup container);

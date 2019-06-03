@@ -130,7 +130,9 @@ public class SplashActivity extends BaseActivity implements SplashADListener {
 //            intent.setData(Uri.parse("package:" + getPackageName()));
 //            startActivity(intent);
 //            finish();
-            startActivity(new Intent(this, MainActivity.class));
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(MainActivity.KEY_Ad_Permission_Refused, true);
+            startActivity(intent);
         }
     }
 

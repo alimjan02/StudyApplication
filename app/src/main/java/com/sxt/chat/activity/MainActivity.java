@@ -6,6 +6,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
@@ -14,6 +16,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -34,6 +37,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.ar.HelloArActivity;
@@ -75,8 +82,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private Menu menu;
     private FloatButton floatButton;
     private Handler handler = new Handler();
-    private final long millis = 5 * 60 * 1000L;
+    private final long millis = /*5 * 60*/ 10 * 1000L;
+    private InterstitialAd interstitialAd;
+
     private final int REQUEST_CODE_LOCATION = 201;
+    public static String KEY_Ad_Permission_Refused = "KEY_Ad_Permission_Refused";
     public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
     public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
@@ -96,11 +106,16 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             initView();
             initDrawer();
             initFragment();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(new Intent(App.getCtx(), MainService.class));
-            } else {
-                startService(new Intent(App.getCtx(), MainService.class));
-            }
+            startForgroundService();
+            initGoogleAds();
+        }
+    }
+
+    private void startForgroundService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(App.getCtx(), MainService.class));
+        } else {
+            startService(new Intent(App.getCtx(), MainService.class));
         }
     }
 
@@ -202,6 +217,57 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         });
     }
 
+    /**
+     * 初始化google ad
+     */
+    private void initGoogleAds() {
+        if (interstitialAd == null) {
+            MobileAds.initialize(this, getString(R.string.adsense_app_key));
+            interstitialAd = new InterstitialAd(this);
+            interstitialAd.setAdUnitId(getString(R.string.adsense_app_ad_chaping));
+            interstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    Log.e(TAG, "插屏广告加载成功");
+                }
+
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
+                    Log.e(TAG, "插屏广告加载失败 error code: " + errorCode);
+                    restartAds();
+                }
+
+                @Override
+                public void onAdClosed() {
+                    Log.e(TAG, "插屏广告关闭");
+                }
+            });
+        }
+    }
+
+    /**
+     * 预加载插屏广告
+     */
+    private void restartAds() {
+        initGoogleAds();
+        if (!interstitialAd.isLoading() && !interstitialAd.isLoaded()) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            interstitialAd.loadAd(adRequest);
+            Log.e(TAG, "加载下一个插屏广告");
+        }
+    }
+
+    /**
+     * 广告加载完成后，显示出来,然后预加载下一条广告
+     */
+    private void showAds() {
+        if (interstitialAd != null && interstitialAd.isLoaded()) {
+            interstitialAd.show();
+            Log.e(TAG, "显示插屏广告");
+        }
+        restartAds();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -230,20 +296,44 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
     /**
      * 加载广告
+     * 因为腾讯的广告需要读取手机状态的权限，真坑，如果用户选择了拒绝并且不再提醒的话，
+     * 就加载google的广告，google的广告不需要任何用户权限
      */
     private void loadAD() {
         if (isFirst) {
             isFirst = false;
+            restartAds();
         } else {
             long lastMillis = Prefs.getInstance(this).getLong(Prefs.KEY_LAST_RESUME_MILLIS, 0);
             if (System.currentTimeMillis() - lastMillis > millis) {
                 Prefs.getInstance(this).putLong(Prefs.KEY_LAST_RESUME_MILLIS, System.currentTimeMillis());
                 //如果上次可视的时间距离现在短于2分钟,就去赚取广告费 嘎嘎嘎嘎
-                Intent intent = new Intent(App.getCtx(), SplashActivity.class);
-                intent.putExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, false);
-                startActivity(intent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    String readPermission = Manifest.permission.READ_PHONE_STATE;
+                    String writePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+                    boolean readPhoneState = shouldShowRequestPermissionRationale(readPermission);
+                    boolean writeStorage = shouldShowRequestPermissionRationale(writePermission);
+                    boolean has0 = ActivityCompat.checkSelfPermission(this, readPermission) ==
+                            PackageManager.PERMISSION_GRANTED;
+                    boolean has1 = ActivityCompat.checkSelfPermission(this, writePermission) ==
+                            PackageManager.PERMISSION_GRANTED;
+                    Log.e(TAG, String.format("has0 %s , has01 %s", has0, has1));
+                    if ((!has0 && !readPhoneState) || (!has1 && !writeStorage)) {
+                        showAds();
+                    } else {
+                        openSplashActivity();
+                    }
+                } else {
+                    openSplashActivity();
+                }
             }
         }
+    }
+
+    private void openSplashActivity() {
+        Intent intent = new Intent(App.getCtx(), SplashActivity.class);
+        intent.putExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, false);
+        startActivity(intent);
     }
 
     /**
@@ -285,30 +375,6 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 .bitmapTransform(new GlideCircleTransformer(this))
                 .signature(new StringSignature(Prefs.getInstance(App.getCtx()).getString(Prefs.KEY_USER_HEADER_IMAGE_FLAG, "")))
                 .into(userIcon);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
-        getMenuInflater().inflate(R.menu.item_search_menu, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        if (searchView != null) {
-            searchView.setMenuItem(item);
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_share:
-                share();
-                break;
-            case R.id.action_more:
-                screenCapture();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -417,6 +483,30 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        getMenuInflater().inflate(R.menu.item_search_menu, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        if (searchView != null) {
+            searchView.setMenuItem(item);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                share();
+                break;
+            case R.id.action_more:
+                screenCapture();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onGoBack(View view) {
         moveTaskToBack(true);
     }
@@ -448,6 +538,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     @Override
     public void onBackPressed() {
         onGoBack(null);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
     }
 
     @Override

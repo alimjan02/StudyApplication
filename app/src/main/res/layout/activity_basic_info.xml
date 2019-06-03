@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -54,10 +55,10 @@
                     android:layout_gravity="center_vertical|end"
                     android:background="@color/white"
                     android:foreground="?selectableItemBackground"
-                    android:paddingBottom="15dp"
                     android:paddingLeft="15dp"
+                    android:paddingTop="15dp"
                     android:paddingRight="15dp"
-                    android:paddingTop="15dp">
+                    android:paddingBottom="15dp">
 
                     <TextView
                         style="@style/text_17_color_1_style"
@@ -100,10 +101,10 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:foreground="?selectableItemBackground"
-                android:paddingBottom="15dp"
                 android:paddingLeft="15dp"
+                android:paddingTop="14dp"
                 android:paddingRight="15dp"
-                android:paddingTop="14dp">
+                android:paddingBottom="15dp">
 
                 <TextView
                     style="@style/text_17_color_1_style"
@@ -148,10 +149,10 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:foreground="?selectableItemBackground"
-                android:paddingBottom="15dp"
                 android:paddingLeft="15dp"
+                android:paddingTop="14dp"
                 android:paddingRight="15dp"
-                android:paddingTop="14dp">
+                android:paddingBottom="15dp">
 
                 <TextView
                     style="@style/text_17_color_1_style"
@@ -196,10 +197,10 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:foreground="?selectableItemBackground"
-                android:paddingBottom="15dp"
                 android:paddingLeft="15dp"
+                android:paddingTop="14dp"
                 android:paddingRight="15dp"
-                android:paddingTop="14dp">
+                android:paddingBottom="15dp">
 
                 <TextView
                     style="@style/text_17_color_1_style"
@@ -244,10 +245,10 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:foreground="?selectableItemBackground"
-                android:paddingBottom="15dp"
                 android:paddingLeft="15dp"
+                android:paddingTop="14dp"
                 android:paddingRight="15dp"
-                android:paddingTop="14dp">
+                android:paddingBottom="15dp">
 
                 <TextView
                     style="@style/text_17_color_1_style"
@@ -292,10 +293,10 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:foreground="?selectableItemBackground"
-                android:paddingBottom="15dp"
                 android:paddingLeft="15dp"
+                android:paddingTop="14dp"
                 android:paddingRight="15dp"
-                android:paddingTop="14dp">
+                android:paddingBottom="15dp">
 
                 <TextView
                     style="@style/text_17_color_1_style"
@@ -336,10 +337,10 @@
             android:clickable="true"
             android:focusable="true"
             android:foreground="?selectableItemBackground"
-            android:paddingBottom="15dp"
             android:paddingLeft="15dp"
+            android:paddingTop="14dp"
             android:paddingRight="15dp"
-            android:paddingTop="14dp">
+            android:paddingBottom="15dp">
 
             <TextView
                 style="@style/text_17_color_1_style"
@@ -377,6 +378,13 @@
             android:id="@+id/ad_banner_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/ad_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/adsense_app_ad_banner" />
 
     </LinearLayout>
 

@@ -81,6 +81,35 @@ public class AnimationUtil {
         ViewCompat.animate(view).alpha(1f).setDuration(duration).setListener(vpListener);
     }
 
+    public static void fadeInView(View view, float fromAlpha, float toAlpha, int duration, final AnimationListener listener) {
+        view.setVisibility(View.VISIBLE);
+        view.setAlpha(fromAlpha);
+        ViewPropertyAnimatorListener vpListener = null;
+
+        if (listener != null) {
+            vpListener = new ViewPropertyAnimatorListener() {
+                @Override
+                public void onAnimationStart(View view) {
+                    if (!listener.onAnimationStart(view)) {
+                        view.setDrawingCacheEnabled(true);
+                    }
+                }
+
+                @Override
+                public void onAnimationEnd(View view) {
+                    if (!listener.onAnimationEnd(view)) {
+                        view.setDrawingCacheEnabled(false);
+                    }
+                }
+
+                @Override
+                public void onAnimationCancel(View view) {
+                }
+            };
+        }
+        ViewCompat.animate(view).alpha(toAlpha).setDuration(duration).setListener(vpListener);
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void open(final View view, final AnimationListener listener) {
         int cx = view.getWidth() - (int) TypedValue.applyDimension(

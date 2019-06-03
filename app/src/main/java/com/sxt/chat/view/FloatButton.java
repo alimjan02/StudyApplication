@@ -57,7 +57,7 @@ public class FloatButton {
         dectorView.post(new Runnable() {
             @Override
             public void run() {
-                int size = (int) activity.getResources().getDimension(R.dimen.dp_60);
+                int size = (int) activity.getResources().getDimension(R.dimen.dp_50);
                 dectorView.addView(itemFloatView, new FrameLayout.LayoutParams(size, size));
                 itemFloatView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
                     @Override

@@ -13,6 +13,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.qq.e.ads.banner.ADSize;
 import com.qq.e.ads.banner.AbstractBannerADListener;
 import com.qq.e.ads.banner.BannerView;
@@ -39,9 +41,10 @@ import cn.bmob.v3.listener.UpdateListener;
 public class UpdateUserImgActivity extends HeaderActivity implements View.OnClickListener {
 
     private ImageView img;
+    private Uri bitmapUri;
+    private AdView adGoogleBannerView;
     private final int REQUEST_CHOOSE_PHOTO = 1000;
     private final int REQUEST_CROP_PHOTO = 1001;
-    private Uri bitmapUri;
     private final String CMD_UPLOAD_FILE = this.getClass().getName() + "CMD_UPLOAD_FILE";
 
     @Override
@@ -49,11 +52,11 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_user_img);
 
-        img = (ImageView) findViewById(R.id.img);
+        img = findViewById(R.id.img);
         findViewById(R.id.root).setOnClickListener(this);
         setTitle(R.string.header_img_update);
         updateHeadPortrait();
-        initAdBanner();
+        initGoogleAdBanner();
     }
 
     private void updateHeadPortrait() {
@@ -184,7 +187,10 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
         }
     }
 
-    private void initAdBanner() {
+    /**
+     * 腾讯Banner广告位
+     */
+    private void initTencentAdBanner() {
         FrameLayout bannerContainer = (FrameLayout) findViewById(R.id.ad_banner_container);
         // 创建Banner广告AdView对象
         // appId : 在 http://e.qq.com/dev/ 能看到的app唯一字符串
@@ -209,37 +215,46 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
         banner.loadAD();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        showAD();
+    /**
+     * Google Banner广告位
+     * 製作廣告請求。檢查您的logcat輸出中的散列設備ID，
+     * 以在物理設備上獲取測試廣告。例如
+     * “使用AdRequest.Builder.addTestDevice（”ABCDEF012345“）在此設備上獲取測試廣告。”
+     */
+    private void initGoogleAdBanner() {
+        adGoogleBannerView = findViewById(R.id.ad_view);
+        AdRequest adRequest = new AdRequest.Builder()
+//                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+
+        // 開始在後台加載廣告。
+        adGoogleBannerView.loadAd(adRequest);
     }
-//
-//    private void showAD() {
-//        if (interstitialAD != null) {
-//            interstitialAD.closePopupWindow();
-//            interstitialAD.destroy();
-//            interstitialAD = null;
-//        }
-//        interstitialAD = new InterstitialAD(this, Constants.APPID, Constants.InterteristalPosID);
-//        interstitialAD.setADListener(new AbstractInterstitialADListener() {
-//
-//            @Override
-//            public void onNoAD(AdError error) {
-//                Log.i(
-//                        "AD_DEMO",
-//                        String.format("LoadInterstitialAd Fail, error code: %d, error msg: %s",
-//                                error.getErrorCode(), error.getErrorMsg()));
-//            }
-//
-//            @Override
-//            public void onADReceive() {
-//                Log.i("AD_DEMO", "onADReceive");
-//                interstitialAD.show();
-//            }
-//        });
-//        interstitialAD.loadAD();
-//    }
+
+    @Override
+    public void onPause() {
+        if (adGoogleBannerView != null) {
+            adGoogleBannerView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateHeadPortrait();
+        if (adGoogleBannerView != null) {
+            adGoogleBannerView.resume();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (adGoogleBannerView != null) {
+            adGoogleBannerView.destroy();
+        }
+        super.onDestroy();
+    }
 
     @Override
     public void onGoBack(View view) {

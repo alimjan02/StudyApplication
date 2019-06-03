@@ -16,7 +16,6 @@
     <!--Wi-Fi-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.OVERRIDE_WIFI_CONFIG" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -24,9 +23,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
-    <uses-permission android:name="android.permission.REAL_GET_TASKS" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
 
     <!-- 地图包、搜索包需要的基础权限 -->
     <!-- 允许程序打开网络套接字 -->
@@ -330,20 +326,25 @@
         <!--Bmob配置provider-->
         <provider
             android:name="cn.bmob.v3.util.BmobContentProvider"
-            android:authorities="${applicationId}.BmobContentProvider"></provider>
+            android:authorities="${applicationId}.BmobContentProvider" />
 
         <meta-data
             android:name="com.sxt.chat.utils.glide.GlideCatchConfig"
             android:value="GlideModule" />
 
-        <service
+       <!-- <service
             android:name="com.qq.e.comm.DownloadService"
-            android:exported="false" />
+            android:exported="false" />-->
 
+        <!--腾讯广告-->
         <activity
             android:name="com.qq.e.ads.ADActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             tools:ignore="DuplicateActivity" />
+        <!--Google AdSense-->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/adsense_app_key" />
 
         <activity
             android:name=".activity.MapActivity"

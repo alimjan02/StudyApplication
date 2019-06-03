@@ -1,8 +1,11 @@
 package com.sxt.chat.fragment;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -63,28 +66,16 @@ public class NewsFragment extends LazyFragment implements
         mRecyclerView.getRecyclerView().setNestedScrollingEnabled(false);
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadAD();//刷新广告
-            }
-        });
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                loadAD();//刷新原生广告
-                swipeRefreshLayout.setRefreshing(true);//第一次来 并不会调用onRefresh方法  android bug
-            }
-        });
+        //刷新广告
+        swipeRefreshLayout.setOnRefreshListener(this::loadAD);
+        //刷新原生广告
+        swipeRefreshLayout.post(this::loadAD);
         refresh();
         //设置滑动监听,使得底部tab栏竖直滑动
-        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                Log.e("scrollY", String.format("oldScrollY = %s ; scrollY = %s", oldScrollY, scrollY));
-                MainActivity activity = (MainActivity) NewsFragment.this.activity;
-                activity.setBottomBarTranslateY(scrollY, scrollY > oldScrollY);
-            }
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            Log.e("scrollY", String.format("oldScrollY = %s ; scrollY = %s", oldScrollY, scrollY));
+            MainActivity activity = (MainActivity) NewsFragment.this.activity;
+            activity.setBottomBarTranslateY(scrollY, scrollY > oldScrollY);
         });
     }
 
@@ -118,6 +109,16 @@ public class NewsFragment extends LazyFragment implements
      * 如果选择支持视频的模版样式，请使用{@link Constants#NativeExpressSupportVideoPosID}
      */
     private void loadAD() {
+        String readPermission = Manifest.permission.READ_PHONE_STATE;
+        boolean has = ActivityCompat.checkSelfPermission(activity, readPermission) ==
+                PackageManager.PERMISSION_GRANTED;
+        if (!has) {
+            swipeRefreshLayout.setRefreshing(false);
+            return;
+        }
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);//第一次来 并不会调用onRefresh方法  android bug
+        }
         if (mADManager == null) {
             ADSize adSize = new ADSize(ADSize.FULL_WIDTH, ADSize.AUTO_HEIGHT); // 消息流中用AUTO_HEIGHT
             mADManager = new NativeExpressAD(activity, adSize, Constants.APPID, Constants.NativeExpressSupportVideoPosID, this);
@@ -269,8 +270,8 @@ public class NewsFragment extends LazyFragment implements
 
             public CustomViewHolder(View view) {
                 super(view);
-                title = (TextView) view.findViewById(R.id.title);
-                container = (ViewGroup) view.findViewById(R.id.express_ad_container);
+                title = view.findViewById(R.id.title);
+                container = view.findViewById(R.id.express_ad_container);
             }
         }
 

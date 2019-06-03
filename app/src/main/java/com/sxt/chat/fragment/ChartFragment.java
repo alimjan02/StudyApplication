@@ -115,9 +115,6 @@ public class ChartFragment extends LazyFragment {
             } else if (i == 1) {
                 drawBar();
             } else if (i == 2) {
-                drawLine();
-            } else if (i == 3) {
-//                drawCircleProgress();
                 drawCurveLine();
             } else if (i % 2 == 0) {
                 drawBar();
@@ -125,7 +122,6 @@ public class ChartFragment extends LazyFragment {
                 drawCurveLine();
             } else {
                 drawPie();
-//                drawLine();
             }
         }
     }
@@ -152,7 +148,7 @@ public class ChartFragment extends LazyFragment {
         final ChartBar chartBar = (ChartBar) barView.findViewById(R.id.chartbar);
         //设置柱状图的数据源
         chartBar
-                .setRectData(chartBeanList0)
+                .setRectData(chartBeanList)
                 .setLabels(
                         new String[]{getString(R.string.string_label_smzl), getString(R.string.string_label_smzl_bad), getString(R.string.string_label_smzl_good)},
                         new int[]{lineColor[0], lineColor[1], lineColor[3]})
@@ -172,22 +168,22 @@ public class ChartFragment extends LazyFragment {
         chartBeanList = new ArrayList<>();
         chartBeanList.add(new ChartBean("9月", 1));
         chartBeanList.add(new ChartBean("1", 33));
-        chartBeanList.add(new ChartBean("2", 35));
+        chartBeanList.add(new ChartBean("2", 69));
         chartBeanList.add(new ChartBean("3", 100));
         chartBeanList.add(new ChartBean("4", 34));
-        chartBeanList.add(new ChartBean("5", 38));
+        chartBeanList.add(new ChartBean("5", 56));
         chartBeanList.add(new ChartBean("6", 90));
+        chartBeanList.add(new ChartBean("6", 9));
+        chartBeanList.add(new ChartBean("6", 60));
 
         chartBeanList0 = new ArrayList<>();
         chartBeanList0.add(new ChartBean("9月", 1));
-        chartBeanList0.add(new ChartBean("1", 33));
-        chartBeanList0.add(new ChartBean("2", 35));
-        chartBeanList0.add(new ChartBean("3", 100));
+        chartBeanList0.add(new ChartBean("1", 88));
+        chartBeanList0.add(new ChartBean("2", 30));
+        chartBeanList0.add(new ChartBean("3", 108));
         chartBeanList0.add(new ChartBean("4", 34));
-        chartBeanList0.add(new ChartBean("5", 38));
-        chartBeanList0.add(new ChartBean("6", 90));
-        chartBeanList0.add(new ChartBean("7", 36));
-        chartBeanList0.add(new ChartBean("8", 10));
+        chartBeanList0.add(new ChartBean("5", 90));
+        chartBeanList0.add(new ChartBean("6", 33));
 
         pieBeanList = new ArrayList<>();
         pieBeanList.add(new ChartPieBean(3090, "押金使用", R.color.main_green));
@@ -228,8 +224,7 @@ public class ChartFragment extends LazyFragment {
         }
         chartLine.setMaxXNum(6);
         builder.builder(chartBeans, lineColor[0], shaderColor[0])
-                .builder(chartBeans2, lineColor[1], shaderColor[1])
-        ;
+                .builder(chartBeans2, lineColor[1], shaderColor[1]);
 
         builder.build(chartLine);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -247,8 +242,8 @@ public class ChartFragment extends LazyFragment {
         BeizerCurveLine.CurveLineBuilder builder = new BeizerCurveLine.CurveLineBuilder();
         List<ChartBean> chartBeans = new ArrayList<>();
 
-        for (int y = 0; y < chartBeanList.size(); y++) {
-            ChartBean chartBean = chartBeanList.get(y);
+        for (int y = 0; y < chartBeanList0.size(); y++) {
+            ChartBean chartBean = chartBeanList0.get(y);
             chartBeans.add(new ChartBean(chartBean.x, chartLine.parseFloat(String.valueOf(chartBean.y))));
         }
         chartLine

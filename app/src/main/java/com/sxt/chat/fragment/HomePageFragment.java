@@ -28,6 +28,7 @@ import com.sxt.banner.loader.UILoaderInterface;
 import com.sxt.chat.R;
 import com.sxt.chat.activity.MainActivity;
 import com.sxt.chat.activity.RoomDetailActivity;
+import com.sxt.chat.adapter.BannerListAdapter;
 import com.sxt.chat.adapter.GalleryAdapter;
 import com.sxt.chat.adapter.NormalCardListAdapter;
 import com.sxt.chat.adapter.NormalListAdapter;
@@ -62,13 +63,14 @@ public class HomePageFragment extends LazyFragment {
     private ViewSwitcher viewSwitcherBottom;
     private ViewSwitcher viewSwitcherGallary;
     private NormalListAdapter adapterTop;
-    private NormalListAdapter adapterCenter;
+    private BannerListAdapter adapterCenter;
     private NormalCardListAdapter adapterBottom;
     private GalleryAdapter adapterGallary;
     private BannerView bannerView;
 
     private final String CMD_GET_BANNER = this.getClass().getName() + "CMD_GET_BANNER";
     private final String CMD_GET_ROOM = this.getClass().getName() + "CMD_GET_ROOM";
+    private final String CMD_GET_HJH = this.getClass().getName() + "CMD_GET_HJH";
     private final String CMD_GET_GALLARY = this.getClass().getName() + "CMD_GET_GALLARY";
 
     @Override
@@ -80,14 +82,14 @@ public class HomePageFragment extends LazyFragment {
     protected void initView() {
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
         NestedScrollView nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
-        recyclerViewTop = contentView.findViewById(R.id.center_recyclerView);
-        recyclerViewCenter = contentView.findViewById(R.id.bottom_recyclerView);
-        recyclerViewBottom = contentView.findViewById(R.id.last_recyclerView);
+        recyclerViewTop = contentView.findViewById(R.id.top_recyclerView);
+        recyclerViewCenter = contentView.findViewById(R.id.center_recyclerView);
+        recyclerViewBottom = contentView.findViewById(R.id.bottom_recyclerView);
         recyclerViewGallary = contentView.findViewById(R.id.gallary_recyclerView);
         viewSwitcherBanner = contentView.findViewById(R.id.banner_viewSwitcher);
-        viewSwitcherTop = contentView.findViewById(R.id.center_viewSitcher);
-        viewSwitcherCenter = contentView.findViewById(R.id.bottom_viewSwitcher);
-        viewSwitcherBottom = contentView.findViewById(R.id.last_viewSitcher);
+        viewSwitcherTop = contentView.findViewById(R.id.top_viewSitcher);
+        viewSwitcherCenter = contentView.findViewById(R.id.center_viewSwitcher);
+        viewSwitcherBottom = contentView.findViewById(R.id.bottom_viewSwitcher);
         viewSwitcherGallary = contentView.findViewById(R.id.gallary_viewSwitcher);
 
         recyclerViewTop.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, true).setCanScrollVertically(false));
@@ -213,9 +215,8 @@ public class HomePageFragment extends LazyFragment {
     }
 
     private void refreshRoom(List<RoomInfo> list) {
-        if (adapterTop == null || adapterCenter == null || adapterBottom == null) {
+        if (adapterTop == null || adapterBottom == null) {
             adapterTop = new NormalListAdapter(activity, list);
-            adapterCenter = new NormalListAdapter(activity, list);
             adapterBottom = new NormalCardListAdapter(activity, list);
 
             viewSwitcherTop.setDisplayedChild(1);
@@ -223,11 +224,9 @@ public class HomePageFragment extends LazyFragment {
             viewSwitcherBottom.setDisplayedChild(1);
 
             recyclerViewTop.setAdapter(adapterTop);
-            recyclerViewCenter.setAdapter(adapterCenter);
             recyclerViewBottom.setAdapter(adapterBottom);
         } else {
             adapterTop.notifyDataSetChanged(list);
-            adapterCenter.notifyDataSetChanged(list);
             adapterBottom.notifyDataSetChanged(list);
         }
     }
@@ -237,10 +236,18 @@ public class HomePageFragment extends LazyFragment {
         if (ResponseInfo.OK == resp.getCode()) {
             if (CMD_GET_BANNER.equals(resp.getCmd())) {
                 refreshBanner(resp.getBannerInfos());
-                BmobRequest.getInstance(activity).getRoomList(50, 0, CMD_GET_ROOM);
+                BmobRequest.getInstance(activity).getRoomList(10, 0, CMD_GET_ROOM);
             } else if (CMD_GET_ROOM.equals(resp.getCmd())) {
                 refreshRoom(resp.getRoomInfoList());
-                BmobRequest.getInstance(activity).getBanner(50, 0, CMD_GET_GALLARY);
+                BmobRequest.getInstance(activity).getBannersByType("1", CMD_GET_HJH);
+            } else if (CMD_GET_HJH.equals(resp.getCmd())) {
+                if (adapterCenter == null) {
+                    adapterCenter = new BannerListAdapter(activity, resp.getBannerInfos());
+                    recyclerViewCenter.setAdapter(adapterCenter);
+                } else {
+                    adapterCenter.notifyDataSetChanged(resp.getBannerInfos());
+                }
+                BmobRequest.getInstance(activity).getBanner(10, 0, CMD_GET_GALLARY);
             } else if (CMD_GET_GALLARY.equals(resp.getCmd())) {
                 refreshGallery(resp.getBannerInfos());
                 swipeRefreshLayout.setRefreshing(false);

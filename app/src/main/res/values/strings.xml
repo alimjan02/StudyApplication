@@ -326,4 +326,13 @@
         <item>Beagle</item>
     </string-array>
 
+    <!--Google AdMob-->
+    <string name="adsense_app_key">ca-app-pub-1655249378360812~2515894348</string>
+    <!--视频激励广告-->
+    <string name="adsense_app_ad_video">ca-app-pub-1655249378360812/6835425068</string>
+    <!--Banner广告-->
+    <string name="adsense_app_ad_banner">ca-app-pub-1655249378360812/7917470237</string>
+    <!--插屏广告-->
+    <string name="adsense_app_ad_chaping">ca-app-pub-1655249378360812/7690239524</string>
+
 </resources>

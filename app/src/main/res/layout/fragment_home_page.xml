@@ -84,7 +84,7 @@
                 </FrameLayout>
 
                 <ViewSwitcher
-                    android:id="@+id/last_viewSitcher"
+                    android:id="@+id/top_viewSitcher"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white">
@@ -96,7 +96,7 @@
                         android:src="@mipmap/ic_placeholder" />
 
                     <android.support.v7.widget.RecyclerView
-                        android:id="@+id/last_recyclerView"
+                        android:id="@+id/top_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="5dp" />
@@ -123,7 +123,7 @@
                 </FrameLayout>
 
                 <ViewSwitcher
-                    android:id="@+id/center_viewSitcher"
+                    android:id="@+id/center_viewSwitcher"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white">
