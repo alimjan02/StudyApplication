@@ -53,7 +53,7 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
     private final String CMD_SAVE_USER_Height = "CMD_SAVE_USER_Height";
     private String name, age, sex, idCard;
     private float weight, hight;
-    private AdView adGoogleBannerView;
+    private AdView adGoogleBanner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,7 +130,7 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
      * 腾讯Banner广告位
      */
     private void initTencentAdBanner() {
-        FrameLayout bannerContainer = (FrameLayout) findViewById(R.id.ad_banner_container);
+        FrameLayout bannerContainer = (FrameLayout) findViewById(R.id.ad_container);
         // 创建Banner广告AdView对象
         // appId : 在 http://e.qq.com/dev/ 能看到的app唯一字符串
         // posId : 在 http://e.qq.com/dev/ 生成的数字串，并非 appid 或者 appkey
@@ -159,39 +159,34 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
      * Google Banner广告位
      */
     private void initGoogleAdBanner() {
-        adGoogleBannerView = findViewById(R.id.ad_view);
+        adGoogleBanner = findViewById(R.id.ad_view);
         //製作廣告請求。檢查您的logcat輸出中的散列設備ID，
-        // 以在物理設備上獲取測試廣告。例如
-        // “使用AdRequest.Builder.addTestDevice（”ABCDEF012345“）在此設備上獲取測試廣告。”
-        AdRequest adRequest = new AdRequest.Builder()
-//                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-
+        AdRequest adRequest = new AdRequest.Builder().build();
         // 開始在後台加載廣告。
-        adGoogleBannerView.loadAd(adRequest);
-    }
-
-    @Override
-    public void onPause() {
-        if (adGoogleBannerView != null) {
-            adGoogleBannerView.pause();
-        }
-        super.onPause();
+        adGoogleBanner.loadAd(adRequest);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         updateHeadPortrait();
-        if (adGoogleBannerView != null) {
-            adGoogleBannerView.resume();
+        if (adGoogleBanner != null) {
+            adGoogleBanner.resume();
         }
     }
 
     @Override
+    public void onPause() {
+        if (adGoogleBanner != null) {
+            adGoogleBanner.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
-        if (adGoogleBannerView != null) {
-            adGoogleBannerView.destroy();
+        if (adGoogleBanner != null) {
+            adGoogleBanner.destroy();
         }
         super.onDestroy();
     }

@@ -20,6 +20,8 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
@@ -40,6 +42,7 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
     private DownloadTask downloadTask;
     private boolean isCancelInstall;
     private AlertDialog alertDialog;
+    private AdView adGoogleBannerView;
     private final int REQUEST_CODE_INSTALL_APK = 1000;
     private final int REQUEST_MANAGE_UNKNOWN_APP_SOURCES = 1001;
 
@@ -49,13 +52,14 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         setContentView(R.layout.activity_settings);
         setTitle(getString(R.string.nomal_settings));
 
-        cacheSize = (TextView) findViewById(R.id.cache_size);
-        version = (TextView) findViewById(R.id.version);
+        cacheSize = findViewById(R.id.cache_size);
+        version = findViewById(R.id.version);
         findViewById(R.id.clean_cache).setOnClickListener(this);//清除缓存
         findViewById(R.id.current_version).setOnClickListener(this);//清除缓存
         findViewById(R.id.login_out).setOnClickListener(this);//退出登录
         cacheSize.setText(CacheUtils.getInstance().getCacheSize());
         version.setText("当前版本:" + Prefs.getVersionName(App.getCtx()) + "");
+        initGoogleAdBanner();
     }
 
     @Override
@@ -98,8 +102,40 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         }).show();
     }
 
+    /**
+     * Google Banner广告位
+     */
+    private void initGoogleAdBanner() {
+        adGoogleBannerView = findViewById(R.id.ad_view);
+        //製作廣告請求。檢查您的logcat輸出中的散列設備ID，
+        // 以在物理設備上獲取測試廣告。例如
+        // “使用AdRequest.Builder.addTestDevice（”ABCDEF012345“）在此設備上獲取測試廣告。”
+        AdRequest adRequest = new AdRequest.Builder().build();
+        // 開始在後台加載廣告。
+        adGoogleBannerView.loadAd(adRequest);
+    }
+
+    @Override
+    public void onPause() {
+        if (adGoogleBannerView != null) {
+            adGoogleBannerView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adGoogleBannerView != null) {
+            adGoogleBannerView.resume();
+        }
+    }
+
     @Override
     protected void onDestroy() {
+        if (adGoogleBannerView != null) {
+            adGoogleBannerView.destroy();
+        }
         super.onDestroy();
         if (downloadTask != null && !downloadTask.isCancelled()) {
             downloadTask.cancel(true);

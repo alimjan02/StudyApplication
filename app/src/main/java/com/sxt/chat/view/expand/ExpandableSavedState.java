@@ -1,4 +1,4 @@
-package com.sxt.chat.view;
+package com.sxt.chat.view.expand;
 
 import android.os.Parcel;
 import android.os.Parcelable;

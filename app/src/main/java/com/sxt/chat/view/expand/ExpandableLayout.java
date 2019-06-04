@@ -1,4 +1,4 @@
-package com.sxt.chat.view;
+package com.sxt.chat.view.expand;
 
 import android.animation.TimeInterpolator;
 import android.support.annotation.IntDef;

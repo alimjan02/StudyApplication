@@ -329,10 +329,14 @@
     <!--Google AdMob-->
     <string name="adsense_app_key">ca-app-pub-1655249378360812~2515894348</string>
     <!--视频激励广告-->
-    <string name="adsense_app_ad_video">ca-app-pub-1655249378360812/6835425068</string>
-    <!--Banner广告-->
-    <string name="adsense_app_ad_banner">ca-app-pub-1655249378360812/7917470237</string>
+    <string name="adsense_app_ad_video">ca-app-pub-1655249378360812/2540008710</string>
+    <!--Banner广告 个人中心页面-->
+    <string name="adsense_app_ad_banner_personal">ca-app-pub-1655249378360812/7917470237</string>
+    <!--Banner广告 设置页面-->
+    <string name="adsense_app_ad_banner_settings">ca-app-pub-1655249378360812/4638724298</string>
     <!--插屏广告-->
     <string name="adsense_app_ad_chaping">ca-app-pub-1655249378360812/7690239524</string>
+    <!--Native(原生)广告-->
+    <string name="adsense_app_ad_native">ca-app-pub-1655249378360812/2247696110</string>
 
 </resources>

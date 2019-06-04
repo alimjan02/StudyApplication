@@ -8,23 +8,30 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.qq.e.ads.banner.ADSize;
-import com.qq.e.ads.banner.AbstractBannerADListener;
-import com.qq.e.ads.banner.BannerView;
-import com.qq.e.comm.util.AdError;
+import com.google.android.gms.ads.VideoController;
+import com.google.android.gms.ads.VideoOptions;
+import com.google.android.gms.ads.formats.MediaView;
+import com.google.android.gms.ads.formats.NativeAdOptions;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.json.ResponseInfo;
-import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransformer;
 import com.sxt.chat.ws.BmobRequest;
@@ -42,7 +49,8 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
 
     private ImageView img;
     private Uri bitmapUri;
-    private AdView adGoogleBannerView;
+    private UnifiedNativeAd adGoogleNative;
+    private AdView adGoogleBanner;
     private final int REQUEST_CHOOSE_PHOTO = 1000;
     private final int REQUEST_CROP_PHOTO = 1001;
     private final String CMD_UPLOAD_FILE = this.getClass().getName() + "CMD_UPLOAD_FILE";
@@ -188,70 +196,187 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
     }
 
     /**
-     * 腾讯Banner广告位
+     * Google Banner广告位
      */
-    private void initTencentAdBanner() {
-        FrameLayout bannerContainer = (FrameLayout) findViewById(R.id.ad_banner_container);
-        // 创建Banner广告AdView对象
-        // appId : 在 http://e.qq.com/dev/ 能看到的app唯一字符串
-        // posId : 在 http://e.qq.com/dev/ 生成的数字串，并非 appid 或者 appkey
-        BannerView banner = new BannerView(this, ADSize.BANNER, Constants.APPID, Constants.BannerPosID);
-        //设置广告轮播时间，为0或30~120之间的数字，单位为s,0标识不自动轮播
-        banner.setRefresh(30);
-        banner.setADListener(new AbstractBannerADListener() {
-
-            @Override
-            public void onNoAD(AdError error) {
-                Log.i("AD_DEMO", "BannerNoAD，eCode=" + error.getErrorCode());
-            }
-
-            @Override
-            public void onADReceiv() {
-                Log.i("AD_DEMO", "ONBannerReceive");
-            }
-        });
-        bannerContainer.addView(banner);
-        /* 发起广告请求，收到广告数据后会展示数据   */
-        banner.loadAD();
+    private void initGoogleAdBanner() {
+        adGoogleBanner = findViewById(R.id.ad_view);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        // 開始在後台加載廣告。
+        adGoogleBanner.loadAd(adRequest);
     }
 
     /**
-     * Google Banner广告位
-     * 製作廣告請求。檢查您的logcat輸出中的散列設備ID，
-     * 以在物理設備上獲取測試廣告。例如
-     * “使用AdRequest.Builder.addTestDevice（”ABCDEF012345“）在此設備上獲取測試廣告。”
+     * 原生广告
      */
-    private void initGoogleAdBanner() {
-        adGoogleBannerView = findViewById(R.id.ad_view);
-        AdRequest adRequest = new AdRequest.Builder()
-//                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+    private void refreshNativeAd() {
+        AdLoader.Builder builder = new AdLoader.Builder(this, getString(R.string.adsense_app_ad_native));
+//        AdLoader.Builder builder = new AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110");
+        // OnUnifiedNativeAdLoadedListener implementation.
+        builder.forUnifiedNativeAd(unifiedNativeAd -> {
+            //完成後，您必須在舊廣告上調用destroy，否則您將發生內存泄漏。
+            if (adGoogleNative != null) {
+                adGoogleNative.destroy();
+            }
+            adGoogleNative = unifiedNativeAd;
+            FrameLayout frameLayout =
+                    findViewById(R.id.ad_container);
+            UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater()
+                    .inflate(R.layout.ad_unified, null);
+            populateUnifiedNativeAdView(unifiedNativeAd, adView);
+            frameLayout.removeAllViews();
+            frameLayout.addView(adView);
+        });
+
+        VideoOptions videoOptions = new VideoOptions.Builder()
+                .setStartMuted(true)//显示视频
                 .build();
 
-        // 開始在後台加載廣告。
-        adGoogleBannerView.loadAd(adRequest);
+        NativeAdOptions adOptions = new NativeAdOptions.Builder()
+                .setVideoOptions(videoOptions)
+                .build();
+
+        builder.withNativeAdOptions(adOptions);
+
+        AdLoader adLoader = builder.withAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                Log.e(TAG, "Failed to load native ad: " + errorCode);
+            }
+        }).build();
+
+        adLoader.loadAd(new AdRequest.Builder().addTestDevice("").build());
     }
 
-    @Override
-    public void onPause() {
-        if (adGoogleBannerView != null) {
-            adGoogleBannerView.pause();
+    /**
+     * @param nativeAd the object containing the ad's assets
+     * @param adView   the view to be populated
+     */
+    private void populateUnifiedNativeAdView(UnifiedNativeAd nativeAd, UnifiedNativeAdView adView) {
+        // Set the media view. Media content will be automatically populated in the media view once
+        // adView.setNativeAd() is called.
+        MediaView mediaView = adView.findViewById(R.id.ad_media);
+        adView.setMediaView(mediaView);
+
+        // Set other ad assets.
+        adView.setHeadlineView(adView.findViewById(R.id.ad_headline));
+        adView.setBodyView(adView.findViewById(R.id.ad_body));
+        adView.setCallToActionView(adView.findViewById(R.id.ad_call_to_action));
+        adView.setIconView(adView.findViewById(R.id.ad_app_icon));
+        adView.setPriceView(adView.findViewById(R.id.ad_price));
+        adView.setStarRatingView(adView.findViewById(R.id.ad_stars));
+        adView.setStoreView(adView.findViewById(R.id.ad_store));
+        adView.setAdvertiserView(adView.findViewById(R.id.ad_advertiser));
+
+        // The headline is guaranteed to be in every UnifiedNativeAd.
+        ((TextView) adView.getHeadlineView()).setText(nativeAd.getHeadline());
+
+        // These assets aren't guaranteed to be in every UnifiedNativeAd, so it's important to
+        // check before trying to display them.
+        if (nativeAd.getBody() == null) {
+            adView.getBodyView().setVisibility(View.INVISIBLE);
+        } else {
+            adView.getBodyView().setVisibility(View.VISIBLE);
+            ((TextView) adView.getBodyView()).setText(nativeAd.getBody());
         }
-        super.onPause();
+
+        if (nativeAd.getCallToAction() == null) {
+            adView.getCallToActionView().setVisibility(View.INVISIBLE);
+        } else {
+            adView.getCallToActionView().setVisibility(View.VISIBLE);
+            ((Button) adView.getCallToActionView()).setText(nativeAd.getCallToAction());
+        }
+
+        if (nativeAd.getIcon() == null) {
+            adView.getIconView().setVisibility(View.GONE);
+        } else {
+            ((ImageView) adView.getIconView()).setImageDrawable(
+                    nativeAd.getIcon().getDrawable());
+            adView.getIconView().setVisibility(View.VISIBLE);
+        }
+
+        if (nativeAd.getPrice() == null) {
+            adView.getPriceView().setVisibility(View.INVISIBLE);
+        } else {
+            adView.getPriceView().setVisibility(View.VISIBLE);
+            ((TextView) adView.getPriceView()).setText(nativeAd.getPrice());
+        }
+
+        if (nativeAd.getStore() == null) {
+            adView.getStoreView().setVisibility(View.INVISIBLE);
+        } else {
+            adView.getStoreView().setVisibility(View.VISIBLE);
+            ((TextView) adView.getStoreView()).setText(nativeAd.getStore());
+        }
+
+        if (nativeAd.getStarRating() == null) {
+            adView.getStarRatingView().setVisibility(View.INVISIBLE);
+        } else {
+            ((RatingBar) adView.getStarRatingView())
+                    .setRating(nativeAd.getStarRating().floatValue());
+            adView.getStarRatingView().setVisibility(View.VISIBLE);
+        }
+
+        if (nativeAd.getAdvertiser() == null) {
+            adView.getAdvertiserView().setVisibility(View.INVISIBLE);
+        } else {
+            ((TextView) adView.getAdvertiserView()).setText(nativeAd.getAdvertiser());
+            adView.getAdvertiserView().setVisibility(View.VISIBLE);
+        }
+
+        // This method tells the Google Mobile Ads SDK that you have finished populating your
+        // native ad view with this native ad. The SDK will populate the adView's MediaView
+        // with the media content from this native ad.
+        adView.setNativeAd(nativeAd);
+
+        // Get the video controller for the ad. One will always be provided, even if the ad doesn't
+        // have a video asset.
+        VideoController vc = nativeAd.getVideoController();
+
+        // Updates the UI to say whether or not this ad has a video asset.
+        if (vc.hasVideoContent()) {
+            Log.e(TAG, "Video status: Ad does not contain a video asset.");
+
+            // Create a new VideoLifecycleCallbacks object and pass it to the VideoController. The
+            // VideoController will call methods on this object when events occur in the video
+            // lifecycle.
+            vc.setVideoLifecycleCallbacks(new VideoController.VideoLifecycleCallbacks() {
+                @Override
+                public void onVideoEnd() {
+                    // Publishers should allow native ads to complete video playback before
+                    // refreshing or replacing them with another ad in the same UI location.
+                    Log.e(TAG, "Video status: Ad does not contain a video asset.");
+                    super.onVideoEnd();
+                }
+            });
+        } else {
+            Log.e(TAG, "Video status: Ad does not contain a video asset.");
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         updateHeadPortrait();
-        if (adGoogleBannerView != null) {
-            adGoogleBannerView.resume();
+        if (adGoogleBanner != null) {
+            adGoogleBanner.resume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (adGoogleBanner != null) {
+            adGoogleBanner.pause();
         }
     }
 
     @Override
     public void onDestroy() {
-        if (adGoogleBannerView != null) {
-            adGoogleBannerView.destroy();
+        if (adGoogleNative != null) {
+            adGoogleNative.destroy();
+        }
+        if (adGoogleBanner != null) {
+            adGoogleBanner.destroy();
         }
         super.onDestroy();
     }

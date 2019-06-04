@@ -1,4 +1,4 @@
-package com.sxt.chat.view;
+package com.sxt.chat.view.transformer;
 
 import android.support.v4.view.ViewPager;
 import android.view.View;

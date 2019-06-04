@@ -6,7 +6,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -41,6 +40,10 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.android.gms.common.GoogleApiAvailabilityLight;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.ar.HelloArActivity;
@@ -82,14 +85,17 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     private Menu menu;
     private FloatButton floatButton;
     private Handler handler = new Handler();
-    private final long millis = /*5 * 60*/ 10 * 1000L;
+    private final long millis = /*5 * 60*/ 30 * 1000L;
     private InterstitialAd interstitialAd;
+    private RewardedVideoAd rewardedVideoAd;
 
-    private final int REQUEST_CODE_LOCATION = 201;
-    public static String KEY_Ad_Permission_Refused = "KEY_Ad_Permission_Refused";
+    private final int REQUEST_CODE_LOCATION_MAP = 201;
+    private final int REQUEST_CODE_LOCATION_AD = 202;
     public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
     public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
+    final String READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE;
+    final String WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -218,11 +224,24 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     }
 
     /**
-     * 初始化google ad
+     * google ads 初始化
      */
     private void initGoogleAds() {
+        MobileAds.initialize(this, getString(R.string.adsense_app_key));
+        initGoogleAlertAds();
+        initGoogleRewardedAds();
+    }
+
+    private void prepareGoogleAds() {
+        restartAlertAds();
+        restartRewardedVideo();
+    }
+
+    /**
+     * 初始化google插屏ad
+     */
+    private void initGoogleAlertAds() {
         if (interstitialAd == null) {
-            MobileAds.initialize(this, getString(R.string.adsense_app_key));
             interstitialAd = new InterstitialAd(this);
             interstitialAd.setAdUnitId(getString(R.string.adsense_app_ad_chaping));
             interstitialAd.setAdListener(new AdListener() {
@@ -234,12 +253,13 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 @Override
                 public void onAdFailedToLoad(int errorCode) {
                     Log.e(TAG, "插屏广告加载失败 error code: " + errorCode);
-                    restartAds();
+                    restartAlertAds();
                 }
 
                 @Override
                 public void onAdClosed() {
                     Log.e(TAG, "插屏广告关闭");
+                    restartAlertAds();
                 }
             });
         }
@@ -248,8 +268,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     /**
      * 预加载插屏广告
      */
-    private void restartAds() {
-        initGoogleAds();
+    private void restartAlertAds() {
+        initGoogleAlertAds();
         if (!interstitialAd.isLoading() && !interstitialAd.isLoaded()) {
             AdRequest adRequest = new AdRequest.Builder().build();
             interstitialAd.loadAd(adRequest);
@@ -260,18 +280,105 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     /**
      * 广告加载完成后，显示出来,然后预加载下一条广告
      */
-    private void showAds() {
+    private void showAlertAds() {
         if (interstitialAd != null && interstitialAd.isLoaded()) {
             interstitialAd.show();
             Log.e(TAG, "显示插屏广告");
         }
-        restartAds();
+    }
+
+    /**
+     * 初始化google激励广告
+     */
+    private void initGoogleRewardedAds() {
+        if (rewardedVideoAd == null) {
+            rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+            rewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+                @Override
+                public void onRewardedVideoAdLoaded() {
+                    Log.e(TAG, "onRewardedVideoAdLoaded : 激励广告加载完成");
+                }
+
+                @Override
+                public void onRewardedVideoAdOpened() {
+                    Log.e(TAG, "onRewardedVideoAdOpened : 激励广告被点开");
+                }
+
+                @Override
+                public void onRewardedVideoStarted() {
+                    Log.e(TAG, "onRewardedVideoAdLeftApplication : 激励广告加载开始");
+                }
+
+                @Override
+                public void onRewardedVideoAdClosed() {
+                    Log.e(TAG, "onRewardedVideoAdClosed : 激励广告被关闭");
+                    restartRewardedVideo();
+                }
+
+                @Override
+                public void onRewarded(RewardItem rewardItem) {
+                    Log.e(TAG, "onRewarded : 激励广告获得奖励");
+                }
+
+                @Override
+                public void onRewardedVideoAdLeftApplication() {
+                    Log.e(TAG, "onRewardedVideoAdLeftApplication");
+                }
+
+                @Override
+                public void onRewardedVideoAdFailedToLoad(int i) {
+                    Log.e(TAG, "onRewardedVideoAdFailedToLoad  : 激励广告加载失败 i = " + i);
+                }
+
+                @Override
+                public void onRewardedVideoCompleted() {
+                    Log.e(TAG, "onRewardedVideoCompleted : 激励广告加载播放完成");
+                    restartRewardedVideo();
+                }
+            });
+        }
+    }
+
+    /**
+     * 视频广告加载完成后，显示出来，然后预加载下一个激励广告
+     */
+    private void showRewardedAds() {
+        if (rewardedVideoAd != null && rewardedVideoAd.isLoaded()) {
+            rewardedVideoAd.show();
+            Log.e(TAG, "显示激励广告");
+        } else {
+            showAlertAds();
+        }
+        restartRewardedVideo();
+    }
+
+    /**
+     * 准备加载激励广告
+     */
+    private void restartRewardedVideo() {
+        initGoogleRewardedAds();
+        if (!rewardedVideoAd.isLoaded()) {
+            rewardedVideoAd.loadAd(getString(R.string.adsense_app_ad_video),
+                    new AdRequest.Builder().build());
+            Log.e(TAG, "加载下一个激励广告");
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         checkUser();
+        if (rewardedVideoAd != null) {
+            rewardedVideoAd.resume(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (rewardedVideoAd != null) {
+            rewardedVideoAd.pause(this);
+        }
     }
 
     private void checkUser() {
@@ -298,34 +405,47 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
      * 加载广告
      * 因为腾讯的广告需要读取手机状态的权限，真坑，如果用户选择了拒绝并且不再提醒的话，
      * 就加载google的广告，google的广告不需要任何用户权限
+     * <p>
+     * 但是google的激励广告需要定位权限而且需要手机安装google play store
      */
     private void loadAD() {
         if (isFirst) {
             isFirst = false;
-            restartAds();
-        } else {
-            long lastMillis = Prefs.getInstance(this).getLong(Prefs.KEY_LAST_RESUME_MILLIS, 0);
-            if (System.currentTimeMillis() - lastMillis > millis) {
-                Prefs.getInstance(this).putLong(Prefs.KEY_LAST_RESUME_MILLIS, System.currentTimeMillis());
-                //如果上次可视的时间距离现在短于2分钟,就去赚取广告费 嘎嘎嘎嘎
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    String readPermission = Manifest.permission.READ_PHONE_STATE;
-                    String writePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-                    boolean readPhoneState = shouldShowRequestPermissionRationale(readPermission);
-                    boolean writeStorage = shouldShowRequestPermissionRationale(writePermission);
-                    boolean has0 = ActivityCompat.checkSelfPermission(this, readPermission) ==
-                            PackageManager.PERMISSION_GRANTED;
-                    boolean has1 = ActivityCompat.checkSelfPermission(this, writePermission) ==
-                            PackageManager.PERMISSION_GRANTED;
-                    Log.e(TAG, String.format("has0 %s , has01 %s", has0, has1));
-                    if ((!has0 && !readPhoneState) || (!has1 && !writeStorage)) {
-                        showAds();
+            prepareGoogleAds();
+            return;
+        }
+        long lastMillis = Prefs.getInstance(this).getLong(Prefs.KEY_LAST_RESUME_MILLIS, 0);
+        if (System.currentTimeMillis() - lastMillis > millis) {
+            Prefs.getInstance(this).putLong(Prefs.KEY_LAST_RESUME_MILLIS, System.currentTimeMillis());
+            //如果上次可视的时间距离现在短于2分钟,就去赚取广告费 嘎嘎嘎嘎
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                boolean readPhoneState = shouldShowRequestPermissionRationale(READ_PHONE_STATE);
+                boolean writeStorage = shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE);
+                boolean has0 = ActivityCompat.checkSelfPermission(this, READ_PHONE_STATE) ==
+                        PackageManager.PERMISSION_GRANTED;
+                boolean has1 = ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) ==
+                        PackageManager.PERMISSION_GRANTED;
+
+                Log.e(TAG, String.format("has0 %s , has01 %s", has0, has1));
+
+                if ((!has0 && !readPhoneState) || (!has1 && !writeStorage)) {
+                    //验证手机的google play service是否可用
+                    int playServicesAvailable = GoogleApiAvailabilityLight.getInstance().isGooglePlayServicesAvailable(this);
+                    Log.e(TAG, String.format("playServicesAvailable - > %s", playServicesAvailable));
+                    if (playServicesAvailable == 0) {
+                        //只有在获取到位置权限后才能加载激励广告
+                        boolean permission = requestLocationPermission(REQUEST_CODE_LOCATION_AD);
+                        if (permission) {
+                            showRewardedAds();
+                        }
                     } else {
-                        openSplashActivity();
+                        showAlertAds();
                     }
                 } else {
                     openSplashActivity();
                 }
+            } else {
+                openSplashActivity();
             }
         }
     }
@@ -582,27 +702,47 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
                 startActivity(new Intent(this, VR360Activity.class));
                 break;
             case R.id.map:
-                if (checkPermission(REQUEST_CODE_LOCATION, Manifest.permission_group.LOCATION, new String[]{
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION,})) {
+                if (requestLocationPermission(REQUEST_CODE_LOCATION_MAP)) {
                     openMapActivity();
                 }
                 break;
         }
     }
 
+    /**
+     * 请求位置权限
+     *
+     * @param requestCode
+     */
+    private boolean requestLocationPermission(int requestCode) {
+        return checkPermission(requestCode, Manifest.permission_group.LOCATION, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,});
+    }
+
     @Override
     public void onPermissionsAllowed(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsAllowed(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_LOCATION) {
+        if (requestCode == REQUEST_CODE_LOCATION_MAP) {
             openMapActivity();
+        } else if (requestCode == REQUEST_CODE_LOCATION_AD) {
+            showRewardedAds();//显示激励广告
+        }
+    }
+
+    @Override
+    public void onPermissionsRefused(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsRefused(requestCode, permissions, grantResults);
+        //当位置权限被拒绝后，加载插屏广告
+        if (requestCode == REQUEST_CODE_LOCATION_AD) {
+            showAlertAds();
         }
     }
 
     @Override
     public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_LOCATION) {
+        if (requestCode == REQUEST_CODE_LOCATION_MAP) {
             String appName = getString(R.string.app_name);
             String message = String.format(getString(R.string.permission_request_LOCATION), appName);
             SpannableString span = new SpannableString(message);
@@ -611,6 +751,8 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_black_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             showPermissionRefusedNeverDialog(span);
+        } else if (requestCode == REQUEST_CODE_LOCATION_AD) {
+            showAlertAds();//当位置权限被拒绝后，加载插屏广告
         }
     }
 
@@ -639,6 +781,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     protected void onDestroy() {
         if (floatButton != null) {
             floatButton.onDestroy();
+        }
+        if (rewardedVideoAd != null) {
+            rewardedVideoAd.destroy(this);
         }
         super.onDestroy();
     }

@@ -1,4 +1,4 @@
-package com.sxt.chat.view;
+package com.sxt.chat.view.expand;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -15,18 +15,18 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import com.sxt.chat.R;
+import com.sxt.chat.view.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExpandableRelativeLayout extends RelativeLayout implements ExpandableLayout {
+public class ExpandableLinearLayout extends LinearLayout implements ExpandableLayout {
 
     private int duration;
     private TimeInterpolator interpolator = new LinearInterpolator();
-    private int orientation;
     /**
      * Default state of expanse
      *
@@ -39,8 +39,8 @@ public class ExpandableRelativeLayout extends RelativeLayout implements Expandab
      * and {@link #defaultPosition} at the same time.
      * {@link #defaultPosition} has priority over {@link #defaultExpanded}
      * and {@link #defaultChildIndex} if you set them at the same time.
-     * <p>
-     * <p>
+     * <p/>
+     * <p/>
      * Priority
      * {@link #defaultPosition} > {@link #defaultChildIndex} > {@link #defaultExpanded}
      */
@@ -56,36 +56,37 @@ public class ExpandableRelativeLayout extends RelativeLayout implements Expandab
     private ExpandableSavedState savedState;
     private boolean isExpanded;
     private int layoutSize = 0;
+    private boolean inRecyclerView = false;
     private boolean isArranged = false;
     private boolean isCalculatedSize = false;
     private boolean isAnimating = false;
     /**
+     * State of expanse in recycler view.
+     */
+    private boolean recyclerExpanded = false;
+    /**
      * view size of children
      **/
     private List<Integer> childSizeList = new ArrayList<>();
-    /**
-     * view position top or left of children
-     **/
-    private List<Integer> childPositionList = new ArrayList<>();
     private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener;
 
-    public ExpandableRelativeLayout(final Context context) {
+    public ExpandableLinearLayout(final Context context) {
         this(context, null);
     }
 
-    public ExpandableRelativeLayout(final Context context, final AttributeSet attrs) {
+    public ExpandableLinearLayout(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ExpandableRelativeLayout(final Context context, final AttributeSet attrs,
-                                    final int defStyleAttr) {
+    public ExpandableLinearLayout(final Context context, final AttributeSet attrs,
+                                  final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs, defStyleAttr);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public ExpandableRelativeLayout(final Context context, final AttributeSet attrs,
-                                    final int defStyleAttr, final int defStyleRes) {
+    public ExpandableLinearLayout(final Context context, final AttributeSet attrs,
+                                  final int defStyleAttr, final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context, attrs, defStyleAttr);
     }
@@ -95,7 +96,6 @@ public class ExpandableRelativeLayout extends RelativeLayout implements Expandab
                 attrs, R.styleable.expandableLayout, defStyleAttr, 0);
         duration = a.getInteger(R.styleable.expandableLayout_ael_duration, DEFAULT_DURATION);
         defaultExpanded = a.getBoolean(R.styleable.expandableLayout_ael_expanded, DEFAULT_EXPANDED);
-        orientation = a.getInteger(R.styleable.expandableLayout_ael_orientation, VERTICAL);
         defaultChildIndex = a.getInteger(R.styleable.expandableLayout_ael_defaultChildIndex,
                 Integer.MAX_VALUE);
         defaultPosition = a.getDimensionPixelSize(R.styleable.expandableLayout_ael_defaultPosition,
@@ -111,55 +111,47 @@ public class ExpandableRelativeLayout extends RelativeLayout implements Expandab
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        if (isCalculatedSize) return;
+        if (!isCalculatedSize) {
+            // calculate a size of children
+            childSizeList.clear();
+            final int childCount = getChildCount();
 
-        final int measureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-        if (isVertical()) {
-            int measuredHeight = getMeasuredHeight();
+            if (childCount > 0) {
+                int sumSize = 0;
+                View view;
+                LayoutParams params;
+                for (int i = 0; i < childCount; i++) {
+                    view = getChildAt(i);
+                    params = (LayoutParams) view.getLayoutParams();
 
-            super.onMeasure(widthMeasureSpec, measureSpec);
-            layoutSize = getMeasuredHeight();
-
-            setMeasuredDimension(getMeasuredWidth(), measuredHeight);
-        } else {
-            int measuredWidth = getMeasuredWidth();
-
-            super.onMeasure(measureSpec, heightMeasureSpec);
-            layoutSize = getMeasuredWidth();
-
-            setMeasuredDimension(measuredWidth, getMeasuredHeight());
+                    if (0 < i) {
+                        sumSize = childSizeList.get(i - 1);
+                    }
+                    childSizeList.add(
+                            (isVertical()
+                                    ? view.getMeasuredHeight() + params.topMargin + params.bottomMargin
+                                    : view.getMeasuredWidth() + params.leftMargin + params.rightMargin
+                            ) + sumSize);
+                }
+                layoutSize = childSizeList.get(childCount - 1) +
+                        (isVertical()
+                                ? getPaddingTop() + getPaddingBottom()
+                                : getPaddingLeft() + getPaddingRight()
+                        );
+                isCalculatedSize = true;
+            } else {
+                throw new IllegalStateException("The expandableLinearLayout must have at least one child");
+            }
         }
-
-        // calculate a size of children
-        childSizeList.clear();
-        View view;
-        LayoutParams params;
-        for (int i = 0; i < getChildCount(); i++) {
-            view = getChildAt(i);
-            params = (LayoutParams) view.getLayoutParams();
-
-            childSizeList.add(isVertical()
-                    ? view.getMeasuredHeight() + params.topMargin + params.bottomMargin
-                    : view.getMeasuredWidth() + params.leftMargin + params.rightMargin);
-        }
-        isCalculatedSize = true;
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
 
         if (isArranged) return;
-
-        childPositionList.clear();
-        // calculate a top position of children
-        for (int i = 0; i < getChildCount(); i++) {
-            childPositionList.add((int) (isVertical() ? getChildAt(i).getY() : getChildAt(i).getX()));
-        }
 
         // adjust default position if a user set a value.
         if (!defaultExpanded) {
             setLayoutSize(closePosition);
+        }
+        if (inRecyclerView) {
+            setLayoutSize(recyclerExpanded ? layoutSize : closePosition);
         }
         final int childNumbers = childSizeList.size();
         if (childNumbers > defaultChildIndex && childNumbers > 0) {
@@ -286,7 +278,9 @@ public class ExpandableRelativeLayout extends RelativeLayout implements Expandab
      * {@inheritDoc}
      */
     @Override
-    public void setExpanded(boolean expanded) {
+    public void setExpanded(final boolean expanded) {
+        if (inRecyclerView) recyclerExpanded = expanded;
+
         final int currentPosition = getCurrentPosition();
         if ((expanded && (currentPosition == layoutSize))
                 || (!expanded && currentPosition == closePosition)) return;
@@ -310,6 +304,25 @@ public class ExpandableRelativeLayout extends RelativeLayout implements Expandab
     @Override
     public void setInterpolator(@NonNull final TimeInterpolator interpolator) {
         this.interpolator = interpolator;
+    }
+
+    /**
+     * Initializes this layout.
+     */
+    public void initLayout() {
+        closePosition = 0;
+        layoutSize = 0;
+        isArranged = false;
+        isCalculatedSize = false;
+        savedState = null;
+
+        if (isVertical()) {
+            measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.UNSPECIFIED));
+        } else {
+            measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.UNSPECIFIED),
+                    MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY));
+        }
     }
 
     /**
@@ -375,15 +388,6 @@ public class ExpandableRelativeLayout extends RelativeLayout implements Expandab
     }
 
     /**
-     * Sets orientation of expanse animation.
-     *
-     * @param orientation Set 0 if orientation is horizontal, 1 if orientation is vertical
-     */
-    public void setOrientation(@Orientation final int orientation) {
-        this.orientation = orientation;
-    }
-
-    /**
      * Gets the width from left of layout if orientation is horizontal.
      * Gets the height from top of layout if orientation is vertical.
      *
@@ -394,7 +398,7 @@ public class ExpandableRelativeLayout extends RelativeLayout implements Expandab
         if (0 > index || childSizeList.size() <= index) {
             throw new IllegalArgumentException("There aren't the view having this index.");
         }
-        return childPositionList.get(index) + childSizeList.get(index);
+        return childSizeList.get(index);
     }
 
     /**
@@ -439,8 +443,17 @@ public class ExpandableRelativeLayout extends RelativeLayout implements Expandab
         this.closePosition = getChildPosition(childIndex);
     }
 
+    /**
+     * Set true if expandable layout is used in recycler view.
+     *
+     * @param inRecyclerView
+     */
+    public void setInRecyclerView(final boolean inRecyclerView) {
+        this.inRecyclerView = inRecyclerView;
+    }
+
     private boolean isVertical() {
-        return orientation == VERTICAL;
+        return getOrientation() == LinearLayout.VERTICAL;
     }
 
     private void setLayoutSize(int size) {
