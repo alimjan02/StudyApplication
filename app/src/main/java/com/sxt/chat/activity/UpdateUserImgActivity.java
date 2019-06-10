@@ -19,8 +19,6 @@ import com.bumptech.glide.signature.StringSignature;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.VideoController;
 import com.google.android.gms.ads.VideoOptions;
 import com.google.android.gms.ads.formats.MediaView;
@@ -29,7 +27,6 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
-import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.Prefs;
@@ -45,12 +42,11 @@ import cn.bmob.v3.listener.UpdateListener;
  * Created by izhaohu on 2018/3/13.
  */
 
-public class UpdateUserImgActivity extends HeaderActivity implements View.OnClickListener {
+public class UpdateUserImgActivity extends AdmobBannerActivity implements View.OnClickListener {
 
     private ImageView img;
     private Uri bitmapUri;
     private UnifiedNativeAd adGoogleNative;
-    private AdView adGoogleBanner;
     private final int REQUEST_CHOOSE_PHOTO = 1000;
     private final int REQUEST_CROP_PHOTO = 1001;
     private final String CMD_UPLOAD_FILE = this.getClass().getName() + "CMD_UPLOAD_FILE";
@@ -193,16 +189,6 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
             loading.dismiss();
             Toast(resp.getError());
         }
-    }
-
-    /**
-     * Google Banner广告位
-     */
-    private void initGoogleAdBanner() {
-        adGoogleBanner = findViewById(R.id.ad_view);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        // 開始在後台加載廣告。
-        adGoogleBanner.loadAd(adRequest);
     }
 
     /**
@@ -357,26 +343,12 @@ public class UpdateUserImgActivity extends HeaderActivity implements View.OnClic
     public void onResume() {
         super.onResume();
         updateHeadPortrait();
-        if (adGoogleBanner != null) {
-            adGoogleBanner.resume();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (adGoogleBanner != null) {
-            adGoogleBanner.pause();
-        }
     }
 
     @Override
     public void onDestroy() {
         if (adGoogleNative != null) {
             adGoogleNative.destroy();
-        }
-        if (adGoogleBanner != null) {
-            adGoogleBanner.destroy();
         }
         super.onDestroy();
     }

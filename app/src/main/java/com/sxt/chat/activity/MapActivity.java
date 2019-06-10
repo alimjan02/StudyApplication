@@ -71,7 +71,6 @@ import com.sxt.chat.ws.BmobRequest;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -415,7 +414,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
             recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             recyclerView.addItemDecoration(new DividerItemDecoration(this, ContextCompat.getDrawable(this, R.drawable.divider_colors)));
             locationAdapter = new LocationAdapter(this, list);
-            locationAdapter.setOnItemClickListener((position, holder, object) -> {
+            locationAdapter.setOnItemClickListener((position, object) -> {
                 locationAdapter.refreshIndex(position);
                 if (markers.get(position + 1) != null && (markers.get(position + 1).equals(markerPre)))
                     return;//点击的是同一条数据
@@ -499,7 +498,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         final Circle circleOut = aMap.addCircle(new CircleOptions().center(latLng)
                 .radius(maxRadius)
                 .strokeColor(ContextCompat.getColor(this, android.R.color.transparent))
-                .fillColor(ContextCompat.getColor(this, R.color.blue_sharder))
+                .fillColor(ContextCompat.getColor(this, R.color.blue_shader))
                 .strokeWidth(0));
 
         final Circle circleIn = aMap.addCircle(new CircleOptions().center(latLng)

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -12,7 +14,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.sxt.chat.App;
 
@@ -29,7 +33,7 @@ public class BaseBottomSheetFragment extends BottomSheetDialogFragment {
 
     protected String TAG = this.getClass().getName();
     private final String CONTENT_VIEW_IS_EMPTY = "contentView is null, Please invoke this method after onCreateDialog()";
-    private int PEEK_HEIGHT_DEFAULT = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, App.getCtx().getResources().getDisplayMetrics());
+    private BottomSheetDialog bottomSheetDialog;
 
     public BaseBottomSheetFragment() {
     }
@@ -41,43 +45,81 @@ public class BaseBottomSheetFragment extends BottomSheetDialogFragment {
         Log.i(TAG, "onAttach");
     }
 
+    /**
+     * 因为需要创建完Dialog以后才能创建bottomSheetBehavior
+     * 所以设置bottomSheetBehavior的相关属性时，必须在onCreateDialog方法执行完以后调用
+     */
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Log.i(TAG, "onCreateDialog");
-        BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         contentView = getDisplayView();
+        bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         bottomSheetDialog.setContentView(contentView);
+        bottomSheetBehavior = BottomSheetBehavior.from((View) contentView.getParent());
 //        Window window = bottomSheetDialog.getWindow();
 //        if (window != null) {
 //            View view = window.findViewById(android.support.design.R.id.design_bottom_sheet);
 //            bottomSheetBehavior = BottomSheetBehavior.from(view);
 //        }
-        bottomSheetBehavior = BottomSheetBehavior.from((View) contentView.getParent());
-        onBottomSheetDialogCreate(bottomSheetDialog, contentView);
+        onCreateDialog(this, bottomSheetDialog, contentView);
         return bottomSheetDialog;
     }
 
-    private void onBottomSheetDialogCreate(BottomSheetDialog bottomSheetDialog, View contentView) {
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        initView();
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    /**
+     * 此时Dialog已经创建完成了，可以设置一些相关属性了
+     */
+    private void onCreateDialog(BaseBottomSheetFragment baseBottomSheetFragment, BottomSheetDialog bottomSheetDialog, View contentView) {
         if (onBottomSheetDialogCreateListener != null) {
-            onBottomSheetDialogCreateListener.onBottomSheetDialogCreate(this, bottomSheetDialog, contentView);
+            onBottomSheetDialogCreateListener.onBottomSheetDialogCreate(baseBottomSheetFragment, bottomSheetDialog, contentView);
         } else {
-            defaultSettings(bottomSheetDialog, contentView);
+            setBackgtoundColor(Color.TRANSPARENT);
+            setCancelableOutside(true);
+            setHideable(true);
         }
     }
 
     /**
-     * 如果Child不设置OnBottomSheetDialogCreateListener监听 , 将默认为Child 设置parentView背景色为透明 && 折叠时高度为200dp && 向下滑动时可隐藏
-     *
-     * @param bottomSheetDialog 当前对话框
-     * @param contentView       当前对话框通过 dialog.setContentView() 添加进来的View
+     * 初始化View
      */
-    public void defaultSettings(BottomSheetDialog bottomSheetDialog, View contentView) {
-        View parent = (View) contentView.getParent();
-        parent.setBackgroundColor(Color.TRANSPARENT);
+    protected void initView() {
+
+    }
+
+    public BaseBottomSheetFragment setPeekHeight(int peekHeight) {
         if (bottomSheetBehavior != null) {
-            bottomSheetBehavior.setPeekHeight(PEEK_HEIGHT_DEFAULT);
-            bottomSheetBehavior.setHideable(true);
+            bottomSheetBehavior.setPeekHeight(peekHeight);
         }
+        return this;
+    }
+
+    public BaseBottomSheetFragment setHideable(boolean hideable) {
+        if (bottomSheetBehavior != null) {
+            bottomSheetBehavior.setHideable(hideable);
+        }
+        return this;
+    }
+
+    public BaseBottomSheetFragment setCancelableOutside(boolean cancelableOutside) {
+        if (bottomSheetDialog != null) {
+            bottomSheetDialog.setCanceledOnTouchOutside(cancelableOutside);
+        }
+        return this;
+    }
+
+    public BaseBottomSheetFragment setBackgtoundColor(int backgroundColor) {
+        if (contentView != null) {
+            View parent = (View) contentView.getParent();
+            parent.setBackgroundColor(backgroundColor);
+        }
+        return this;
     }
 
     public BottomSheetBehavior<View> getBottomSheetBehavior() {
@@ -142,6 +184,6 @@ public class BaseBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     public interface OnBottomSheetDialogCreateListener {
-        void onBottomSheetDialogCreate(BaseBottomSheetFragment bottomSheetFragment, BottomSheetDialog bottomSheetDialog, View contentView);
+        void onBottomSheetDialogCreate(BaseBottomSheetFragment baseBottomSheetFragment, BottomSheetDialog bottomSheetDialog, View contentView);
     }
 }

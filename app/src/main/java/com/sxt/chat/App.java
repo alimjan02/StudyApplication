@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 
+import com.google.android.gms.ads.MobileAds;
 import com.sxt.chat.activity.LoginActivity;
 import com.sxt.chat.utils.ActivityCollector;
 import com.sxt.chat.utils.ActivityManager;
@@ -19,11 +20,17 @@ import cn.bmob.v3.BmobConfig;
  */
 public class App extends MultiDexApplication {
     private static Context mContext;
+//    public static boolean isTestAd = true;
+    //小米note
+//    public static final String testUnitId = "1EBCE02FF77AFA8C196DEF1B79E965E8";
+    //google pixel
+//    public static final String testUnitId = "531FAE1B57BF491B107740EDA65678D5";
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = this;
+        MobileAds.initialize(this, getString(R.string.adsense_app_key));
         CrashReport.initCrashReport(this, "1419862dc6", true);
         initBmob();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {

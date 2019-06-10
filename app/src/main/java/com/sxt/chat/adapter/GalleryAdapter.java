@@ -43,7 +43,7 @@ public class GalleryAdapter extends BaseRecyclerAdapter<Banner> {
 
         holder.root.setOnClickListener(v -> {
             if (onItemClickListener != null) {
-                onItemClickListener.onClick(position, holder, getItem(position));
+                onItemClickListener.onClick(position, getItem(position));
             }
         });
     }

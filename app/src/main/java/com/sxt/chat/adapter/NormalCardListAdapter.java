@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.sxt.chat.R;
-import com.sxt.chat.activity.RoomDetailActivity;
+import com.sxt.chat.activity.BannerDetailActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.json.RoomInfo;
 import com.sxt.chat.utils.Prefs;
@@ -59,7 +58,7 @@ public class NormalCardListAdapter extends BaseRecyclerAdapter<RoomInfo> {
                 .into(holder.img_header);
 
         holder.root.setOnClickListener(v -> {
-            Intent intent = new Intent(context, RoomDetailActivity.class);
+            Intent intent = new Intent(context, BannerDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable(Prefs.ROOM_INFO, getItem(position));
             intent.putExtra(Prefs.ROOM_INFO, bundle);

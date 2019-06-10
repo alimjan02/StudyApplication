@@ -55,48 +55,31 @@ public class ChartFragment extends LazyFragment {
 
     @Override
     protected void initView() {
-        nestedScrollView = contentView.findViewById(R.id.nesredScrollview);
+        nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
         viewSwitcher = contentView.findViewById(R.id.viewSwitcher);
         lineLayoutList = contentView.findViewById(R.id.line_layout_list);
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        lineLayoutList.removeAllViews();
-                        swipeRefreshLayout.setRefreshing(false);
-                        lineLayoutList.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(activity, R.anim.layout_animation_vertical));
-                        init();
-                    }
-                }, 2000);
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> handler.postDelayed(() -> {
+            lineLayoutList.removeAllViews();
+            swipeRefreshLayout.setRefreshing(false);
+            lineLayoutList.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(activity, R.anim.layout_animation_vertical));
+            init();
+        }, 2000));
         initData();
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);//第一次来 并不会调用onRefresh方法  android bug
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        viewSwitcher.setDisplayedChild(1);
-                        init();
-                    }
-                }, 2000);
-            }
+        swipeRefreshLayout.post(() -> {
+            swipeRefreshLayout.setRefreshing(true);//第一次来 并不会调用onRefresh方法  android bug
+            handler.postDelayed(() -> {
+                swipeRefreshLayout.setRefreshing(false);
+                viewSwitcher.setDisplayedChild(1);
+                init();
+            }, 2000);
         });
         //设置滑动监听,使得底部tab栏竖直滑动
-        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                Log.e("scrollY", String.format("oldScrollY = %s ; scrollY = %s", oldScrollY, scrollY));
-                MainActivity activity = (MainActivity) ChartFragment.this.activity;
-                activity.setBottomBarTranslateY(scrollY, scrollY > oldScrollY);
-            }
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            Log.e("scrollY", String.format("oldScrollY = %s ; scrollY = %s", oldScrollY, scrollY));
+            MainActivity activity = (MainActivity) ChartFragment.this.activity;
+            activity.setBottomBarTranslateY(scrollY, scrollY > oldScrollY);
         });
     }
 
@@ -129,7 +112,7 @@ public class ChartFragment extends LazyFragment {
     private void drawCircleProgress() {
         View view = View.inflate(activity, R.layout.item_circle_progress, null);
         lineLayoutList.addView(view);
-        CircleProgressView itemView = (CircleProgressView) view.findViewById(R.id.chart_circle_progress);
+        CircleProgressView itemView = view.findViewById(R.id.chart_circle_progress);
         itemView
                 .setDuration(2000)
                 .setLabels(
@@ -145,7 +128,7 @@ public class ChartFragment extends LazyFragment {
         lineLayoutList.addView(barView);
         barView.setTag(lineLayoutList.getChildCount() - 1);
 
-        final ChartBar chartBar = (ChartBar) barView.findViewById(R.id.chartbar);
+        final ChartBar chartBar = barView.findViewById(R.id.chartbar);
         //设置柱状图的数据源
         chartBar
                 .setRectData(chartBeanList)
@@ -162,7 +145,7 @@ public class ChartFragment extends LazyFragment {
     private void initData() {
         lineName = new String[]{getString(R.string.string_label_press), getString(R.string.string_label_xt), getString(R.string.string_label_hb), getString(R.string.string_label_bt)};
         lineColor = new int[]{R.color.violet_rgb_185_101_255, R.color.red_rgb_255_127_87, R.color.red, R.color.blue_rgba_24_261_255, R.color.green_rgb_40_220_162};
-        shaderColor = new int[]{R.color.violet_sharder, R.color.red_sharder, R.color.red_sharder, R.color.blue_sharder, R.color.green_sharder};
+        shaderColor = new int[]{R.color.violet_sharder, R.color.red_sharder, R.color.red_sharder, R.color.blue_shader, R.color.green_sharder};
         lineUnit = new String[]{getString(R.string.string_unit_xt), getString(R.string.string_unit_hb), getString(R.string.string_unit_press), getString(R.string.string_unit_bt)};
 
         chartBeanList = new ArrayList<>();
@@ -186,11 +169,11 @@ public class ChartFragment extends LazyFragment {
         chartBeanList0.add(new ChartBean("6", 33));
 
         pieBeanList = new ArrayList<>();
-        pieBeanList.add(new ChartPieBean(3090, "押金使用", R.color.main_green));
-        pieBeanList.add(new ChartPieBean(501f, "天猫购物", R.color.blue_rgba_24_261_255));
-        pieBeanList.add(new ChartPieBean(800, "话费充值", R.color.orange));
-        pieBeanList.add(new ChartPieBean(1000, "生活缴费", R.color.red_2));
-        pieBeanList.add(new ChartPieBean(2300, "早餐", R.color.progress_color_default));
+        pieBeanList.add(new ChartPieBean(3090, getString(R.string.chart_pie_yjsy), R.color.main_green));
+        pieBeanList.add(new ChartPieBean(501f, getString(R.string.chart_pie_shopping), R.color.blue_rgba_24_261_255));
+        pieBeanList.add(new ChartPieBean(800, getString(R.string.chart_pie_rcharge), R.color.orange));
+        pieBeanList.add(new ChartPieBean(1000, getString(R.string.chart_pie_living_payment), R.color.red_2));
+        pieBeanList.add(new ChartPieBean(2300, getString(R.string.chart_pie_breakfast), R.color.progress_color_default));
     }
 
     private void drawPie() {
@@ -238,7 +221,7 @@ public class ChartFragment extends LazyFragment {
         //底部的曲线图
         View childAt = View.inflate(activity, R.layout.item_chart_curve_line, null);
         lineLayoutList.addView(childAt);
-        BeizerCurveLine chartLine = (BeizerCurveLine) childAt.findViewById(R.id.chart_curve_line);
+        BeizerCurveLine chartLine = childAt.findViewById(R.id.chart_curve_line);
         BeizerCurveLine.CurveLineBuilder builder = new BeizerCurveLine.CurveLineBuilder();
         List<ChartBean> chartBeans = new ArrayList<>();
 

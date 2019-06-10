@@ -190,7 +190,7 @@ public class WiFiFragment extends BaseFragment implements View.OnClickListener {
                 if (SUCCESS) {
                     activity.finish();
                 } else {
-                    ToastUtil.showToast(activity, "请确认您选择的Wi-Fi是否正常连接");
+                    ToastUtil.showToast(activity, R.string.check_wifi_connect);
                 }
                 break;
         }
@@ -272,7 +272,7 @@ public class WiFiFragment extends BaseFragment implements View.OnClickListener {
 
                 final String trim = etWifiPwd.getText().toString().trim();
                 if (TextUtils.isEmpty(trim)) {
-                    ToastUtil.showToast(activity, "请输入Wi-Fi密码");
+                    ToastUtil.showToast(activity, R.string.please_input_wifi_password);
                     return;
                 }
                 if (selectedScanResult != null) {

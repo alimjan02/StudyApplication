@@ -29,7 +29,7 @@
                 android:layout_centerVertical="true"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="头像" />
+                android:text="@string/head_portrait" />
 
             <ImageView
                 android:id="@+id/arrow"
@@ -77,6 +77,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/adsense_app_ad_banner_settings" />
+        ads:adUnitId="@string/adsense_app_ad_banner_personal_profile" />
 
 </LinearLayout>

@@ -12,14 +12,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.qq.e.ads.banner.AbstractBannerADListener;
 import com.qq.e.ads.banner.BannerView;
 import com.qq.e.comm.util.AdError;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
-import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.db.SQLiteUserDao;
 import com.sxt.chat.db.User;
 import com.sxt.chat.utils.ArithTool;
@@ -35,7 +35,7 @@ import cn.bmob.v3.listener.UpdateListener;
 /**
  * Created by sxt on 2018/1/25.
  */
-public class BasicInfoActivity extends HeaderActivity implements View.OnClickListener {
+public class BasicInfoActivity extends AdmobBannerActivity implements View.OnClickListener {
 
     private ImageView userPortait;
     private TextView userName, bodyNumber, userSex, userAge, userWeight, userHeight, userBmi;
@@ -52,8 +52,10 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
     private final String CMD_SAVE_USER_Weight = "CMD_SAVE_USER_Weight";
     private final String CMD_SAVE_USER_Height = "CMD_SAVE_USER_Height";
     private String name, age, sex, idCard;
-    private float weight, hight;
-    private AdView adGoogleBanner;
+    private float weight, height;
+    private long millis = 60 * 1000L;
+    private InterstitialAd interstitialAd;
+    private String KEY = this.getClass().getName() + "KEY_LAST_RESUME_MILLIS";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
         setTitle(R.string.basic_info);
         initView();
         loadUserDetailInfo();
+        initGoogleAlertAds();
         initGoogleAdBanner();
     }
 
@@ -124,71 +127,6 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
 //                .diskCacheStrategy(DiskCacheStrategy.NONE)//想要生效必须添加 跳过内存
                 .signature(new StringSignature(Prefs.getInstance(App.getCtx()).getString(Prefs.KEY_USER_HEADER_IMAGE_FLAG, "")))
                 .into(userPortait);
-    }
-
-    /**
-     * 腾讯Banner广告位
-     */
-    private void initTencentAdBanner() {
-        FrameLayout bannerContainer = (FrameLayout) findViewById(R.id.ad_container);
-        // 创建Banner广告AdView对象
-        // appId : 在 http://e.qq.com/dev/ 能看到的app唯一字符串
-        // posId : 在 http://e.qq.com/dev/ 生成的数字串，并非 appid 或者 appkey
-        BannerView banner = new BannerView(this, com.qq.e.ads.banner.ADSize.BANNER, Constants.APPID, Constants.BannerPosID);
-        //设置广告轮播时间，为0或30~120之间的数字，单位为s,0标识不自动轮播
-        banner.setRefresh(30);
-        banner.setADListener(new AbstractBannerADListener() {
-
-            @Override
-            public void onNoAD(AdError error) {
-                Log.i("AD_DEMO", "BannerNoAD，eCode=" + error.getErrorCode());
-            }
-
-            @Override
-            public void onADReceiv() {
-                Log.i("AD_DEMO", "ONBannerReceive");
-
-            }
-        });
-        bannerContainer.addView(banner);
-        /* 发起广告请求，收到广告数据后会展示数据   */
-        banner.loadAD();
-    }
-
-    /**
-     * Google Banner广告位
-     */
-    private void initGoogleAdBanner() {
-        adGoogleBanner = findViewById(R.id.ad_view);
-        //製作廣告請求。檢查您的logcat輸出中的散列設備ID，
-        AdRequest adRequest = new AdRequest.Builder().build();
-        // 開始在後台加載廣告。
-        adGoogleBanner.loadAd(adRequest);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateHeadPortrait();
-        if (adGoogleBanner != null) {
-            adGoogleBanner.resume();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        if (adGoogleBanner != null) {
-            adGoogleBanner.pause();
-        }
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        if (adGoogleBanner != null) {
-            adGoogleBanner.destroy();
-        }
-        super.onDestroy();
     }
 
     @Override
@@ -296,9 +234,9 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
                     break;
                 case REQUESTCODE_HIGHT:
                     if (data != null) {
-                        hight = data.getFloatExtra(String.valueOf(REQUESTCODE_HIGHT), 0.0f);
+                        height = data.getFloatExtra(String.valueOf(REQUESTCODE_HIGHT), 0.0f);
                         newUser = new User();
-                        newUser.setHeight(hight);
+                        newUser.setHeight(height);
                         updateUserInfo(newUser, CMD_SAVE_USER_Height);
                     }
                     break;
@@ -312,12 +250,12 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
         if (user != null) {
             userName.setText(user.getName() == null ? user.getUserName() : user.getName());
             bodyNumber.setText(user.getIdCard() == null ? "" : user.getIdCard());
-            userSex.setText(user.getGender() == null ? "" : user.getGender().equals("M") ? "男" : "女");
-            userAge.setText((user.getAge() == null ? 0 : user.getAge()) <= 0 ? "" : user.getAge() + "岁");
-            userWeight.setText((user.getWeight() == null ? 0 : user.getWeight()) <= 0.0 ? "" : String.valueOf(user.getWeight() + "KG"));
-            userHeight.setText((user.getHeight() == null ? 0 : user.getHeight()) <= 0.0 ? "" : String.valueOf(user.getHeight() + "CM"));
-            if (weight > 0.0 && hight > 0.0) {
-                userBmi.setText(String.valueOf(ArithTool.div(weight * 10000, Math.pow(hight, 2), 1)));
+            userSex.setText(user.getGender() == null ? "" : user.getGender().equals("M") ? getString(R.string.man) : getString(R.string.woman));
+            userAge.setText((user.getAge() == null ? 0 : user.getAge()) <= 0 ? "" : user.getAge() + "");
+            userWeight.setText((user.getWeight() == null ? 0 : user.getWeight()) <= 0.0 ? "" : user.getWeight() + "KG");
+            userHeight.setText((user.getHeight() == null ? 0 : user.getHeight()) <= 0.0 ? "" : user.getHeight() + "CM");
+            if (weight > 0.0 && height > 0.0) {
+                userBmi.setText(String.valueOf(ArithTool.div(weight * 10000, Math.pow(height, 2), 1)));
             }
             switch (cmd_save_id) {
                 case CMD_SAVE_USER_IMG:
@@ -339,7 +277,7 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
                     user.setWeight(weight);
                     break;
                 case CMD_SAVE_USER_Height:
-                    user.setHeight(hight);
+                    user.setHeight(height);
                     break;
                 default:
                     break;
@@ -376,5 +314,102 @@ public class BasicInfoActivity extends HeaderActivity implements View.OnClickLis
         });
     }
 
+    /**
+     * 腾讯Banner广告位
+     */
+    private void initTencentAdBanner() {
+        FrameLayout bannerContainer = (FrameLayout) findViewById(R.id.ad_container);
+        // 创建Banner广告AdView对象
+        // appId : 在 http://e.qq.com/dev/ 能看到的app唯一字符串
+        // posId : 在 http://e.qq.com/dev/ 生成的数字串，并非 appid 或者 appkey
+        BannerView banner = new BannerView(this, com.qq.e.ads.banner.ADSize.BANNER, Constants.APPID, Constants.BannerPosID);
+        //设置广告轮播时间，为0或30~120之间的数字，单位为s,0标识不自动轮播
+        banner.setRefresh(30);
+        banner.setADListener(new AbstractBannerADListener() {
 
+            @Override
+            public void onNoAD(AdError error) {
+                Log.i("AD_DEMO", "BannerNoAD，eCode=" + error.getErrorCode());
+            }
+
+            @Override
+            public void onADReceiv() {
+                Log.i("AD_DEMO", "ONBannerReceive");
+
+            }
+        });
+        bannerContainer.addView(banner);
+        /* 发起广告请求，收到广告数据后会展示数据   */
+        banner.loadAD();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateHeadPortrait();
+        loadAD();
+    }
+
+    /**
+     * 初始化google插屏ad
+     */
+    private void initGoogleAlertAds() {
+        if (interstitialAd == null) {
+            interstitialAd = new InterstitialAd(this);
+            interstitialAd.setAdUnitId(getString(R.string.adsense_app_ad_alert_personal));
+            interstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    Log.e(TAG, "插屏广告加载成功");
+                }
+
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
+                    Log.e(TAG, "插屏广告加载失败 error code: " + errorCode);
+                }
+
+                @Override
+                public void onAdClosed() {
+                    Log.e(TAG, "插屏广告关闭");
+                    restartAlertAds();
+                }
+            });
+            restartAlertAds();
+        }
+    }
+
+    /**
+     * 预加载插屏广告
+     */
+    private void restartAlertAds() {
+        initGoogleAlertAds();
+        if (!interstitialAd.isLoading() && !interstitialAd.isLoaded()) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            interstitialAd.loadAd(adRequest);
+            Log.e(TAG, "加载下一个插屏广告");
+        }
+    }
+
+    /**
+     * 广告加载完成后，显示出来,然后预加载下一条广告
+     */
+    private void showAlertAds() {
+        if (interstitialAd != null && interstitialAd.isLoaded()) {
+            interstitialAd.show();
+            Log.e(TAG, "显示插屏广告");
+        } else {
+            restartAlertAds();
+        }
+    }
+
+    /**
+     * 显示插屏广告
+     */
+    private void loadAD() {
+        long lastMillis = Prefs.getInstance(this).getLong(KEY, 0);
+        if (System.currentTimeMillis() - lastMillis > millis) {
+            Prefs.getInstance(this).putLong(KEY, System.currentTimeMillis());
+            showAlertAds();
+        }
+    }
 }

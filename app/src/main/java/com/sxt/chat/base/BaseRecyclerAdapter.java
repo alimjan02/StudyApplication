@@ -30,7 +30,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     private LayoutInflater mInflater;
     protected Context context;
     protected List<T> data;
-    protected OnItemClickListener onItemClickListener;
+    protected OnItemClickListener<T> onItemClickListener;
     private ContentObserVer contentObserVer;
 
     public BaseRecyclerAdapter(Context context) {
@@ -91,12 +91,12 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         notifyDataSetChanged();
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    public void setOnItemClickListener(OnItemClickListener<T> onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
-    public interface OnItemClickListener {
-        void onClick(int position, RecyclerView.ViewHolder holder, Object object);
+    public interface OnItemClickListener<T> {
+        void onClick(int position, T t);
     }
 
     public void setContentObserver(ContentObserVer contentObserVer) {

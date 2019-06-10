@@ -31,6 +31,7 @@ public class ResponseInfo implements Serializable {
     private List<RoomInfo> roomInfoList;
     private List<Banner> bannerInfoList;
     private List<LocationInfo> locationInfoList;
+    private List<VideoInfo> videoInfoList;
 
     public ResponseInfo(int code) {
         this.code = code;
@@ -77,8 +78,16 @@ public class ResponseInfo implements Serializable {
         return locationInfoList;
     }
 
+    public List<VideoInfo> getVideoInfoList() {
+        return videoInfoList;
+    }
+
     public void setLocationInfoList(List<LocationInfo> locationInfoList) {
         this.locationInfoList = locationInfoList;
+    }
+
+    public void setVideoInfoList(List<VideoInfo> videoInfoList) {
+        this.videoInfoList = videoInfoList;
     }
 
     public List<RoomInfo> getRoomInfoList() {

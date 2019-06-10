@@ -44,6 +44,11 @@ public class BaseFragmentStatePagerAdapter<T> extends FragmentStatePagerAdapter 
         return PagerAdapter.POSITION_NONE;
     }
 
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return titles[position];
+    }
+
     public List<T> getChildData() {
         return childData;
     }

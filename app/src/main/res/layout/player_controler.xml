@@ -5,9 +5,9 @@
     android:layout_gravity="bottom"
     android:background="@color/translate_alpha"
     android:orientation="vertical"
-    android:paddingBottom="8dp"
+    android:paddingStart="8dp"
     android:paddingEnd="8dp"
-    android:paddingStart="8dp">
+    android:paddingBottom="8dp">
 
     <com.google.android.exoplayer2.ui.DefaultTimeBar
         android:id="@id/exo_progress"
@@ -132,7 +132,8 @@
                 android:background="?selectableItemBackgroundBorderless"
                 android:text="清晰度"
                 android:textColor="@android:color/white"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:visibility="gone" />
 
             <ViewSwitcher
                 android:id="@+id/viewSwitcher"
@@ -144,16 +145,14 @@
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_vector_zoom_out_24dp"
-                    android:text="选集"
-                    android:textColor="@android:color/white" />
+                    android:src="@drawable/ic_vector_zoom_out_24dp" />
 
                 <TextView
                     android:id="@+id/select"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:text="选集"
+                    android:text="@string/selection"
                     android:textColor="@android:color/white"
                     android:textSize="15dp" />
 

@@ -21,6 +21,7 @@ import org.greenrobot.eventbus.ThreadMode;
 public class BaseFragment<T> extends Fragment {
     protected Context context;
     protected View RootView;
+    protected String TAG = this.getClass().getName();
 
     public BaseFragment() {
     }

@@ -78,7 +78,7 @@
     <color name="red_rgb_255_127_87">#FF7F57</color>
 
     <color name="yellow_sharder">#4DFDCA4E</color>
-    <color name="blue_sharder">#3317A1FF</color>
+    <color name="blue_shader">#3317A1FF</color>
     <color name="violet_sharder">#ba9ad5</color>
     <color name="red_sharder">#4DFA1E00</color>
     <color name="green_sharder">#4D28DCA2</color>

@@ -1,6 +1,7 @@
 package com.sxt.chat.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class ChangeLoginAdapter extends BaseRecyclerAdapter<User> {
         super(context, data);
     }
 
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(getInflater().inflate(R.layout.item_change_login, parent, false));
@@ -60,13 +62,10 @@ public class ChangeLoginAdapter extends BaseRecyclerAdapter<User> {
         } else {
             holder.line.setVisibility(View.VISIBLE);
         }
-        holder.root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (onItemClickListener != null) {
-                    notifyItem(position);
-                    onItemClickListener.onClick(position, holder, getItem(position));
-                }
+        holder.root.setOnClickListener(view -> {
+            if (onItemClickListener != null) {
+                notifyItem(position);
+                onItemClickListener.onClick(position, getItem(position));
             }
         });
     }
@@ -81,7 +80,7 @@ public class ChangeLoginAdapter extends BaseRecyclerAdapter<User> {
                 .into(target);
     }
 
-    public void notifyItem(int position) {
+    private void notifyItem(int position) {
         index = position;
         notifyDataSetChanged();
     }
@@ -105,9 +104,9 @@ public class ChangeLoginAdapter extends BaseRecyclerAdapter<User> {
             super(itemView);
             root = itemView.findViewById(R.id.root);
             line = itemView.findViewById(R.id.line);
-            name = (TextView) itemView.findViewById(R.id.name);
-            img = (ImageView) itemView.findViewById(R.id.img);
-            arrow = (ImageView) itemView.findViewById(R.id.arrow);
+            name = itemView.findViewById(R.id.name);
+            img = itemView.findViewById(R.id.img);
+            arrow = itemView.findViewById(R.id.arrow);
         }
     }
 }

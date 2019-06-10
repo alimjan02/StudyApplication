@@ -1,5 +1,6 @@
 package com.sxt.chat.explayer;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
@@ -47,6 +48,7 @@ public class ExoPlayerOnTouchListener implements View.OnTouchListener {
         touchSlop = ViewConfiguration.get(activity).getScaledTouchSlop();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {

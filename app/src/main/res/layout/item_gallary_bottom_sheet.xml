@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,35 +10,73 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
-            <View
-                android:id="@+id/line"
-                android:layout_width="30dp"
-                android:layout_height="4dp"
+            <LinearLayout
+                android:id="@+id/top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="8dp"
-                android:background="@drawable/gray_dark_solid_round_8"
-                android:visibility="invisible" />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <View
+                    android:id="@+id/line"
+                    android:layout_width="30dp"
+                    android:layout_height="4dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/gray_dark_solid_round_8" />
+
+                <TextView
+                    style="@style/text_17_color_1_style"
+                    android:text="@string/search_nearby" />
+
+            </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/gridViewRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/line"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp" />
+                android:layout_height="wrap_content"
+                android:layout_below="@id/top" />
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/gridViewRecyclerView"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:cardPreventCornerOverlap="false"
+                app:cardUseCompatPadding="false">
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:scaleType="centerCrop" />
+
+            </android.support.v7.widget.CardView>
 
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
 
         </RelativeLayout>
 

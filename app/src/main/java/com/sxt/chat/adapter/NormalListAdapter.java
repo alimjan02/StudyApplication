@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.sxt.chat.R;
-import com.sxt.chat.activity.RoomDetailActivity;
+import com.sxt.chat.activity.BannerDetailActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.json.RoomInfo;
 import com.sxt.chat.utils.Prefs;
@@ -52,7 +52,7 @@ public class NormalListAdapter extends BaseRecyclerAdapter<RoomInfo> {
                 .bitmapTransform(new GlideRoundTransformer(context, 8))
                 .into(holder.img);
         holder.root.setOnClickListener(v -> {
-            Intent intent = new Intent(context, RoomDetailActivity.class);
+            Intent intent = new Intent(context, BannerDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable(Prefs.ROOM_INFO, getItem(position));
             intent.putExtra(Prefs.ROOM_INFO, bundle);

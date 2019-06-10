@@ -17,8 +17,16 @@ public abstract class LazyFragment extends BaseFragment {
     public View contentView;
     public boolean isInit = false;
     public boolean isFirst = true;
-    private boolean flag = true;
+    protected boolean useAlphaAnimator = true;
     protected BaseActivity activity;
+
+    public LazyFragment() {
+        this(true);
+    }
+
+    public LazyFragment(boolean useAlphaAnimator) {
+        this.useAlphaAnimator = useAlphaAnimator;
+    }
 
     @SuppressWarnings("deprecation")
     @Override
@@ -78,7 +86,7 @@ public abstract class LazyFragment extends BaseFragment {
     }
 
     private void loadWithAlpha(float fromAlpha, float toAlpha) {
-        if (contentView != null) {
+        if (contentView != null && useAlphaAnimator) {
             AnimationUtil.fadeInView(contentView, fromAlpha, toAlpha, AnimationUtil.ANIMATION_DURATION_MEDIUM, null);
         }
     }

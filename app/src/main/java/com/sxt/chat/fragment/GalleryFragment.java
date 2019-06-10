@@ -30,11 +30,11 @@ import com.sxt.banner.loader.UILoaderInterface;
 import com.sxt.banner.transformer.ScaleInTransformer;
 import com.sxt.chat.R;
 import com.sxt.chat.activity.MainActivity;
-import com.sxt.chat.activity.RoomDetailActivity;
+import com.sxt.chat.activity.BannerDetailActivity;
 import com.sxt.chat.adapter.GalleryAdapter;
 import com.sxt.chat.base.BaseBottomSheetFragment;
 import com.sxt.chat.base.LazyFragment;
-import com.sxt.chat.fragment.bottonsheet.GallaryBottomSheetFragment;
+import com.sxt.chat.fragment.bottonsheet.GalleryBottomSheetFragment;
 import com.sxt.chat.json.Banner;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.RoomInfo;
@@ -71,8 +71,8 @@ public class GalleryFragment extends LazyFragment {
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = contentView.findViewById(R.id.recyclerView);
         viewSwitcherBanner = contentView.findViewById(R.id.banner_viewSwitcher);
-        nestedScrollView=contentView.findViewById(R.id.nestedScrollView);
-        viewSwitcher = contentView.findViewById(R.id.viewSitcher);
+        nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
+        viewSwitcher = contentView.findViewById(R.id.viewSwitcher);
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
         swipeRefreshLayout.setOnRefreshListener(this::refresh);
         swipeRefreshLayout.post(() -> {
@@ -113,14 +113,10 @@ public class GalleryFragment extends LazyFragment {
             viewSwitcher.setDisplayedChild(1);
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setAdapter(adapter);
-            adapter.setOnItemClickListener((position, holder, object) -> {
+            adapter.setOnItemClickListener((position, banner) -> {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(Prefs.KEY_BANNER_INFO, (Banner) object);
-                BaseBottomSheetFragment sheetFragment = new GallaryBottomSheetFragment()
-                        .setOnBottomSheetDialogCreateListener((bottomSheetFragment, bottomSheetDialog, contentView) -> {
-                            bottomSheetFragment.defaultSettings(bottomSheetDialog, contentView);
-                            bottomSheetDialog.setCanceledOnTouchOutside(false);
-                        });
+                bundle.putSerializable(Prefs.KEY_BANNER_INFO, banner);
+                BaseBottomSheetFragment sheetFragment = new GalleryBottomSheetFragment();
                 sheetFragment.setArguments(bundle);
                 sheetFragment.show(getFragmentManager());
             });
@@ -160,7 +156,7 @@ public class GalleryFragment extends LazyFragment {
                         }
                     })
                     .setOnBannerListener(position -> {
-                        Intent intent = new Intent(context, RoomDetailActivity.class);
+                        Intent intent = new Intent(context, BannerDetailActivity.class);
                         Bundle bundle = new Bundle();
                         RoomInfo roomInfo = new RoomInfo();
                         roomInfo.setHome_name(banners.get(position).getDescription());

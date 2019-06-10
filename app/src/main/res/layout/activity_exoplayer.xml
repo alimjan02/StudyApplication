@@ -63,6 +63,7 @@
                 android:visibility="gone" />
 
         </FrameLayout>
+
     </LinearLayout>
 
     <include layout="@layout/item_video_bottom_sheet" />

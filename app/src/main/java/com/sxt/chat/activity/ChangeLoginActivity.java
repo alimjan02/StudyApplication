@@ -4,12 +4,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 
+import com.sxt.chat.App;
 import com.sxt.chat.R;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
+import com.sxt.chat.adapter.ChangeLoginAdapter;
+import com.sxt.chat.db.SQLiteUserDao;
+import com.sxt.chat.db.User;
+import com.sxt.chat.utils.Prefs;
+import com.sxt.chat.utils.ToastUtil2;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
@@ -18,15 +22,6 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 import java.util.List;
 
-import com.sxt.chat.App;
-import com.sxt.chat.adapter.ChangeLoginAdapter;
-import com.sxt.chat.base.BaseRecyclerAdapter;
-import com.sxt.chat.base.HeaderActivity;
-import com.sxt.chat.db.SQLiteUserDao;
-import com.sxt.chat.db.User;
-import com.sxt.chat.utils.Prefs;
-import com.sxt.chat.utils.ToastUtil;
-import com.sxt.chat.utils.ToastUtil2;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
@@ -35,7 +30,7 @@ import cn.bmob.v3.listener.LogInListener;
  * Created by izhaohu on 2018/2/6.
  */
 
-public class ChangeLoginActivity extends HeaderActivity {
+public class ChangeLoginActivity extends AdmobBannerActivity {
 
     private ChangeLoginAdapter adapter;
     private SwipeMenuRecyclerView mRecyclerView;
@@ -45,8 +40,9 @@ public class ChangeLoginActivity extends HeaderActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_login);
         setTitle(getString(R.string.change_login));
+        initGoogleAdBanner();
 
-        mRecyclerView = (SwipeMenuRecyclerView) findViewById(R.id.recyclerView);
+        mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_vertical));
         mRecyclerView.setSwipeMenuCreator(swipeMenuCreator);
@@ -55,39 +51,35 @@ public class ChangeLoginActivity extends HeaderActivity {
         adapter = new ChangeLoginAdapter(this, userList);
         adapter.setIndex(findUser(userList));
         mRecyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onClick(int position, RecyclerView.ViewHolder holder, Object object) {
-                loading.show();
-                User user = (User) object;
-                if (user != null) {
-                    final List<User> userList = SQLiteUserDao.getInstance(App.getCtx()).queryUserByUserName(user.getUserName());
-                    if (userList != null && userList.size() > 0) {
-                        if (BmobUser.getCurrentUser(User.class).getUsername().equals(userList.get(0).getUserName())) {
-                            Toast("当前账号已登录,无需切换");
-                        } else {
-                            if (userList.get(0).getUserName() != null && userList.get(0).getUserPwd() != null) {
-                                BmobUser.logOut();
-                                BmobUser.loginByAccount(userList.get(0).getUserName(), userList.get(0).getUserPwd(), new LogInListener<User>() {
-                                    @Override
-                                    public void done(User user, BmobException e) {
-                                        loading.dismiss();
-                                        if (user != null) {
-                                            Prefs.getInstance(App.getCtx()).setTicket(userList.get(0).getUserName(), userList.get(0).getTicket(), userList.get(0).getAccountId() == null ? 0 : userList.get(0).getAccountId());
-                                            ToastUtil2.showToast(App.getCtx(), "切换成功");
-                                            finish();
-                                        } else if (e != null) {
-                                            Toast("errorCode: " + e.getErrorCode() + " , " + e.getMessage());
-                                        }
+        adapter.setOnItemClickListener((position, user) -> {
+            loading.show();
+            if (user != null) {
+                final List<User> userList1 = SQLiteUserDao.getInstance(App.getCtx()).queryUserByUserName(user.getUserName());
+                if (userList1 != null && userList1.size() > 0) {
+                    if (BmobUser.getCurrentUser(User.class).getUsername().equals(userList1.get(0).getUserName())) {
+                        Toast("当前账号已登录,无需切换");
+                    } else {
+                        if (userList1.get(0).getUserName() != null && userList1.get(0).getUserPwd() != null) {
+                            BmobUser.logOut();
+                            BmobUser.loginByAccount(userList1.get(0).getUserName(), userList1.get(0).getUserPwd(), new LogInListener<User>() {
+                                @Override
+                                public void done(User user, BmobException e) {
+                                    loading.dismiss();
+                                    if (user != null) {
+                                        Prefs.getInstance(App.getCtx()).setTicket(userList1.get(0).getUserName(), userList1.get(0).getTicket(), userList1.get(0).getAccountId() == null ? 0 : userList1.get(0).getAccountId());
+                                        ToastUtil2.showToast(App.getCtx(), "切换成功");
+                                        finish();
+                                    } else if (e != null) {
+                                        Toast("errorCode: " + e.getErrorCode() + " , " + e.getMessage());
                                     }
-                                });
-                                return;
-                            }
+                                }
+                            });
+                            return;
                         }
                     }
                 }
-                loading.dismiss();
             }
+            loading.dismiss();
         });
     }
 
@@ -110,17 +102,15 @@ public class ChangeLoginActivity extends HeaderActivity {
     /**
      * 菜单创建器，在Item要创建菜单的时候调用。
      */
-    private SwipeMenuCreator swipeMenuCreator = new SwipeMenuCreator() {
-        @Override
-        public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int viewType) {
-            int width = getResources().getDimensionPixelSize(R.dimen.dp_70);
+    private SwipeMenuCreator swipeMenuCreator = (swipeLeftMenu, swipeRightMenu, viewType) -> {
+        int width = getResources().getDimensionPixelSize(R.dimen.dp_70);
 
-            // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
-            // 2. 指定具体的高，比如80;
-            // 3. WRAP_CONTENT，自身高度，不推荐;
-            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+        // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
+        // 2. 指定具体的高，比如80;
+        // 3. WRAP_CONTENT，自身高度，不推荐;
+        int height = ViewGroup.LayoutParams.MATCH_PARENT;
 
-            // 添加左侧的，如果不添加，则左侧不会出现菜单。
+        // 添加左侧的，如果不添加，则左侧不会出现菜单。
 //            {
 //                SwipeMenuItem addItem = new SwipeMenuItem(App.getCtx())
 //                        .setBackground(R.color.yellow_green_middle)
@@ -137,18 +127,18 @@ public class ChangeLoginActivity extends HeaderActivity {
 //                swipeLeftMenu.addMenuItem(closeItem); // 添加菜单到左侧。
 //            }
 
-            // 添加右侧的，如果不添加，则右侧不会出现菜单。
-            {
-                if (viewType == ChangeLoginAdapter.Other_USER) {
-                    SwipeMenuItem deleteItem = new SwipeMenuItem(App.getCtx())
-                            .setBackground(R.color.red_6)
+        // 添加右侧的，如果不添加，则右侧不会出现菜单。
+        {
+            if (viewType == ChangeLoginAdapter.Other_USER) {
+                SwipeMenuItem deleteItem = new SwipeMenuItem(App.getCtx())
+                        .setBackground(R.color.red_6)
 //                        .setImage(R.mipmap.xuetang)
-                            .setText("删除")
-                            .setTextColor(Color.WHITE)
-                            .setWidth(width)
-                            .setHeight(height);
-                    swipeRightMenu.addMenuItem(deleteItem);// 添加菜单到右侧。
-                }
+                        .setText("删除")
+                        .setTextColor(Color.WHITE)
+                        .setWidth(width)
+                        .setHeight(height);
+                swipeRightMenu.addMenuItem(deleteItem);// 添加菜单到右侧。
+            }
 
 //                SwipeMenuItem addItem = new SwipeMenuItem(App.getCtx())
 //                        .setBackground(R.color.dividing_line)
@@ -157,7 +147,6 @@ public class ChangeLoginActivity extends HeaderActivity {
 //                        .setWidth(width)
 //                        .setHeight(height);
 //                swipeRightMenu.addMenuItem(addItem); // 添加菜单到右侧。
-            }
         }
     };
 
@@ -183,14 +172,11 @@ public class ChangeLoginActivity extends HeaderActivity {
                         loading.show();
                         User user = adapter.getItem(adapterPosition);
                         SQLiteUserDao.getInstance(App.getCtx()).deleteUser(user.getUserName());
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                List<User> userList = SQLiteUserDao.getInstance(App.getCtx()).queryUser();
-                                adapter.setIndex(findUser(userList));
-                                adapter.notifyDataSetChanged(userList);
-                                loading.dismiss();
-                            }
+                        handler.postDelayed(() -> {
+                            List<User> userList = SQLiteUserDao.getInstance(App.getCtx()).queryUser();
+                            adapter.setIndex(findUser(userList));
+                            adapter.notifyDataSetChanged(userList);
+                            loading.dismiss();
                         }, 1500);
                     }
                 }
@@ -204,7 +190,7 @@ public class ChangeLoginActivity extends HeaderActivity {
     private Handler handler = new Handler();
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         if (handler != null) {
             handler.removeCallbacksAndMessages(null);

@@ -34,7 +34,7 @@
             android:drawablePadding="8dp"
             android:drawableStart="@drawable/ic_search_gray_24dp"
             android:gravity="center_vertical"
-            android:hint="搜索关键词"
+            android:hint="@string/search_key_word"
             android:imeOptions="actionSearch"
             android:maxLines="1"
             android:paddingEnd="8dp"

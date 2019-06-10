@@ -10,6 +10,7 @@ import com.sxt.chat.json.Banner;
 import com.sxt.chat.json.LocationInfo;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.RoomInfo;
+import com.sxt.chat.json.VideoInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -204,6 +205,30 @@ public final class BmobRequest {
                     ResponseInfo resp = new ResponseInfo(ResponseInfo.OK);
                     resp.setCmd(cmd);
                     resp.setLocationInfoList(list);
+                    EventBus.getDefault().post(resp);
+                } else {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.ERROR);
+                    resp.setCmd(cmd);
+                    resp.setError("errorCode = " + e.getErrorCode() + "\r\n message : " + e.getMessage());
+                    EventBus.getDefault().post(resp);
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取Banner
+     */
+    public void getVideosByType(int type, final String cmd) {
+        BmobQuery<VideoInfo> query = new BmobQuery<>();
+        query.addWhereEqualTo("type", type);
+        query.findObjects(new FindListener<VideoInfo>() {
+            @Override
+            public void done(List<VideoInfo> list, BmobException e) {
+                if (e == null) {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.OK);
+                    resp.setCmd(cmd);
+                    resp.setVideoInfoList(list);
                     EventBus.getDefault().post(resp);
                 } else {
                     ResponseInfo resp = new ResponseInfo(ResponseInfo.ERROR);

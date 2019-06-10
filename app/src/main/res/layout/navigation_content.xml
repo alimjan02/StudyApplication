@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="15dp"
-        android:paddingRight="15dp">
+        android:paddingRight="15dp"
+        android:paddingBottom="15dp">
 
         <TextView
             android:id="@+id/basic_info"
@@ -29,19 +29,22 @@
             android:id="@+id/ocr_scan"
             style="@style/menu_style"
             android:drawableStart="@drawable/ic_vector_img_scanner_24dp"
-            android:text="@string/ocr_scan" />
+            android:text="@string/ocr_scan"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/ocr_scan_id_card"
             style="@style/menu_style"
             android:drawableStart="@drawable/ic_vector_idcard_scanner_24dp"
-            android:text="@string/ocr_scan_id_card" />
+            android:text="@string/ocr_scan_id_card"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/pdf_parse"
             style="@style/menu_style"
             android:drawableStart="@drawable/ic_pdf_blue_24dp"
-            android:text="@string/pdf_parse" />
+            android:text="@string/pdf_parse"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/wifi"
@@ -60,21 +63,22 @@
             android:id="@+id/notifycation"
             style="@style/menu_style"
             android:drawableStart="@drawable/ic_vector_notifications_24dp"
-            android:text="@string/notifycation" />
+            android:text="@string/notification"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/ar"
             style="@style/menu_style"
             android:drawableStart="@drawable/ic_ar_photo_main_blue_24dp"
             android:text="@string/ar"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/vr"
             style="@style/menu_style"
             android:drawableStart="@drawable/ic_vr_photo_main_blue_24dp"
             android:text="@string/vr"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/normal_settings"

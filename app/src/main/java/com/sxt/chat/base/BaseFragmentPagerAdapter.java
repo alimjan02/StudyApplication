@@ -36,10 +36,10 @@ public class BaseFragmentPagerAdapter extends FragmentPagerAdapter {
         return fragments == null ? 0 : fragments.size();
     }
 
-//    @Override
-//    public CharSequence getPageTitle(int position) {
-//        return titles[position];
-//    }
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return titles[position];
+    }
 
     //    public void notifyDataSetChanged(List<Fragment> fragments) {
 //        if (fragments != null) {

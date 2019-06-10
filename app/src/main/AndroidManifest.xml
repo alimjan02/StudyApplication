@@ -3,15 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sxt.chat">
 
-    <!--蓝牙权限-->
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
     <!-- Required -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!--Wi-Fi-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -20,43 +14,20 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
     <!-- 地图包、搜索包需要的基础权限 -->
-    <!-- 允许程序打开网络套接字 -->
-    <uses-permission android:name="android.permission.INTERNET" />
     <!-- 允许程序设置内置sd卡的写权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- 允许程序获取网络状态 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- 允许程序访问WiFi网络信息 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- 允许程序读写手机状态和身份 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
-    <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置 -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <!-- 定位包、导航包需要的额外权限（注：基础权限也需要） -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-
-
-    <!-- 二维码扫描的权限 -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-
     <!--android8.0安装apk需要申请权限-->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <!-- This tag indicates that this application requires ARCore.  This results in the application
          only being visible in the Google Play Store on devices that support ARCore. -->
-    <uses-feature
+    <!--<uses-feature
         android:name="android.hardware.camera.ar"
         android:required="true" />
     <uses-feature
@@ -68,11 +39,9 @@
     <uses-feature
         android:name="android.hardware.vr.high_performance"
         android:required="false" />
-
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />-->
 
     <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <!--由于 Android P 限制了明文流量的网络请求，非加密的流量请求都会被系统禁止掉。
         如果当前应用的请求是 htttp 请求，而非 https ,
@@ -95,7 +64,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/BaseTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning"
+        tools:targetApi="n">
 
         <activity
             android:name=".activity.SplashActivity"
@@ -204,11 +174,11 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.VideoExoPlayerActivity"
+            android:name=".activity.ExoPlayerActivity"
             android:configChanges="orientation|screenSize" />
 
         <activity
-            android:name=".activity.RoomDetailActivity"
+            android:name=".activity.BannerDetailActivity"
             android:configChanges="orientation|screenSize" />
 
         <activity
@@ -332,9 +302,9 @@
             android:name="com.sxt.chat.utils.glide.GlideCatchConfig"
             android:value="GlideModule" />
 
-       <!-- <service
-            android:name="com.qq.e.comm.DownloadService"
-            android:exported="false" />-->
+        <!-- <service
+             android:name="com.qq.e.comm.DownloadService"
+             android:exported="false" />-->
 
         <!--腾讯广告-->
         <activity

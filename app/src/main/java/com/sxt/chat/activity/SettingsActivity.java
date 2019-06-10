@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -20,15 +21,13 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
-import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.download.DownloadTask;
 import com.sxt.chat.receiver.WatchDogReceiver;
 import com.sxt.chat.utils.Prefs;
+import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.utils.Utils;
 import com.sxt.chat.utils.glide.CacheUtils;
 
@@ -36,13 +35,12 @@ import com.sxt.chat.utils.glide.CacheUtils;
  * Created by izhaohu on 2018/3/13.
  */
 
-public class SettingsActivity extends HeaderActivity implements View.OnClickListener {
+public class SettingsActivity extends AdmobBannerActivity implements View.OnClickListener {
     private TextView cacheSize;
     private TextView version;
     private DownloadTask downloadTask;
     private boolean isCancelInstall;
     private AlertDialog alertDialog;
-    private AdView adGoogleBannerView;
     private final int REQUEST_CODE_INSTALL_APK = 1000;
     private final int REQUEST_MANAGE_UNKNOWN_APP_SOURCES = 1001;
 
@@ -59,6 +57,7 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         findViewById(R.id.login_out).setOnClickListener(this);//退出登录
         cacheSize.setText(CacheUtils.getInstance().getCacheSize());
         version.setText("当前版本:" + Prefs.getVersionName(App.getCtx()) + "");
+
         initGoogleAdBanner();
     }
 
@@ -69,7 +68,16 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
                 clearCache();
                 break;
             case R.id.current_version://检查更新
-                checkUpdate((int) System.currentTimeMillis());
+//                checkUpdate((int) System.currentTimeMillis());
+                try {
+                    Uri uri = Uri.parse("market://details?id=" + getPackageName());
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ToastUtil.showToast(this, R.string.market_is_none);
+                }
                 break;
             case R.id.login_out://退出登录
                 Intent intent = new Intent();
@@ -85,57 +93,16 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle(R.string.message_alert);
         builder.setMessage(R.string.clear_cache_confirm);
-        builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                CacheUtils.getInstance().clearCache();
-                cacheSize.setText(CacheUtils.getInstance().getCacheSize());
-                dialog.dismiss();
-            }
+        builder.setPositiveButton(R.string.confirm, (dialog, which) -> {
+            CacheUtils.getInstance().clearCache();
+            cacheSize.setText(CacheUtils.getInstance().getCacheSize());
+            dialog.dismiss();
         });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                dialog.dismiss();
-            }
-        }).show();
-    }
-
-    /**
-     * Google Banner广告位
-     */
-    private void initGoogleAdBanner() {
-        adGoogleBannerView = findViewById(R.id.ad_view);
-        //製作廣告請求。檢查您的logcat輸出中的散列設備ID，
-        // 以在物理設備上獲取測試廣告。例如
-        // “使用AdRequest.Builder.addTestDevice（”ABCDEF012345“）在此設備上獲取測試廣告。”
-        AdRequest adRequest = new AdRequest.Builder().build();
-        // 開始在後台加載廣告。
-        adGoogleBannerView.loadAd(adRequest);
+        builder.setNegativeButton(R.string.cancel, (dialog, i) -> dialog.dismiss()).show();
     }
 
     @Override
-    public void onPause() {
-        if (adGoogleBannerView != null) {
-            adGoogleBannerView.pause();
-        }
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (adGoogleBannerView != null) {
-            adGoogleBannerView.resume();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (adGoogleBannerView != null) {
-            adGoogleBannerView.destroy();
-        }
+    public void onDestroy() {
         super.onDestroy();
         if (downloadTask != null && !downloadTask.isCancelled()) {
             downloadTask.cancel(true);
@@ -174,9 +141,9 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
     public void startDownloadApkDialog(final int serverVersion) {
         final Dialog dialog = new Dialog(this, R.style.Base_Dialog_Style);
         View item = LayoutInflater.from(this).inflate(R.layout.item_update, null);
-        final TextView progressTitle = (TextView) item.findViewById(R.id.upgrade_title);
-        final ProgressBar progressBar = (ProgressBar) item.findViewById(R.id.my_progress);
-        final TextView tvProgress = (TextView) item.findViewById(R.id.tv_progres);
+        final TextView progressTitle = item.findViewById(R.id.upgrade_title);
+        final ProgressBar progressBar = item.findViewById(R.id.my_progress);
+        final TextView tvProgress = item.findViewById(R.id.tv_progres);
         dialog.setContentView(item);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
@@ -326,20 +293,14 @@ public class SettingsActivity extends HeaderActivity implements View.OnClickList
             alertDialog.setCancelable(false);
             alertDialog.setTitle("温馨提示");
             alertDialog.setMessage(getString(R.string.apk_install_message));
-            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    isCancelInstall = true;
-                }
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "取消", (dialog, which) -> {
+                dialog.dismiss();
+                isCancelInstall = true;
             });
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    isCancelInstall = false;
-                    goToInstallUnKonwAPKPage();
-                }
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "确定", (dialog, which) -> {
+                dialog.dismiss();
+                isCancelInstall = false;
+                goToInstallUnKonwAPKPage();
             });
         }
         if (!alertDialog.isShowing()) {

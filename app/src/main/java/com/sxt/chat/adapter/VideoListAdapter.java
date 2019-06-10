@@ -97,7 +97,7 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
                     case MotionEvent.ACTION_UP:
                         holder.itemView.getParent().requestDisallowInterceptTouchEvent(false);
                         upMillis = System.currentTimeMillis();
-                        if (!holder.itemView.isPressed()&&upMillis - downMillis <= 100) {//小于100ms 算点击事件
+                        if (!holder.itemView.isPressed() && upMillis - downMillis <= 100) {//小于100ms 算点击事件
                             if (onItemClickListener != null) {
                                 scaleAnimation = AnimationUtils.loadAnimation(context, R.anim.anim_item_scale_alpha);
                                 scaleAnimation.setInterpolator(new DecelerateInterpolator());
@@ -111,7 +111,7 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
                                     public void onAnimationEnd(Animation animation) {
                                         if (index != position) {
                                             notifyIndex(position);
-                                            onItemClickListener.onClick(position, holder, getItem(position));
+                                            onItemClickListener.onClick(position, getItem(position));
                                         }
                                     }
 

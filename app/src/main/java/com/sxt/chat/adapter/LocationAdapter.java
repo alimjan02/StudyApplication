@@ -1,6 +1,7 @@
 package com.sxt.chat.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ public class LocationAdapter extends BaseRecyclerAdapter<LocationInfo> {
         super(context, data);
     }
 
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_location, parent, false));
@@ -32,7 +34,7 @@ public class LocationAdapter extends BaseRecyclerAdapter<LocationInfo> {
         final ViewHolder holder = (ViewHolder) viewHolder;
         holder.title.setText(String.format("%s, %s", position + 1, data.get(position).getAddressName()));
         holder.subTitle.setText(data.get(position).getAddress());
-        holder.distance.setText(String.format("%s 公里", data.get(position).getDistance()));
+        holder.distance.setText(String.format("%s km", data.get(position).getDistance()));
         if (index == position) {
             holder.title.setTextColor(ContextCompat.getColor(context, R.color.main_blue));
             holder.subTitle.setTextColor(ContextCompat.getColor(context, R.color.main_blue));
@@ -41,12 +43,7 @@ public class LocationAdapter extends BaseRecyclerAdapter<LocationInfo> {
             holder.subTitle.setTextColor(ContextCompat.getColor(context, R.color.text_color_1));
         }
         if (onItemClickListener != null) {
-            holder.root.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onClick(position, holder, getItem(position));
-                }
-            });
+            holder.root.setOnClickListener(v -> onItemClickListener.onClick(position, getItem(position)));
         }
     }
 
@@ -76,9 +73,9 @@ public class LocationAdapter extends BaseRecyclerAdapter<LocationInfo> {
         public ViewHolder(View itemView) {
             super(itemView);
             root = itemView.findViewById(R.id.root);
-            title = (TextView) itemView.findViewById(R.id.title);
-            subTitle = (TextView) itemView.findViewById(R.id.subTitle);
-            distance = (TextView) itemView.findViewById(R.id.distance);
+            title = itemView.findViewById(R.id.title);
+            subTitle = itemView.findViewById(R.id.subTitle);
+            distance = itemView.findViewById(R.id.distance);
         }
     }
 }

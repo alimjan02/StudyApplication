@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
-import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
@@ -88,12 +86,6 @@ public class PdfActivity extends HeaderActivity {
                 parseTask.execute(pdfFilePath);
                 Log.i("webView", "onPageFinished");
             }
-
-            @Override
-            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-//                super.onReceivedSslError(view, handler, error);
-                handler.proceed();
-            }
         });
         webView.loadUrl("file:///android_asset/html/pdf.html");
     }
@@ -104,12 +96,7 @@ public class PdfActivity extends HeaderActivity {
         textView.setText(R.string.select_file);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
         textView.setTextColor(ContextCompat.getColor(this, R.color.white));
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkStoragePermission();
-            }
-        });
+        textView.setOnClickListener(v -> checkStoragePermission());
         super.setRightContainer(textView);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) textView.getLayoutParams();
         int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());

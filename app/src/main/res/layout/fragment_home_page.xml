@@ -78,7 +78,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="少年歌行"
+                        android:text="@string/banner_name_sngx"
                         android:textColor="@color/black" />
 
                 </FrameLayout>
@@ -117,7 +117,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="画江湖"
+                        android:text="@string/banner_name_hjh"
                         android:textColor="@color/black" />
 
                 </FrameLayout>
@@ -156,7 +156,7 @@
                         style="@style/text_14_color_1_style"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="血色苍穹"
+                        android:text="@string/banner_name_xscq"
                         android:textColor="@color/black" />
 
                     <TextView
@@ -165,7 +165,7 @@
                         android:layout_gravity="center_vertical|end"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:text="更多" />
+                        android:text="@string/more" />
 
                 </FrameLayout>
 
@@ -203,7 +203,7 @@
                         style="@style/text_14_color_1_style"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="一些风景"
+                        android:text="@string/banner_name_more"
                         android:textColor="@color/black" />
 
                     <TextView
@@ -215,7 +215,7 @@
                 </FrameLayout>
 
                 <ViewSwitcher
-                    android:id="@+id/gallary_viewSwitcher"
+                    android:id="@+id/gallery_viewSwitcher"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white">
@@ -227,7 +227,7 @@
                         android:src="@mipmap/ic_placeholder" />
 
                     <android.support.v7.widget.RecyclerView
-                        android:id="@+id/gallary_recyclerView"
+                        android:id="@+id/gallery_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="5dp" />
@@ -250,7 +250,7 @@
                         style="@style/text_14_color_3_style"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
-                        android:text="我也是有底线的" />
+                        android:text="bottom" />
 
                     <View
                         android:layout_width="50dp"

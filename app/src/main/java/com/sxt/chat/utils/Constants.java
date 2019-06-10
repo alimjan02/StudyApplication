@@ -19,7 +19,8 @@ public class Constants {
     //微信分享APP_KEY信息
     public static final String APPID_WECHART = "wxa3b61cced7fd3e45";
 
-    public static String APP_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.sxt.chat";
+//    public static String APP_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.sxt.chat";
+    public static String APP_URL = "https://play.google.com/store/apps/details?id=com.sxt.chat";
     private static String DESIGNED_BY = "Developed by 孙兴涛 in China";
     public static String SHARE_CONTENT = "A beautiful app designed with Material Design:\n" + APP_URL + "\n- " + DESIGNED_BY;
 

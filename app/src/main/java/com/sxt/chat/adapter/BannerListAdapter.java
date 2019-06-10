@@ -12,15 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.sxt.chat.R;
-import com.sxt.chat.activity.RoomDetailActivity;
+import com.sxt.chat.activity.BannerDetailActivity;
 import com.sxt.chat.base.BaseRecyclerAdapter;
 import com.sxt.chat.json.Banner;
 import com.sxt.chat.json.RoomInfo;
 import com.sxt.chat.utils.Prefs;
+import com.sxt.chat.utils.glide.GlideCircleTransformer;
 import com.sxt.chat.utils.glide.GlideRoundTransformer;
 
 import java.util.List;
@@ -44,16 +46,23 @@ public class BannerListAdapter extends BaseRecyclerAdapter<Banner> {
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         final ViewHolder holder = (ViewHolder) viewHolder;
         holder.title.setText(data.get(position).getDescription());
+        holder.ratingBar.setRating(getItemCount() / 2 - position);
         Glide.with(context)
                 .load(data.get(position).getUrl())
                 .error(R.mipmap.ic_no_img)
                 .bitmapTransform(new GlideRoundTransformer(context, 8))
                 .into(holder.img);
+        Glide.with(context)
+                .load(data.get(position).getUrl())
+                .error(R.mipmap.ic_no_img)
+                .bitmapTransform(new GlideCircleTransformer(context))
+                .into(holder.img_header);
+
         holder.root.setOnClickListener(v -> {
             RoomInfo roomInfo = new RoomInfo();
             roomInfo.setHome_name(getItem(position).getDescription());
             roomInfo.setRoom_url(getItem(position).getUrl());
-            Intent intent = new Intent(context, RoomDetailActivity.class);
+            Intent intent = new Intent(context, BannerDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable(Prefs.ROOM_INFO, roomInfo);
             intent.putExtra(Prefs.ROOM_INFO, bundle);
@@ -72,13 +81,17 @@ public class BannerListAdapter extends BaseRecyclerAdapter<Banner> {
 
         public View root;
         public TextView title;
+        public RatingBar ratingBar;
         public ImageView img;
+        public ImageView img_header;
 
         public ViewHolder(View itemView) {
             super(itemView);
             root = itemView.findViewById(R.id.root);
             title = itemView.findViewById(R.id.title);
+            ratingBar = itemView.findViewById(R.id.ratingBar);
             img = itemView.findViewById(R.id.img);
+            img_header = itemView.findViewById(R.id.img_header);
         }
     }
 }

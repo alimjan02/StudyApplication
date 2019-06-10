@@ -1,1 +1,1 @@
-include ':app', ':refresh-layout', ':crop_img', ':banner'
+include ':app', ':refresh-layout', ':crop_img', ':banner', ':dynamic_feature'

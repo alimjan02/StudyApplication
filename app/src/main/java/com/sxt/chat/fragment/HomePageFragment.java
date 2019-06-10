@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -25,9 +28,10 @@ import com.bumptech.glide.Glide;
 import com.sxt.banner.BannerConfig;
 import com.sxt.banner.BannerView;
 import com.sxt.banner.loader.UILoaderInterface;
+import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.activity.MainActivity;
-import com.sxt.chat.activity.RoomDetailActivity;
+import com.sxt.chat.activity.BannerDetailActivity;
 import com.sxt.chat.adapter.BannerListAdapter;
 import com.sxt.chat.adapter.GalleryAdapter;
 import com.sxt.chat.adapter.NormalCardListAdapter;
@@ -35,7 +39,7 @@ import com.sxt.chat.adapter.NormalListAdapter;
 import com.sxt.chat.adapter.config.NoScrollLinearLayoutManaget;
 import com.sxt.chat.base.BaseBottomSheetFragment;
 import com.sxt.chat.base.LazyFragment;
-import com.sxt.chat.fragment.bottonsheet.GallaryBottomSheetFragment;
+import com.sxt.chat.fragment.bottonsheet.GalleryBottomSheetFragment;
 import com.sxt.chat.json.Banner;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.RoomInfo;
@@ -43,7 +47,6 @@ import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.ws.BmobRequest;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -85,12 +88,12 @@ public class HomePageFragment extends LazyFragment {
         recyclerViewTop = contentView.findViewById(R.id.top_recyclerView);
         recyclerViewCenter = contentView.findViewById(R.id.center_recyclerView);
         recyclerViewBottom = contentView.findViewById(R.id.bottom_recyclerView);
-        recyclerViewGallary = contentView.findViewById(R.id.gallary_recyclerView);
+        recyclerViewGallary = contentView.findViewById(R.id.gallery_recyclerView);
         viewSwitcherBanner = contentView.findViewById(R.id.banner_viewSwitcher);
         viewSwitcherTop = contentView.findViewById(R.id.top_viewSitcher);
         viewSwitcherCenter = contentView.findViewById(R.id.center_viewSwitcher);
         viewSwitcherBottom = contentView.findViewById(R.id.bottom_viewSwitcher);
-        viewSwitcherGallary = contentView.findViewById(R.id.gallary_viewSwitcher);
+        viewSwitcherGallary = contentView.findViewById(R.id.gallery_viewSwitcher);
 
         recyclerViewTop.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, true).setCanScrollVertically(false));
         recyclerViewCenter.setLayoutManager(new NoScrollLinearLayoutManaget(activity, LinearLayoutManager.HORIZONTAL, false).setCanScrollVertically(false));
@@ -191,7 +194,7 @@ public class HomePageFragment extends LazyFragment {
                         }
                     })
                     .setOnBannerListener(position -> {
-                        Intent intent = new Intent(context, RoomDetailActivity.class);
+                        Intent intent = new Intent(context, BannerDetailActivity.class);
                         Bundle bundle = new Bundle();
                         RoomInfo roomInfo = new RoomInfo();
                         roomInfo.setHome_name(banners.get(position).getDescription());
@@ -270,19 +273,29 @@ public class HomePageFragment extends LazyFragment {
             viewSwitcherGallary.setDisplayedChild(1);
             recyclerViewGallary.setNestedScrollingEnabled(false);
             recyclerViewGallary.setAdapter(adapterGallary);
-            adapterGallary.setOnItemClickListener((position, holder, object) -> {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(Prefs.KEY_BANNER_INFO, (Serializable) object);
-                BaseBottomSheetFragment sheetFragment = new GallaryBottomSheetFragment()
-                        .setOnBottomSheetDialogCreateListener((bottomSheetFragment, bottomSheetDialog, contentView) -> {
-                            bottomSheetFragment.defaultSettings(bottomSheetDialog, contentView);
-                            bottomSheetDialog.setCanceledOnTouchOutside(false);
-                        });
-                sheetFragment.setArguments(bundle);
-                sheetFragment.show(getFragmentManager());
+            adapterGallary.setOnItemClickListener((position, banner) -> {
+                showBottomSheet(banner);
             });
         } else {
             adapterGallary.notifyDataSetChanged(list);
         }
+    }
+
+    private void showBottomSheet(Banner banner) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Prefs.KEY_BANNER_INFO, banner);
+        BaseBottomSheetFragment sheetFragment = new GalleryBottomSheetFragment().setOnBottomSheetDialogCreateListener(new BaseBottomSheetFragment.OnBottomSheetDialogCreateListener() {
+            @Override
+            public void onBottomSheetDialogCreate(BaseBottomSheetFragment baseBottomSheetFragment, BottomSheetDialog bottomSheetDialog, View contentView) {
+                int peekHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, App.getCtx().getResources().getDisplayMetrics());
+                baseBottomSheetFragment
+                        .setCancelableOutside(false)
+                        .setPeekHeight(peekHeight)
+                        .setBottomSheetState(BottomSheetBehavior.STATE_EXPANDED)
+                        .setBackgtoundColor(Color.TRANSPARENT);
+            }
+        });
+        sheetFragment.setArguments(bundle);
+        sheetFragment.show(getFragmentManager());
     }
 }
