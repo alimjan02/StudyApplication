@@ -1,4 +1,35 @@
 <resources>
+
+    <string name="map_key">bc7d04743fd40d834d62b542490840be</string>
+
+    <!--Google AdMob-->
+    <string name="adsense_app_key">ca-app-pub-1655249378360812~2515894348</string>
+    <!--测试广告id-->
+    <string name="adsense_app_ad_test_unit">ca-app-pub-3940256099942544/6300978111</string>
+    <!--视频激励广告-->
+    <string name="adsense_app_ad_video">ca-app-pub-1655249378360812/2540008710</string>
+    <!--Banner广告 个人中心页面-->
+    <string name="adsense_app_ad_banner_personal">ca-app-pub-1655249378360812/7917470237</string>
+    <!--Banner广告 个人中心页面 头像-->
+    <string name="adsense_app_ad_banner_personal_profile">ca-app-pub-1655249378360812/5050530095</string>
+    <!--Banner广告 设置页面-->
+    <string name="adsense_app_ad_banner_settings">ca-app-pub-1655249378360812/4638724298</string>
+    <!--插屏广告-首页-->
+    <string name="adsense_app_ad_alert_home">ca-app-pub-1655249378360812/7690239524</string>
+    <!--插屏广告-首页详情1-->
+    <string name="adsense_app_ad_alert_home_detail1">ca-app-pub-1655249378360812/5457901816</string>
+    <!--插屏广告-首页详情2-->
+    <string name="adsense_app_ad_alert_home_detail2">ca-app-pub-1655249378360812/8451784714</string>
+    <!--插屏广告-首页详情3-->
+    <string name="adsense_app_ad_alert_home_detail3">ca-app-pub-1655249378360812/5059334610</string>
+    <!--插屏广告-首页详情4-->
+    <string name="adsense_app_ad_alert_home_detail4">ca-app-pub-1655249378360812/5310616050</string>
+    <!--插屏广告-个人中心-->
+    <string name="adsense_app_ad_alert_personal">ca-app-pub-1655249378360812/9846016618</string>
+    <!--Native(原生)广告-->
+    <string name="adsense_app_ad_native">ca-app-pub-1655249378360812/2247696110</string>
+
+
     <string name="app_name">畅玩</string>
     <string name="permission_denied">Permission Denied</string>
     <string name="content_is_empty">当前啥都没有哟</string>
@@ -23,6 +54,7 @@
     <string name="exoplayer">视频专区</string>
     <string name="change_login">切换账号</string>
     <string name="clean_cache">清理缓存</string>
+    <string name="privacy_notice">隐私声明</string>
     <string name="feedback">意见反馈</string>
     <string name="about_us_ehu">关于我们</string>
     <string name="current_version">检查更新</string>
@@ -170,58 +202,6 @@
     <string name="wifi_settings">Wi-Fi设置</string>
     <string name="displayName">xt.sun</string>
 
-
-    <string-array name="videos">
-        <item>https://v.mifile.cn/b2c-mimall-media/a2d09c3e3c4a1be6caa9b83adafe0756.mp4</item><!--小米VR-->
-        <item>https://v.mifile.cn/b2c-mimall-media/ed921294fb62caf889d40502f5b38147.mp4</item><!--小米8-->
-        <item>https://v.mifile.cn/b2c-mimall-media/a80200c935d5e8399fc9a0c40a96388f.mp4</item><!--小米8-->
-        <item>https://v.mifile.cn/b2c-mimall-media/20798f8af8d7edbb5afc51cf9dd527fe.mp4</item><!--小米6X-->
-        <item>https://c1.mifile.cn/f/i/2018/mix2s/summary/camera-video1.mp4</item><!--小米MIX 2S-->
-        <item>http://v.mifile.cn/b2c-mimall-media/4bfe2f80b7bff0f5accf1c1956bb6717.mp4</item><!--小米MAX 2-->
-        <item>https://v.mifile.cn/b2c-mimall-media/18fe8322c418852522ad1c2c762be92b.mp4</item><!--小米笔记本-->
-        <item>https://v.mifile.cn/b2c-mimall-media/daded159e3a0c73b101d5feb9a6c8055.mp4</item><!--小米笔记本(游戏)-->
-        <item>https://v.mifile.cn/b2c-mimall-media/7828bd7a97fc0393d3cf639ef6967d89.mp4</item><!--小米手环-->
-        <item>https://v.mifile.cn/b2c-mimall-media/99d83cf4d4f9e62988c7911205bac5a0.mp4</item><!--小米音响-->
-        <item>https://g.alicdn.com/forest/ar-portal-pc/0.1.11/video/%E7%A2%97.mp4</item><!--手机淘宝餐具- 阿里AR开放平台-->
-        <item>https://g.alicdn.com/forest/ar-portal-pc/0.1.11/video/guoshu.mp4</item><!--国家图书馆《翰墨书香》书法- 阿里AR开放平台-->
-        <item>https://g.alicdn.com/forest/ar-portal-pc/0.1.11/video/market-konglong.mp4</item><!--发现探索恐龙AR 绘本- 阿里AR开放平台-->
-        <item>https://g.alicdn.com/forest/ar-portal-pc/0.1.11/video/hagendasi.mp4</item><!--哈根达斯AR创意冰淇淋公仔- 阿里AR开放平台-->
-    </string-array>
-
-    <string-array name="videos_name">
-        <item>小米VR</item>
-        <item>小米8SE</item>
-        <item>小米8</item>
-        <item>小米6X</item>
-        <item>小米MIX 2S</item>
-        <item>小米MAX 2</item>
-        <item>小米笔记本</item>
-        <item>小米笔记本(游戏)</item>
-        <item>小米手环</item>
-        <item>小米音响</item>
-        <item>手机淘宝餐具</item>
-        <item>国家图书馆《翰墨书香》书法 - 阿里AR开放平台</item>
-        <item>发现探索恐龙AR 绘本 - 阿里AR开放平台</item>
-        <item>哈根达斯AR创意冰淇淋公仔 - 阿里AR开放平台</item>
-    </string-array>
-
-    <string-array name="video_img_url">
-        <item>https://c1.mifile.cn/f/i/16/chain/mivr-1o/mivr-1o-01.jpg</item><!--小米VR眼睛一体机-->
-        <item>https://i1.mifile.cn/f/i/2018/mi8/summary/pic3.jpg?1</item><!--小米8SE-->
-        <item>https://i1.mifile.cn/f/i/2018/mi8/summary/gallery2.jpg?1</item><!--小米8-->
-        <item>https://i1.mifile.cn/f/i/18/mi6x/index_specs_img.jpg</item><!--小米6X-->
-        <item>https://i1.mifile.cn/f/i/2018/redmi6/summary/person1.jpg</item><!--小米MIX 2S-->
-        <item>https://i1.mifile.cn/f/i/18/mitv4/index_slider_img2.jpg</item><!--小米MAX 2-->
-        <item>https://i1.mifile.cn/f/i/17/mibookpro/index/slider01.jpg</item><!--小米笔记本-->
-        <item>https://i1.mifile.cn/f/i/18/mibookair/13/index_pic1.jpg</item><!--小米笔记本 游戏-->
-        <item>https://c1.mifile.cn/f/i/16/chain/shouhuan3/mj-shouhuan-1.jpg</item><!--小米手环-->
-        <item>https://c1.mifile.cn/f/i/16/chain/aispeaker-mini/mj-aispeaker-07.jpg</item><!--小米音响-小爱-->
-        <item>https://i1.mifile.cn/f/i/18/mi6x/index_aftercamera_bg2.jpg</item><!--手机淘宝餐具-->
-        <item>https://i1.mifile.cn/f/i/18/mi6x/index_aftercamera_bg1.jpg</item><!--国家图书馆《翰墨书香》书法-->
-        <item>https://i1.mifile.cn/f/i/2018/mi8/summary/gallery4.jpg</item><!--发现探索恐龙AR 绘本-->
-        <item>https://i1.mifile.cn/f/i/2018/mi8/summary/gallery5.jpg</item><!--哈根达斯AR创意冰淇淋公仔-->
-    </string-array>
-
     <string-array name="tab_titles">
         <item>推荐</item>
         <item>热点</item>
@@ -230,7 +210,6 @@
         <item>综艺</item>
         <item>动漫</item>
     </string-array>
-
 
     <string name="large_text">
        {"RequestId":"77FB0804-8554-482A-99C9-46C1BB1C3E98","VideoBase":{"TranscodeMode":"FastTranscode","CreationTime":"2018-08-06T04:00:02Z","CoverURL":"http://video.izhaohu.com/baa55f3da3d1448a9f9c8f1374a767dd/covers/25440d899e3c4b119012cdb351477a16-00005.jpg","Status":"Normal","MediaType":"video","VideoId":"baa55f3da3d1448a9f9c8f1374a767dd","Duration":"834.392","OutputType":"cdn","Title":"课程9-口腔机能与吞咽障碍"},"PlayInfoList":{"PlayInfo":[{"Format":"m3u8","StreamType":"video","PreprocessStatus":"UnPreprocess","ModificationTime":"2018-08-06T04:03:18Z","Height":720,"PlayURL":"http://video.izhaohu.com/baa55f3da3d1448a9f9c8f1374a767dd/6b3cbbec7a314f1ead67a3ace75d9a88-08bd51174d3377a3566cc97039a46672-ld.m3u8","CreationTime":"2018-08-06T04:00:56Z","Status":"Normal","Duration":"834.4064","JobId":"1169a66a81ba4ff0bb7f676825eb22d5","Encrypt":0,"Width":960,"Fps":"25","Bitrate":"1114.249","Size":116217088,"Definition":"LD"},{"Format":"mp4","StreamType":"video","PreprocessStatus":"PreprocessSucceed","ModificationTime":"2018-08-06T04:02:35Z","Height":360,"PlayURL":"http://video.izhaohu.com/baa55f3da3d1448a9f9c8f1374a767dd/4c482760426fe75d1bcdae46732eccab-fd.mp4","CreationTime":"2018-08-06T04:01:22Z","Status":"Normal","Duration":"834.4560","JobId":"149966e4421e4273b65f2493f21214f6","Encrypt":0,"Width":480,"Fps":"25","Bitrate":"538.478","Size":56167082,"Definition":"FD"},{"Format":"mp4","StreamType":"video","PreprocessStatus":"PreprocessSucceed","ModificationTime":"2018-08-06T04:03:44Z","Height":768,"PlayURL":"http://video.izhaohu.com/baa55f3da3d1448a9f9c8f1374a767dd/399459672768e561396503b2c234a62c-ld.mp4","CreationTime":"2018-08-06T04:01:22Z","Status":"Normal","Duration":"834.4560","JobId":"d1ef9a66989d44c7803347a296f4c86c","Encrypt":0,"Width":1024,"Fps":"25","Bitrate":"1320.796","Size":137768310,"Definition":"LD"}]}}
@@ -343,37 +322,6 @@
         <item>更多</item>
     </string-array>
 
-    <!--Google AdMob-->
-    <string name="adsense_app_key">ca-app-pub-1655249378360812~2515894348</string>
-
-    <!--测试广告id-->
-    <string name="adsense_app_ad_test_unit">ca-app-pub-3940256099942544/6300978111</string>
-
-    <!--视频激励广告-->
-    <string name="adsense_app_ad_video">ca-app-pub-1655249378360812/2540008710</string>
-
-    <!--Banner广告 个人中心页面-->
-    <string name="adsense_app_ad_banner_personal">ca-app-pub-1655249378360812/7917470237</string>
-    <!--Banner广告 个人中心页面 头像-->
-    <string name="adsense_app_ad_banner_personal_profile">ca-app-pub-1655249378360812/5050530095</string>
-    <!--Banner广告 设置页面-->
-    <string name="adsense_app_ad_banner_settings">ca-app-pub-1655249378360812/4638724298</string>
-
-    <!--插屏广告-首页-->
-    <string name="adsense_app_ad_alert_home">ca-app-pub-1655249378360812/7690239524</string>
-    <!--插屏广告-首页详情1-->
-    <string name="adsense_app_ad_alert_home_detail1">ca-app-pub-1655249378360812/5457901816</string>
-    <!--插屏广告-首页详情2-->
-    <string name="adsense_app_ad_alert_home_detail2">ca-app-pub-1655249378360812/8451784714</string>
-    <!--插屏广告-首页详情3-->
-    <string name="adsense_app_ad_alert_home_detail3">ca-app-pub-1655249378360812/5059334610</string>
-    <!--插屏广告-首页详情4-->
-    <string name="adsense_app_ad_alert_home_detail4">ca-app-pub-1655249378360812/5310616050</string>
-    <!--插屏广告-个人中心-->
-    <string name="adsense_app_ad_alert_personal">ca-app-pub-1655249378360812/9846016618</string>
-
-    <!--Native(原生)广告-->
-    <string name="adsense_app_ad_native">ca-app-pub-1655249378360812/2247696110</string>
     <string name="market_is_none">您还没有安装应用市场哟～</string>
     <string name="title_dynamic_feature">Module Title</string>
     <string name="search_key_word">搜索关键词</string>
@@ -395,5 +343,7 @@
     <string name="chart_pie_rcharge">话费充值</string>
     <string name="chart_pie_living_payment">生活缴费</string>
     <string name="chart_pie_breakfast">早餐</string>
+    <string name="version">当前版本:</string>
+    <string name="net_message_alert">当前为非Wi-Fi环境\r\n继续播放将消耗手机流量</string>
 
 </resources>

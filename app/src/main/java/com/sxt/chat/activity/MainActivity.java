@@ -40,6 +40,7 @@ import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.ar.HelloArActivity;
 import com.sxt.chat.base.BaseFragment;
+import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.fragment.BannerDetailFragment;
@@ -63,7 +64,7 @@ import java.util.Map;
 
 import cn.bmob.v3.BmobUser;
 
-public class MainActivity extends AdmobRewardActivity implements View.OnClickListener {
+public class MainActivity extends TabActivity implements View.OnClickListener {
 
     private ImageView userIcon;
     private TextView userInfo, userName;
@@ -79,6 +80,9 @@ public class MainActivity extends AdmobRewardActivity implements View.OnClickLis
     public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
     public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
+
+    private boolean isFirst = true;
+    private final long millis = /*5 * 60*/ 2 * 60 * 1000L;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -216,6 +220,7 @@ public class MainActivity extends AdmobRewardActivity implements View.OnClickLis
     protected void onResume() {
         super.onResume();
         checkUser();
+        loadAD();
     }
 
     @Override
@@ -235,7 +240,7 @@ public class MainActivity extends AdmobRewardActivity implements View.OnClickLis
         if (ResponseInfo.OK == resp.getCode()) {
             if (CMD_UPDATE_USER_INFO.equals(resp.getCmd())) {
                 updateUserInfo(BmobUser.getCurrentUser(User.class));
-                loadAD();
+//                loadAD();
             }
         } else {
             if (CMD_UPDATE_USER_INFO.equals(resp.getCmd())) {
@@ -527,6 +532,15 @@ public class MainActivity extends AdmobRewardActivity implements View.OnClickLis
     }
 
     /**
+     * 请求位置权限
+     */
+    protected boolean requestLocationPermission(int requestCode) {
+        return checkPermission(requestCode, Manifest.permission_group.LOCATION, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,});
+    }
+
+    /**
      * 权限被彻底禁止后 , 弹框提醒用户去开启
      */
     private void showPermissionRefusedNeverDialog(CharSequence message) {
@@ -541,5 +555,30 @@ public class MainActivity extends AdmobRewardActivity implements View.OnClickLis
                 .setShowLine(true)
                 .setCanceledOnTouchOutside(false)
                 .show();
+    }
+
+    /**
+     * 加载广告腾讯的广告
+     */
+    protected void loadAD() {
+        if (isFirst) {
+            isFirst = false;
+            return;
+        }
+        long lastMillis = Prefs.getInstance(this).getLong(Prefs.KEY_LAST_RESUME_MILLIS, 0);
+        if (System.currentTimeMillis() - lastMillis > millis) {
+            Prefs.getInstance(this).putLong(Prefs.KEY_LAST_RESUME_MILLIS, System.currentTimeMillis());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                openSplashActivity();
+            } else {
+                openSplashActivity();
+            }
+        }
+    }
+
+    private void openSplashActivity() {
+        Intent intent = new Intent(App.getCtx(), SplashActivity.class);
+        intent.putExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, false);
+        startActivity(intent);
     }
 }

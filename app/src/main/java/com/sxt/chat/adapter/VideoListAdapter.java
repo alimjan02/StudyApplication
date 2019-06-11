@@ -2,6 +2,7 @@ package com.sxt.chat.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.sxt.chat.R;
 import com.sxt.chat.base.BaseRecyclerAdapter;
+import com.sxt.chat.json.VideoInfo;
 import com.sxt.chat.json.VideoObject;
 import com.sxt.chat.utils.glide.GlideCircleTransformer;
 import com.sxt.chat.utils.glide.GlideRoundTransformer;
@@ -29,7 +31,7 @@ import java.util.List;
  * Created by izhaohu on 2018/4/23.
  */
 
-public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
+public class VideoListAdapter extends BaseRecyclerAdapter<VideoInfo> {
 
     private int index;
     private Animation scaleAnimation;
@@ -39,10 +41,11 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
         notifyDataSetChanged();
     }
 
-    public VideoListAdapter(Context context, List<VideoObject> data) {
+    public VideoListAdapter(Context context, List<VideoInfo> data) {
         super(context, data);
     }
 
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(getInflater().inflate(R.layout.item_video, parent, false));
@@ -61,12 +64,12 @@ public class VideoListAdapter extends BaseRecyclerAdapter<VideoObject> {
         holder.ratingBar.setRating(getItemCount());
         holder.title.setText(data.get(position).getTitle());
         Glide.with(context)
-                .load(data.get(position).getVideo_img_url())
+                .load(data.get(position).getImageUrl())
                 .bitmapTransform(new CenterCrop(context), new GlideRoundTransformer(context, 8))
                 .into(holder.img);
 
         Glide.with(context)
-                .load(data.get(position).getVideo_img_url())
+                .load(data.get(position).getImageUrl())
                 .bitmapTransform(new GlideCircleTransformer(context))
                 .into(holder.img_header);
 

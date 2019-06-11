@@ -66,15 +66,15 @@ import com.sxt.chat.explayer.MyLoadControl;
 import com.sxt.chat.explayer.OnTouchInfoListener;
 import com.sxt.chat.json.PlayInfo;
 import com.sxt.chat.json.ResponseInfo;
-import com.sxt.chat.json.VideoObject;
+import com.sxt.chat.json.VideoInfo;
 import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.DateFormatUtil;
 import com.sxt.chat.utils.Px2DpUtil;
 import com.sxt.chat.utils.Utils;
+import com.sxt.chat.ws.BmobRequest;
 import com.sxt.chat.youtu.SignatureUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -115,7 +115,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
     private SimpleExoPlayer player;
     private PlayerView exoPlayerView;
     private int videoIndexNext = 0, videoIndexCurrent = 0;
-    private ViewSwitcher viewSwitcher;
+    private ViewSwitcher viewSwitcher, controllerViewSwitcher;
 
     private VolumeChangeReceiver volumeChangeReceiver;
     private NetWorkReceiver netWorkReceiver;
@@ -129,10 +129,9 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
 
     private boolean isControllerVisiable = true, isUsePhoneData;
     private AlertDialog alertDialog;
-    private String[] urls = App.getCtx().getResources().getStringArray(R.array.videos);
-    private String[] titles = App.getCtx().getResources().getStringArray(R.array.videos_name);
-    private String[] video_img_url = App.getCtx().getResources().getStringArray(R.array.video_img_url);
+    private List<VideoInfo> videoInfos;
     private final String ACTION_VOLUME_CHANGED = "android.media.VOLUME_CHANGED_ACTION";
+    private final String CMD_GET_VIDEOS = "CMD_GET_VIDEOS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,13 +148,11 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
-
         // 创建缓冲控制器
         loadControler = new MyLoadControl();
         // 创建播放器
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector, loadControler);
         exoPlayerView.setPlayer(player);
-
         player.addListener(new Player.DefaultEventListener() {
             final static String TAG = "playbackState";
 
@@ -199,7 +196,6 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         player.setPlayWhenReady(true);
         exoPlayerView.setControllerAutoShow(false);
         setPlayerHandle();
-        startPlay(urls[0]);
     }
 
     /**
@@ -306,7 +302,6 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         runOnUiThread(() -> {
             if (mediaSource == null) {
                 mediaSource = new ConcatenatingMediaSource(//播放一组视频
-//                getMediaSource(Uri.parse(urls[0]))
                         getMediaSource(Uri.parse(videoUrl))
                 );
 
@@ -351,13 +346,15 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
                         Log.i(TAG, "onReadingStarted " + " windowIndex = " + windowIndex);
                         if (adapter != null) {
                             videoIndexCurrent = videoIndexNext;
-                            adapter.notifyIndex(videoIndexNext % adapter.getItemCount());
-                            recyclerView.smoothScrollToPosition(videoIndexNext % adapter.getItemCount());
-                            videoTitle.setText(titles[videoIndexNext % adapter.getItemCount()]);
-                            Log.i(TAG, "当前播放的视频 -->标题 " + titles[videoIndexNext % adapter.getItemCount()] + " videoIndexCurrent = " + (videoIndexNext % adapter.getItemCount()));
+                            int index = videoIndexNext % adapter.getItemCount();
+                            adapter.notifyIndex(index);
+                            recyclerView.smoothScrollToPosition(index);
+                            String videoTitle = videoInfos.get(index).getTitle();
+                            ExoPlayerActivity.this.videoTitle.setText(videoTitle);
+                            Log.i(TAG, "当前播放的视频 -->标题 " + videoTitle + " videoIndexCurrent = " + index);
                             videoIndexNext++;
-                            mediaSource.addMediaSource(getMediaSource(Uri.parse(adapter.getItem((videoIndexNext) % adapter.getItemCount()).getVideo_url())));
-                            Log.i(TAG, "下一个播放的视频 -->标题 " + titles[videoIndexNext % adapter.getItemCount()] + " videoIndexNext = " + (videoIndexNext % adapter.getItemCount()));
+                            mediaSource.addMediaSource(getMediaSource(Uri.parse(adapter.getItem((videoIndexNext) % adapter.getItemCount()).getVideoUrl())));
+                            Log.i(TAG, "下一个播放的视频 -->标题 " + videoTitle + " videoIndexNext = " + index);
                         }
                     }
 
@@ -403,6 +400,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         findViewById(R.id.back).setOnClickListener(this);
         findViewById(R.id.quality).setOnClickListener(this);
         viewSwitcher = findViewById(R.id.viewSwitcher);
+        controllerViewSwitcher = findViewById(R.id.controllerViewSwitcher);
         findViewById(R.id.select).setOnClickListener(this);
         findViewById(R.id.switchScreen).setOnClickListener(this);
 
@@ -448,31 +446,58 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
 
             }
         });
+    }
 
-        List<VideoObject> videoObjects = new ArrayList<>();
-        VideoObject videoObject;
-        for (int i = 0; i < urls.length; i++) {
-            videoObject = new VideoObject();
-            videoObject.setVideo_img_url(video_img_url[i % urls.length]);
-            videoObject.setVideo_url(urls[i % urls.length]);
-            videoObject.setTitle(titles[i % urls.length]);
-            videoObjects.add(videoObject);
+    /**
+     * 获取视频列表
+     */
+    private void refresh() {
+        super.loading.show();
+        BmobRequest.getInstance(this).getVideosByType(-1, CMD_GET_VIDEOS);
+    }
+
+    /**
+     * 刷新视频列表
+     */
+    private void refreshVideos() {
+        if (adapter == null) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            adapter = new VideoListAdapter(this, videoInfos);
+            adapter.setOnItemClickListener((position, videoInfo) -> {
+                if (position != videoIndexCurrent) {
+                    mediaSource.clear();
+                    videoIndexCurrent = position;
+                    videoIndexNext = videoIndexCurrent;
+                    player.setPlayWhenReady(true);
+                    mediaSource.addMediaSource(getMediaSource(Uri.parse((videoInfo).getVideoUrl())));
+                    player.prepare(mediaSource);
+                    tabLayout.setScrollPosition(position % tabLayout.getTabCount(), (position % tabLayout.getTabCount()) - tabLayout.getSelectedTabPosition(), true);
+                }
+            });
+            adapter.setContentObserver((count, object) -> {
+                viewSwitcher.setDisplayedChild(count == 0 ? 0 : 1);
+            });
+            recyclerView.setAdapter(adapter);
+        } else {
+            adapter.notifyDataSetChanged(videoInfos);
         }
+        if (videoInfos != null && videoInfos.size() > 0) {
+            startPlay(videoInfos.get(0).getVideoUrl());
+        }
+    }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        adapter = new VideoListAdapter(this, videoObjects);
-        recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener((position, videoObj) -> {
-            if (position != videoIndexCurrent) {
-                mediaSource.clear();
-                videoIndexCurrent = position;
-                videoIndexNext = videoIndexCurrent;
-                player.setPlayWhenReady(true);
-                mediaSource.addMediaSource(getMediaSource(Uri.parse((videoObj).getVideo_url())));
-                player.prepare(mediaSource);
-                tabLayout.setScrollPosition(position % tabLayout.getTabCount(), (position % tabLayout.getTabCount()) - tabLayout.getSelectedTabPosition(), true);
+    @Override
+    public void onMessage(ResponseInfo resp) {
+        super.onMessage(resp);
+        if (resp.getCode() == ResponseInfo.OK) {
+            if (CMD_GET_VIDEOS.equals(resp.getCmd())) {
+                super.loading.dismiss();
+                videoInfos = resp.getVideoInfoList();
+                refreshVideos();
             }
-        });
+        } else {
+            if (CMD_GET_VIDEOS.equals(resp.getCmd())) super.loading.dismiss();
+        }
     }
 
     private MediaSource getMediaSource(Uri uri) {
@@ -678,15 +703,15 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
                 alertDialog = new AlertDialog.Builder(ExoPlayerActivity.this).create();
                 alertDialog.setCanceledOnTouchOutside(false);
                 alertDialog.setCancelable(false);
-                alertDialog.setTitle("温馨提示");
-                alertDialog.setMessage("当前为非Wi-Fi环境\r\n继续播放将消耗手机流量");
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "取消", (dialog, which) -> {
+                alertDialog.setTitle(R.string.message_alert);
+                alertDialog.setMessage(getString(R.string.net_message_alert));
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel), (dialog, which) -> {
                     dialog.dismiss();
                     isUsePhoneData = false;
                     player.setPlayWhenReady(false);
                     loadControler.shouldContinueLoading(false);
                 });
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "确定", (dialog, which) -> {
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.confirm), (dialog, which) -> {
                     dialog.dismiss();
                     isUsePhoneData = true;
                     player.setPlayWhenReady(true);
@@ -715,7 +740,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {//竖屏
-            viewSwitcher.setDisplayedChild(0);
+            controllerViewSwitcher.setDisplayedChild(0);
             FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) exoPlayerView.getLayoutParams();
 //            lp.height = Px2DpUtil.dip2px(this, 200);
             lp.height = FrameLayout.LayoutParams.WRAP_CONTENT;
@@ -724,7 +749,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
             updateVideoUIParams();
 
         } else if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {//横屏
-            viewSwitcher.setDisplayedChild(1);
+            controllerViewSwitcher.setDisplayedChild(1);
             FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) exoPlayerView.getLayoutParams();
             lp.height = FrameLayout.LayoutParams.MATCH_PARENT;
             exoPlayerView.setLayoutParams(lp);
@@ -762,6 +787,10 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 //        getVideoList();
+        if (videoInfos == null) {
+            refresh();
+            return;
+        }
         if (player != null) {
 //            player.setPlayWhenReady(flag || player.getPlaybackState() == DrmStore.Playback.RESUME);
 //            flag = false;
@@ -774,7 +803,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        if (player != null) {
+        if (videoInfos != null && player != null) {
             player.setPlayWhenReady(false);
 //            player.clearVideoSurface();//进入后台,清除画面
 //            volume = player.getVolume();

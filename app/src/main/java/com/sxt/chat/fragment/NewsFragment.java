@@ -51,7 +51,7 @@ public class NewsFragment extends LazyFragment implements
     private List<NativeExpressADView> mAdViewList;
     private HashMap<NativeExpressADView, Integer> mAdViewPositionMap = new HashMap();
     private SwipeRefreshLayout swipeRefreshLayout;
-    private View preBannerView;
+
     private NestedScrollView nestedScrollView;
 
     @Override
@@ -145,12 +145,7 @@ public class NewsFragment extends LazyFragment implements
             mDataList.add(mAdViewList.get(i));
         }
         refresh();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        }, 1000);
+        handler.postDelayed(() -> swipeRefreshLayout.setRefreshing(false), 1000);
     }
 
     @Override

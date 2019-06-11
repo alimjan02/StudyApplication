@@ -4,10 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/playerLayout"
+    <ViewSwitcher
+        android:id="@+id/viewSwitcher"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <include layout="@layout/item_no_data" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -64,7 +66,7 @@
 
         </FrameLayout>
 
-    </LinearLayout>
+    </ViewSwitcher>
 
     <include layout="@layout/item_video_bottom_sheet" />
 

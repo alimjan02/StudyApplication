@@ -20,12 +20,23 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/ad_view"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/adsense_app_ad_banner_settings" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/ad_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/adsense_app_ad_banner_settings" />
+
+            <FrameLayout
+                android:id="@+id/ad_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

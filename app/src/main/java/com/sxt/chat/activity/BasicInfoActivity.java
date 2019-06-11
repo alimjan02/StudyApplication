@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,17 +14,20 @@ import com.bumptech.glide.signature.StringSignature;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.qq.e.ads.banner.AbstractBannerADListener;
-import com.qq.e.ads.banner.BannerView;
+import com.qq.e.ads.interstitial2.UnifiedInterstitialAD;
+import com.qq.e.ads.interstitial2.UnifiedInterstitialADListener;
 import com.qq.e.comm.util.AdError;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
+import com.sxt.chat.ad.AdBannerActivity;
 import com.sxt.chat.db.SQLiteUserDao;
 import com.sxt.chat.db.User;
 import com.sxt.chat.utils.ArithTool;
 import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransformer;
+
+import java.util.Locale;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
@@ -35,7 +37,7 @@ import cn.bmob.v3.listener.UpdateListener;
 /**
  * Created by sxt on 2018/1/25.
  */
-public class BasicInfoActivity extends AdmobBannerActivity implements View.OnClickListener {
+public class BasicInfoActivity extends AdBannerActivity implements View.OnClickListener {
 
     private ImageView userPortait;
     private TextView userName, bodyNumber, userSex, userAge, userWeight, userHeight, userBmi;
@@ -56,6 +58,7 @@ public class BasicInfoActivity extends AdmobBannerActivity implements View.OnCli
     private long millis = 60 * 1000L;
     private InterstitialAd interstitialAd;
     private String KEY = this.getClass().getName() + "KEY_LAST_RESUME_MILLIS";
+    private UnifiedInterstitialAD tencentAlertAd;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,8 +68,10 @@ public class BasicInfoActivity extends AdmobBannerActivity implements View.OnCli
         setTitle(R.string.basic_info);
         initView();
         loadUserDetailInfo();
-        initGoogleAlertAds();
-        initGoogleAdBanner();
+//        initGoogleAlertAds();
+//        initGoogleAdBanner();
+        initTencentAlert();
+        initTencentAdBanner(Constants.BannerPosID_personal);
     }
 
     private void initView() {
@@ -96,10 +101,10 @@ public class BasicInfoActivity extends AdmobBannerActivity implements View.OnCli
         if (user != null) {
             userName.setText(user.getName() == null ? user.getUserName() : user.getName());
             bodyNumber.setText(user.getIdCard() == null ? "" : user.getIdCard());
-            userSex.setText(user.getGender() == null ? "" : user.getGender().equals("M") ? "男" : "女");
-            userAge.setText((user.getAge() == null ? 0 : user.getAge()) <= 0 ? "" : user.getAge() + "岁");
-            userWeight.setText((user.getWeight() == null ? 0 : user.getWeight()) <= 0.0 ? "" : String.valueOf(user.getWeight() + "KG"));
-            userHeight.setText((user.getHeight() == null ? 0 : user.getHeight()) <= 0.0 ? "" : String.valueOf(user.getHeight() + "CM"));
+            userSex.setText(user.getGender() == null ? "" : user.getGender().equals("M") ? getString(R.string.man) : getString(R.string.woman));
+            userAge.setText((user.getAge() == null ? 0 : user.getAge()) <= 0 ? "" : user.getAge() + "");
+            userWeight.setText((user.getWeight() == null ? 0 : user.getWeight()) <= 0.0 ? "" : user.getWeight() + "KG");
+            userHeight.setText((user.getHeight() == null ? 0 : user.getHeight()) <= 0.0 ? "" : user.getHeight() + "CM");
             double pow = Math.pow(user.getHeight() == null ? 0 : user.getHeight(), 2);
             if (pow > 0.0) {
                 userBmi.setText(ArithTool.div((user.getWeight() == null ? 0 : user.getWeight()) * 10000, pow, 1) + "");
@@ -314,40 +319,11 @@ public class BasicInfoActivity extends AdmobBannerActivity implements View.OnCli
         });
     }
 
-    /**
-     * 腾讯Banner广告位
-     */
-    private void initTencentAdBanner() {
-        FrameLayout bannerContainer = (FrameLayout) findViewById(R.id.ad_container);
-        // 创建Banner广告AdView对象
-        // appId : 在 http://e.qq.com/dev/ 能看到的app唯一字符串
-        // posId : 在 http://e.qq.com/dev/ 生成的数字串，并非 appid 或者 appkey
-        BannerView banner = new BannerView(this, com.qq.e.ads.banner.ADSize.BANNER, Constants.APPID, Constants.BannerPosID);
-        //设置广告轮播时间，为0或30~120之间的数字，单位为s,0标识不自动轮播
-        banner.setRefresh(30);
-        banner.setADListener(new AbstractBannerADListener() {
-
-            @Override
-            public void onNoAD(AdError error) {
-                Log.i("AD_DEMO", "BannerNoAD，eCode=" + error.getErrorCode());
-            }
-
-            @Override
-            public void onADReceiv() {
-                Log.i("AD_DEMO", "ONBannerReceive");
-
-            }
-        });
-        bannerContainer.addView(banner);
-        /* 发起广告请求，收到广告数据后会展示数据   */
-        banner.loadAD();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
         updateHeadPortrait();
-        loadAD();
+//        loadAD();
     }
 
     /**
@@ -379,7 +355,7 @@ public class BasicInfoActivity extends AdmobBannerActivity implements View.OnCli
     }
 
     /**
-     * 预加载插屏广告
+     * 预加载google插屏广告
      */
     private void restartAlertAds() {
         initGoogleAlertAds();
@@ -391,7 +367,7 @@ public class BasicInfoActivity extends AdmobBannerActivity implements View.OnCli
     }
 
     /**
-     * 广告加载完成后，显示出来,然后预加载下一条广告
+     * google广告加载完成后，显示出来,然后预加载下一条广告
      */
     private void showAlertAds() {
         if (interstitialAd != null && interstitialAd.isLoaded()) {
@@ -403,7 +379,7 @@ public class BasicInfoActivity extends AdmobBannerActivity implements View.OnCli
     }
 
     /**
-     * 显示插屏广告
+     * 显示google插屏广告
      */
     private void loadAD() {
         long lastMillis = Prefs.getInstance(this).getLong(KEY, 0);
@@ -411,5 +387,61 @@ public class BasicInfoActivity extends AdmobBannerActivity implements View.OnCli
             Prefs.getInstance(this).putLong(KEY, System.currentTimeMillis());
             showAlertAds();
         }
+    }
+
+    /**
+     * 初始化Tencent广告
+     */
+    private void initTencentAlert() {
+        tencentAlertAd = new UnifiedInterstitialAD(this, Constants.APPID, Constants.AlertPosID, new UnifiedInterstitialADListener() {
+            @Override
+            public void onADReceive() {
+                Log.e(TAG, "onADReceive : 广告加载成功");
+                tencentAlertAd.show();
+            }
+
+            @Override
+            public void onNoAD(AdError error) {
+                String msg = String.format(Locale.getDefault(), "onNoAD, error code: %d, error msg: %s",
+                        error.getErrorCode(), error.getErrorMsg());
+                Log.e(TAG, "onADOpened");
+            }
+
+            @Override
+            public void onADOpened() {
+                Log.e(TAG, "onADOpened");
+            }
+
+            @Override
+            public void onADExposure() {
+                Log.e(TAG, "onADExposure");
+            }
+
+            @Override
+            public void onADClicked() {
+                Log.e(TAG, "onADClicked");
+            }
+
+            @Override
+            public void onADLeftApplication() {
+                Log.e(TAG, "onADLeftApplication");
+            }
+
+            @Override
+            public void onADClosed() {
+                Log.e(TAG, "onADClosed");
+                tencentAlertAd.close();
+            }
+        });
+        tencentAlertAd.loadAD();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (tencentAlertAd != null) {
+            tencentAlertAd.close();
+            tencentAlertAd.destroy();
+        }
+        super.onDestroy();
     }
 }

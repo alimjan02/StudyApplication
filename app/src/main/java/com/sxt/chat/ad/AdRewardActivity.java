@@ -1,4 +1,4 @@
-package com.sxt.chat.activity;
+package com.sxt.chat.ad;
 
 import android.Manifest;
 import android.content.Intent;
@@ -16,10 +16,12 @@ import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.common.GoogleApiAvailabilityLight;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
+import com.sxt.chat.activity.MainActivity;
+import com.sxt.chat.activity.SplashActivity;
 import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.utils.Prefs;
 
-public class AdmobRewardActivity extends TabActivity {
+public class AdRewardActivity extends TabActivity {
 
     private boolean isFirst = true;
     private final long millis = /*5 * 60*/ 60 * 1000L;

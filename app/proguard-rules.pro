@@ -248,6 +248,12 @@
 -keep class android.support.v7.**{
     public *;
 }
+-dontwarn tv.danmaku.**
+-keep class tv.danmaku.** { *;}
+-dontwarn androidx.**
+-keep class com.tencent.smtt.** { *; }
+-dontwarn dalvik.**
+-dontwarn com.tencent.smtt.**
 
 #引用mars的xlog，混淆配置
 -keep class com.tencent.mars.** {

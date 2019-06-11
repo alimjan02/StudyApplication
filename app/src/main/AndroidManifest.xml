@@ -25,9 +25,12 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <!--破腾讯广告需要读取手机状态的权限-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <!-- This tag indicates that this application requires ARCore.  This results in the application
          only being visible in the Google Play Store on devices that support ARCore. -->
-    <!--<uses-feature
+    <uses-feature
         android:name="android.hardware.camera.ar"
         android:required="true" />
     <uses-feature
@@ -39,7 +42,7 @@
     <uses-feature
         android:name="android.hardware.vr.high_performance"
         android:required="false" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />-->
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-permission android:name="android.permission.FLASHLIGHT" />
 
@@ -64,6 +67,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/BaseTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         tools:targetApi="n">
 
@@ -266,32 +270,13 @@
             android:name=".task.TaskIntentService"
             android:exported="false" />
 
-        <!-- This tag indicates that this application requires ARCore.  This results in the Google Play
-       Store downloading and installing ARCore along with the application. -->
+        <service android:name=".record.RecordService" />
+
+        <!--高德地图-->
+        <service android:name="com.amap.api.location.APSService" />
         <meta-data
-            android:name="com.google.ar.core"
-            android:value="required" />
-
-        <service
-            android:name="com.qq.e.comm.DownloadService"
-            android:exported="false" />
-        <activity
-            android:name="com.qq.e.ads.ADActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
-
-
-        <!--腾讯广告-->
-        <!-- targetSDKVersion >= 24时才需要添加这个provider。
-        provider的authorities属性的值为${applicationId}.fileprovider，请开发者根据自己的${applicationId}来设置这个值 -->
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
+            android:name="com.amap.api.v2.apikey"
+            android:value="@string/map_key" />
 
         <!--Bmob配置provider-->
         <provider
@@ -302,15 +287,47 @@
             android:name="com.sxt.chat.utils.glide.GlideCatchConfig"
             android:value="GlideModule" />
 
-        <!-- <service
-             android:name="com.qq.e.comm.DownloadService"
-             android:exported="false" />-->
+        <!-- This tag indicates that this application requires ARCore.  This results in the Google Play
+       Store downloading and installing ARCore along with the application. -->
+        <meta-data
+            android:name="com.google.ar.core"
+            android:value="required" />
+
+        <!--腾讯广告,不要打开下面的注释，以防止腾讯自动安装下载的apk，目前还没有找到屏蔽下载apk的办法-->
+        <!--<provider-->
+        <!--android:name="android.support.v4.content.FileProvider"-->
+        <!--android:authorities="${applicationId}.fileprovider"-->
+        <!--android:exported="false"-->
+        <!--android:grantUriPermissions="true">-->
+        <!--<meta-data-->
+        <!--android:name="android.support.FILE_PROVIDER_PATHS"-->
+        <!--android:resource="@xml/file_paths" />-->
+        <!--</provider>-->
 
         <!--腾讯广告-->
+        <service
+            android:name="com.qq.e.comm.DownloadService"
+            android:exported="false" />
+
         <activity
             android:name="com.qq.e.ads.ADActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             tools:ignore="DuplicateActivity" />
+        <activity
+            android:name="com.qq.e.ads.PortraitADActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.qq.e.ads.LandscapeADActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape" />
+        <!--如果您打包 App 时的 targetSdkVersion >= 28：需要在 AndroidManifest.xml
+        添加依赖声明 uses-library android:name="org.apache.http.legacy" android:required="false"，
+        且 application标签中添加 android:usesCleartextTraffic="true"，否则 SDK 无法工作，接入代码示例如下：-->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <!--Google AdSense-->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
@@ -321,14 +338,7 @@
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" />
-
-        <!--高德地图-->
-        <service android:name="com.amap.api.location.APSService" />
-        <service android:name=".record.RecordService" />
-
-        <meta-data
-            android:name="com.amap.api.v2.apikey"
-            android:value="bc7d04743fd40d834d62b542490840be" />
+        <activity android:name=".activity.PrivacyNoticeActivity" />
 
     </application>
 

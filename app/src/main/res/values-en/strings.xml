@@ -23,6 +23,7 @@
     <string name="exoplayer">video zone</string>
     <string name="change_login">change login</string>
     <string name="clean_cache">clear cache</string>
+    <string name="privacy_notice">privacy notice</string>
     <string name="feedback">feedback</string>
     <string name="about_us_ehu">about us</string>
     <string name="current_version">update</string>
@@ -293,38 +294,6 @@
         <item>more</item>
     </string-array>
 
-    <!--Google AdMob-->
-    <string name="adsense_app_key">ca-app-pub-1655249378360812~2515894348</string>
-
-    <!--测试广告id-->
-    <string name="adsense_app_ad_test_unit">ca-app-pub-3940256099942544/6300978111</string>
-
-    <!--视频激励广告-->
-    <string name="adsense_app_ad_video">ca-app-pub-1655249378360812/2540008710</string>
-
-    <!--Banner广告 个人中心页面-->
-    <string name="adsense_app_ad_banner_personal">ca-app-pub-1655249378360812/7917470237</string>
-    <!--Banner广告 个人中心页面 头像-->
-    <string name="adsense_app_ad_banner_personal_profile">ca-app-pub-1655249378360812/5050530095</string>
-    <!--Banner广告 设置页面-->
-    <string name="adsense_app_ad_banner_settings">ca-app-pub-1655249378360812/4638724298</string>
-
-    <!--插屏广告-首页-->
-    <string name="adsense_app_ad_alert_home">ca-app-pub-1655249378360812/7690239524</string>
-    <!--插屏广告-首页详情1-->
-    <string name="adsense_app_ad_alert_home_detail1">ca-app-pub-1655249378360812/5457901816</string>
-    <!--插屏广告-首页详情2-->
-    <string name="adsense_app_ad_alert_home_detail2">ca-app-pub-1655249378360812/8451784714</string>
-    <!--插屏广告-首页详情3-->
-    <string name="adsense_app_ad_alert_home_detail3">ca-app-pub-1655249378360812/5059334610</string>
-    <!--插屏广告-首页详情4-->
-    <string name="adsense_app_ad_alert_home_detail4">ca-app-pub-1655249378360812/5310616050</string>
-    <!--插屏广告-个人中心-->
-    <string name="adsense_app_ad_alert_personal">ca-app-pub-1655249378360812/9846016618</string>
-
-    <!--Native(原生)广告-->
-    <string name="adsense_app_ad_native">ca-app-pub-1655249378360812/2247696110</string>
-
     <string name="title_dynamic_feature">Module Title</string>
     <string name="banner_name_sngx">Juvenile song</string>
     <string name="banner_name_hjh">Painting rivers and lakes</string>
@@ -344,5 +313,7 @@
     <string name="chart_pie_rcharge">recharge</string>
     <string name="chart_pie_living_payment">living pay</string>
     <string name="chart_pie_breakfast">breakfast</string>
+    <string name="version">version:</string>
+    <string name="net_message_alert">Currently playing for non-Wi-Fi environment \r\n will consume mobile traffic</string>
 
 </resources>

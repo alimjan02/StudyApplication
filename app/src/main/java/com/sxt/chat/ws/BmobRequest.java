@@ -218,10 +218,13 @@ public final class BmobRequest {
 
     /**
      * 获取Banner
+     * type  -1 为查询所有
      */
     public void getVideosByType(int type, final String cmd) {
         BmobQuery<VideoInfo> query = new BmobQuery<>();
-        query.addWhereEqualTo("type", type);
+        if (type != -1) {
+            query.addWhereEqualTo("type", type);
+        }
         query.findObjects(new FindListener<VideoInfo>() {
             @Override
             public void done(List<VideoInfo> list, BmobException e) {

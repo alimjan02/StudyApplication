@@ -25,10 +25,17 @@ import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+import com.qq.e.ads.banner.ADSize;
+import com.qq.e.ads.banner.AbstractBannerADListener;
+import com.qq.e.ads.banner.BannerView;
+import com.qq.e.comm.util.AdError;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
+import com.sxt.chat.ad.AdBannerActivity;
+import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.json.ResponseInfo;
+import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.glide.GlideCircleTransformer;
 import com.sxt.chat.ws.BmobRequest;
@@ -42,7 +49,7 @@ import cn.bmob.v3.listener.UpdateListener;
  * Created by izhaohu on 2018/3/13.
  */
 
-public class UpdateUserImgActivity extends AdmobBannerActivity implements View.OnClickListener {
+public class UpdateUserImgActivity extends AdBannerActivity implements View.OnClickListener {
 
     private ImageView img;
     private Uri bitmapUri;
@@ -55,12 +62,12 @@ public class UpdateUserImgActivity extends AdmobBannerActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_user_img);
-
         img = findViewById(R.id.img);
         findViewById(R.id.root).setOnClickListener(this);
         setTitle(R.string.header_img_update);
         updateHeadPortrait();
-        initGoogleAdBanner();
+//        initGoogleAdBanner();
+        initTencentAdBanner2(Constants.BannerPosID_personal_profile);
     }
 
     private void updateHeadPortrait() {

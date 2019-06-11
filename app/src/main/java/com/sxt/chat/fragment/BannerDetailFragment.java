@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,13 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ViewSwitcher;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.activity.MainActivity;
@@ -47,16 +42,12 @@ public class BannerDetailFragment extends LazyFragment {
     private int type;
     boolean containerIsMainActivity = false;
     private long millis = 120 * 1000L;
-    private InterstitialAd interstitialAd;
     private final String CMD = this + " CMD_GET_VIDEOS";
-    private String KEY = Prefs.KEY_LAST_RESUME_MILLIS_2;
     public static float scrollY;
 
     public BannerDetailFragment(boolean useAlphaAnimator, int type) {
         super(useAlphaAnimator);
         this.type = type;
-        KEY += type;
-        Log.e(TAG, String.format("CMD - > %s", CMD));
     }
 
     public BannerDetailFragment setContainerIsMainActivity(boolean containerIsMainActivity) {
@@ -80,11 +71,10 @@ public class BannerDetailFragment extends LazyFragment {
         NestedScrollView nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
         refreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
         refreshLayout.setOnRefreshListener(this::refresh);
-        initGoogleAlertAds();
         if (containerIsMainActivity) {
             //设置滑动监听,使得底部tab栏竖直滑动
             nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                this.scrollY = nestedScrollView.getScrollY();
+                BannerDetailFragment.scrollY = nestedScrollView.getScrollY();
                 Log.e("scrollY", String.format("oldScrollY = %s ; scrollY = %s", oldScrollY, scrollY));
                 MainActivity activity = (MainActivity) context;
                 activity.setBottomBarTranslateY(scrollY, scrollY > oldScrollY);
@@ -104,7 +94,6 @@ public class BannerDetailFragment extends LazyFragment {
         super.checkUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             refresh();
-            loadAD();
         }
     }
 
@@ -139,9 +128,7 @@ public class BannerDetailFragment extends LazyFragment {
                 banner.setUrl(videoInfo.getImageUrl());
                 showBottomSheet(banner);
             });
-            adapter.setContentObserver((count, object) -> {
-                viewSwitcher.setDisplayedChild(count == 0 ? 0 : 1);
-            });
+            adapter.setContentObserver((count, object) -> viewSwitcher.setDisplayedChild(count == 0 ? 0 : 1));
             recyclerView.setAdapter(adapter);
         } else {
             adapter.notifyDataSetChanged(videoInfos);
@@ -151,89 +138,15 @@ public class BannerDetailFragment extends LazyFragment {
     private void showBottomSheet(Banner banner) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Prefs.KEY_BANNER_INFO, banner);
-        BaseBottomSheetFragment sheetFragment = new GalleryBottomSheetFragment().setOnBottomSheetDialogCreateListener(new BaseBottomSheetFragment.OnBottomSheetDialogCreateListener() {
-            @Override
-            public void onBottomSheetDialogCreate(BaseBottomSheetFragment baseBottomSheetFragment, BottomSheetDialog bottomSheetDialog, View contentView) {
-                int peekHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, App.getCtx().getResources().getDisplayMetrics());
-                baseBottomSheetFragment
-                        .setCancelableOutside(false)
-                        .setPeekHeight(peekHeight)
-                        .setBottomSheetState(BottomSheetBehavior.STATE_EXPANDED)
-                        .setBackgtoundColor(Color.TRANSPARENT);
-            }
+        BaseBottomSheetFragment sheetFragment = new GalleryBottomSheetFragment().setOnBottomSheetDialogCreateListener((baseBottomSheetFragment, bottomSheetDialog, contentView) -> {
+            int peekHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, App.getCtx().getResources().getDisplayMetrics());
+            baseBottomSheetFragment
+                    .setCancelableOutside(false)
+                    .setPeekHeight(peekHeight)
+                    .setBottomSheetState(BottomSheetBehavior.STATE_EXPANDED)
+                    .setBackgtoundColor(Color.TRANSPARENT);
         });
         sheetFragment.setArguments(bundle);
         sheetFragment.show(getFragmentManager());
-    }
-
-    /**
-     * 初始化google插屏ad
-     */
-    private void initGoogleAlertAds() {
-        if (interstitialAd == null) {
-            interstitialAd = new InterstitialAd(activity);
-            int unitId;
-            if (type == 0) {
-                unitId = R.string.adsense_app_ad_alert_home_detail1;
-            } else if (type == 1) {
-                unitId = R.string.adsense_app_ad_alert_home_detail2;
-            } else if (type == 2) {
-                unitId = R.string.adsense_app_ad_alert_home_detail3;
-            } else {
-                unitId = R.string.adsense_app_ad_alert_home_detail4;
-            }
-            interstitialAd.setAdUnitId(getString(unitId));
-            interstitialAd.setAdListener(new AdListener() {
-                @Override
-                public void onAdLoaded() {
-                    Log.e(TAG, "插屏广告加载成功");
-                }
-
-                @Override
-                public void onAdFailedToLoad(int errorCode) {
-                    Log.e(TAG, "插屏广告加载失败 error code: " + errorCode);
-                }
-
-                @Override
-                public void onAdClosed() {
-                    Log.e(TAG, "插屏广告关闭");
-                    restartAlertAds();
-                }
-            });
-            restartAlertAds();
-        }
-    }
-
-    /**
-     * 预加载插屏广告
-     */
-    private void restartAlertAds() {
-        initGoogleAlertAds();
-        if (!interstitialAd.isLoading() && !interstitialAd.isLoaded()) {
-            AdRequest adRequest = new AdRequest.Builder().build();
-            interstitialAd.loadAd(adRequest);
-            Log.e(TAG, "加载下一个插屏广告");
-        }
-    }
-
-    /**
-     * 广告加载完成后，显示出来,然后预加载下一条广告
-     */
-    private void showAlertAds() {
-        if (interstitialAd != null && interstitialAd.isLoaded()) {
-            interstitialAd.show();
-            Log.e(TAG, "显示插屏广告");
-        }
-    }
-
-    /**
-     * 显示插屏广告
-     */
-    private void loadAD() {
-        long lastMillis = Prefs.getInstance(context).getLong(KEY, 0);
-        if (System.currentTimeMillis() - lastMillis > millis) {
-            Prefs.getInstance(context).putLong(KEY, System.currentTimeMillis());
-            showAlertAds();
-        }
     }
 }

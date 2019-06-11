@@ -148,7 +148,6 @@ dependencies {
 
     implementation project(':refresh-layout')
     implementation project(':crop_img')
-    implementation files('libs/GDTUnionSDK.4.19.573.min.jar')
     implementation project(':banner')
 
     //google 广告

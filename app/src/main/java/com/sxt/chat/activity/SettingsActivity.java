@@ -4,38 +4,48 @@ package com.sxt.chat.activity;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
-import android.view.Display;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.qq.e.ads.banner2.UnifiedBannerADListener;
+import com.qq.e.ads.banner2.UnifiedBannerView;
+import com.qq.e.comm.util.AdError;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
+import com.sxt.chat.ad.AdBannerActivity;
+import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.download.DownloadTask;
 import com.sxt.chat.receiver.WatchDogReceiver;
+import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.utils.Utils;
 import com.sxt.chat.utils.glide.CacheUtils;
 
+import java.util.Locale;
+
 /**
- * Created by izhaohu on 2018/3/13.
+ * Created by xt.sun on 2018/3/13.
  */
 
-public class SettingsActivity extends AdmobBannerActivity implements View.OnClickListener {
+public class SettingsActivity extends AdBannerActivity implements View.OnClickListener {
     private TextView cacheSize;
     private TextView version;
     private DownloadTask downloadTask;
@@ -52,18 +62,22 @@ public class SettingsActivity extends AdmobBannerActivity implements View.OnClic
 
         cacheSize = findViewById(R.id.cache_size);
         version = findViewById(R.id.version);
+        findViewById(R.id.privacy_notice).setOnClickListener(this);//隐私声明
         findViewById(R.id.clean_cache).setOnClickListener(this);//清除缓存
         findViewById(R.id.current_version).setOnClickListener(this);//清除缓存
         findViewById(R.id.login_out).setOnClickListener(this);//退出登录
         cacheSize.setText(CacheUtils.getInstance().getCacheSize());
-        version.setText("当前版本:" + Prefs.getVersionName(App.getCtx()) + "");
-
-        initGoogleAdBanner();
+        version.setText(String.format("%s%s", getString(R.string.version), Prefs.getVersionName(App.getCtx())));
+//        initGoogleAdBanner();
+        initTencentAdBanner2(Constants.BannerPosID_settings);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.privacy_notice://隐私声明
+                startActivity(new Intent(this, PrivacyNoticeActivity.class));
+                break;
             case R.id.clean_cache://清除缓存
                 clearCache();
                 break;
@@ -99,6 +113,15 @@ public class SettingsActivity extends AdmobBannerActivity implements View.OnClic
             dialog.dismiss();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, i) -> dialog.dismiss()).show();
+    }
+
+    /**
+     * banner2.0规定banner宽高比应该为6.4:1 , 开发者可自行设置符合规定宽高比的具体宽度和高度值
+     */
+    private FrameLayout.LayoutParams getUnifiedBannerLayoutParams() {
+        Point screenSize = new Point();
+        getWindowManager().getDefaultDisplay().getSize(screenSize);
+        return new FrameLayout.LayoutParams(screenSize.x, Math.round(screenSize.x / 6.4F));
     }
 
     @Override
@@ -151,36 +174,26 @@ public class SettingsActivity extends AdmobBannerActivity implements View.OnClic
         Window window = dialog.getWindow();
         if (window != null) {
             WindowManager.LayoutParams layoutParams = window.getAttributes();
-            WindowManager wm = this.getWindowManager();
-            Display display = wm.getDefaultDisplay();
-            layoutParams.width = (int) (display.getWidth() * 0.875);
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            layoutParams.width = (int) (displayMetrics.widthPixels * 0.875);
             layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
             window.setAttributes(layoutParams);
         }
         download(dialog, progressTitle, progressBar, tvProgress, serverVersion);
-        item.findViewById(R.id.btn_download).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                downloadTask.downloadReset();
-                download(dialog, progressTitle, progressBar, tvProgress, serverVersion);
-            }
+        item.findViewById(R.id.btn_download).setOnClickListener(view -> {
+            downloadTask.downloadReset();
+            download(dialog, progressTitle, progressBar, tvProgress, serverVersion);
         });
-        item.findViewById(R.id.btn_download_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                downloadTask.cancel(true);
-                dialog.dismiss();
-            }
+        item.findViewById(R.id.btn_download_cancel).setOnClickListener(view -> {
+            downloadTask.cancel(true);
+            dialog.dismiss();
         });
     }
 
     private void showWifiAlert(final int serverVersion) {
-        new AlertDialogBuilder(this).setTitle(getString(R.string.prompt)).setMessage(getString(R.string.alert_update_message_not_wifi)).setLeftButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startDownloadApkDialog(serverVersion);
-                dialog.dismiss();
-            }
+        new AlertDialogBuilder(this).setTitle(getString(R.string.prompt)).setMessage(getString(R.string.alert_update_message_not_wifi)).setLeftButton(getString(R.string.confirm), (dialog, which) -> {
+            startDownloadApkDialog(serverVersion);
+            dialog.dismiss();
         }).setRightButton(R.string.cancel, null).show();
     }
 
@@ -203,7 +216,7 @@ public class SettingsActivity extends AdmobBannerActivity implements View.OnClic
                     String result = String.format("更新版本:(共%.2fMB)", size);
                     progressTitle.setText(result);
                     progressBar.setProgress(progress);
-                    tvProgress.setText(progress + "%");
+                    tvProgress.setText(String.format("%s", progress));
                 }
             }
 
