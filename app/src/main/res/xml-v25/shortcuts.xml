@@ -1,0 +1,51 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+    创建静态快捷方式
+    shortcutId必须是字符串，不能是资源id
+    shortcutShortLabel 必须是字符串对应的资源id
+       -->
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_vector_basic_info_24dp"
+        android:shortcutId="个人中心"
+        android:shortcutShortLabel="@string/basic_info">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.sxt.chat.activity.BasicInfoActivity"
+            android:targetPackage="com.sxt.chat" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_map_blue_24dp"
+        android:shortcutId="地图"
+        android:shortcutShortLabel="@string/map">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.sxt.chat.activity.MapActivity"
+            android:targetPackage="com.sxt.chat" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_vector_notifications_24dp"
+        android:shortcutId="通知栏"
+        android:shortcutShortLabel="@string/notification">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.sxt.chat.activity.NotificationActivity"
+            android:targetPackage="com.sxt.chat" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_vector_video_24dp"
+        android:shortcutId="视频"
+        android:shortcutShortLabel="@string/exo_player">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.sxt.chat.activity.ExoPlayerActivity"
+            android:targetPackage="com.sxt.chat" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>

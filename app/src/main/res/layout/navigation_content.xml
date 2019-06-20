@@ -20,10 +20,10 @@
             android:text="@string/basic_info" />
 
         <TextView
-            android:id="@+id/exoplayer"
+            android:id="@+id/exo_player"
             style="@style/menu_style"
             android:drawableStart="@drawable/ic_vector_video_24dp"
-            android:text="@string/exoplayer" />
+            android:text="@string/exo_player" />
 
         <TextView
             android:id="@+id/ocr_scan"
@@ -60,10 +60,17 @@
             android:visibility="visible" />
 
         <TextView
-            android:id="@+id/notifycation"
+            android:id="@+id/notification"
             style="@style/menu_style"
             android:drawableStart="@drawable/ic_vector_notifications_24dp"
             android:text="@string/notification"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/shortcut"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_vector_shortcut_24dp"
+            android:text="@string/shortcut"
             android:visibility="gone" />
 
         <TextView

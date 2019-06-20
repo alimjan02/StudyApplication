@@ -20,7 +20,7 @@
     <string name="ocr_scan_id_card">tencent ocr</string>
     <string name="pdf_parse">PDF parse</string>
     <string name="pdf_create">PDF create</string>
-    <string name="exoplayer">video zone</string>
+    <string name="exo_player">video zone</string>
     <string name="change_login">change login</string>
     <string name="clean_cache">clear cache</string>
     <string name="privacy_notice">privacy notice</string>
@@ -315,5 +315,6 @@
     <string name="chart_pie_breakfast">breakfast</string>
     <string name="version">version:</string>
     <string name="net_message_alert">Currently playing for non-Wi-Fi environment \r\n will consume mobile traffic</string>
+    <string name="shortcut">shortcut</string>
 
 </resources>

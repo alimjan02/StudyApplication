@@ -8,6 +8,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -30,15 +31,30 @@ import java.util.ArrayList;
 public class BannerDetailActivity extends BaseActivity {
 
     private AppBarLayout appBarLayout;
+    private NestedScrollView nestedScrollView;
     private TextView title;
     private RoomInfo roomInfo;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+    private Toolbar toolbar;
+    float verticalOffset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_banner_detail_view);
+        initView();
         initToolbar();
         initViewPager();
+    }
+
+    private void initView() {
+        tabLayout = findViewById(R.id.tablayout);
+        nestedScrollView = findViewById(R.id.nestedScrollView);
+        appBarLayout = findViewById(R.id.app_bar_layout);
+        title = findViewById(R.id.title);
+        toolbar = findViewById(R.id.toolbar);
+        viewPager = findViewById(R.id.viewPager);
     }
 
     private void initToolbar() {
@@ -47,8 +63,6 @@ public class BannerDetailActivity extends BaseActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);/*设置状态栏全透明*/
             findViewById(R.id.image_scrolling_top).setTransitionName("shareView");
         }
-        title = findViewById(R.id.title);
-        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         setSupportActionBar(toolbar);
@@ -65,7 +79,6 @@ public class BannerDetailActivity extends BaseActivity {
                     .into((ImageView) findViewById(R.id.image_scrolling_top));
         }
         final float[] maxY = {0};
-        appBarLayout = findViewById(R.id.app_bar_layout);
         appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
             float rate = (float) Math.abs(verticalOffset) / appBarLayout.getTotalScrollRange();
             if (verticalOffset == 0) {//完全展开
@@ -77,13 +90,16 @@ public class BannerDetailActivity extends BaseActivity {
                 if (maxY[0] == 0) {
                     maxY[0] = title.getY() - toolbar.getY();
                 }
-                Log.e(TAG, String.format("maxY = %s", maxY[0]));
+                Log.e(TAG, String.format("完全展开 maxY = %s ，verticalOffset = %s", maxY[0], verticalOffset));
+
             } else if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()) {//完全折叠
+                Log.e(TAG, String.format("完全折叠 maxY = %s ，verticalOffset = %s", maxY[0], verticalOffset));
                 toolbar.setTranslationY(-toolbar.getHeight());
                 title.setTranslationX(-toolbar.getHeight());
                 title.setTranslationX(-maxY[0]);
                 toolbar.setTitle(roomInfo.getHome_name());
                 title.setVisibility(View.GONE);
+
             } else {//中间状态
                 title.setTranslationX(-(float) title.getLeft() / 2 * rate);
                 int last = appBarLayout.getTotalScrollRange() - Math.abs(verticalOffset);
@@ -100,13 +116,11 @@ public class BannerDetailActivity extends BaseActivity {
                     title.setTranslationY(-maxY[0] * rate);
                 }
             }
+            BannerDetailActivity.this.verticalOffset = verticalOffset;
         });
     }
 
     private void initViewPager() {
-        TabLayout tabLayout = findViewById(R.id.tablayout);
-        ViewPager viewPager = findViewById(R.id.viewPager);
-
         ArrayList<Fragment> fragments = new ArrayList<>();
         String[] titles = getResources().getStringArray(R.array.tab_titles);
         for (int i = 0; i < titles.length; i++) {

@@ -374,7 +374,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initLayout() {
-        exoPlayerView = findViewById(R.id.exoplayer);
+        exoPlayerView = findViewById(R.id.exo_player);
 
         videoTitleLayout = findViewById(R.id.video_title_layout);
         videoTitle = findViewById(R.id.video_title);

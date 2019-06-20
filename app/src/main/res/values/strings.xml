@@ -1,5 +1,6 @@
 <resources>
 
+    <!--高德地图的appKey-->
     <string name="map_key">bc7d04743fd40d834d62b542490840be</string>
 
     <!--Google AdMob-->
@@ -29,7 +30,6 @@
     <!--Native(原生)广告-->
     <string name="adsense_app_ad_native">ca-app-pub-1655249378360812/2247696110</string>
 
-
     <string name="app_name">畅玩</string>
     <string name="permission_denied">Permission Denied</string>
     <string name="content_is_empty">当前啥都没有哟</string>
@@ -51,7 +51,7 @@
     <string name="ocr_scan_id_card">证件识别</string>
     <string name="pdf_parse">PDF解析</string>
     <string name="pdf_create">生成PDF</string>
-    <string name="exoplayer">视频专区</string>
+    <string name="exo_player">视频专区</string>
     <string name="change_login">切换账号</string>
     <string name="clean_cache">清理缓存</string>
     <string name="privacy_notice">隐私声明</string>
@@ -345,5 +345,6 @@
     <string name="chart_pie_breakfast">早餐</string>
     <string name="version">当前版本:</string>
     <string name="net_message_alert">当前为非Wi-Fi环境\r\n继续播放将消耗手机流量</string>
+    <string name="shortcut">快捷方式</string>
 
 </resources>

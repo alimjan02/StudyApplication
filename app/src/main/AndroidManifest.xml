@@ -23,7 +23,9 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <!--android8.0安装apk需要申请权限-->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!--android8.0以上前台服务需要声明权限-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
 
     <!--破腾讯广告需要读取手机状态的权限-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -81,6 +83,10 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <!--创建静态快捷方式-->
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <activity
@@ -258,6 +264,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activity.MapActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" />
+
+        <activity android:name=".activity.PrivacyNoticeActivity" />
+        <activity android:name=".activity.ShortcutActivity" />
+
         <service
             android:name=".task.BinderService"
             android:exported="false" />
@@ -332,14 +347,6 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/adsense_app_key" />
-
-        <activity
-            android:name=".activity.MapActivity"
-            android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" />
-        <activity android:name=".activity.PrivacyNoticeActivity" />
-
     </application>
 
 </manifest>

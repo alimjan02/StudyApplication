@@ -1,6 +1,7 @@
 package com.sxt.chat.utils;
 
 public class Constants {
+    //腾讯广告联盟
     public static final String APPID = "1106173541";
     public static final String BannerPosID_personal = "1020533331313945";//个人中心
     public static final String BannerPosID_personal_profile = "7090068881709688";//个人中心-头像

@@ -233,8 +233,8 @@ public final class MonoscopicView extends GLSurfaceView {
                     float r = roll;  // Copy volatile state.
                     float cr = (float) Math.cos(r);
                     float sr = (float) Math.sin(r);
-                    // To convert from screen space to the 3D space, we need to adjust the drag vector based
-                    // on the roll of the phone. This is standard rotationMatrix(roll) * vector math but has
+                    // To convert from screen space to the 3D space, we need to adjust the drag drawable-vector based
+                    // on the roll of the phone. This is standard rotationMatrix(roll) * drawable-vector math but has
                     // an inverted y-axis due to the screen-space coordinates vs GL coordinates.
                     // Handle yaw.
                     accumulatedTouchOffsetDegrees.x -= cr * touchX - sr * touchY;

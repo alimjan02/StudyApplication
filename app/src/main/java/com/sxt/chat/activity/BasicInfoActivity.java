@@ -404,7 +404,7 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
             public void onNoAD(AdError error) {
                 String msg = String.format(Locale.getDefault(), "onNoAD, error code: %d, error msg: %s",
                         error.getErrorCode(), error.getErrorMsg());
-                Log.e(TAG, "onADOpened");
+                Log.e(TAG, "onADOpened msg : " + msg);
             }
 
             @Override

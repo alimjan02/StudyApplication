@@ -414,7 +414,7 @@ public class PlaneRenderer {
     float cameraZ = cameraPose.tz();
     // Get transformed Y axis of plane's coordinate system.
     planePose.getTransformedAxis(1, 1.0f, normal, 0);
-    // Compute dot product of plane's normal with vector from camera to plane center.
+    // Compute dot product of plane's normal with drawable-vector from camera to plane center.
     return (cameraX - planePose.tx()) * normal[0]
         + (cameraY - planePose.ty()) * normal[1]
         + (cameraZ - planePose.tz()) * normal[2];

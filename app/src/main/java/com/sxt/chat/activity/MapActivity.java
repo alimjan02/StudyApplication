@@ -1,5 +1,6 @@
 package com.sxt.chat.activity;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,7 +22,10 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -60,6 +64,7 @@ import com.sxt.chat.R;
 import com.sxt.chat.adapter.LocationAdapter;
 import com.sxt.chat.adapter.config.DividerItemDecoration;
 import com.sxt.chat.base.BaseActivity;
+import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.json.LocationInfo;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.AnimationUtil;
@@ -106,6 +111,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     private Map<Integer, Marker> markers = new HashMap<>();
     private LatLng centerLatLng = new LatLng(31.236255, 121.470231);
     private GpsReceiver gpsReceiver;
+    private final int REQUEST_CODE_LOCATION = 500;
     private final String ACTION_GPS_STATE = "android.location.PROVIDERS_CHANGED";
     private String CMD_GET_LOCATION_INTOS = this.getClass().getName() + "CMD_GET_LOCATION_INTOS";
 
@@ -116,16 +122,24 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         initTitle();
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-        aMap = mapView.getMap();
-        aMap.getUiSettings().setScaleControlsEnabled(true);// 标尺开关
-        aMap.getUiSettings().setZoomControlsEnabled(false);//缩放按钮
-        aMap.moveCamera(CameraUpdateFactory.zoomTo(ZOOM_MAP));
-        aMap.setMyLocationEnabled(true);
-        aMap.setLocationSource(this);
-        aMap.setOnMarkerClickListener(this);
-        initView();
-        initLocationOption();
-        registerReceiver();
+        requestLocationPermission();
+    }
+
+    private void initMap() {
+        if (aMap == null) {
+            aMap = mapView.getMap();
+            aMap.getUiSettings().setScaleControlsEnabled(true);// 标尺开关
+            aMap.getUiSettings().setZoomControlsEnabled(false);//缩放按钮
+            aMap.moveCamera(CameraUpdateFactory.zoomTo(ZOOM_MAP));
+            aMap.setMyLocationEnabled(true);
+            aMap.setLocationSource(this);
+            aMap.setOnMarkerClickListener(this);
+            initView();
+            initLocationOption();
+            registerReceiver();
+        } else {
+            startLocation();
+        }
     }
 
     private void registerReceiver() {
@@ -165,9 +179,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         fabScrolling.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white)));
         fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white)));
         fab.setOnClickListener(view -> {
-            if (mLocationClient != null) {
-                mLocationClient.startLocation();
-            }
+            startLocation();
         });
         fabScrolling.setOnClickListener(v -> {
             LatLng latLng;
@@ -249,6 +261,15 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
             }
             return false;
         });
+    }
+
+    /**
+     * 发起定位
+     */
+    private void startLocation() {
+        if (mLocationClient != null) {
+            mLocationClient.startLocation();
+        }
     }
 
     //======================Start============POI关键词搜索回调=======================================
@@ -662,6 +683,63 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         if (valueAnimator != null && valueAnimator.isRunning()) {
             valueAnimator.cancel();
         }
+    }
+
+    @Override
+    public void onPermissionsAllowed(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsAllowed(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_LOCATION) {
+            initMap();
+        }
+    }
+
+    @Override
+    public void onPermissionsRefused(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsRefused(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_LOCATION) {
+            requestLocationPermission();
+        }
+    }
+
+    @Override
+    public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
+        super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_LOCATION) {
+            String appName = getString(R.string.app_name);
+            String message = String.format(getString(R.string.permission_request_LOCATION), appName);
+            SpannableString span = new SpannableString(message);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            int start = message.indexOf(appName) + appName.length();
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_black_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            showPermissionRefusedNeverDialog(span);
+        }
+    }
+
+    /**
+     * 请求位置权限
+     */
+    private void requestLocationPermission() {
+        checkPermission(REQUEST_CODE_LOCATION, Manifest.permission_group.LOCATION, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,});
+    }
+
+    /**
+     * 权限被彻底禁止后 , 弹框提醒用户去开启
+     */
+    private void showPermissionRefusedNeverDialog(CharSequence message) {
+        new AlertDialogBuilder(this)
+                .setTitle(R.string.message_alert, true)
+                .setMessage(message)
+                .setLeftButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setRightButton(R.string.confirm, (dialog, which) -> {
+                    dialog.dismiss();
+                    goToAppSettingsPage();
+                })
+                .setShowLine(true)
+                .setCanceledOnTouchOutside(false)
+                .show();
     }
 
 }

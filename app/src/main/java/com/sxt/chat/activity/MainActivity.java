@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -119,10 +120,11 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         findViewById(R.id.normal_settings).setOnClickListener(this);
         findViewById(R.id.ocr_scan_id_card).setOnClickListener(this);
         findViewById(R.id.ocr_scan).setOnClickListener(this);
-        findViewById(R.id.exoplayer).setOnClickListener(this);
+        findViewById(R.id.exo_player).setOnClickListener(this);
         findViewById(R.id.pdf_parse).setOnClickListener(this);
         findViewById(R.id.wifi).setOnClickListener(this);
-        findViewById(R.id.notifycation).setOnClickListener(this);
+        findViewById(R.id.notification).setOnClickListener(this);
+        findViewById(R.id.shortcut).setOnClickListener(this);
         findViewById(R.id.ar).setOnClickListener(this);
         findViewById(R.id.vr).setOnClickListener(this);
         findViewById(R.id.map).setOnClickListener(this);
@@ -455,6 +457,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         onGoBack(null);
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
 //        super.onSaveInstanceState(outState);
@@ -481,14 +484,17 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             case R.id.wifi:
                 startActivity(new Intent(this, WiFiSettingsActivity.class));
                 break;
-            case R.id.exoplayer:
+            case R.id.exo_player:
                 startActivity(new Intent(this, ExoPlayerActivity.class));
                 break;
             case R.id.pdf_parse:
                 startActivity(new Intent(this, PdfActivity.class));
                 break;
-            case R.id.notifycation:
+            case R.id.notification:
                 startActivity(new Intent(this, NotificationActivity.class));
+                break;
+            case R.id.shortcut:
+                startActivity(new Intent(this, ShortcutActivity.class));
                 break;
             case R.id.ar:
                 startActivity(new Intent(this, HelloArActivity.class));
