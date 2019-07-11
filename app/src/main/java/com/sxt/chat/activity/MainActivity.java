@@ -39,9 +39,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
+import com.sxt.chat.ad.AdRewardActivity;
 import com.sxt.chat.ar.HelloArActivity;
 import com.sxt.chat.base.BaseFragment;
-import com.sxt.chat.base.TabActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.fragment.BannerDetailFragment;
@@ -65,7 +65,7 @@ import java.util.Map;
 
 import cn.bmob.v3.BmobUser;
 
-public class MainActivity extends TabActivity implements View.OnClickListener {
+public class MainActivity extends AdRewardActivity implements View.OnClickListener {
 
     private ImageView userIcon;
     private TextView userInfo, userName;
@@ -81,9 +81,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     public static String KEY_IS_AUTO_LOGIN = "KEY_IS_AUTO_LOGIN";
     public static final String KEY_IS_WILL_GO_LOGIN_ACTIVITY = "KEY_IS_WILL_GO_LOGIN_ACTIVITY";
     public final String CMD_UPDATE_USER_INFO = this.getClass().getName() + "CMD_UPDATE_USER_INFO";
-
-    private boolean isFirst = true;
-    private final long millis = /*5 * 60*/ 2 * 60 * 1000L;
+    public final String CMD_GET_ADMOB = this.getClass().getName() + "CMD_GET_ADMOB";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -125,6 +123,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         findViewById(R.id.wifi).setOnClickListener(this);
         findViewById(R.id.notification).setOnClickListener(this);
         findViewById(R.id.shortcut).setOnClickListener(this);
+        findViewById(R.id.bluetooth).setOnClickListener(this);
         findViewById(R.id.ar).setOnClickListener(this);
         findViewById(R.id.vr).setOnClickListener(this);
         findViewById(R.id.map).setOnClickListener(this);
@@ -235,6 +234,7 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
 
     private void checkUser() {
         BmobRequest.getInstance(this).updateUserInfo(CMD_UPDATE_USER_INFO);
+        BmobRequest.getInstance(this).getAdmob(CMD_GET_ADMOB);
     }
 
     @Override
@@ -242,7 +242,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
         if (ResponseInfo.OK == resp.getCode()) {
             if (CMD_UPDATE_USER_INFO.equals(resp.getCmd())) {
                 updateUserInfo(BmobUser.getCurrentUser(User.class));
-//                loadAD();
+            } else if (CMD_GET_ADMOB.equals(resp.getCmd())) {
+                //存储google admob的显示状态
+                Prefs.getInstance(this).putBoolean(Prefs.KEY_IS_SHOW_GOOGLE_AD, resp.getAdmob() != null && resp.getAdmob().isFlag());
             }
         } else {
             if (CMD_UPDATE_USER_INFO.equals(resp.getCmd())) {
@@ -257,20 +259,22 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
      * 更新用户信息
      */
     private void updateUserInfo(User user) {
+        String sex_man = "  " + getString(R.string.man) + "  ";
+        String sex_woman = "  " + getString(R.string.woman) + "  ";
         if (user != null) {
             userName.setText(user.getName());
             String info;
             if (0 != (user.getAge() == null ? 0 : user.getAge())) {
                 if ("F".equals(user.getGender())) {
-                    info = user.getAge() + "岁" + "  女  ";
+                    info = user.getAge() + "岁" + sex_man;
                 } else {
-                    info = user.getAge() + "岁" + "  男  ";
+                    info = user.getAge() + "岁" + sex_man;
                 }
             } else {
                 if ("F".equals(user.getGender())) {
-                    info = "女  ";
+                    info = sex_woman;
                 } else {
-                    info = "男  ";
+                    info = sex_man;
                 }
             }
             double pow = Math.pow((user.getHeight() == null ? 0 : user.getHeight()), 2);
@@ -496,6 +500,9 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
             case R.id.shortcut:
                 startActivity(new Intent(this, ShortcutActivity.class));
                 break;
+            case R.id.bluetooth:
+                startActivity(new Intent(this, BluetoothActivity.class));
+                break;
             case R.id.ar:
                 startActivity(new Intent(this, HelloArActivity.class));
                 break;
@@ -566,22 +573,21 @@ public class MainActivity extends TabActivity implements View.OnClickListener {
     /**
      * 加载广告腾讯的广告
      */
-    protected void loadAD() {
-        if (isFirst) {
-            isFirst = false;
-            return;
-        }
-        long lastMillis = Prefs.getInstance(this).getLong(Prefs.KEY_LAST_RESUME_MILLIS, 0);
-        if (System.currentTimeMillis() - lastMillis > millis) {
-            Prefs.getInstance(this).putLong(Prefs.KEY_LAST_RESUME_MILLIS, System.currentTimeMillis());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                openSplashActivity();
-            } else {
-                openSplashActivity();
-            }
-        }
-    }
-
+//    protected void loadAD() {
+//        if (isFirst) {
+//            isFirst = false;
+//            return;
+//        }
+//        long lastMillis = Prefs.getInstance(this).getLong(Prefs.KEY_LAST_RESUME_MILLIS, 0);
+//        if (System.currentTimeMillis() - lastMillis > millis) {
+//            Prefs.getInstance(this).putLong(Prefs.KEY_LAST_RESUME_MILLIS, System.currentTimeMillis());
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                openSplashActivity();
+//            } else {
+//                openSplashActivity();
+//            }
+//        }
+//    }
     private void openSplashActivity() {
         Intent intent = new Intent(App.getCtx(), SplashActivity.class);
         intent.putExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, false);

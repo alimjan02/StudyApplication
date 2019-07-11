@@ -55,7 +55,7 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
     private final String CMD_SAVE_USER_Height = "CMD_SAVE_USER_Height";
     private String name, age, sex, idCard;
     private float weight, height;
-    private long millis = 60 * 1000L;
+    private long millis = 2 * 60 * 1000L;
     private InterstitialAd interstitialAd;
     private String KEY = this.getClass().getName() + "KEY_LAST_RESUME_MILLIS";
     private UnifiedInterstitialAD tencentAlertAd;
@@ -68,10 +68,15 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
         setTitle(R.string.basic_info);
         initView();
         loadUserDetailInfo();
-//        initGoogleAlertAds();
-//        initGoogleAdBanner();
-        initTencentAlert();
-        initTencentAdBanner(Constants.BannerPosID_personal);
+        boolean flag = Prefs.getInstance(this).getBoolean(Prefs.KEY_IS_SHOW_GOOGLE_AD, false);
+        Log.e(TAG, "Google admob 显示状态 ：flag " + flag);
+        if (flag) {
+            initGoogleAlertAds();
+            initGoogleAdBanner();
+        } else {
+            initTencentAlert();
+            initTencentAdBanner(Constants.BannerPosID_personal);
+        }
     }
 
     private void initView() {
@@ -323,13 +328,18 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
     public void onResume() {
         super.onResume();
         updateHeadPortrait();
-//        loadAD();
+        loadAD();
     }
 
     /**
      * 初始化google插屏ad
      */
     private void initGoogleAlertAds() {
+        boolean flag = Prefs.getInstance(this).getBoolean(Prefs.KEY_IS_SHOW_GOOGLE_AD, false);
+        Log.e(TAG, "Google admob 显示状态 ：flag " + flag);
+        if (!flag) {
+            return;
+        }
         if (interstitialAd == null) {
             interstitialAd = new InterstitialAd(this);
             interstitialAd.setAdUnitId(getString(R.string.adsense_app_ad_alert_personal));
@@ -359,7 +369,7 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
      */
     private void restartAlertAds() {
         initGoogleAlertAds();
-        if (!interstitialAd.isLoading() && !interstitialAd.isLoaded()) {
+        if (interstitialAd != null && !interstitialAd.isLoading() && !interstitialAd.isLoaded()) {
             AdRequest adRequest = new AdRequest.Builder().build();
             interstitialAd.loadAd(adRequest);
             Log.e(TAG, "加载下一个插屏广告");

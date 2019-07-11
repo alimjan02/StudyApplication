@@ -24,7 +24,7 @@ import com.sxt.chat.utils.Prefs;
 public class AdRewardActivity extends TabActivity {
 
     private boolean isFirst = true;
-    private final long millis = /*5 * 60*/ 60 * 1000L;
+    private final long millis = 2 * 60 * 1000L;
     private InterstitialAd alertAd;
     private RewardedVideoAd rewardedVideoAd;
     protected final int REQUEST_CODE_LOCATION_AD = 201;
@@ -40,12 +40,12 @@ public class AdRewardActivity extends TabActivity {
      */
     private void initGoogleAds() {
         initGoogleAlertAds();
-        initGoogleRewardedAds();
+//        initGoogleRewardedAds();
     }
 
     private void prepareGoogleAds() {
         restartAlertAds();
-        restartRewardedVideo();
+//        restartRewardedVideo();
     }
 
     /**
@@ -208,46 +208,27 @@ public class AdRewardActivity extends TabActivity {
      * 但是google的激励广告需要定位权限而且需要手机安装google play store
      */
     protected void loadAD() {
+        boolean flag = Prefs.getInstance(this).getBoolean(Prefs.KEY_IS_SHOW_GOOGLE_AD, false);
+        Log.e(TAG, "Google admob 显示状态 ：flag " + flag);
         if (isFirst) {
             isFirst = false;
-            prepareGoogleAds();
+            if (flag) {
+                prepareGoogleAds();
+            }
             return;
         }
         long lastMillis = Prefs.getInstance(this).getLong(Prefs.KEY_LAST_RESUME_MILLIS, 0);
         if (System.currentTimeMillis() - lastMillis > millis) {
             Prefs.getInstance(this).putLong(Prefs.KEY_LAST_RESUME_MILLIS, System.currentTimeMillis());
             //如果上次可视的时间距离现在短于2分钟,就去赚取广告费 嘎嘎嘎嘎
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                String READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE;
-//                boolean readPhoneState = shouldShowRequestPermissionRationale(READ_PHONE_STATE);
-//                String WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-//                boolean writeStorage = shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE);
-//                boolean has0 = ActivityCompat.checkSelfPermission(this, READ_PHONE_STATE) ==
-//                        PackageManager.PERMISSION_GRANTED;
-//                boolean has1 = ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) ==
-//                        PackageManager.PERMISSION_GRANTED;
-//
-//                Log.e(TAG, String.format("has0 %s , has01 %s", has0, has1));
-//
-//                if ((!has0 && !readPhoneState) || (!has1 && !writeStorage)) {
             //验证手机的google play service是否可用
             int playServicesAvailable = GoogleApiAvailabilityLight.getInstance().isGooglePlayServicesAvailable(this);
             Log.e(TAG, String.format("playServicesAvailable - > %s", playServicesAvailable));
-            if (playServicesAvailable == 0) {
-                //只有在获取到位置权限后才能加载激励广告
-                boolean permission = requestLocationPermission(REQUEST_CODE_LOCATION_AD);
-                if (permission) {
-                    showRewardedAds();
-                }
-            } else {
+            if (flag) {
                 showAlertAds();
+            } else {
+                openSplashActivity();
             }
-//                } else {
-//                    openSplashActivity();
-//                }
-//            } else {
-//                openSplashActivity();
-//            }
         }
     }
 
@@ -270,7 +251,7 @@ public class AdRewardActivity extends TabActivity {
     public void onPermissionsAllowed(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsAllowed(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_LOCATION_AD) {
-            showRewardedAds();//显示激励广告
+//            showRewardedAds();//显示激励广告
         }
     }
 

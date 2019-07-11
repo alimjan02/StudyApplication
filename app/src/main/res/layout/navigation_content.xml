@@ -74,6 +74,13 @@
             android:visibility="gone" />
 
         <TextView
+            android:id="@+id/bluetooth"
+            style="@style/menu_style"
+            android:drawableStart="@drawable/ic_vector_bluetooth_searching_24dp"
+            android:text="@string/bluetooth"
+            android:visibility="visible" />
+
+        <TextView
             android:id="@+id/ar"
             style="@style/menu_style"
             android:drawableStart="@drawable/ic_ar_photo_main_blue_24dp"

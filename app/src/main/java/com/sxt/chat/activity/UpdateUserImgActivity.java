@@ -25,14 +25,9 @@ import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
-import com.qq.e.ads.banner.ADSize;
-import com.qq.e.ads.banner.AbstractBannerADListener;
-import com.qq.e.ads.banner.BannerView;
-import com.qq.e.comm.util.AdError;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.ad.AdBannerActivity;
-import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.db.User;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.Constants;
@@ -66,8 +61,13 @@ public class UpdateUserImgActivity extends AdBannerActivity implements View.OnCl
         findViewById(R.id.root).setOnClickListener(this);
         setTitle(R.string.header_img_update);
         updateHeadPortrait();
-//        initGoogleAdBanner();
-        initTencentAdBanner2(Constants.BannerPosID_personal_profile);
+        boolean flag = Prefs.getInstance(this).getBoolean(Prefs.KEY_IS_SHOW_GOOGLE_AD, false);
+        Log.e(TAG, "Google admob 显示状态 ：flag " + flag);
+        if (flag) {
+            initGoogleAdBanner();
+        } else {
+            initTencentAdBanner2(Constants.BannerPosID_personal_profile);
+        }
     }
 
     private void updateHeadPortrait() {

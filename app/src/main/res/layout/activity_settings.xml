@@ -16,6 +16,41 @@
             android:orientation="vertical">
 
             <RelativeLayout
+                android:id="@+id/about_me"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:foreground="?selectableItemBackground">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:drawablePadding="10dp"
+                    android:maxLines="1"
+                    android:text="@string/about_us"
+                    android:textColor="@color/text_color_1"
+                    android:textSize="17dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="15dp"
+                    android:src="@mipmap/common_icon_more" />
+
+            </RelativeLayout>
+
+            <View style="@style/divider_line" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
                 android:id="@+id/privacy_notice"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"

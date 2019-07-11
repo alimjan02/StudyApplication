@@ -20,11 +20,6 @@ import cn.bmob.v3.BmobConfig;
  */
 public class App extends MultiDexApplication {
     private static Context mContext;
-//    public static boolean isTestAd = true;
-    //小米note
-//    public static final String testUnitId = "1EBCE02FF77AFA8C196DEF1B79E965E8";
-    //google pixel
-//    public static final String testUnitId = "531FAE1B57BF491B107740EDA65678D5";
 
     @Override
     public void onCreate() {

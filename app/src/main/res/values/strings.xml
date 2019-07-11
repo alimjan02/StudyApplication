@@ -1,5 +1,10 @@
 <resources>
 
+    <!--隐私权声明-->
+    <string name="privacy_notice_url">https://sites.google.com/view/sunxingtao</string>
+    <!--我的博客-->
+    <string name="about_us_csdn_url">https://blog.csdn.net/sxt_zls</string>
+
     <!--高德地图的appKey-->
     <string name="map_key">bc7d04743fd40d834d62b542490840be</string>
 
@@ -47,6 +52,7 @@
     <string name="scan_2_scan">扫一扫</string>
     <string name="ocr_scan">腾讯优图</string>
     <string name="ar">ARCore</string>
+    <string name="bluetooth">蓝牙传输</string>
     <string name="vr">VR360°</string>
     <string name="ocr_scan_id_card">证件识别</string>
     <string name="pdf_parse">PDF解析</string>
@@ -344,7 +350,8 @@
     <string name="chart_pie_living_payment">生活缴费</string>
     <string name="chart_pie_breakfast">早餐</string>
     <string name="version">当前版本:</string>
-    <string name="net_message_alert">当前为非Wi-Fi环境\r\n继续播放将消耗手机流量</string>
+    <string name="net_message_alert">当前为非Wi-Fi环境\n继续播放将消耗手机流量</string>
     <string name="shortcut">快捷方式</string>
+    <string name="about_us">关于我们</string>
 
 </resources>

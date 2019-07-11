@@ -16,6 +16,7 @@ import com.qq.e.comm.util.AdError;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.utils.Constants;
+import com.sxt.chat.utils.Prefs;
 
 import java.util.Locale;
 
@@ -50,6 +51,12 @@ public class AdBannerActivity extends HeaderActivity {
      * Google Banner广告位
      */
     protected void initGoogleAdBanner() {
+        boolean flag = Prefs.getInstance(this).getBoolean(Prefs.KEY_IS_SHOW_GOOGLE_AD, false);
+        Log.e(TAG, "Google admob 显示状态 ：flag " + flag);
+        if (!flag) {
+            return;
+        }
+
         adGoogleBanner = findViewById(R.id.ad_view);
         //製作廣告請求。檢查您的logcat輸出中的散列設備ID，
         AdRequest adRequest = new AdRequest.Builder().build();

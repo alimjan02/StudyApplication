@@ -16,6 +16,7 @@
 package com.sxt.chat.base;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -47,11 +48,12 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         return mInflater;
     }
 
+    @NonNull
     @Override
-    public abstract RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType);
+    public abstract RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType);
 
     @Override
-    public abstract void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position);
+    public abstract void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position);
 
     @Override
     public int getItemCount() {

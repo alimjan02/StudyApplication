@@ -31,6 +31,9 @@ public final class Prefs extends BasePrefs {
     public static final String KEY_USER_GENDER = "KEY_USER_GENDER";
     public static final String KEY_Authorization = "Authorization";
 
+    //是否要显示google admob的广告 标记 ， true 表示显示，false 表示不显示广告
+    public static String KEY_IS_SHOW_GOOGLE_AD = "KEY_IS_SHOW_GOOGLE_AD";
+
     private static Prefs instance;
     public static String KEY_EXIT_ACTIVITY = "KEY_EXIT_ACTIVITY";
     public static final String KEY_IS_FIRST_ENTER = "KEY_IS_FIRST_ENTER";

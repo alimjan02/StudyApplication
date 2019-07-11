@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 
@@ -11,7 +12,6 @@ import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.ad.AdBannerActivity;
 import com.sxt.chat.adapter.ChangeLoginAdapter;
-import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.db.SQLiteUserDao;
 import com.sxt.chat.db.User;
 import com.sxt.chat.utils.Constants;
@@ -43,8 +43,13 @@ public class ChangeLoginActivity extends AdBannerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_login);
         setTitle(getString(R.string.change_login));
-//        initGoogleAdBanner();
-        initTencentAdBanner2(Constants.BannerPosID_personal_change_Login);
+        boolean flag = Prefs.getInstance(this).getBoolean(Prefs.KEY_IS_SHOW_GOOGLE_AD, false);
+        Log.e(TAG, "Google admob 显示状态 ：flag " + flag);
+        if (flag) {
+            initGoogleAdBanner();
+        } else {
+            initTencentAdBanner2(Constants.BannerPosID_personal_change_Login);
+        }
 
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));

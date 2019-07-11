@@ -3,16 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sxt.chat">
 
-    <!-- Required -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!--Wi-Fi-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!--蓝牙-->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- 地图包、搜索包需要的基础权限 -->
     <!-- 允许程序设置内置sd卡的写权限 -->
@@ -21,11 +24,11 @@
     <!-- 允许程序获取网络状态 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+
     <!--android8.0安装apk需要申请权限-->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <!--android8.0以上前台服务需要声明权限-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
 
     <!--破腾讯广告需要读取手机状态的权限-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -270,8 +273,15 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" />
 
-        <activity android:name=".activity.PrivacyNoticeActivity" />
-        <activity android:name=".activity.ShortcutActivity" />
+        <activity
+            android:name=".activity.WebViewActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.ShortcutActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activity.BluetoothActivity"
+            android:configChanges="orientation|screenSize" />
 
         <service
             android:name=".task.BinderService"
@@ -336,6 +346,7 @@
             android:name="com.qq.e.ads.LandscapeADActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape" />
+        <activity android:name=".activity.CircularRevealActivity" />
         <!--如果您打包 App 时的 targetSdkVersion >= 28：需要在 AndroidManifest.xml
         添加依赖声明 uses-library android:name="org.apache.http.legacy" android:required="false"，
         且 application标签中添加 android:usesCleartextTraffic="true"，否则 SDK 无法工作，接入代码示例如下：-->

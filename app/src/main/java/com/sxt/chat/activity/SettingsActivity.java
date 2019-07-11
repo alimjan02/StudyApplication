@@ -23,13 +23,9 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.qq.e.ads.banner2.UnifiedBannerADListener;
-import com.qq.e.ads.banner2.UnifiedBannerView;
-import com.qq.e.comm.util.AdError;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.ad.AdBannerActivity;
-import com.sxt.chat.base.HeaderActivity;
 import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.download.DownloadTask;
 import com.sxt.chat.receiver.WatchDogReceiver;
@@ -38,8 +34,6 @@ import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.utils.Utils;
 import com.sxt.chat.utils.glide.CacheUtils;
-
-import java.util.Locale;
 
 /**
  * Created by xt.sun on 2018/3/13.
@@ -62,21 +56,34 @@ public class SettingsActivity extends AdBannerActivity implements View.OnClickLi
 
         cacheSize = findViewById(R.id.cache_size);
         version = findViewById(R.id.version);
+        findViewById(R.id.about_me).setOnClickListener(this);//关于我们
         findViewById(R.id.privacy_notice).setOnClickListener(this);//隐私声明
         findViewById(R.id.clean_cache).setOnClickListener(this);//清除缓存
         findViewById(R.id.current_version).setOnClickListener(this);//清除缓存
         findViewById(R.id.login_out).setOnClickListener(this);//退出登录
         cacheSize.setText(CacheUtils.getInstance().getCacheSize());
         version.setText(String.format("%s%s", getString(R.string.version), Prefs.getVersionName(App.getCtx())));
-//        initGoogleAdBanner();
-        initTencentAdBanner2(Constants.BannerPosID_settings);
+        boolean flag = Prefs.getInstance(this).getBoolean(Prefs.KEY_IS_SHOW_GOOGLE_AD, false);
+        Log.e(TAG, "Google admob 显示状态 ：flag " + flag);
+        if (flag) {
+            initGoogleAdBanner();
+        } else {
+            initTencentAdBanner2(Constants.BannerPosID_settings);
+        }
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.about_me://关于我们
+                Intent aboutUs = new Intent(this, WebViewActivity.class);
+                aboutUs.putExtra(WebViewActivity.ACTION_URL, getString(R.string.about_us_csdn_url));
+                startActivity(aboutUs);
+                break;
             case R.id.privacy_notice://隐私声明
-                startActivity(new Intent(this, PrivacyNoticeActivity.class));
+                Intent privacyNotice = new Intent(this, WebViewActivity.class);
+                privacyNotice.putExtra(WebViewActivity.ACTION_URL, getString(R.string.privacy_notice_url));
+                startActivity(privacyNotice);
                 break;
             case R.id.clean_cache://清除缓存
                 clearCache();

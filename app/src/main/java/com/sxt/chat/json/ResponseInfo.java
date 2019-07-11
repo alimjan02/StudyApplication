@@ -32,10 +32,19 @@ public class ResponseInfo implements Serializable {
     private List<Banner> bannerInfoList;
     private List<LocationInfo> locationInfoList;
     private List<VideoInfo> videoInfoList;
+    private Admob admob;
 
     public ResponseInfo(int code) {
         this.code = code;
         this.cmd = "";
+    }
+
+    public void setAdmob(Admob admob) {
+        this.admob = admob;
+    }
+
+    public Admob getAdmob() {
+        return admob;
     }
 
     public int getCode() {

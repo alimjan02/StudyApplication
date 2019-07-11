@@ -11,7 +11,7 @@
         android:shortcutShortLabel="@string/basic_info">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.sxt.chat.activity.BasicInfoActivity"
+            android:targetClass="com.sxt.chat.activity.CircularRevealActivity"
             android:targetPackage="com.sxt.chat" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
@@ -28,12 +28,12 @@
     </shortcut>
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_vector_notifications_24dp"
-        android:shortcutId="通知栏"
-        android:shortcutShortLabel="@string/notification">
+        android:icon="@drawable/ic_vector_bluetooth_searching_24dp"
+        android:shortcutId="蓝牙搜索"
+        android:shortcutShortLabel="@string/bluetooth">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.sxt.chat.activity.NotificationActivity"
+            android:targetClass="com.sxt.chat.activity.BluetoothActivity"
             android:targetPackage="com.sxt.chat" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>

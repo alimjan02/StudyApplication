@@ -14,6 +14,15 @@ public class Banner implements Serializable {
     private String url;
     private String type;
     private String description;
+    private boolean isShowGoogleAdmob;
+
+    public boolean isShowGoogleAdmob() {
+        return isShowGoogleAdmob;
+    }
+
+    public void setShowGoogleAdmob(boolean showGoogleAdmob) {
+        isShowGoogleAdmob = showGoogleAdmob;
+    }
 
     public String getObjectId() {
         return objectId;

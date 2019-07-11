@@ -16,6 +16,7 @@
     <string name="scan_2_scan">scan</string>
     <string name="ocr_scan">tencent youtu</string>
     <string name="ar">ARCore</string>
+    <string name="bluetooth">bluetooth stream</string>
     <string name="vr">VR360°</string>
     <string name="ocr_scan_id_card">tencent ocr</string>
     <string name="pdf_parse">PDF parse</string>
@@ -314,7 +315,8 @@
     <string name="chart_pie_living_payment">living pay</string>
     <string name="chart_pie_breakfast">breakfast</string>
     <string name="version">version:</string>
-    <string name="net_message_alert">Currently playing for non-Wi-Fi environment \r\n will consume mobile traffic</string>
+    <string name="net_message_alert">Currently playing for non-Wi-Fi environment \n will consume mobile traffic</string>
     <string name="shortcut">shortcut</string>
+    <string name="about_us">about us</string>
 
 </resources>

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sxt.chat.R;
 import com.sxt.chat.db.User;
+import com.sxt.chat.json.Admob;
 import com.sxt.chat.json.Banner;
 import com.sxt.chat.json.LocationInfo;
 import com.sxt.chat.json.ResponseInfo;
@@ -24,6 +25,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FetchUserInfoListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.LogInListener;
+import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UploadFileListener;
 
@@ -107,6 +109,29 @@ public final class BmobRequest {
                 if (e == null) {
                     ResponseInfo resp = new ResponseInfo(ResponseInfo.OK);
                     resp.setCmd(cmd);
+                    EventBus.getDefault().post(resp);
+                } else {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.ERROR);
+                    resp.setCmd(cmd);
+                    resp.setError("errorCode = " + e.getErrorCode() + "\r\n message : " + e.getMessage());
+                    EventBus.getDefault().post(resp);
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取admob信息
+     */
+    public void getAdmob(final String cmd) {
+        BmobQuery<Admob> query = new BmobQuery<>();
+        query.getObject("NPIk777A", new QueryListener<Admob>() {
+            @Override
+            public void done(Admob admob, BmobException e) {
+                if (e == null) {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.OK);
+                    resp.setCmd(cmd);
+                    resp.setAdmob(admob);
                     EventBus.getDefault().post(resp);
                 } else {
                     ResponseInfo resp = new ResponseInfo(ResponseInfo.ERROR);
