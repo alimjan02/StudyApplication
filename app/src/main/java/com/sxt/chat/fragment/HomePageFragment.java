@@ -35,7 +35,6 @@ import com.sxt.chat.activity.MainActivity;
 import com.sxt.chat.adapter.BannerListAdapter;
 import com.sxt.chat.adapter.GalleryAdapter;
 import com.sxt.chat.adapter.NormalCardListAdapter;
-import com.sxt.chat.adapter.NormalListAdapter;
 import com.sxt.chat.adapter.config.NoScrollLinearLayoutManaget;
 import com.sxt.chat.base.BaseBottomSheetFragment;
 import com.sxt.chat.base.LazyFragment;
@@ -65,10 +64,10 @@ public class HomePageFragment extends LazyFragment {
     private ViewSwitcher viewSwitcherCenter;
     private ViewSwitcher viewSwitcherBottom;
     private ViewSwitcher viewSwitcherGallary;
-    private NormalListAdapter adapterTop;
+    private NormalCardListAdapter adapterTop;
     private BannerListAdapter adapterCenter;
     private NormalCardListAdapter adapterBottom;
-    private GalleryAdapter adapterGallary;
+    private GalleryAdapter adapterGallery;
     private BannerView bannerView;
 
     private final String CMD_GET_BANNER = this.getClass().getName() + "CMD_GET_BANNER";
@@ -116,7 +115,9 @@ public class HomePageFragment extends LazyFragment {
             }
         });
         //初始化刷新控件
-        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.day_night_dark_color);
+        swipeRefreshLayout.setProgressViewOffset(true, -swipeRefreshLayout.getProgressCircleDiameter(), 100);
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red_1), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red_1));
         swipeRefreshLayout.setOnRefreshListener(this::refreshData);
         //设置滑动监听,使得底部tab栏竖直滑动
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -219,7 +220,7 @@ public class HomePageFragment extends LazyFragment {
 
     private void refreshRoom(List<RoomInfo> list) {
         if (adapterTop == null || adapterBottom == null) {
-            adapterTop = new NormalListAdapter(activity, list);
+            adapterTop = new NormalCardListAdapter(activity, list);
             adapterBottom = new NormalCardListAdapter(activity, list);
 
             viewSwitcherTop.setDisplayedChild(1);
@@ -267,17 +268,17 @@ public class HomePageFragment extends LazyFragment {
         } else {
             viewSwitcherGallary.setDisplayedChild(1);
         }
-        if (adapterGallary == null) {
+        if (adapterGallery == null) {
             recyclerViewGallary.setLayoutManager(new StaggeredGridLayoutManager(5, LinearLayoutManager.HORIZONTAL));
-            adapterGallary = new GalleryAdapter(activity, list);
+            adapterGallery = new GalleryAdapter(activity, list);
             viewSwitcherGallary.setDisplayedChild(1);
             recyclerViewGallary.setNestedScrollingEnabled(false);
-            recyclerViewGallary.setAdapter(adapterGallary);
-            adapterGallary.setOnItemClickListener((position, banner) -> {
+            recyclerViewGallary.setAdapter(adapterGallery);
+            adapterGallery.setOnItemClickListener((position, banner) -> {
                 showBottomSheet(banner);
             });
         } else {
-            adapterGallary.notifyDataSetChanged(list);
+            adapterGallery.notifyDataSetChanged(list);
         }
     }
 

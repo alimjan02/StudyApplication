@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:paddingStart="15dp"
-    android:paddingEnd="15dp"
-    android:paddingTop="50dp">
+    android:paddingTop="50dp"
+    android:paddingEnd="15dp">
 
     <com.sxt.chat.view.picker.StringScrollPicker
         android:id="@+id/scrollPicker"
@@ -49,8 +48,8 @@
         android:layout_marginBottom="60dp"
         android:background="@drawable/login_btn_pressed_bg"
         android:gravity="center"
-        android:paddingBottom="13dp"
         android:paddingTop="13dp"
+        android:paddingBottom="13dp"
         android:text="@string/next"
         android:textColor="@color/white"
         android:textSize="17dp" />

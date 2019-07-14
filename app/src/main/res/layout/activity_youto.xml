@@ -71,7 +71,7 @@
 
         <TextView
             android:id="@+id/result"
-            style="@style/text_15_color_1_style"
+            style="@style/text_color_1_15_style"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
             android:background="@drawable/gray_solid_round_8"

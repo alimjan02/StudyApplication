@@ -9,7 +9,6 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -87,9 +88,6 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(0, 0);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(Color.WHITE);
-        }
         if (BmobUser.getCurrentUser(User.class) == null) {
             startActivity(new Intent(App.getCtx(), LoginActivity.class));
             finish();
@@ -114,6 +112,7 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
         drawerLayout = findViewById(R.id.drawerLayout);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomBarLayout = findViewById(R.id.bottom_bar_layout);
+        findViewById(R.id.navigation_header_container).setOnClickListener(this);
         findViewById(R.id.basic_info).setOnClickListener(this);
         findViewById(R.id.normal_settings).setOnClickListener(this);
         findViewById(R.id.ocr_scan_id_card).setOnClickListener(this);
@@ -187,7 +186,7 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
 
         searchView.setVoiceSearch(false);
         searchView.setEllipsize(false);
-        searchView.setBackground(ContextCompat.getDrawable(this, R.drawable.white_solid_round_4));
+        searchView.setBackground(ContextCompat.getDrawable(this, R.drawable.day_night_normal_solid_round_8));
         searchView.setSuggestions(getResources().getStringArray(R.array.query_suggestions));
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
@@ -299,13 +298,31 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
     }
 
     /**
+     * 切换主题
+     */
+    private void switchDayNight() {
+        if (menu == null) {
+            return;
+        }
+        boolean isNightMode = Prefs.getInstance(this).isNightMode();
+        AppCompatDelegate.setDefaultNightMode(isNightMode ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+        Prefs.getInstance(this).setNightMode(!isNightMode);
+        recreate();
+    }
+
+    public void showDayNightMode() {
+        PopupWindow popupWindow = new PopupWindow(this, null, R.style.PopupMenuStyle);
+        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.day_night_normal_solid_round_8));
+    }
+
+    /**
      * 截屏
      */
     private void screenCapture() {
         if (menu == null) {
             return;
         }
-        menu.findItem(R.id.action_more).setEnabled(false);
+        menu.findItem(R.id.action_capture).setEnabled(false);
         ScreenCaptureUtil.getInstance(this)
                 .capture(this.getWindow().getDecorView())
                 .setOnScreenCaptureListener(new ScreenCaptureUtil.OnScreenCaptureListener() {
@@ -343,7 +360,7 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
                                 }
                                 handler.postDelayed(() -> {
                                     decorView.removeView(imageView);
-                                    menu.findItem(R.id.action_more).setEnabled(true);
+                                    menu.findItem(R.id.action_capture).setEnabled(true);
                                 }, 500);
                             });
                             Log.e("capture.mp3", String.format("截屏成功 path : %s", path));
@@ -411,6 +428,8 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
         if (searchView != null) {
             searchView.setMenuItem(item);
         }
+        boolean isNightMode = Prefs.getInstance(this).isNightMode();
+        menu.findItem(R.id.action_dayNight).setTitle(isNightMode ? R.string.day : R.string.night);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -420,8 +439,11 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
             case R.id.action_share:
                 share();
                 break;
-            case R.id.action_more:
+            case R.id.action_capture:
                 screenCapture();
+                break;
+            case R.id.action_dayNight:
+                switchDayNight();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -470,6 +492,9 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.navigation_header_container:
+                startActivity(new Intent(this, FlutterChartActivity.class));
+                break;
             case R.id.basic_info:
                 startActivity(new Intent(this, BasicInfoActivity.class));
                 break;
@@ -517,6 +542,10 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
         }
     }
 
+    private void openMapActivity() {
+        startActivity(new Intent(this, MapActivity.class));
+    }
+
     @Override
     public void onPermissionsAllowed(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsAllowed(requestCode, permissions, grantResults);
@@ -532,16 +561,12 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
             String appName = getString(R.string.app_name);
             String message = String.format(getString(R.string.permission_request_LOCATION), appName);
             SpannableString span = new SpannableString(message);
-            span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             int start = message.indexOf(appName) + appName.length();
-            span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_black_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_color_1_17_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             showPermissionRefusedNeverDialog(span);
         }
-    }
-
-    private void openMapActivity() {
-        startActivity(new Intent(this, MapActivity.class));
     }
 
     /**
@@ -568,29 +593,5 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
                 .setShowLine(true)
                 .setCanceledOnTouchOutside(false)
                 .show();
-    }
-
-    /**
-     * 加载广告腾讯的广告
-     */
-//    protected void loadAD() {
-//        if (isFirst) {
-//            isFirst = false;
-//            return;
-//        }
-//        long lastMillis = Prefs.getInstance(this).getLong(Prefs.KEY_LAST_RESUME_MILLIS, 0);
-//        if (System.currentTimeMillis() - lastMillis > millis) {
-//            Prefs.getInstance(this).putLong(Prefs.KEY_LAST_RESUME_MILLIS, System.currentTimeMillis());
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                openSplashActivity();
-//            } else {
-//                openSplashActivity();
-//            }
-//        }
-//    }
-    private void openSplashActivity() {
-        Intent intent = new Intent(App.getCtx(), SplashActivity.class);
-        intent.putExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, false);
-        startActivity(intent);
     }
 }

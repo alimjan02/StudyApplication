@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#303F9F</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="main_orange">#FA8C1D</color>
+    <color name="main_body">@color/day_night_normal_color</color>
+    <color name="main_blue">#678BFD</color>
+    <color name="main_red">#FFABAB</color>
+    <color name="main_red_dark">#fd9090</color>
+    <color name="main_blue_press">#FF2C54D2</color>
+    <color name="main_green">#7EC501</color>
+    <color name="main_green_pressed">#71B100</color>
+
+    <color name="black">#161414</color>
+    <color name="white">#E4E0E0</color>
+    <color name="dividing_line">#252525</color>
+
+    <color name="text_color_1">#999999</color>
+    <color name="text_color_2">#999999</color>
+    <color name="text_color_3">#999999</color>
+    <color name="text_color_gray_3">#B8B8B8</color>
+    <color name="text_color_4">#FFF1F1</color>
+    <color name="text_color_5">#818791</color>
+    <color name="text_color_6">#4A4A4A</color>
+    <color name="text_color_7">#979797</color>
+    <color name="text_color_8">#D9D9D9</color>
+
+    <color name="red_1">#F61E59</color>
+    <color name="red_2">#F76567</color>
+    <color name="red_3">#FB5454</color>
+    <color name="red_4">#F74B35</color>
+
+    <color name="orange">#FFBB4D</color>
+    <color name="orange_light">#FFEA8A</color>
+    <color name="orange_dark">#fe7900</color>
+
+    <color name="ic_launcher_background">#B9D599</color>
+    <color name="app_icon_color">#B9D599</color>
+
+    <color name="alpha_shader">#20000000</color>
+    <color name="line_yellow">#F7D611</color>
+    <color name="line_yellow_alpha">#FFEE87</color>
+    <color name="line_red">#FF7045</color>
+    <color name="line_red_alpha">#FFA78C</color>
+    <color name="line_violet">#987CFF</color>
+    <color name="line_violet_alpha">#CAA8FF</color>
+    <color name="line_blue">#09DAA0</color>
+    <color name="line_blue_alpha">#53F8C6</color>
+
+    <color name="translate_alpha">#80000000</color>
+    <color name="translate_white">#80FFFFFF</color>
+    <drawable name="transparent">#00000000</drawable>
+
+    <color name="yellow_rgb_253_202_78">#FDCA4E</color>
+    <color name="yellow_rgb_255_155_46">#FF9B2E</color>
+    <color name="violet_rgb_111_51_199">#6F33C7</color>
+    <color name="violet_rgb_147_118_205">#9376CD</color>
+    <color name="violet_rgb_185_101_255">#B55CFF</color>
+    <color name="green_rgb_19_225_253">#13E1FD</color>
+    <color name="green_rgb_40_220_162">#28DCA2</color>
+    <color name="blue_rgba_24_261_255">#17A1FF</color>
+    <color name="red_rgb_255_127_87">#FF7F57</color>
+
+    <color name="yellow_shader">#4DFDCA4E</color>
+    <color name="blue_shader">#3317A1FF</color>
+    <color name="violet_shader">#B38DD3</color>
+    <color name="red_shader">#4DFA1E00</color>
+    <color name="green_shader">#4D28DCA2</color>
+
+    <color name="percent_text_color_default">#009ACD</color>
+    <color name="percent_text_color">#3CB371</color>
+    <color name="percent_text_color_2">#A2CD5A</color>
+    <color name="progressbar_bg_color_default">#636363</color>
+    <color name="progress_color_default">#00C5CD</color>
+    <color name="progressbar_bg_color_1">#737373</color>
+    <color name="progress_color_1">#3CB371</color>
+    <color name="bg">#CDB5CD</color>
+    <color name="textDark">#222</color>
+    <color name="textLight">#555</color>
+    <color name="search_layover_bg">#50000000</color>
+
+    <color name="day_night_normal_color">#1C1C1C</color>
+    <color name="day_night_dark_color">#0F0F0F</color>
+    <color name="home_menu_bg_color">@color/day_night_normal_color</color>
+    <color name="home_bottom_navigation_bg_color">@color/day_night_normal_color</color>
+    <color name="item_bg_normal_color">@color/day_night_normal_color</color>
+    <color name="item_bg_dark_color">@color/day_night_dark_color</color>
+
+</resources>

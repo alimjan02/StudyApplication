@@ -1,20 +1,25 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="BaseTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:dividerHeight">0.5dp</item>
         <item name="android:editTextStyle">@style/editText_style</item>
+        <item name="dialogCornerRadius">8dp</item>
+        <item name="android:dialogCornerRadius" tools:targetApi="p">8dp</item>
+        <item name="android:buttonCornerRadius" tools:targetApi="p">8dp</item>
+        <item name="android:alertDialogTheme">@style/AlertDialogStyle</item>
 
         <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/white</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
         <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/main_body</item>
     </style>
 
-    <style name="editText_style" parent="Theme.AppCompat.Light">
+    <style name="editText_style" parent="Theme.AppCompat.DayNight">
         <item name="colorControlNormal">@color/main_body</item>
         <item name="colorControlActivated">@color/main_red_dark</item>
         <!--设置默认的 提示文字颜色 和 EdiText光标样式-->
@@ -22,7 +27,7 @@
         <item name="android:textColorHint">@color/text_color_gray_3</item>
         <item name="android:textCursorDrawable">@drawable/text_cursor_drawable</item>
         <item name="android:textSize">17dp</item>
-        <item name="android:editTextColor">@color/text_color_2</item>
+        <item name="android:editTextColor">@color/text_color_gray_3</item>
     </style>
 
     <style name="AppTheme" parent="BaseTheme">
@@ -53,63 +58,37 @@
         <item name="android:layout_height">0.5dp</item>
     </style>
 
-    <style name="bottom_radio">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:textSize">12dp</item>
-        <item name="android:paddingBottom">2dp</item>
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:button">@null</item>
-        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
-        <item name="android:drawablePadding">2dp</item>
-        <item name="android:textColor">@drawable/tab_text_selector_bg</item>
-    </style>
-
-    <style name="Base_Dialog_Style" parent="android:style/Theme.Dialog">
-        <!-- 背景透明 -->
-        <item name="android:windowBackground">@android:color/transparent</item>
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="dialogCornerRadius">8dp</item>
+        <item name="android:dialogCornerRadius" tools:targetApi="p">8dp</item>
+        <item name="android:windowBackground">@android:color/transparent</item><!-- 背景透明 -->
         <item name="android:windowContentOverlay">@null</item>
-        <!-- 浮于Activity之上 -->
-        <item name="android:windowIsFloating">true</item>
-        <!-- 边框 -->
-        <item name="android:windowFrame">@null</item>
-        <!-- Dialog以外的区域模糊效果 -->
-        <item name="android:backgroundDimEnabled">true</item>
-        <!-- 无标题 -->
+        <item name="android:windowIsFloating">true</item><!-- 浮于Activity之上 -->
+        <item name="android:windowFrame">@null</item> <!-- 边框 -->
+        <item name="android:backgroundDimEnabled">true</item><!-- Dialog以外的区域模糊效果 -->
         <item name="android:windowNoTitle">true</item>
-        <!-- 半透明 -->
-        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsTranslucent">true</item><!-- 半透明 -->
     </style>
 
-    <style name="BottomSheet_Dialog_black_bg_Style" parent="Base_Dialog_Style">
+    <style name="BottomSheet_Dialog_black_bg_Style" parent="AlertDialogStyle">
         <!-- Dialog进入及退出动画 -->
         <item name="android:windowAnimationStyle">@style/timepopwindow_anim_style</item>
     </style>
 
-    <style name="BottomSheet_Dialog_white_bg_Style" parent="Base_Dialog_Style">
-        <!-- 背景透明 -->
-        <item name="android:windowBackground">@color/white</item>
-        <!-- 半透明 -->
+    <style name="BottomSheet_Dialog_white_bg_Style" parent="AlertDialogStyle">
+        <item name="android:windowBackground">@color/day_night_normal_color</item>
         <item name="android:windowIsTranslucent">false</item>
         <!-- Dialog进入及退出动画 -->
         <item name="android:windowAnimationStyle">@style/timepopwindow_anim_style</item>
     </style>
 
-    <style name="BottomSheet_Dialog_Style" parent="@android:style/Theme.Dialog">
+    <style name="BottomSheet_Dialog_Style" parent="AlertDialogStyle">
         <!-- 背景透明 -->
         <item name="android:windowBackground">@android:color/transparent</item>
         <!-- 半透明 -->
         <item name="android:windowIsTranslucent">false</item>
         <!-- Dialog进入及退出动画 -->
         <item name="android:windowAnimationStyle">@style/timepopwindow_anim_style</item>
-    </style>
-
-    <style name="PopContextMenu" parent="@android:style/Theme.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <!-- 时间选择器popwidnow 显示消失动画 -->
@@ -120,13 +99,8 @@
         </item> <!-- 指定消失的动画xml -->
     </style>
 
-    <style name="Spinner_style" parent="Widget.AppCompat.Light.DropDownItem.Spinner">
-        <item name="android:background">@null</item>
-        <item name="android:popupBackground">@drawable/gray_solid_round_8</item>
-        <item name="android:popupElevation">0dp</item>
-        <item name="android:overlapAnchor">false</item>
-        <item name="android:spinnerMode">dropdown</item>
-    </style>
+    <!--popup window 的亮色主题-->
+    <style name="PopupMenuStyle" parent="@style/ThemeOverlay.AppCompat.Light" />
 
     <style name="item_alert_text_select_style">
         <item name="android:background">@drawable/item_text_bg_selector</item>

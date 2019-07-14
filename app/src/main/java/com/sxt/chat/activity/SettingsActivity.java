@@ -56,7 +56,8 @@ public class SettingsActivity extends AdBannerActivity implements View.OnClickLi
 
         cacheSize = findViewById(R.id.cache_size);
         version = findViewById(R.id.version);
-        findViewById(R.id.about_me).setOnClickListener(this);//关于我们
+        findViewById(R.id.csdn).setOnClickListener(this);//csdn
+        findViewById(R.id.blogger).setOnClickListener(this);//blogger
         findViewById(R.id.privacy_notice).setOnClickListener(this);//隐私声明
         findViewById(R.id.clean_cache).setOnClickListener(this);//清除缓存
         findViewById(R.id.current_version).setOnClickListener(this);//清除缓存
@@ -75,10 +76,15 @@ public class SettingsActivity extends AdBannerActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.about_me://关于我们
-                Intent aboutUs = new Intent(this, WebViewActivity.class);
-                aboutUs.putExtra(WebViewActivity.ACTION_URL, getString(R.string.about_us_csdn_url));
-                startActivity(aboutUs);
+            case R.id.csdn://csdn
+                Intent csdn = new Intent(this, WebViewActivity.class);
+                csdn.putExtra(WebViewActivity.ACTION_URL, getString(R.string.about_us_csdn_url));
+                startActivity(csdn);
+                break;
+            case R.id.blogger://blogger
+                Intent blogger = new Intent(this, WebViewActivity.class);
+                blogger.putExtra(WebViewActivity.ACTION_URL, getString(R.string.about_us_blogger_url));
+                startActivity(blogger);
                 break;
             case R.id.privacy_notice://隐私声明
                 Intent privacyNotice = new Intent(this, WebViewActivity.class);
@@ -169,7 +175,7 @@ public class SettingsActivity extends AdBannerActivity implements View.OnClickLi
     }
 
     public void startDownloadApkDialog(final int serverVersion) {
-        final Dialog dialog = new Dialog(this, R.style.Base_Dialog_Style);
+        final Dialog dialog = new Dialog(this, R.style.AlertDialogStyle);
         View item = LayoutInflater.from(this).inflate(R.layout.item_update, null);
         final TextView progressTitle = item.findViewById(R.id.upgrade_title);
         final ProgressBar progressBar = item.findViewById(R.id.my_progress);

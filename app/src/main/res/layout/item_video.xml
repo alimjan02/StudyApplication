@@ -44,7 +44,7 @@
 
             <TextView
                 android:id="@+id/title"
-                style="@style/text_15_color_white_style"
+                style="@style/text_color_white_15_style"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:maxWidth="110dp"

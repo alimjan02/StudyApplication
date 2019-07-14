@@ -2,7 +2,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical"
     android:padding="15dp">
 
@@ -11,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:background="@drawable/gray_solid_round_8"
+        android:background="@drawable/day_night_dark_solid_round_8"
         android:hint="请输入姓名"
         android:padding="12dp"
         android:textColor="@color/text_color_2"
@@ -26,8 +25,8 @@
         android:layout_marginBottom="60dp"
         android:background="@drawable/login_btn_pressed_bg"
         android:gravity="center"
-        android:paddingBottom="13dp"
         android:paddingTop="13dp"
+        android:paddingBottom="13dp"
         android:text="@string/save"
         android:textColor="@color/white"
         android:textSize="17dp" />

@@ -32,7 +32,7 @@ public class WebViewActivity extends BaseActivity {
 
     private void initRefreshLayout() {
         //初始化刷新控件
-        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.main_blue), ContextCompat.getColor(this, R.color.red), ContextCompat.getColor(this, R.color.line_yellow), ContextCompat.getColor(this, R.color.main_green), ContextCompat.getColor(this, R.color.red));
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.main_blue), ContextCompat.getColor(this, R.color.red_1), ContextCompat.getColor(this, R.color.line_yellow), ContextCompat.getColor(this, R.color.main_green), ContextCompat.getColor(this, R.color.red_1));
         swipeRefreshLayout.setOnRefreshListener(this::refresh);
         swipeRefreshLayout.post(() -> {
             swipeRefreshLayout.setRefreshing(true);

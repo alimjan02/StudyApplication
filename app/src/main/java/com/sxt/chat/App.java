@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.google.android.gms.ads.MobileAds;
 import com.sxt.chat.activity.LoginActivity;
 import com.sxt.chat.utils.ActivityCollector;
 import com.sxt.chat.utils.ActivityManager;
+import com.sxt.chat.utils.Prefs;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import cn.bmob.v3.Bmob;
@@ -25,6 +27,7 @@ public class App extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         mContext = this;
+        setNightMode();
         MobileAds.initialize(this, getString(R.string.adsense_app_key));
         CrashReport.initCrashReport(this, "1419862dc6", true);
         initBmob();
@@ -69,6 +72,11 @@ public class App extends MultiDexApplication {
 
             }
         });
+    }
+
+    private void setNightMode() {
+        boolean isNightMode = Prefs.getInstance(this).isNightMode();
+        AppCompatDelegate.setDefaultNightMode(isNightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     private void initBmob() {

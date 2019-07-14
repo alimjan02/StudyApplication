@@ -47,7 +47,7 @@ public class AlertDialogBuilder {
         rightButton = (TextView) rootView.findViewById(R.id.right_button);
         leftButtonLayout = (RelativeLayout) rootView.findViewById(R.id.left_button_layout);
         rightButtonLayout = (RelativeLayout) rootView.findViewById(R.id.right_button_layout);
-        mDialog = new Dialog(mActivity, R.style.PopContextMenu);
+        mDialog = new Dialog(mActivity, R.style.AlertDialogStyle);
     }
 
     public AlertDialogBuilder setTitle(int resId) {

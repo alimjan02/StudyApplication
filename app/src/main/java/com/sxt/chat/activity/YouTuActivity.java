@@ -6,6 +6,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
@@ -16,6 +19,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.steelkiwi.cropiwa.util.UriUtil;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
+import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.json.OCRObject;
 import com.sxt.chat.utils.glide.GlideRoundTransformer;
 import com.sxt.chat.youtu.OCRListener;
@@ -223,14 +227,40 @@ public class YouTuActivity extends HeaderActivity {
         super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_CAMARER:
-                goToAppSettingsPage();
-                Toast(R.string.allow_CAMERA);
+                onPermissionRefuseNever(R.string.permission_request_CAMERA);
                 break;
             case REQUEST_CODE_GALLERY:
-                goToAppSettingsPage();
-                Toast(R.string.allow_WRITE_EXTERNAL_STORAGE);
+                onPermissionRefuseNever(R.string.permission_request_READ_EXTERNAL_STORAGE);
                 break;
         }
+    }
+
+    private void onPermissionRefuseNever(int stringRes) {
+        String appName = getString(R.string.app_name);
+        String message = String.format(getString(stringRes), appName);
+        SpannableString span = new SpannableString(message);
+        span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int start = message.indexOf(appName) + appName.length();
+        span.setSpan(new TextAppearanceSpan(this, R.style.text_color_1_17_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        showPermissionRefusedNeverDialog(span);
+    }
+
+    /**
+     * 权限被彻底禁止后 , 弹框提醒用户去开启
+     */
+    private void showPermissionRefusedNeverDialog(CharSequence message) {
+        new AlertDialogBuilder(this)
+                .setTitle(R.string.message_alert, true)
+                .setMessage(message)
+                .setLeftButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setRightButton(R.string.confirm, (dialog, which) -> {
+                    dialog.dismiss();
+                    goToAppSettingsPage();
+                })
+                .setShowLine(true)
+                .setCanceledOnTouchOutside(false)
+                .show();
     }
 
     public String getCardType() {

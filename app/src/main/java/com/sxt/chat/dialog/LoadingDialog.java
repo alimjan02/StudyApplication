@@ -24,7 +24,7 @@ public class LoadingDialog {
 
     private void init() {
         rootView = mInflater.inflate(R.layout.item_loading, null);
-        mDialog = new Dialog(mActivity, R.style.PopContextMenu);
+        mDialog = new Dialog(mActivity, R.style.AlertDialogStyle);
         ImageView img = (ImageView) rootView.findViewById(R.id.loading);
         loading = new ProgressDrawable();
         img.setImageDrawable(loading);

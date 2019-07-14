@@ -12,7 +12,7 @@
 
         <TextView
             android:id="@+id/select"
-            style="@style/text_17_color_main_blue_style"
+            style="@style/text_color_main_blue_17_tyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

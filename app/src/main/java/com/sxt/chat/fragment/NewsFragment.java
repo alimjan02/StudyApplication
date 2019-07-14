@@ -65,7 +65,9 @@ public class NewsFragment extends LazyFragment implements
         mRecyclerView = contentView.findViewById(R.id.recyclerView);
         mRecyclerView.getRecyclerView().setNestedScrollingEnabled(false);
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.day_night_dark_color);
+        swipeRefreshLayout.setProgressViewOffset(true, -swipeRefreshLayout.getProgressCircleDiameter(), 100);
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red_1), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red_1));
         //刷新广告
         swipeRefreshLayout.setOnRefreshListener(this::loadAD);
         //刷新原生广告

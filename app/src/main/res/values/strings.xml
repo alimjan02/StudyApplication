@@ -4,6 +4,8 @@
     <string name="privacy_notice_url">https://sites.google.com/view/sunxingtao</string>
     <!--我的博客-->
     <string name="about_us_csdn_url">https://blog.csdn.net/sxt_zls</string>
+    <!--我的blogger-->
+    <string name="about_us_blogger_url">https://www.sunxingtao.com</string>
 
     <!--高德地图的appKey-->
     <string name="map_key">bc7d04743fd40d834d62b542490840be</string>
@@ -47,7 +49,7 @@
     <string name="prompt">温馨提示</string>
 
     <string name="exit_press_again">再按一次退出</string>
-    <string name="basic_info">个人中心</string>
+    <string name="basic_info">个人资料</string>
     <string name="nomal_settings">通用设置</string>
     <string name="scan_2_scan">扫一扫</string>
     <string name="ocr_scan">腾讯优图</string>
@@ -113,19 +115,13 @@
     <string name="string_tab_chart">图表</string>
     <string name="string_tab_news">资讯</string>
     <string name="string_tab_me">我的</string>
-    <string name="allow_WRITE_EXTERNAL_STORAGE">缺少必要的权限,请在手机设置中允许畅玩读写手机存储的权限</string>
-    <string name="allow_wifi">还未获取到相应权限哦,您可以到手机设置中允许爱照护使用位置和WiFi权限哟</string>
-    <string name="allow_READ_EXTERNAL_STORAGE">还未获取到相应权限哦,您可以到手机设置中允许爱照护读取手机存储的权限哟</string>
-    <string name="allow_READ_CONTACTS">还未获取到相应权限哦,您可以到手机设置中允许爱照护访问手机通讯录的权限哟</string>
-    <string name="allow_CAMERA">还未获取到相应权限哦,您可以到手机设置中允许爱照护访问手机拍照的权限哟</string>
-    <string name="allow_CALL_PHONE">还未获取到相应权限哦,您可以到手机设置中允许爱照护打电话的权限哟</string>
 
     <string name="permission_request_READ_EXTERNAL_STORAGE">您需要在设备的设置中\n允许%s获取手机存储的权限才能继续哟~</string>
     <string name="permission_request_READ_CONTACTS">还未获取到相应权限哦,您可以到手机设置中允许i智护访问手机通讯录的权限哟</string>
     <string name="permission_request_CAMERA">您需要在设备的设置中\n允许%s获取访问手机拍照的权限才能继续哟~</string>
     <string name="permission_request_CALL_PHONE">您需要在设备的设置中\n允许%s获取打电话的权限才能继续哟~</string>
+    <string name="permission_request_WiFi">还未获取到相应权限哦,您可以到手机设置中允许%s使用位置和WiFi权限哟~</string>
     <string name="permission_request_LOCATION">您需要在设备的设置中\n允许%s获取位置的权限才能继续哟~</string>
-
 
     <string name="version_is_up_to_date">当前已是最新版本</string>
     <string name="alert_update_message_not_wifi">您当前处于非WIFI状态，继续更新版本吗?</string>
@@ -263,13 +259,14 @@
     <string name="source">Source &lt;a href="https://en.wikipedia.org/wiki/Machu_Picchu">Wikipedia&lt;/a></string>
     <string name="search">搜索</string>
     <string name="scan">扫一扫</string>
+    <string name="capture">截取屏幕</string>
     <string name="more">更多</string>
     <string name="apk_install_message">您需要允许安装未知来源的应用权限,才能正常安装新版本哟~</string>
     <string name="check_wechat_is_install">当前微信版本太低或未安装微信客户端</string>
     <string name="string_share_successful">分享成功</string>
     <string name="string_share_cancel">分享取消</string>
     <string name="key_word_is_empty">关键字不能为空</string>
-    <string name="map">高德地图</string>
+    <string name="map">我的足迹</string>
     <string name="notification">通知栏</string>
     <string name="select_file">选择文件</string>
 
@@ -352,6 +349,9 @@
     <string name="version">当前版本:</string>
     <string name="net_message_alert">当前为非Wi-Fi环境\n继续播放将消耗手机流量</string>
     <string name="shortcut">快捷方式</string>
-    <string name="about_us">关于我们</string>
+    <string name="my_csdn">我的博客</string>
+    <string name="my_blogger">我的网站</string>
+    <string name="day">日间模式</string>
+    <string name="night">夜间模式</string>
 
 </resources>

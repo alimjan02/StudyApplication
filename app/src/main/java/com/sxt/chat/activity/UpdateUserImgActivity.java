@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +32,7 @@ import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.ad.AdBannerActivity;
 import com.sxt.chat.db.User;
+import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.Prefs;
@@ -174,10 +178,33 @@ public class UpdateUserImgActivity extends AdBannerActivity implements View.OnCl
     @Override
     public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
-        Toast(R.string.allow_WRITE_EXTERNAL_STORAGE);
         if (REQUEST_CHOOSE_PHOTO == requestCode) {
-            goToAppSettingsPage();
+            String appName = getString(R.string.app_name);
+            String message = String.format(getString(R.string.permission_request_READ_EXTERNAL_STORAGE), appName);
+            SpannableString span = new SpannableString(message);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            int start = message.indexOf(appName) + appName.length();
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_color_1_17_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            showPermissionRefusedNeverDialog(span);
         }
+    }
+
+    /**
+     * 权限被彻底禁止后 , 弹框提醒用户去开启
+     */
+    private void showPermissionRefusedNeverDialog(CharSequence message) {
+        new AlertDialogBuilder(this)
+                .setTitle(R.string.message_alert, true)
+                .setMessage(message)
+                .setLeftButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setRightButton(R.string.confirm, (dialog, which) -> {
+                    dialog.dismiss();
+                    goToAppSettingsPage();
+                })
+                .setShowLine(true)
+                .setCanceledOnTouchOutside(false)
+                .show();
     }
 
     private void upload(Uri bitmapUri) {

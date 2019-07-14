@@ -140,7 +140,7 @@ public class ChangeLoginActivity extends AdBannerActivity {
         {
             if (viewType == ChangeLoginAdapter.Other_USER) {
                 SwipeMenuItem deleteItem = new SwipeMenuItem(App.getCtx())
-                        .setBackground(R.color.red_6)
+                        .setBackground(R.color.red_4)
 //                        .setImage(R.mipmap.xuetang)
                         .setText("删除")
                         .setTextColor(Color.WHITE)

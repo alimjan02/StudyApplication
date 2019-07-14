@@ -4,7 +4,7 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/white_solid_round_top_8"
+    android:background="@drawable/day_night_normal_solid_round_8"
     android:fitsSystemWindows="true">
 
     <android.support.v4.widget.NestedScrollView
@@ -36,10 +36,10 @@
                     android:layout_width="30dp"
                     android:layout_height="4dp"
                     android:layout_margin="8dp"
-                    android:background="@drawable/gray_dark_solid_round_8" />
+                    android:background="@drawable/day_night_dark_solid_round_8" />
 
                 <TextView
-                    style="@style/text_17_color_1_style"
+                    style="@style/text_color_1_17_style"
                     android:text="@string/search_nearby" />
 
             </LinearLayout>

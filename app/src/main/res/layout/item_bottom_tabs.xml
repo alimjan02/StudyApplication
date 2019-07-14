@@ -4,7 +4,7 @@
     android:id="@+id/bottom_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="@color/home_bottom_navigation_bg_color"
     app:cardCornerRadius="0dp"
     app:cardElevation="32dp"
     app:cardPreventCornerOverlap="false"

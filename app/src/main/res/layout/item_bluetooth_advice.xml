@@ -9,12 +9,12 @@
 
     <TextView
         android:id="@+id/title"
-        style="@style/text_15_color_1_style"
+        style="@style/text_color_1_15_style"
         android:layout_gravity="center_vertical" />
 
     <TextView
         android:id="@+id/address"
-        style="@style/text_15_color_1_style"
+        style="@style/text_color_1_15_style"
         android:layout_gravity="center_vertical|end" />
 
 </FrameLayout>

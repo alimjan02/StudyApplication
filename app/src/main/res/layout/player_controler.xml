@@ -16,8 +16,8 @@
         android:background="?selectableItemBackground"
         app:bar_height="2dp"
         app:buffered_color="@color/white"
-        app:played_color="@color/red"
-        app:scrubber_color="@color/red"
+        app:played_color="@color/red_1"
+        app:scrubber_color="@color/red_1"
         app:scrubber_disabled_size="8dp"
         app:scrubber_dragged_size="16dp"
         app:unplayed_color="@color/text_color_gray_3" />

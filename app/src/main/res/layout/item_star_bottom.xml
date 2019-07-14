@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/title"
-            style="@style/text_12_color_1_style"
+            style="@style/text_color_1_12_style"
             android:gravity="center"
             android:maxWidth="72dp"
             android:text="下拉弹框" />

@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="@android:color/transparent"
-            app:expandedTitleTextAppearance="@style/text_22_color_white_style"
+            app:expandedTitleTextAppearance="@style/text_color_white_22_style"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:title=""
             app:titleEnabled="false">
@@ -39,11 +39,11 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:title=""
-                app:titleTextAppearance="@style/text_17_color_white_style" />
+                app:titleTextAppearance="@style/text_color_white_17_style" />
 
             <TextView
                 android:id="@+id/title"
-                style="@style/text_17_color_white_style"
+                style="@style/text_color_white_17_style"
                 android:layout_gravity="center"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_50"
                 android:layout_gravity="bottom"
-                app:cardBackgroundColor="@color/white"
+                app:cardBackgroundColor="@color/day_night_normal_color"
                 app:cardCornerRadius="0dp"
                 app:cardPreventCornerOverlap="false"
                 app:cardUseCompatPadding="false"
@@ -66,12 +66,12 @@
                     android:id="@+id/tablayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:tabBackground="@color/white"
+                    app:tabBackground="@color/day_night_normal_color"
                     app:tabIndicatorAnimationDuration="@android:integer/config_mediumAnimTime"
                     app:tabIndicatorColor="@color/main_blue"
                     app:tabIndicatorFullWidth="false"
                     app:tabIndicatorGravity="bottom"
-                    app:tabIndicatorHeight="3dp"
+                    app:tabIndicatorHeight="2dp"
                     app:tabMode="scrollable"
                     app:tabRippleColor="@android:color/transparent"
                     app:tabSelectedTextColor="@color/main_blue"

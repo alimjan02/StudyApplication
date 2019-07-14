@@ -59,7 +59,9 @@ public class ChartFragment extends LazyFragment {
         viewSwitcher = contentView.findViewById(R.id.viewSwitcher);
         lineLayoutList = contentView.findViewById(R.id.line_layout_list);
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.day_night_dark_color);
+        swipeRefreshLayout.setProgressViewOffset(true, -swipeRefreshLayout.getProgressCircleDiameter(), 100);
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red_1), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red_1));
         swipeRefreshLayout.setOnRefreshListener(() -> handler.postDelayed(() -> {
             lineLayoutList.removeAllViews();
             swipeRefreshLayout.setRefreshing(false);
@@ -92,17 +94,15 @@ public class ChartFragment extends LazyFragment {
                 onScrollChangeListener.clearLines();
             }
         }
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             if (i == 0) {
                 drawPie();
             } else if (i == 1) {
                 drawBar();
             } else if (i == 2) {
                 drawCurveLine();
-            } else if (i % 2 == 0) {
-                drawBar();
-            } else if (i % 3 == 0) {
-                drawCurveLine();
+            } else if (i == 4) {
+                drawCircleProgress();
             } else {
                 drawPie();
             }
@@ -144,18 +144,18 @@ public class ChartFragment extends LazyFragment {
 
     private void initData() {
         lineName = new String[]{getString(R.string.string_label_press), getString(R.string.string_label_xt), getString(R.string.string_label_hb), getString(R.string.string_label_bt)};
-        lineColor = new int[]{R.color.violet_rgb_185_101_255, R.color.red_rgb_255_127_87, R.color.red, R.color.blue_rgba_24_261_255, R.color.green_rgb_40_220_162};
-        shaderColor = new int[]{R.color.violet_sharder, R.color.red_sharder, R.color.red_sharder, R.color.blue_shader, R.color.green_sharder};
+        lineColor = new int[]{R.color.violet_rgb_185_101_255, R.color.red_rgb_255_127_87, R.color.red_1, R.color.blue_rgba_24_261_255, R.color.green_rgb_40_220_162};
+        shaderColor = new int[]{R.color.violet_shader, R.color.red_shader, R.color.red_shader, R.color.blue_shader, R.color.green_shader};
         lineUnit = new String[]{getString(R.string.string_unit_xt), getString(R.string.string_unit_hb), getString(R.string.string_unit_press), getString(R.string.string_unit_bt)};
 
         chartBeanList = new ArrayList<>();
-        chartBeanList.add(new ChartBean("9月", 1));
-        chartBeanList.add(new ChartBean("1", 33));
+        chartBeanList.add(new ChartBean("9月", 10));
+        chartBeanList.add(new ChartBean("1", 30));
         chartBeanList.add(new ChartBean("2", 69));
         chartBeanList.add(new ChartBean("3", 100));
         chartBeanList.add(new ChartBean("4", 34));
-        chartBeanList.add(new ChartBean("5", 56));
-        chartBeanList.add(new ChartBean("6", 90));
+        chartBeanList.add(new ChartBean("5", 85));
+        chartBeanList.add(new ChartBean("6", 26));
         chartBeanList.add(new ChartBean("6", 9));
         chartBeanList.add(new ChartBean("6", 60));
 

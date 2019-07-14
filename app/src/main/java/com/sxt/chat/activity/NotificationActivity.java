@@ -28,6 +28,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -40,6 +43,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
+import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.utils.NotificationHelper;
 import com.sxt.chat.utils.glide.GlideRoundTransformer;
 
@@ -250,9 +254,33 @@ public class NotificationActivity extends HeaderActivity implements View.OnClick
         super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_GALLERY:
-                goToAppSettingsPage();
-                Toast(R.string.allow_WRITE_EXTERNAL_STORAGE);
+                String appName = getString(R.string.app_name);
+                String message = String.format(getString(R.string.permission_request_READ_EXTERNAL_STORAGE), appName);
+                SpannableString span = new SpannableString(message);
+                span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                int start = message.indexOf(appName) + appName.length();
+                span.setSpan(new TextAppearanceSpan(this, R.style.text_color_1_17_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                showPermissionRefusedNeverDialog(span);
                 break;
         }
     }
+
+    /**
+     * 权限被彻底禁止后 , 弹框提醒用户去开启
+     */
+    private void showPermissionRefusedNeverDialog(CharSequence message) {
+        new AlertDialogBuilder(this)
+                .setTitle(R.string.message_alert, true)
+                .setMessage(message)
+                .setLeftButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setRightButton(R.string.confirm, (dialog, which) -> {
+                    dialog.dismiss();
+                    goToAppSettingsPage();
+                })
+                .setShowLine(true)
+                .setCanceledOnTouchOutside(false)
+                .show();
+    }
+
 }

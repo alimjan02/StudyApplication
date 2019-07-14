@@ -70,6 +70,16 @@ public final class Prefs extends BasePrefs {
     private int appMode = -1;
     private int serverVersion;
 
+    public static final String IS_NIGHT_MODE = "IS_NIGHT_MODE";
+
+    public boolean isNightMode() {
+        return getBoolean(IS_NIGHT_MODE, false);
+    }
+
+    public void setNightMode(boolean isNightMode) {
+        putBoolean(IS_NIGHT_MODE, isNightMode);
+    }
+
     public String getRecordFolder() {
         return App.getCtx().getExternalCacheDir() + File.separator + KEY_PATH_RECORD;
     }

@@ -18,7 +18,7 @@
 
     <TextView
         android:id="@+id/title"
-        style="@style/text_22_color_1_style"
+        style="@style/text_color_1_22_style"
         android:layout_marginStart="16dp"
         android:gravity="left"
         android:textColor="@color/white" />

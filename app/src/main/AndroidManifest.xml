@@ -33,6 +33,8 @@
     <!--破腾讯广告需要读取手机状态的权限-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <!-- This tag indicates that this application requires ARCore.  This results in the application
          only being visible in the Google Play Store on devices that support ARCore. -->
     <uses-feature
@@ -78,8 +80,8 @@
 
         <activity
             android:name=".activity.SplashActivity"
-            android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -94,24 +96,24 @@
 
         <activity
             android:name=".activity.MainActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:exported="true"
             android:launchMode="singleTask" />
 
         <activity
             android:name=".activity.ShareCaptureActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:exported="true"
             android:launchMode="singleTop" />
 
         <activity
             android:name=".activity.LoginActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ar.HelloArActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="locked"
@@ -119,64 +121,64 @@
 
         <activity
             android:name=".activity.VR360Activity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:exported="true"
             android:screenOrientation="locked"
             android:theme="@style/FullScreenTheme" />
 
         <activity
             android:name=".activity.ThreeDActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:exported="true"
             android:screenOrientation="locked"
             android:theme="@style/FullScreenTheme" />
 
         <activity
             android:name=".activity.BasicInfoActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
         <activity
             android:name=".activity.RegisterActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.CropActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
         <activity
             android:name=".activity.UpdateUserImgActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
         <activity
             android:name=".activity.UpdateUserNameActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
         <activity
             android:name=".activity.SelectSexActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
         <activity
             android:name=".activity.SelectHeightActivity"
-            android:configChanges="orientation|screenSize" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SelectWeightActivity"
-            android:configChanges="orientation|screenSize" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SelectAgeActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
         <activity
             android:name=".activity.SelectNumberActivity"
-            android:configChanges="orientation|screenSize" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ChangeLoginActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
 
         <activity
             android:name=".activity.SettingsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
 
         <activity
             android:name=".activity.YouTuActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
 
         <activity
             android:name=".activity.YouTuIdCardActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
 
         <activity
             android:name=".activity.TakePhotoActivity"
@@ -188,19 +190,19 @@
 
         <activity
             android:name=".activity.ExoPlayerActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
 
         <activity
             android:name=".activity.BannerDetailActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
 
         <activity
             android:name=".activity.NotificationActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
 
         <activity
             android:name=".activity.PdfActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
 
         <receiver
             android:name=".receiver.WatchDogReceiver"
@@ -214,7 +216,7 @@
 
         <activity
             android:name=".vr.video360.VideoActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="locked"
@@ -269,19 +271,19 @@
 
         <activity
             android:name=".activity.MapActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" />
 
         <activity
             android:name=".activity.WebViewActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
         <activity
             android:name=".activity.ShortcutActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
         <activity
             android:name=".activity.BluetoothActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
 
         <service
             android:name=".task.BinderService"
@@ -336,17 +338,21 @@
 
         <activity
             android:name="com.qq.e.ads.ADActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboard|orientation|screenSize|keyboardHidden|uiMode"
             tools:ignore="DuplicateActivity" />
         <activity
             android:name="com.qq.e.ads.PortraitADActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboard|orientation|screenSize|keyboardHidden|uiMode"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.qq.e.ads.LandscapeADActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboard|orientation|screenSize|keyboardHidden|uiMode"
             android:screenOrientation="landscape" />
         <activity android:name=".activity.CircularRevealActivity" />
+        <activity
+            android:name=".activity.FlutterChartActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <!--如果您打包 App 时的 targetSdkVersion >= 28：需要在 AndroidManifest.xml
         添加依赖声明 uses-library android:name="org.apache.http.legacy" android:required="false"，
         且 application标签中添加 android:usesCleartextTraffic="true"，否则 SDK 无法工作，接入代码示例如下：-->

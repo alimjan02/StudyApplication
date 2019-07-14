@@ -8,6 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layoutAnimation="@anim/layout_animation_vertical"
         android:orientation="vertical">
 
         <LinearLayout
@@ -16,21 +17,48 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/about_me"
+                android:id="@+id/csdn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:foreground="?selectableItemBackground">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/text_color_1_17_style"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
                     android:drawablePadding="10dp"
-                    android:maxLines="1"
-                    android:text="@string/about_us"
-                    android:textColor="@color/text_color_1"
-                    android:textSize="17dp" />
+                    android:text="@string/my_csdn" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="15dp"
+                    android:src="@mipmap/common_icon_more" />
+
+            </RelativeLayout>
+
+            <View style="@style/divider_line" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/blogger"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:foreground="?selectableItemBackground">
+
+                <TextView
+                    style="@style/text_color_1_17_style"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:drawablePadding="10dp"
+                    android:text="@string/my_blogger" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -57,15 +85,11 @@
                 android:foreground="?selectableItemBackground">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/text_color_1_17_style"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
                     android:drawablePadding="10dp"
-                    android:maxLines="1"
-                    android:text="@string/privacy_notice"
-                    android:textColor="@color/text_color_1"
-                    android:textSize="17dp" />
+                    android:text="@string/privacy_notice" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -92,15 +116,11 @@
                 android:foreground="?selectableItemBackground">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/text_color_1_17_style"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
                     android:drawablePadding="10dp"
-                    android:maxLines="1"
-                    android:text="@string/clean_cache"
-                    android:textColor="@color/text_color_1"
-                    android:textSize="17dp" />
+                    android:text="@string/clean_cache" />
 
                 <ImageView
                     android:id="@+id/cache_size_arrow"
@@ -139,15 +159,11 @@
                 android:foreground="?selectableItemBackground">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/text_color_1_17_style"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
                     android:drawablePadding="10dp"
-                    android:maxLines="1"
-                    android:text="@string/current_version"
-                    android:textColor="@color/text_color_1"
-                    android:textSize="17dp" />
+                    android:text="@string/current_version" />
 
                 <TextView
                     android:id="@+id/version"

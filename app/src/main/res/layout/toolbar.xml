@@ -26,20 +26,17 @@
         app:contentInsetStart="0dp"
         app:layout_collapseMode="pin"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextAppearance="@style/text_17_color_white_style">
+        app:titleTextAppearance="@style/text_color_white_17_style">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/text_color_white_17_style"
             android:layout_gravity="center"
             android:gravity="center"
             android:maxLength="15"
             android:maxLines="1"
             android:singleLine="true"
-            android:text=""
-            android:textColor="@color/white"
-            android:textSize="17dp" />
+            android:text="" />
 
         <FrameLayout
             android:id="@+id/right_container"

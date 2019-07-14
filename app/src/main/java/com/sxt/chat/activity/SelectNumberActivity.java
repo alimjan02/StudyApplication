@@ -33,9 +33,9 @@ public class SelectNumberActivity extends HeaderActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_body_number);
         setTitle(R.string.body_number);
-        et_name = (EditText) findViewById(R.id.et_name);
-        et_number = (EditText) findViewById(R.id.et_number);
-        TextView save = (TextView) findViewById(R.id.save);
+        et_name = findViewById(R.id.et_name);
+        et_number = findViewById(R.id.et_number);
+        TextView save = findViewById(R.id.save);
         save.setOnClickListener(this);
         save.setText(R.string.save);
         et_name.setVisibility(View.GONE);

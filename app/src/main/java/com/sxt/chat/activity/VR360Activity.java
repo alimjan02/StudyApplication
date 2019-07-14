@@ -8,6 +8,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -17,6 +20,7 @@ import com.google.vr.sdk.widgets.pano.VrPanoramaView;
 import com.steelkiwi.cropiwa.util.UriUtil;
 import com.sxt.chat.R;
 import com.sxt.chat.base.BaseActivity;
+import com.sxt.chat.dialog.AlertDialogBuilder;
 
 import java.util.ArrayList;
 
@@ -194,9 +198,32 @@ public class VR360Activity extends BaseActivity {
     public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
         if (REQUEST_CODE_GALLERY == requestCode) {
-            Toast(R.string.allow_READ_EXTERNAL_STORAGE);
-            goToAppSettingsPage();
+            String appName = getString(R.string.app_name);
+            String message = String.format(getString(R.string.permission_request_READ_EXTERNAL_STORAGE), appName);
+            SpannableString span = new SpannableString(message);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            int start = message.indexOf(appName) + appName.length();
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_color_1_17_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            showPermissionRefusedNeverDialog(span);
         }
+    }
+
+    /**
+     * 权限被彻底禁止后 , 弹框提醒用户去开启
+     */
+    private void showPermissionRefusedNeverDialog(CharSequence message) {
+        new AlertDialogBuilder(this)
+                .setTitle(R.string.message_alert, true)
+                .setMessage(message)
+                .setLeftButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setRightButton(R.string.confirm, (dialog, which) -> {
+                    dialog.dismiss();
+                    goToAppSettingsPage();
+                })
+                .setShowLine(true)
+                .setCanceledOnTouchOutside(false)
+                .show();
     }
 
     @Override

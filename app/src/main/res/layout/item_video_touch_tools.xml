@@ -26,18 +26,18 @@
 
             <TextView
                 android:id="@+id/currentPosition"
-                style="@style/text_17_color_main_blue_style"
+                style="@style/text_color_main_blue_17_tyle"
                 android:text="" />
 
             <TextView
-                style="@style/text_20_color_white_style"
+                style="@style/text_color_white_20_style"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:text="/" />
 
             <TextView
                 android:id="@+id/duration"
-                style="@style/text_17_color_white_style"
+                style="@style/text_color_white_17_style"
                 android:text="" />
 
         </LinearLayout>
@@ -71,7 +71,7 @@
 
         <TextView
             android:id="@+id/alpha"
-            style="@style/text_17_color_white_style"
+            style="@style/text_color_white_17_style"
             android:text="" />
 
     </LinearLayout>
@@ -94,7 +94,7 @@
 
         <TextView
             android:id="@+id/volume"
-            style="@style/text_17_color_white_style"
+            style="@style/text_color_white_17_style"
             android:text="" />
 
     </LinearLayout>

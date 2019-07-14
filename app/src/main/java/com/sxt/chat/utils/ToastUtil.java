@@ -24,7 +24,7 @@ public class ToastUtil {
 
     private static TextView mTextView;
 
-    private static Toast toastStart;
+    private static Toast toast;
     private static TextView snackbarTextView;
     private static TextView snackbarActionView;
 
@@ -38,20 +38,20 @@ public class ToastUtil {
         //初始化布局控件
         mTextView = (TextView) toastRoot.findViewById(R.id.message);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
-            toastStart = new Toast(activity);
+            toast = new Toast(activity);
         } else {
-            if (toastStart == null) {
-                toastStart = new Toast(activity);
+            if (toast == null) {
+                toast = new Toast(activity);
             }
         }
         mTextView.setText(message);
         //获取屏幕高度
         int height = activity.getResources().getDisplayMetrics().heightPixels;
         //Toast的Y坐标是屏幕高度的1/3
-        toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
-        toastStart.setDuration(Toast.LENGTH_LONG);
-        toastStart.setView(toastRoot);
-        toastStart.show();
+        toast.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(toastRoot);
+        toast.show();
     }
 
     @SuppressWarnings("deprecation")
@@ -63,20 +63,20 @@ public class ToastUtil {
         View toastRoot = LayoutInflater.from(activity).inflate(R.layout.toast, null);
         mTextView = (TextView) toastRoot.findViewById(R.id.message);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
-            toastStart = new Toast(activity);
+            toast = new Toast(activity);
         } else {
-            if (toastStart == null) {
-                toastStart = new Toast(activity);
+            if (toast == null) {
+                toast = new Toast(activity);
             }
         }
         mTextView.setText(activity.getResources().getString(message));
         //获取屏幕高度
         int height = activity.getResources().getDisplayMetrics().heightPixels;
         //Toast的Y坐标是屏幕高度的1/3
-        toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
-        toastStart.setDuration(Toast.LENGTH_LONG);
-        toastStart.setView(toastRoot);
-        toastStart.show();
+        toast.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(toastRoot);
+        toast.show();
     }
 
     //如果通知权限被关闭,就是用替代方案

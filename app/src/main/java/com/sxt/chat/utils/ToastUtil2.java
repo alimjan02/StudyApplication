@@ -2,6 +2,7 @@ package com.sxt.chat.utils;
 
 
 import android.content.Context;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ public class ToastUtil2 {
 
     private static TextView mTextView;
 
-    private static Toast toastStart;
+    private static Toast toast;
 
     @SuppressWarnings("deprecation")
     public static void showToast(Context context, String message) {
@@ -27,23 +28,23 @@ public class ToastUtil2 {
         View toastRoot = LayoutInflater.from(context).inflate(R.layout.toast2, null);
         //初始化布局控件
         mTextView = (TextView) toastRoot.findViewById(R.id.message);
-        if (toastStart == null) {
-            //为控件设置属性
-            mTextView.setText(message);
-            //Toast的初始化
-            toastStart = new Toast(context);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+            toast = new Toast(context);
         } else {
-            //为控件设置属性
-            mTextView.setText(message);
+            if (toast == null) {
+                toast = new Toast(context);
+            }
         }
+        //为控件设置属性
+        mTextView.setText(message);
         //获取屏幕高度
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         int height = wm.getDefaultDisplay().getHeight();
         //Toast的Y坐标是屏幕高度的1/3，不会出现不适配的问题
-        toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.5));
-        toastStart.setDuration(Toast.LENGTH_LONG);
-        toastStart.setView(toastRoot);
-        toastStart.show();
+        toast.setGravity(Gravity.TOP, 0, (int) (height * 0.5));
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(toastRoot);
+        toast.show();
     }
 
     @SuppressWarnings("deprecation")
@@ -52,23 +53,23 @@ public class ToastUtil2 {
         View toastRoot = LayoutInflater.from(context).inflate(R.layout.toast2, null);
         //初始化布局控件
         mTextView = (TextView) toastRoot.findViewById(R.id.message);
-        if (toastStart == null) {
-            //为控件设置属性
-            mTextView.setText(context.getResources().getString(message));
-            //Toast的初始化
-            toastStart = new Toast(context);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+            toast = new Toast(context);
         } else {
-            //为控件设置属性
-            mTextView.setText(context.getResources().getString(message));
+            if (toast == null) {
+                toast = new Toast(context);
+            }
         }
+        //为控件设置属性
+        mTextView.setText(context.getResources().getString(message));
         //获取屏幕高度
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         int height = wm.getDefaultDisplay().getHeight();
         //Toast的Y坐标是屏幕高度的1/3，不会出现不适配的问题
-        toastStart.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
-        toastStart.setDuration(Toast.LENGTH_LONG);
-        toastStart.setView(toastRoot);
-        toastStart.show();
+        toast.setGravity(Gravity.TOP, 0, (int) (height * 0.66));
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(toastRoot);
+        toast.show();
     }
 
 }

@@ -1,8 +1,10 @@
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_body">
+    android:background="@color/item_bg_dark_color"
+    tools:targetApi="lollipop">
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
@@ -57,7 +59,8 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layoutAnimation="@anim/layout_animation_vertical" />
 
             </ViewSwitcher>
 
@@ -74,7 +77,7 @@
                     android:background="@color/text_color_3" />
 
                 <TextView
-                    style="@style/text_14_color_3_style"
+                    style="@style/text_color_3_14_style"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="bottom" />

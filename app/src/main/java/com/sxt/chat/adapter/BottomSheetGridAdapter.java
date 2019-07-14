@@ -1,6 +1,7 @@
 package com.sxt.chat.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,14 +46,14 @@ public class BottomSheetGridAdapter extends BaseRecyclerAdapter<String> {
         super(context, data);
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        return new ViewHolder(getInflater().inflate(R.layout.item_gallary_detail, parent, false));
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(getInflater().inflate(R.layout.item_gallery_menu, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
         final ViewHolder holder = (ViewHolder) viewHolder;
         holder.title.setText(data.get(position));
         holder.container.setBackgroundResource(containerDrawableRes[position]);

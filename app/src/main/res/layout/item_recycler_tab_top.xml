@@ -12,14 +12,14 @@
 
     <TextView
         android:id="@+id/title"
-        style="@style/text_15_color_black_style"
+        style="@style/text_color_black_15_style"
         android:layout_gravity="center_vertical"
         android:layout_margin="15dp"
         android:text="" />
 
     <TextView
         android:id="@+id/subTitle"
-        style="@style/text_15_color_black_style"
+        style="@style/text_color_black_15_style"
         android:layout_gravity="end|center_vertical"
         android:layout_margin="15dp"
         android:text="共计22单 150元" />

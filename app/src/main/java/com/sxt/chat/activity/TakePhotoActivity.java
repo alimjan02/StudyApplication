@@ -73,8 +73,8 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_photo);
         takePhoto = findViewById(R.id.take_photo);
-        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
-        imgCenter = (ImageView) findViewById(R.id.img_center);
+        SurfaceView surfaceView = findViewById(R.id.surfaceView);
+        imgCenter = findViewById(R.id.img_center);
         takePhoto.setOnClickListener(this);
         findViewById(R.id.img_back).setOnClickListener(this);
         findViewById(R.id.img_confirm).setOnClickListener(this);
@@ -470,6 +470,12 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) initWindowStyle();
     }
 
     @Override

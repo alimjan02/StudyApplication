@@ -3,7 +3,6 @@
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_body"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <android.support.design.widget.CoordinatorLayout
@@ -67,27 +66,24 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
                     android:paddingLeft="10dp"
                     android:paddingTop="5dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="3dp">
 
                     <TextView
-                        style="@style/text_14_color_1_style"
+                        style="@style/text_color_1_14_style"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="@string/banner_name_sngx"
-                        android:textColor="@color/black" />
+                        android:text="@string/banner_name_sngx" />
 
                 </FrameLayout>
 
                 <ViewSwitcher
                     android:id="@+id/top_viewSitcher"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -106,27 +102,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:background="@color/white"
                     android:paddingLeft="10dp"
                     android:paddingTop="5dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="3dp">
 
                     <TextView
-                        style="@style/text_14_color_1_style"
+                        style="@style/text_color_1_14_style"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="@string/banner_name_hjh"
-                        android:textColor="@color/black" />
+                        android:text="@string/banner_name_hjh" />
 
                 </FrameLayout>
 
                 <ViewSwitcher
                     android:id="@+id/center_viewSwitcher"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -146,22 +139,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:background="@color/white"
                     android:paddingLeft="10dp"
                     android:paddingTop="3dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="3dp">
 
                     <TextView
-                        style="@style/text_14_color_1_style"
+                        style="@style/text_color_1_14_style"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="@string/banner_name_xscq"
-                        android:textColor="@color/black" />
+                        android:text="@string/banner_name_xscq" />
 
                     <TextView
                         android:id="@+id/more"
-                        style="@style/text_12_color_3_style"
+                        style="@style/text_color_3_12_style"
                         android:layout_gravity="center_vertical|end"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
@@ -172,8 +163,7 @@
                 <ViewSwitcher
                     android:id="@+id/bottom_viewSwitcher"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -193,21 +183,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:background="@color/white"
                     android:paddingLeft="10dp"
                     android:paddingTop="3dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="3dp">
 
                     <TextView
-                        style="@style/text_14_color_1_style"
+                        style="@style/text_color_1_14_style"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="@string/banner_name_more"
-                        android:textColor="@color/black" />
+                        android:text="@string/banner_name_more" />
 
                     <TextView
-                        style="@style/text_12_color_3_style"
+                        style="@style/text_color_3_12_style"
                         android:layout_gravity="center_vertical|end"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp" />
@@ -217,8 +205,7 @@
                 <ViewSwitcher
                     android:id="@+id/gallery_viewSwitcher"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -247,7 +234,7 @@
                         android:background="@color/text_color_3" />
 
                     <TextView
-                        style="@style/text_14_color_3_style"
+                        style="@style/text_color_3_14_style"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:text="bottom" />

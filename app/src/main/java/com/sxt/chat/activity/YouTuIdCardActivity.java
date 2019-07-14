@@ -8,7 +8,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +21,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
+import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.json.OCRObject;
 import com.sxt.chat.utils.glide.GlideRoundTransformer;
 import com.sxt.chat.youtu.OCRListener;
@@ -62,19 +66,19 @@ public class YouTuIdCardActivity extends HeaderActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youto2);
         setTitle(R.string.ocr_scan_id_card);
-        imgIdCard = (ImageView) findViewById(R.id.img_idcard);
-        imgPlaceHolder = (ImageView) findViewById(R.id.img_placeHolder);
-        statusTitle = (TextView) findViewById(R.id.description);
-        resultTitle = (TextView) findViewById(R.id.result_title);
-        resultValue = (TextView) findViewById(R.id.result_value);
+        imgIdCard = findViewById(R.id.img_idcard);
+        imgPlaceHolder = findViewById(R.id.img_placeHolder);
+        statusTitle = findViewById(R.id.description);
+        resultTitle = findViewById(R.id.result_title);
+        resultValue = findViewById(R.id.result_value);
 
-        imgIdCard2 = (ImageView) findViewById(R.id.img_idcard2);
-        imgPlaceHolder2 = (ImageView) findViewById(R.id.img_placeHolder2);
-        statusTitle2 = (TextView) findViewById(R.id.description2);
-        resultTitle2 = (TextView) findViewById(R.id.result_title2);
-        resultValue2 = (TextView) findViewById(R.id.result_value2);
+        imgIdCard2 = findViewById(R.id.img_idcard2);
+        imgPlaceHolder2 = findViewById(R.id.img_placeHolder2);
+        statusTitle2 = findViewById(R.id.description2);
+        resultTitle2 = findViewById(R.id.result_title2);
+        resultValue2 = findViewById(R.id.result_value2);
 
-        next = (TextView) findViewById(R.id.next);
+        next = findViewById(R.id.next);
         imgPlaceHolder.setOnClickListener(this);
         imgPlaceHolder2.setOnClickListener(this);
     }
@@ -347,15 +351,41 @@ public class YouTuIdCardActivity extends HeaderActivity implements View.OnClickL
         super.onPermissionsRefused(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_CAMARER:
-                goToAppSettingsPage();
-                Toast(R.string.allow_CAMERA);
+                onPermissionRefuseNever(R.string.permission_request_CAMERA);
                 break;
 
             case REQUEST_CODE_GALLERY:
-                goToAppSettingsPage();
-                Toast(R.string.allow_WRITE_EXTERNAL_STORAGE);
+                onPermissionRefuseNever(R.string.permission_request_READ_EXTERNAL_STORAGE);
                 break;
         }
+    }
+
+    private void onPermissionRefuseNever(int stringRes) {
+        String appName = getString(R.string.app_name);
+        String message = String.format(getString(stringRes), appName);
+        SpannableString span = new SpannableString(message);
+        span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int start = message.indexOf(appName) + appName.length();
+        span.setSpan(new TextAppearanceSpan(this, R.style.text_color_1_17_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        showPermissionRefusedNeverDialog(span);
+    }
+
+    /**
+     * 权限被彻底禁止后 , 弹框提醒用户去开启
+     */
+    private void showPermissionRefusedNeverDialog(CharSequence message) {
+        new AlertDialogBuilder(this)
+                .setTitle(R.string.message_alert, true)
+                .setMessage(message)
+                .setLeftButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setRightButton(R.string.confirm, (dialog, which) -> {
+                    dialog.dismiss();
+                    goToAppSettingsPage();
+                })
+                .setShowLine(true)
+                .setCanceledOnTouchOutside(false)
+                .show();
     }
 
     @Override

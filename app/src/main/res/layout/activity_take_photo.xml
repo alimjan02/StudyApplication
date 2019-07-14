@@ -60,8 +60,8 @@
                 <View
                     android:layout_width="20dp"
                     android:layout_height="2dp"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
                     android:background="@color/main_blue" />
 
                 <View
@@ -79,8 +79,8 @@
                 <View
                     android:layout_width="2dp"
                     android:layout_height="20dp"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
                     android:background="@color/main_blue" />
 
             </RelativeLayout>
@@ -100,29 +100,29 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/text_13_color_3_style"
+                        style="@style/text_color_3_13_style"
                         android:text="将被摄物品放置在画面中央，确保照片清晰"
                         android:textColor="@color/white" />
 
-                    <RelativeLayout
+                    <FrameLayout
                         android:id="@+id/take_photo"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         android:layout_marginTop="20dp"
-                        android:foreground="?selectableItemBackgroundBorderless">
+                        android:background="?selectableItemBackgroundBorderless">
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
                             android:src="@drawable/camera_btn_1" />
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
                             android:src="@drawable/camera_btn_2" />
-                    </RelativeLayout>
+                    </FrameLayout>
 
                 </LinearLayout>
 

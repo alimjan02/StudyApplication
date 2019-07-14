@@ -6,13 +6,13 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -32,6 +32,7 @@ public class BezierCurveRadar extends View {
     private long duration = 2000;
     private boolean isStop = true;
     private List<ValueAnimator> valueAnimators = new ArrayList<>();
+    private int startColor, endColor;
 
     public BezierCurveRadar(Context context) {
         this(context, null);
@@ -43,12 +44,22 @@ public class BezierCurveRadar extends View {
 
     public BezierCurveRadar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context, attrs);
     }
 
-    private void init() {
+    private void init(Context context, AttributeSet attrs) {
+        final TypedArray typedArray = context.obtainStyledAttributes(attrs,
+                R.styleable.BezierCurveRadar);
+
+        int backgroundCOlor = typedArray.getColor(R.styleable.BezierCurveRadar_backgroundColor, ContextCompat.getColor(context, R.color.day_night_normal_color));
+        int defaultStartColor = ContextCompat.getColor(getContext(), R.color.blue_shader);
+        int defaultEndColor = ContextCompat.getColor(getContext(), R.color.day_night_normal_color);
+        startColor = typedArray.getColor(R.styleable.BezierCurveRadar_startColor, defaultStartColor);
+        endColor = typedArray.getColor(R.styleable.BezierCurveRadar_endColor, defaultEndColor);
+        typedArray.recycle();
+
         basePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        basePaint.setColor(Color.BLUE);
+        basePaint.setColor(backgroundCOlor);
         basePaint.setStrokeCap(Paint.Cap.ROUND);
         basePaint.setStrokeWidth(8);
         basePaint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -112,13 +123,9 @@ public class BezierCurveRadar extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         Paint paint = new Paint(basePaint);
-        paint.setColor(Color.WHITE);
         canvas.drawRoundRect(new RectF(startX, endY, endX, startY), 16, 16, paint);
 
         if (isStop) return;//如果当前为暂停状态，就停止绘制
-
-        int startColor = ContextCompat.getColor(getContext(), R.color.blue_shader);
-        int endColor = ContextCompat.getColor(getContext(), R.color.white);
 
         for (ValueAnimator animator : valueAnimators) {
             Paint paint1 = new Paint(basePaint);
@@ -146,7 +153,8 @@ public class BezierCurveRadar extends View {
         animator.start();
     }
 
-    public static Animator createRevealAnimator(View view, int centerX, int centerY, float startRadius, float endRadius) {
+    public static Animator createRevealAnimator(View view, int centerX, int centerY,
+                                                float startRadius, float endRadius) {
         AnimatorSet set = new AnimatorSet();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             Animator revealAnimator = ViewAnimationUtils.createCircularReveal(view, centerX, centerY, startRadius, endRadius);

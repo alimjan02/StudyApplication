@@ -444,7 +444,7 @@ public class ChartLine extends BaseChart {
                 if (this.isFilled) {
                     currentFillPaint = new Paint(this.fillPaint);
                     currentFillPaint.setColor(ContextCompat.getColor(this.getContext(), this.curvePaintColors.get(i)));
-                    currentFillPaint.setShader(this.getShader(new int[]{ContextCompat.getColor(this.getContext(), this.curveShaderColors.get(i)), ContextCompat.getColor(this.getContext(), R.color.violet_sharder)}));
+                    currentFillPaint.setShader(this.getShader(new int[]{ContextCompat.getColor(this.getContext(), this.curveShaderColors.get(i)), ContextCompat.getColor(this.getContext(), R.color.violet_shader)}));
                 }
 
                 if (this.isPlayAnimator) {

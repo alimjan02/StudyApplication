@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_gravity="center_horizontal|bottom"
-        android:background="@drawable/white_solid_round_10"
+        android:background="@drawable/day_night_normal_solid_round_8"
         app:line_cover_width="3.5dp"
         app:line_duration="1500"
         app:line_hint_color="@color/main_blue"

@@ -1,7 +1,6 @@
 package com.sxt.chat.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -59,9 +58,8 @@ public class BannerDetailActivity extends BaseActivity {
 
     private void initToolbar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(Color.WHITE);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);/*设置状态栏全透明*/
             findViewById(R.id.image_scrolling_top).setTransitionName("shareView");
+            setWindowStatusBarColor(this, android.R.color.transparent);
         }
         toolbar.setTitle("");
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);

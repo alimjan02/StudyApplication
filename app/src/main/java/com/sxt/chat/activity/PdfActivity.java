@@ -5,14 +5,15 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.pdf.PdfRenderer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.TextAppearanceSpan;
 import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
@@ -23,8 +24,10 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.steelkiwi.cropiwa.util.UriUtil;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
+import com.sxt.chat.dialog.AlertDialogBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -53,7 +56,6 @@ public class PdfActivity extends HeaderActivity {
         setTitle("PDF解析");
         progressBar = findViewById(R.id.progressBar);
         webView = findViewById(R.id.webView);
-        pdfFilePath = getExternalCacheDir() + File.separator + "hard.pdf";
         initWebView();
         setRightContainer(null);
     }
@@ -84,10 +86,9 @@ public class PdfActivity extends HeaderActivity {
                 }
                 parseTask = new ParseTask();
                 parseTask.execute(pdfFilePath);
-                Log.i("webView", "onPageFinished");
+                Log.i(TAG, "onPageFinished");
             }
         });
-        webView.loadUrl("file:///android_asset/html/pdf.html");
     }
 
     @Override
@@ -134,8 +135,36 @@ public class PdfActivity extends HeaderActivity {
     public void onPermissionsRefusedNever(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsRefusedNever(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_PERMISSION_STORAGE) {
-            Toast(R.string.allow_READ_EXTERNAL_STORAGE);
+            onPermissionRefuseNever(R.string.permission_request_READ_EXTERNAL_STORAGE);
         }
+    }
+
+    private void onPermissionRefuseNever(int stringRes) {
+        String appName = getString(R.string.app_name);
+        String message = String.format(getString(stringRes), appName);
+        SpannableString span = new SpannableString(message);
+        span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int start = message.indexOf(appName) + appName.length();
+        span.setSpan(new TextAppearanceSpan(this, R.style.text_color_1_17_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        showPermissionRefusedNeverDialog(span);
+    }
+
+    /**
+     * 权限被彻底禁止后 , 弹框提醒用户去开启
+     */
+    private void showPermissionRefusedNeverDialog(CharSequence message) {
+        new AlertDialogBuilder(this)
+                .setTitle(R.string.message_alert, true)
+                .setMessage(message)
+                .setLeftButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setRightButton(R.string.confirm, (dialog, which) -> {
+                    dialog.dismiss();
+                    goToAppSettingsPage();
+                })
+                .setShowLine(true)
+                .setCanceledOnTouchOutside(false)
+                .show();
     }
 
     @Override
@@ -143,14 +172,18 @@ public class PdfActivity extends HeaderActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_SELECT_FILE && data != null) {
-                Uri uri = data.getData();
-                if (uri != null && !TextUtils.isEmpty(uri.getPath()) && uri.getPath().endsWith(".pdf")) {
-                    pdfFilePath = uri.getPath();
+                String path = UriUtil.uri2Path(this, data.getData());
+                if (path != null && path.endsWith(".pdf")) {
+                    pdfFilePath = path;
                     reload();
                 } else {
                     Toast("您选择的文件格式有误,请重新选择");
                 }
-                Log.e(TAG, String.format("%s", data.getData()));
+                try {
+                    Log.e(TAG, String.format("%s", path));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

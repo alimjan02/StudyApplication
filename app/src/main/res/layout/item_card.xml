@@ -11,7 +11,7 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="@color/item_bg_normal_color"
     app:cardCornerRadius="8dp"
     app:cardElevation="2dp"
     app:cardPreventCornerOverlap="false"
@@ -52,7 +52,7 @@
 
                 <TextView
                     android:id="@+id/title"
-                    style="@style/text_13_color_1_style"
+                    style="@style/text_color_1_13_style"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:maxWidth="100dp"

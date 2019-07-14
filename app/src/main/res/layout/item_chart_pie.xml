@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="280dp"
         android:layout_gravity="bottom|center_horizontal"
-        android:background="@drawable/white_solid_round_10"
+        android:background="@drawable/day_night_normal_solid_round_8"
         app:pie_duration="2000"
         app:pie_isDrawCenter="true"
         app:pie_isDrawLines="true"

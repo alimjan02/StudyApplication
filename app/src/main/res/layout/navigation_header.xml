@@ -10,6 +10,7 @@
         app:layout_scrollFlags="scroll|enterAlways">
 
         <FrameLayout
+            android:id="@+id/navigation_header_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_collapseMode="parallax"

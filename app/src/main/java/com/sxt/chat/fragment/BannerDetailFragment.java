@@ -35,7 +35,7 @@ import java.util.List;
 @SuppressLint("ValidFragment")
 public class BannerDetailFragment extends LazyFragment {
 
-    private SwipeRefreshLayout refreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private ViewSwitcher viewSwitcher;
     private BannerDetailAdapter adapter;
@@ -65,12 +65,14 @@ public class BannerDetailFragment extends LazyFragment {
 
     @Override
     protected void initView() {
-        refreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = contentView.findViewById(R.id.recyclerView);
         viewSwitcher = contentView.findViewById(R.id.viewSwitcher);
         NestedScrollView nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
-        refreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red));
-        refreshLayout.setOnRefreshListener(this::refresh);
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.day_night_dark_color);
+        swipeRefreshLayout.setProgressViewOffset(true, -swipeRefreshLayout.getProgressCircleDiameter(), 100);
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red_1), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red_1));
+        swipeRefreshLayout.setOnRefreshListener(this::refresh);
         if (containerIsMainActivity) {
             //设置滑动监听,使得底部tab栏竖直滑动
             nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -85,8 +87,8 @@ public class BannerDetailFragment extends LazyFragment {
     @Override
     protected void loadData() {
         super.loadData();
-        refreshLayout.setRefreshing(true);
-        refreshLayout.postDelayed(this::refresh, 800);
+        swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.postDelayed(this::refresh, 800);
     }
 
     @Override
@@ -106,12 +108,12 @@ public class BannerDetailFragment extends LazyFragment {
         super.onMessage(resp);
         if (resp.getCode() == ResponseInfo.OK) {
             if (CMD.equals(resp.getCmd())) {
-                refreshLayout.setRefreshing(false);
+                swipeRefreshLayout.setRefreshing(false);
                 refresh(resp.getVideoInfoList());
             }
         } else {
             if (CMD.equals(resp.getCmd())) {
-                refreshLayout.setRefreshing(false);
+                swipeRefreshLayout.setRefreshing(false);
                 ToastUtil.showToast(activity, resp.getError());
             }
         }

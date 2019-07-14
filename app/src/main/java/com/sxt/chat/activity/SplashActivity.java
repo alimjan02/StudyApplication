@@ -59,10 +59,10 @@ public class SplashActivity extends BaseActivity implements SplashADListener {
 //            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             findViewById(R.id.splash_holder).setVisibility(View.GONE);
         }
-//        new Handler().postDelayed(() -> {
-//            startActivity(new Intent(SplashActivity.this, MainActivity.class));
-//            finish();
-//        }, 2000);
+        handler.postDelayed(() -> {
+            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            finish();
+        }, 2000);
     }
 
     @Override

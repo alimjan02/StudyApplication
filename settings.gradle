@@ -1,1 +1,6 @@
-include ':app', ':refresh-layout', ':crop_img', ':banner', ':dynamic_feature'
+include ':app', ':refresh-layout', ':crop_img', ':banner'
+setBinding(new Binding([gradle: this]))
+evaluate(new File(
+        settingsDir.parentFile,
+        '../android/StudyApplication/flutter_module/.android/include_flutter.groovy'
+))

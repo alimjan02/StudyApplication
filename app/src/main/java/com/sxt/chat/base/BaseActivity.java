@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.sxt.chat.dialog.LoadingDialog;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.ActivityCollector;
+import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,6 +46,10 @@ public class BaseActivity extends AppCompatActivity {
         loading = new LoadingDialog(this);
         EventBus.getDefault().register(this);
         ActivityCollector.addActivity(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            boolean isNightMode = Prefs.getInstance(this).isNightMode();
+            getWindow().setNavigationBarColor(isNightMode ? Color.BLACK : Color.WHITE);
+        }
     }
 
     @Override
@@ -139,7 +145,6 @@ public class BaseActivity extends AppCompatActivity {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + getPackageName()));
         startActivity(intent);
-        finish();
     }
 
     private boolean hasAllPermissionsGranted(int[] grantResults) {

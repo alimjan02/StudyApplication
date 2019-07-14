@@ -34,38 +34,24 @@ public class ShareCaptureActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             img.setTransitionName("shareView");
         }
-
         final String path = getIntent().getStringExtra(Prefs.KEY_BITMAP);
         if (path != null) {
             final Bitmap bitmap = ScreenCaptureUtil.getInstance(this).getBitmapFromMemory(path);
             if (bitmap != null) {
                 img.setImageBitmap(bitmap);
-                findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (asyncTask == null) {
-                            asyncTask = new SaveImgTask();
-                        } else {
-                            if (!asyncTask.isCancelled()) {
-                                asyncTask.cancel(true);
-                            }
-                            asyncTask = new SaveImgTask();
+                findViewById(R.id.save).setOnClickListener(v -> {
+                    if (asyncTask == null) {
+                        asyncTask = new SaveImgTask();
+                    } else {
+                        if (!asyncTask.isCancelled()) {
+                            asyncTask.cancel(true);
                         }
-                        asyncTask.execute(bitmap, path);
+                        asyncTask = new SaveImgTask();
                     }
+                    asyncTask.execute(bitmap, path);
                 });
-                findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        share();
-                    }
-                });
-                findViewById(R.id.delete).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onBackPressed();
-                    }
-                });
+                findViewById(R.id.share).setOnClickListener(v -> share());
+                findViewById(R.id.delete).setOnClickListener(v -> onBackPressed());
             }
         }
     }

@@ -5,59 +5,59 @@
     android:background="@android:color/white">
 
     <LinearLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dip"
-        android:id="@+id/main_layout"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:padding="10dip">
 
         <TextView
-            style="@style/ContentText"
             android:id="@+id/title"
+            style="@style/ContentText"
+            android:text="@string/title"
+            android:textColor="@color/black"
             android:textSize="@dimen/title_text_size"
-            android:textStyle="bold"
-            android:textColor="@color/textDark"
-            android:text="@string/title" />
+            android:textStyle="bold" />
 
         <TextView
-            style="@style/ContentText"
             android:id="@+id/subtitle"
-            android:textColor="@color/textLight"
-            android:textSize="@dimen/caption_text_size"
-            android:text="@string/subtitle" />
+            style="@style/ContentText"
+            android:text="@string/subtitle"
+            android:textColor="@color/white"
+            android:textSize="@dimen/caption_text_size" />
 
         <TextView
-            style="@style/ContentText"
             android:id="@+id/paragraph1"
-            android:textColor="@color/textDark"
-            android:textSize="@dimen/paragragh_text_size"
-            android:text="@string/paragraph1" />
+            style="@style/ContentText"
+            android:text="@string/paragraph1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/paragragh_text_size" />
 
         <com.google.vr.sdk.widgets.pano.VrPanoramaView
             android:id="@+id/pano_view"
-            android:layout_margin="5dip"
             android:layout_width="match_parent"
-            android:scrollbars="@null"
-            android:layout_height="250dip"/>
+            android:layout_height="250dip"
+            android:layout_margin="5dip"
+            android:scrollbars="@null" />
 
         <TextView
-            style="@style/ContentText"
             android:id="@+id/pano_view_caption"
-            android:textColor="@color/textLight"
-            android:textSize="12dip"
-            android:text="@string/image_caption" />
+            style="@style/ContentText"
+            android:text="@string/image_caption"
+            android:textColor="@color/white"
+            android:textSize="12dip" />
 
         <TextView
-            style="@style/ContentText"
             android:id="@+id/paragraph2"
-            android:textColor="@color/textDark"
-            android:textSize="@dimen/paragragh_text_size"
-            android:text="@string/paragraph2" />
+            style="@style/ContentText"
+            android:text="@string/paragraph2"
+            android:textColor="@color/black"
+            android:textSize="@dimen/paragragh_text_size" />
 
         <TextView
             android:id="@+id/source"
             style="@style/ContentText"
-            android:textColor="@color/textDark"
-            android:textSize="@dimen/paragragh_text_size"/>
+            android:textColor="@color/black"
+            android:textSize="@dimen/paragragh_text_size" />
     </LinearLayout>
 </ScrollView>

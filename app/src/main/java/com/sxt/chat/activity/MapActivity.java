@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -46,6 +45,7 @@ import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.Circle;
 import com.amap.api.maps.model.CircleOptions;
@@ -69,6 +69,7 @@ import com.sxt.chat.json.LocationInfo;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.AnimationUtil;
 import com.sxt.chat.utils.ArithTool;
+import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.SimpleTextWatcher;
 import com.sxt.chat.utils.Utils;
 import com.sxt.chat.ws.BmobRequest;
@@ -96,7 +97,6 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     public AMapLocationClient mLocationClient;
     private BottomSheetBehavior bottomSheetBehavior;
     public AMapLocationClientOption mLocationOption;
-    private OnLocationChangedListener mLocationListener;
 
     private PoiSearch poiSearch;
     private EditText searchView;
@@ -114,6 +114,8 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     private final int REQUEST_CODE_LOCATION = 500;
     private final String ACTION_GPS_STATE = "android.location.PROVIDERS_CHANGED";
     private String CMD_GET_LOCATION_INTOS = this.getClass().getName() + "CMD_GET_LOCATION_INTOS";
+    private int statusBarHeight;
+    private UiSettings uiSettings;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,14 +124,18 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         initTitle();
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
+        aMap = mapView.getMap();
+        //地图的夜间模式跟随app当前的模式
+        boolean isNightMode = Prefs.getInstance(this).isNightMode();
+        aMap.setMapType(isNightMode ? AMap.MAP_TYPE_NIGHT : AMap.MAP_TYPE_NORMAL);
         requestLocationPermission();
     }
 
     private void initMap() {
-        if (aMap == null) {
-            aMap = mapView.getMap();
-            aMap.getUiSettings().setScaleControlsEnabled(true);// 标尺开关
-            aMap.getUiSettings().setZoomControlsEnabled(false);//缩放按钮
+        if (uiSettings == null) {
+            uiSettings = aMap.getUiSettings();
+            uiSettings.setScaleControlsEnabled(true);// 标尺开关
+            uiSettings.setZoomControlsEnabled(false);//缩放按钮
             aMap.moveCamera(CameraUpdateFactory.zoomTo(ZOOM_MAP));
             aMap.setMyLocationEnabled(true);
             aMap.setLocationSource(this);
@@ -150,13 +156,12 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     private void initTitle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent));
-            getWindow().setNavigationBarColor(Color.WHITE);
         }
         heightPixels = getResources().getDisplayMetrics().heightPixels;
         final CardView cardView = findViewById(R.id.cardView);
         cardView.post(() -> {
             CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) cardView.getLayoutParams();
-            int statusBarHeight = 0;
+            statusBarHeight = 0;
             int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
             if (resourceId > 0) {
                 statusBarHeight = getResources().getDimensionPixelSize(resourceId);
@@ -176,11 +181,9 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         final View fabContainer = findViewById(R.id.fab_container);
         final FloatingActionButton fab = findViewById(R.id.fab_my_location);
         final FloatingActionButton fabScrolling = findViewById(R.id.fab_scrolling);
-        fabScrolling.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white)));
-        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white)));
-        fab.setOnClickListener(view -> {
-            startLocation();
-        });
+        fabScrolling.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.day_night_normal_color)));
+        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.day_night_normal_color)));
+        fab.setOnClickListener(view -> startLocation());
         fabScrolling.setOnClickListener(v -> {
             LatLng latLng;
             if (aMapLocation != null) {
@@ -525,7 +528,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         final Circle circleIn = aMap.addCircle(new CircleOptions().center(latLng)
                 .radius(10)
                 .strokeColor(ContextCompat.getColor(this, android.R.color.transparent))
-                .fillColor(ContextCompat.getColor(this, R.color.green_sharder))
+                .fillColor(ContextCompat.getColor(this, R.color.green_shader))
                 .strokeWidth(0));
 
         aMap.addMarker(new MarkerOptions()
@@ -604,7 +607,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
         initLocationOption();
-        mLocationListener = onLocationChangedListener;
+        OnLocationChangedListener mLocationListener = onLocationChangedListener;
     }
 
     @Override
@@ -708,10 +711,10 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
             String appName = getString(R.string.app_name);
             String message = String.format(getString(R.string.permission_request_LOCATION), appName);
             SpannableString span = new SpannableString(message);
-            span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             int start = message.indexOf(appName) + appName.length();
-            span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_black_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            span.setSpan(new TextAppearanceSpan(this, R.style.text_15_color_2_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_color_black_15_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            span.setSpan(new TextAppearanceSpan(this, R.style.text_color_2_15_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             showPermissionRefusedNeverDialog(span);
         }
     }

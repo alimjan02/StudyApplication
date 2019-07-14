@@ -57,7 +57,7 @@ public class WaveView extends View {
     //初始化paint，没什么可说的。
     private void initView() {
         mPaint = new Paint();
-        mPaint.setColor(ContextCompat.getColor(getContext(), R.color.green_sharder));
+        mPaint.setColor(ContextCompat.getColor(getContext(), R.color.green_shader));
         mPaint.setStyle(Paint.Style.FILL);
 
     }

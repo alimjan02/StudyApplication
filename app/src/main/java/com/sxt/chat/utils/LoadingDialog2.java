@@ -26,7 +26,7 @@ public class LoadingDialog2 {
 
     private void init() {
         rootView = mInflater.inflate(R.layout.item_loading, null);
-        mDialog = new Dialog(mActivity, R.style.PopContextMenu);
+        mDialog = new Dialog(mActivity, R.style.AlertDialogStyle);
         loading = (ImageView) rootView.findViewById(R.id.loading);
         mDialog.setCancelable(true);
         mDialog.setCanceledOnTouchOutside(false);

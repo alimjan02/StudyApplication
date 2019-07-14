@@ -14,7 +14,6 @@
             android:id="@+id/root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?selectableItemBackground"
@@ -24,7 +23,7 @@
             android:paddingBottom="15dp">
 
             <TextView
-                style="@style/text_15_color_1_style"
+                style="@style/text_color_1_15_style"
                 android:layout_centerVertical="true"
                 android:clickable="false"
                 android:focusable="false"

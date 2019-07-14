@@ -3,21 +3,24 @@ package com.sxt.chat.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.TextAppearanceSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,11 +35,11 @@ import com.sxt.chat.R;
 import com.sxt.chat.adapter.WiFiListAdapter;
 import com.sxt.chat.base.BaseFragment;
 import com.sxt.chat.base.HeaderActivity;
+import com.sxt.chat.dialog.AlertDialogBuilder;
 import com.sxt.chat.dialog.DialogBuilder;
 import com.sxt.chat.dialog.LoadingDialog;
 import com.sxt.chat.utils.ToastUtil;
 import com.sxt.chat.utils.WifiUtils;
-import com.sxt.chat.wifi.AlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +123,7 @@ public class WiFiFragment extends BaseFragment implements View.OnClickListener {
                 } else {
                     if (permissions != null && permissions.length > 0 && !shouldShowRequestPermissionRationale(permissions[0])) {
                         //此时的意思是 用户设置了不再提醒 权限授权
-                        ToastUtil.showToast(activity, R.string.allow_wifi);
+                        onPermissionRefuseNever();
                     }
                 }
                 break;
@@ -130,8 +133,7 @@ public class WiFiFragment extends BaseFragment implements View.OnClickListener {
                     showDialog();
                 } else {
                     if (permissions != null && permissions.length > 0 && !shouldShowRequestPermissionRationale(permissions[0])) {
-                        //此时的意思是 用户设置了不再提醒 权限授权
-                        ToastUtil.showToast(activity, R.string.allow_wifi);
+                        onPermissionRefuseNever();
                     }
                 }
                 break;
@@ -139,6 +141,41 @@ public class WiFiFragment extends BaseFragment implements View.OnClickListener {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
                 break;
         }
+    }
+
+    private void onPermissionRefuseNever() {
+        //此时的意思是 用户设置了不再提醒 权限授权
+        String appName = getString(R.string.app_name);
+        String message = String.format(getString(R.string.permission_request_WiFi), appName);
+        SpannableString span = new SpannableString(message);
+        span.setSpan(new TextAppearanceSpan(context, R.style.text_color_2_15_style), 0, message.indexOf(appName), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int start = message.indexOf(appName) + appName.length();
+        span.setSpan(new TextAppearanceSpan(context, R.style.text_color_1_17_bold_style), message.indexOf(appName), start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        span.setSpan(new TextAppearanceSpan(context, R.style.text_color_2_15_style), start, message.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        showPermissionRefusedNeverDialog(span);
+    }
+
+    /**
+     * 权限被彻底禁止后 , 弹框提醒用户去开启
+     */
+    private void showPermissionRefusedNeverDialog(CharSequence message) {
+        new AlertDialogBuilder(activity)
+                .setTitle(R.string.message_alert, true)
+                .setMessage(message)
+                .setLeftButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setRightButton(R.string.confirm, (dialog, which) -> {
+                    dialog.dismiss();
+                    goToAppSettingsPage();
+                })
+                .setShowLine(true)
+                .setCanceledOnTouchOutside(false)
+                .show();
+    }
+
+    public void goToAppSettingsPage() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.parse("package:" + context.getPackageName()));
+        startActivity(intent);
     }
 
     @Override
@@ -207,7 +244,7 @@ public class WiFiFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initWifiItem(View wifiItem) {
-        expandableListView = (ExpandableListView) wifiItem.findViewById(R.id.wifi_lsitview);
+        expandableListView = (ExpandableListView) wifiItem.findViewById(R.id.wifi_listView);
         expandableListView.setGroupIndicator(null);//隐藏系统自带的箭头
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -290,27 +327,15 @@ public class WiFiFragment extends BaseFragment implements View.OnClickListener {
                             loadingDialog.dismiss();
                             final AlertDialogBuilder builder = new AlertDialogBuilder(activity);
                             builder.setTitle(R.string.prompt).setMessage("您需要先到系统设置界面删除已经保存的 WiFi : " + SSID + "  \r\n才可以重新连接哟 !")
-                                    .setLeftButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    }).setRightButton(R.string.confirm, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent it = new Intent();
-                                    ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings");
-                                    it.setComponent(cn);
-                                    startActivity(it);
-                                    builder.dismiss();
-                                }
-                            }).setCanceledOnTouchOutside(false).setBottomImageRes(R.mipmap.popub_close)
-                                    .setCloseCliklistener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            builder.dismiss();
-                                        }
-                                    }).show();
+                                    .setLeftButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                                    .setRightButton(R.string.confirm, (dialog, which) -> {
+                                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                        dialog.dismiss();
+                                    })
+                                    .setCloseCliklistener(v -> builder.dismiss())
+                                    .setShowLine(true)
+                                    .setCanceledOnTouchOutside(false)
+                                    .show();
 
                         } else {
                             stopWatch(null, null);
