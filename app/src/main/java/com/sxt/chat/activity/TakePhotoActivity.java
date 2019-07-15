@@ -34,7 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Created by izhaohu on 2018/6/8.
+ * Created by sxt on 2018/6/8.
  */
 public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Callback, View.OnClickListener {
 
@@ -81,13 +81,9 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
         surfaceHolder.setKeepScreenOn(true);
-        autoFocusCallback = new Camera.AutoFocusCallback() {
-
-            @Override
-            public void onAutoFocus(boolean success, Camera camera) {
-                if (mHandler != null && !taking) {
-                    mHandler.sendEmptyMessageDelayed(MSG_AUTOFUCS, delayMillis);
-                }
+        autoFocusCallback = (success, camera) -> {
+            if (mHandler != null && !taking) {
+                mHandler.sendEmptyMessageDelayed(MSG_AUTOFUCS, delayMillis);
             }
         };
 
@@ -96,21 +92,13 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
     }
 
     private void showDialog() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                loading.show();
-            }
-        });
+        runOnUiThread(() -> loading.show());
     }
 
     public void dismiss() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (loading != null && loading.isShowing()) {
-                    loading.dismiss();
-                }
+        runOnUiThread(() -> {
+            if (loading != null && loading.isShowing()) {
+                loading.dismiss();
             }
         });
     }
@@ -262,12 +250,7 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
             mCamera.takePicture(null, null, new Camera.PictureCallback() {
                 @Override
                 public void onPictureTaken(final byte[] bytes, Camera camera) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mCamera.stopPreview();
-                        }
-                    });
+                    runOnUiThread(() -> mCamera.stopPreview());
                     new Thread() {
                         @Override
                         public void run() {
@@ -286,7 +269,7 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
 
                                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                                     Matrix matrix = new Matrix(); // 旋转图片 动作
-                                    matrix.setRotate(90, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
+                                    matrix.setRotate(90, bitmap.getWidth() >> 1, bitmap.getHeight() >> 1);
                                     // 创建新的图片
                                     Bitmap fixedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
@@ -357,12 +340,7 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
                                 successTakePhoto = false;
                                 e.printStackTrace();
                                 Log.i(TAG, e.toString());
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        takePhoto.setEnabled(true);
-                                    }
-                                });
+                                runOnUiThread(() -> takePhoto.setEnabled(true));
                             }
                             taking = false;
                             dismiss();
@@ -375,9 +353,7 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
 
     private void setCameraPictureSize() {
         try {
-            WindowManager windowManager = getWindowManager();
-            Display display = windowManager.getDefaultDisplay();
-            int screenWidth = display.getWidth();
+            int screenWidth = getResources().getDisplayMetrics().widthPixels;
             Camera.Parameters mParameters = mCamera.getParameters();
             Camera.Size size = null;
             Log.i(TAG, "screenWidth ==  " + screenWidth);
@@ -438,7 +414,7 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
     private Bitmap rotaingImageView(int angle, Bitmap bitmap) {
         // 旋转图片 动作
         Matrix matrix = new Matrix();
-        matrix.setRotate(angle, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
+        matrix.setRotate(angle, bitmap.getWidth() >> 1, bitmap.getHeight() >> 1);
         // 创建新的图片
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }

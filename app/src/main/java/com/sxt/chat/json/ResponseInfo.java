@@ -32,6 +32,7 @@ public class ResponseInfo implements Serializable {
     private List<Banner> bannerInfoList;
     private List<LocationInfo> locationInfoList;
     private List<VideoInfo> videoInfoList;
+    private List<VideoInfoCopy> videoInfoCopyList;
     private Admob admob;
 
     public ResponseInfo(int code) {
@@ -91,12 +92,20 @@ public class ResponseInfo implements Serializable {
         return videoInfoList;
     }
 
+    public List<VideoInfoCopy> getVideoInfoCopyList() {
+        return videoInfoCopyList;
+    }
+
     public void setLocationInfoList(List<LocationInfo> locationInfoList) {
         this.locationInfoList = locationInfoList;
     }
 
     public void setVideoInfoList(List<VideoInfo> videoInfoList) {
         this.videoInfoList = videoInfoList;
+    }
+
+    public void setVideoInfoCopyList(List<VideoInfoCopy> videoInfoCopyList) {
+        this.videoInfoCopyList = videoInfoCopyList;
     }
 
     public List<RoomInfo> getRoomInfoList() {

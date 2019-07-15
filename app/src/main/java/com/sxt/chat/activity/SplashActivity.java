@@ -48,17 +48,17 @@ public class SplashActivity extends BaseActivity implements SplashADListener {
         setContentView(R.layout.activity_splash);
         container = this.findViewById(R.id.splash_container);
         skipView = findViewById(R.id.skip_view);
-        // 如果targetSDKVersion >= 23，就要申请好权限。如果您的App没有适配到Android6.0（即targetSDKVersion < 23），那么只需要在这里直接调用fetchSplashAD接口。
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkAndRequestPermission();
-        } else {
-            // 如果是Android6.0以下的机器，默认在安装时获得了所有权限，可以直接调用SDK
-            loadAD();
-        }
-        if (!getIntent().getBooleanExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, true)) {
-//            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            findViewById(R.id.splash_holder).setVisibility(View.GONE);
-        }
+//        // 如果targetSDKVersion >= 23，就要申请好权限。如果您的App没有适配到Android6.0（即targetSDKVersion < 23），那么只需要在这里直接调用fetchSplashAD接口。
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            checkAndRequestPermission();
+//        } else {
+//            // 如果是Android6.0以下的机器，默认在安装时获得了所有权限，可以直接调用SDK
+//            loadAD();
+//        }
+//        if (!getIntent().getBooleanExtra(MainActivity.KEY_IS_WILL_GO_LOGIN_ACTIVITY, true)) {
+////            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//            findViewById(R.id.splash_holder).setVisibility(View.GONE);
+//        }
         handler.postDelayed(() -> {
             startActivity(new Intent(SplashActivity.this, MainActivity.class));
             finish();

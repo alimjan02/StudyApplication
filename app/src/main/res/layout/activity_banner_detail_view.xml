@@ -20,6 +20,7 @@
             app:contentScrim="@android:color/transparent"
             app:expandedTitleTextAppearance="@style/text_color_white_22_style"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:statusBarScrim="@color/day_night_normal_color"
             app:title=""
             app:titleEnabled="false">
 

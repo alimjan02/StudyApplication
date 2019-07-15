@@ -226,9 +226,9 @@ public class AdRewardActivity extends TabActivity {
             Log.e(TAG, String.format("playServicesAvailable - > %s", playServicesAvailable));
             if (flag) {
                 showAlertAds();
-            } else {
+            } /*else {
                 openSplashActivity();
-            }
+            }*/
         }
     }
 

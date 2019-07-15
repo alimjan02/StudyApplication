@@ -12,7 +12,6 @@
         android:paddingLeft="30dp"
         android:paddingRight="30dp">
 
-
         <TextView
             style="@style/text_color_1_15_style"
             android:layout_gravity="bottom|center_horizontal"
@@ -22,7 +21,6 @@
             android:text="@string/content_is_empty" />
 
     </FrameLayout>
-
 
     <View
         android:layout_width="match_parent"

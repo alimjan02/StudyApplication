@@ -454,7 +454,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
      */
     private void refresh() {
         super.loading.show();
-        handler.postDelayed(() -> BmobRequest.getInstance(App.getCtx()).getVideosByType(-1, CMD_GET_VIDEOS), 1000);
+        handler.postDelayed(() -> BmobRequest.getInstance(App.getCtx()).getVideos(CMD_GET_VIDEOS), 1000);
     }
 
     /**

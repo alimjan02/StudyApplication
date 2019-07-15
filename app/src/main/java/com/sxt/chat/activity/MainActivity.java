@@ -33,7 +33,6 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -186,7 +185,7 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
 
         searchView.setVoiceSearch(false);
         searchView.setEllipsize(false);
-        searchView.setBackground(ContextCompat.getDrawable(this, R.drawable.day_night_normal_solid_round_8));
+        searchView.setBackground(ContextCompat.getDrawable(this, R.drawable.day_night_normal_solid_round_4));
         searchView.setSuggestions(getResources().getStringArray(R.array.query_suggestions));
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
@@ -308,11 +307,6 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
         AppCompatDelegate.setDefaultNightMode(isNightMode ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
         Prefs.getInstance(this).setNightMode(!isNightMode);
         recreate();
-    }
-
-    public void showDayNightMode() {
-        PopupWindow popupWindow = new PopupWindow(this, null, R.style.PopupMenuStyle);
-        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.day_night_normal_solid_round_8));
     }
 
     /**

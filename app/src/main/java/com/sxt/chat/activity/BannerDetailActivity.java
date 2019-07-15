@@ -122,7 +122,7 @@ public class BannerDetailActivity extends BaseActivity {
         ArrayList<Fragment> fragments = new ArrayList<>();
         String[] titles = getResources().getStringArray(R.array.tab_titles);
         for (int i = 0; i < titles.length; i++) {
-            fragments.add(new BannerDetailFragment(false, i % 4));
+            fragments.add(new BannerDetailFragment(true, i % 4));
             tabLayout.addTab(tabLayout.newTab().setText(titles[i]), i == 0);
         }
         viewPager.setAdapter(new BaseFragmentStatePagerAdapter<Fragment>(

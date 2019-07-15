@@ -8,12 +8,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ViewSwitcher;
+import android.view.animation.AnimationUtils;
 
 import com.sxt.chat.App;
 import com.sxt.chat.R;
@@ -24,9 +24,10 @@ import com.sxt.chat.base.LazyFragment;
 import com.sxt.chat.fragment.bottonsheet.GalleryBottomSheetFragment;
 import com.sxt.chat.json.Banner;
 import com.sxt.chat.json.ResponseInfo;
-import com.sxt.chat.json.VideoInfo;
+import com.sxt.chat.json.VideoInfoCopy;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
+import com.sxt.chat.view.CustomRecyclerView;
 import com.sxt.chat.ws.BmobRequest;
 
 import java.util.List;
@@ -36,8 +37,7 @@ import java.util.List;
 public class BannerDetailFragment extends LazyFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView recyclerView;
-    private ViewSwitcher viewSwitcher;
+    private CustomRecyclerView recyclerView;
     private BannerDetailAdapter adapter;
     private int type;
     boolean containerIsMainActivity = false;
@@ -67,9 +67,9 @@ public class BannerDetailFragment extends LazyFragment {
     protected void initView() {
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = contentView.findViewById(R.id.recyclerView);
-        viewSwitcher = contentView.findViewById(R.id.viewSwitcher);
+        recyclerView.setEmptyView(View.inflate(context, R.layout.item_no_data, null));
         NestedScrollView nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
-        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.day_night_dark_color);
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.day_night_normal_color);
         swipeRefreshLayout.setProgressViewOffset(true, -swipeRefreshLayout.getProgressCircleDiameter(), 100);
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(activity, R.color.main_blue), ContextCompat.getColor(activity, R.color.red_1), ContextCompat.getColor(activity, R.color.line_yellow), ContextCompat.getColor(activity, R.color.main_green), ContextCompat.getColor(activity, R.color.red_1));
         swipeRefreshLayout.setOnRefreshListener(this::refresh);
@@ -91,13 +91,13 @@ public class BannerDetailFragment extends LazyFragment {
         swipeRefreshLayout.postDelayed(this::refresh, 800);
     }
 
-    @Override
-    protected void checkUserVisibleHint(boolean isVisibleToUser) {
-        super.checkUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            refresh();
-        }
-    }
+//    @Override
+//    protected void checkUserVisibleHint(boolean isVisibleToUser) {
+//        super.checkUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser) {
+//            refresh();
+//        }
+//    }
 
     private void refresh() {
         BmobRequest.getInstance(context).getVideosByType(type, CMD);
@@ -109,7 +109,7 @@ public class BannerDetailFragment extends LazyFragment {
         if (resp.getCode() == ResponseInfo.OK) {
             if (CMD.equals(resp.getCmd())) {
                 swipeRefreshLayout.setRefreshing(false);
-                refresh(resp.getVideoInfoList());
+                refresh(resp.getVideoInfoCopyList());
             }
         } else {
             if (CMD.equals(resp.getCmd())) {
@@ -119,10 +119,10 @@ public class BannerDetailFragment extends LazyFragment {
         }
     }
 
-    private void refresh(List<VideoInfo> videoInfos) {
+    private void refresh(List<VideoInfoCopy> videoInfos) {
         if (adapter == null) {
-            recyclerView.setNestedScrollingEnabled(false);
-            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+            recyclerView.getRecyclerView().setNestedScrollingEnabled(false);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             adapter = new BannerDetailAdapter(context, videoInfos);
             adapter.setOnItemClickListener((position, videoInfo) -> {
                 Banner banner = new Banner();
@@ -130,11 +130,11 @@ public class BannerDetailFragment extends LazyFragment {
                 banner.setUrl(videoInfo.getImageUrl());
                 showBottomSheet(banner);
             });
-            adapter.setContentObserver((count, object) -> viewSwitcher.setDisplayedChild(count == 0 ? 0 : 1));
-            recyclerView.setAdapter(adapter);
+            recyclerView.setAdapter(layoutManager, adapter);
         } else {
             adapter.notifyDataSetChanged(videoInfos);
         }
+        recyclerView.getRecyclerView().setLayoutAnimation(AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_vertical));
     }
 
     private void showBottomSheet(Banner banner) {

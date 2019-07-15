@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.sxt.chat.R;
 import com.sxt.chat.base.BaseRecyclerAdapter;
-import com.sxt.chat.json.VideoInfo;
+import com.sxt.chat.json.VideoInfoCopy;
 import com.sxt.chat.utils.glide.GlideRoundTransformer;
 
 import java.util.List;
@@ -19,8 +19,8 @@ import java.util.List;
  * Created by izhaohu on 2018/4/23.
  */
 
-public class BannerDetailAdapter extends BaseRecyclerAdapter<VideoInfo> {
-    public BannerDetailAdapter(Context context, List<VideoInfo> data) {
+public class BannerDetailAdapter extends BaseRecyclerAdapter<VideoInfoCopy> {
+    public BannerDetailAdapter(Context context, List<VideoInfoCopy> data) {
         super(context, data);
     }
 

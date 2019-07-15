@@ -12,6 +12,7 @@ import com.sxt.chat.json.LocationInfo;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.RoomInfo;
 import com.sxt.chat.json.VideoInfo;
+import com.sxt.chat.json.VideoInfoCopy;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -242,14 +243,10 @@ public final class BmobRequest {
     }
 
     /**
-     * 获取Banner
-     * type  -1 为查询所有
+     * 获取视频列表
      */
-    public void getVideosByType(int type, final String cmd) {
+    public void getVideos(final String cmd) {
         BmobQuery<VideoInfo> query = new BmobQuery<>();
-        if (type != -1) {
-            query.addWhereEqualTo("type", type);
-        }
         query.findObjects(new FindListener<VideoInfo>() {
             @Override
             public void done(List<VideoInfo> list, BmobException e) {
@@ -257,6 +254,33 @@ public final class BmobRequest {
                     ResponseInfo resp = new ResponseInfo(ResponseInfo.OK);
                     resp.setCmd(cmd);
                     resp.setVideoInfoList(list);
+                    EventBus.getDefault().post(resp);
+                } else {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.ERROR);
+                    resp.setCmd(cmd);
+                    resp.setError("errorCode = " + e.getErrorCode() + "\r\n message : " + e.getMessage());
+                    EventBus.getDefault().post(resp);
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取Banner
+     * type  -1 为查询所有
+     */
+    public void getVideosByType(int type, final String cmd) {
+        BmobQuery<VideoInfoCopy> query = new BmobQuery<>();
+        if (type != -1) {
+            query.addWhereEqualTo("type", type);
+        }
+        query.findObjects(new FindListener<VideoInfoCopy>() {
+            @Override
+            public void done(List<VideoInfoCopy> list, BmobException e) {
+                if (e == null) {
+                    ResponseInfo resp = new ResponseInfo(ResponseInfo.OK);
+                    resp.setCmd(cmd);
+                    resp.setVideoInfoCopyList(list);
                     EventBus.getDefault().post(resp);
                 } else {
                     ResponseInfo resp = new ResponseInfo(ResponseInfo.ERROR);
