@@ -10,7 +10,6 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sxt.chat.App;
-import com.sxt.chat.R;
 import com.sxt.chat.download.UrlInterceptor;
 import com.sxt.chat.receiver.WatchDogReceiver;
 import com.sxt.chat.utils.Constants;
@@ -64,12 +63,10 @@ public final class TJProtocol {
     }
 
     public Map<String, Object> createBasicParams() {
-
         String ticket = Prefs.getInstance(context).getTicket();
         int userId = Prefs.getInstance(context).getUserId();
-        String authorization = Prefs.getInstance(context).getAuthorization();
         Map<String, Object> params = new HashMap<String, Object>();
-        if (TextUtils.isEmpty(ticket) || TextUtils.isEmpty(authorization) || userId == 0) {
+        if (TextUtils.isEmpty(ticket) || userId == 0) {
             Intent intent = new Intent();
             intent.setAction(WatchDogReceiver.ACTION_LOGOUT);
             intent.setComponent(new ComponentName(App.getCtx().getPackageName(), App.getCtx().getPackageName() + ".receiver.WatchDogReceiver"));
@@ -77,18 +74,13 @@ public final class TJProtocol {
         } else {
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put(Constants.KEY_Ticket, ticket);
-            headerMap.put(Constants.KEY_Authorization, authorization);
             headerMap.put(Constants.KEY_UserId, String.valueOf(userId));
             params.put(Constants.KEY_Header, headerMap);
         }
-
         return params;
     }
-
-
 
     public void onDestroy() {
         instance = null;
     }
-
 }

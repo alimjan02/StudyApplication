@@ -24,6 +24,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.signature.StringSignature;
 import com.steelkiwi.cropiwa.util.UriUtil;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;

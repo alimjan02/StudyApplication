@@ -226,7 +226,7 @@ public class NewsFragment extends LazyFragment implements
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
             CustomViewHolder customViewHolder = (CustomViewHolder) viewHolder;
             int type = getItemViewType(position);
             if (TYPE_AD == type) {

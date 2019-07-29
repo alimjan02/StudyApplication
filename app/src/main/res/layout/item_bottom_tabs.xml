@@ -20,6 +20,6 @@
         app:itemTextAppearanceInactive="@style/bottom_navigation_bar_text_inactive_style"
         app:itemTextColor="@drawable/bottom_navigation_colors"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_navigation_menu" />
+        app:menu="@menu/item_navigation_tab_menu" />
 
 </android.support.v7.widget.CardView>

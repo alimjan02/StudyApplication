@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp">
+
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="246dp"
+            android:layout_height="158dp"
+            android:background="@drawable/gray_solid_round_8"
+            android:src="@mipmap/pic_ida" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:onClick="startCamera"
+                android:text="拍摄照片" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="startGallery"
+                android:text="选择相册" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/result"
+            style="@style/text_color_1_15_style"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/gray_solid_round_8"
+            android:enabled="true"
+            android:focusable="true"
+            android:hint="扫描结果在这里..."
+            android:longClickable="true"
+            android:paddingLeft="16dp"
+            android:paddingTop="2dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="2dp"
+            android:textIsSelectable="true" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

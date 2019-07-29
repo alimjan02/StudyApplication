@@ -1,12 +1,15 @@
 package com.sxt.chat.json;
 
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
+
 import java.io.Serializable;
 
 /**
  * Created by 11837 on 2018/5/21.
  */
 
-public class RoomInfo implements Serializable {
+public class RoomInfo extends BaseObservable implements Serializable {
     private static final long serialVersionUID = -1589804003600796026L;
     private Integer id;
     private String objectId;
@@ -18,6 +21,7 @@ public class RoomInfo implements Serializable {
     private String updatedAt;
     private String home_name;
 
+    @Bindable
     public String getHome_name() {
         return home_name;
     }

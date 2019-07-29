@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/basic_info"
+        android:icon="@drawable/ic_vector_basic_info_24dp"
+        android:title="@string/basic_info" />
+
+    <item
+        android:id="@+id/map"
+        android:icon="@drawable/ic_map_blue_24dp"
+        android:title="@string/map" />
+
+    <item
+        android:id="@+id/exo_player"
+        android:icon="@drawable/ic_vector_video_24dp"
+        android:title="@string/exo_player" />
+
+    <item
+        android:id="@+id/ocr_scan"
+        android:icon="@drawable/ic_vector_img_scanner_24dp"
+        android:title="@string/ocr_scan"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/ocr_scan_id_card"
+        android:icon="@drawable/ic_vector_idcard_scanner_24dp"
+        android:title="@string/ocr_scan_id_card"
+        android:visible="true" />
+
+    <item
+        android:id="@+id/pdf_parse"
+        android:icon="@drawable/ic_pdf_blue_24dp"
+        android:title="@string/pdf_parse"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/wifi"
+        android:icon="@drawable/ic_vector_wifi_24dp"
+        android:title="@string/wifi" />
+
+    <item
+        android:id="@+id/notification"
+        android:icon="@drawable/ic_vector_notifications_24dp"
+        android:title="@string/notification"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/shortcut"
+        android:icon="@drawable/ic_vector_shortcut_24dp"
+        android:title="@string/shortcut"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/bluetooth"
+        android:icon="@drawable/ic_vector_bluetooth_searching_24dp"
+        android:title="@string/bluetooth"
+        android:visible="true" />
+
+    <item
+        android:id="@+id/vr"
+        android:icon="@drawable/ic_vr_photo_main_blue_24dp"
+        android:title="@string/vr" />
+
+    <item
+        android:id="@+id/normal_settings"
+        android:icon="@drawable/ic_settings_mian_blue_24dp"
+        android:title="@string/normal_settings" />
+
+    <item
+        android:id="@+id/change_login"
+        android:icon="@drawable/ic_vector_switch_24dp"
+        android:title="@string/change_login" />
+</menu>

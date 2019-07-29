@@ -37,21 +37,14 @@ public final class Prefs extends BasePrefs {
     private static Prefs instance;
     public static String KEY_EXIT_ACTIVITY = "KEY_EXIT_ACTIVITY";
     public static final String KEY_IS_FIRST_ENTER = "KEY_IS_FIRST_ENTER";
-    public static String KEY_IS_WEI_QUEZHEN = "KEY_IS_WEI_QUEZHEN";
-    public static String KEY_HAVE_NEXT = "KEY_HAVE_NEXT";
-    public static String KEY_COPD_INFO = "KEY_COPD_INFO";
-    public static String KEY_COPD_INFO_TYPE = "KEY_COPD_INFO_TYPE";
-    public static String KEY_COPD_INFO_INDEX = "KEY_COPD_INFO_INDEX";
     public static String KEY_CURRENT_USER_NAME = "KEY_CURRENT_USER_NAME";
     public static final String KEY_LAST_RESUME_MILLIS = "KEY_LAST_RESUME_MILLIS";
-    public static final String KEY_LAST_RESUME_MILLIS_2 = "KEY_LAST_RESUME_MILLIS_2";
     public static final String KEY_USER_HEADER_IMAGE_FLAG = "KEY_USER_HEADER_IMAGE_FLAG";
     public static final String ROOM_INFO = "ROOM_INFO";
     public static final String KEY_BANNER_INFO = "KEY_BANNER_INFO";
     public static final String KEY_BITMAP = "KEY_BITMAP";
     public static final String KEY_FLOAT_X = "KEY_FLOAT_X";
     public static final String KEY_FLOAT_Y = "KEY_FLOAT_Y";
-
 
     //PATH
     public String KEY_APP_UPDATE_URL = "icare/upgrade?n=" + KEY_APP_NAME;
@@ -61,19 +54,27 @@ public final class Prefs extends BasePrefs {
     public static final String KEY_PATH_TAKE_PHOTO_IMG = App.getCtx().getExternalCacheDir() + File.separator + "take_photo_img";
     public static final String KEY_PATH_RECORD = "record";
     public static final String KEY_PATH_AUDIO = "audio";
+    public static final String IS_NIGHT_MODE = "IS_NIGHT_MODE";
 
     private Context context;
     private String userName;
     private String ticket;
     private int accountId;
-    private String Authorization;
-    private int appMode = -1;
-    private int serverVersion;
 
-    public static final String IS_NIGHT_MODE = "IS_NIGHT_MODE";
+    private Prefs(Context context) {
+        super(context);
+        this.context = context.getApplicationContext();
+    }
+
+    public static synchronized Prefs getInstance(Context context) {
+        if (instance == null) {
+            instance = new Prefs(context);
+        }
+        return instance;
+    }
 
     public boolean isNightMode() {
-        return getBoolean(IS_NIGHT_MODE, false);
+        return getBoolean(IS_NIGHT_MODE, true);
     }
 
     public void setNightMode(boolean isNightMode) {
@@ -86,18 +87,6 @@ public final class Prefs extends BasePrefs {
 
     public String getAudioFolder() {
         return App.getCtx().getExternalCacheDir() + File.separator + KEY_PATH_AUDIO;
-    }
-
-    private Prefs(Context context) {
-        super(context);
-        this.context = context.getApplicationContext();
-    }
-
-    public static synchronized Prefs getInstance(Context context) {
-        if (instance == null) {
-            instance = new Prefs(context);
-        }
-        return instance;
     }
 
     public String getServerHost() {
@@ -128,14 +117,6 @@ public final class Prefs extends BasePrefs {
 
     public int getUserId() {
         return getInt(Prefs.KEY_USER_ID, 0);
-    }
-
-    public String getAuthorization() {
-        if (Authorization == null) {
-            return super.getString(KEY_Authorization, null);
-        } else {
-            return Authorization;
-        }
     }
 
     public String getTicket() {
@@ -232,13 +213,5 @@ public final class Prefs extends BasePrefs {
             }
         }
         return null;
-    }
-
-    public int getServerVersion() {
-        return serverVersion;
-    }
-
-    public void setServerVersion(int serverVersion) {
-        this.serverVersion = serverVersion;
     }
 }

@@ -18,26 +18,26 @@ public class User extends BmobUser {
      * "height float,weight float," + "idCard varchar(64),ticket varchar(64),accountId integer)";
      */
 
-    private Integer id;
+    private int id;
     private String name;
     private String userName;
     private String userPwd;
-    private Integer age;
+    private int age;
     private String gender;
     private String imgUri;
     private String phone;
-    private Float height;
-    private Float weight;
+    private float height;
+    private float weight;
     private String idCard;
     private String education;
     private String ticket;
-    private Integer accountId;
+    private int accountId;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -65,11 +65,11 @@ public class User extends BmobUser {
         this.userPwd = userPwd;
     }
 
-    public Integer getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
@@ -97,19 +97,19 @@ public class User extends BmobUser {
         this.phone = phone;
     }
 
-    public Float getHeight() {
+    public float getHeight() {
         return height;
     }
 
-    public void setHeight(Float height) {
+    public void setHeight(float height) {
         this.height = height;
     }
 
-    public Float getWeight() {
+    public float getWeight() {
         return weight;
     }
 
-    public void setWeight(Float weight) {
+    public void setWeight(float weight) {
         this.weight = weight;
     }
 
@@ -137,11 +137,11 @@ public class User extends BmobUser {
         this.ticket = ticket;
     }
 
-    public Integer getAccountId() {
+    public int getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(Integer accountId) {
+    public void setAccountId(int accountId) {
         this.accountId = accountId;
     }
 }

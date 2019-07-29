@@ -52,9 +52,10 @@
 
     <string name="exit_press_again">再按一次退出</string>
     <string name="basic_info">个人资料</string>
-    <string name="nomal_settings">通用设置</string>
+    <string name="normal_settings">通用设置</string>
     <string name="scan_2_scan">扫一扫</string>
     <string name="ocr_scan">腾讯优图</string>
+    <string name="google_ml">Google ML</string>
     <string name="ar">ARCore</string>
     <string name="bluetooth">蓝牙传输</string>
     <string name="vr">VR360°</string>

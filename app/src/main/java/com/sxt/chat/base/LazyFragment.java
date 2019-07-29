@@ -14,7 +14,6 @@ import com.sxt.chat.utils.AnimationUtil;
  */
 
 public abstract class LazyFragment extends BaseFragment {
-    public View contentView;
     public boolean isInit = false;
     public boolean isFirst = true;
     protected boolean useAlphaAnimator = true;

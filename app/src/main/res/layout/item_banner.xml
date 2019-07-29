@@ -1,23 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cardView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clickable="true"
-    android:clipToPadding="false"
-    android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/translate_alpha"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="0dp"
-    app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/img"
+    <data>
+
+        <import type="com.sxt.chat.R" />
+
+        <variable
+            name="BannerInfo"
+            type="com.sxt.chat.json.Banner" />
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+        android:clickable="true"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardBackgroundColor="@color/translate_alpha"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
 
-</android.support.v7.widget.CardView>
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:error="@{R.drawable.ic_placeholder}"
+            app:imageUrl="@{BannerInfo.url}"
+            app:placeHolder="@{R.drawable.ic_placeholder}" />
+
+    </android.support.v7.widget.CardView>
+</layout>

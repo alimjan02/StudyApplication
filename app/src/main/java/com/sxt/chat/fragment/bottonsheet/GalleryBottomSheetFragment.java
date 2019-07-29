@@ -46,8 +46,8 @@ public class GalleryBottomSheetFragment extends BaseBottomSheetFragment {
 
             Glide.with(context)
                     .load(banner.getUrl())
-                    .placeholder(R.mipmap.ic_banner_placeholder)
-                    .error(R.mipmap.ic_banner_placeholder)
+                    .placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_placeholder)
                     .transform(new CenterCrop(context), new GlideRoundTransformer(context, 8))
                     .into(imageView);
 

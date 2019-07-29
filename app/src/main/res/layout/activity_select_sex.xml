@@ -30,7 +30,7 @@
             android:layout_above="@id/tv_woman"
             android:background="@drawable/blue_stroke_circle_unselect"
             android:padding="4dp"
-            android:src="@mipmap/female" />
+            android:src="@mipmap/women" />
 
     </RelativeLayout>
 

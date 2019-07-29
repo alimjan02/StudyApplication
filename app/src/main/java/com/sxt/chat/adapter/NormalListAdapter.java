@@ -36,13 +36,13 @@ public class NormalListAdapter extends BaseRecyclerAdapter<RoomInfo> {
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(getInflater().inflate(R.layout.item_normal, parent, false));
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
         final ViewHolder holder = (ViewHolder) viewHolder;
         holder.title.setText(data.get(position).getHome_name());
         holder.price.setText(String.valueOf(data.get(position).getPrice()));

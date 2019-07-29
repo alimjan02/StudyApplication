@@ -17,8 +17,8 @@ import cn.bmob.v3.BmobUser;
 
 public class WatchDogReceiver extends BroadcastReceiver {
 
-    public static final String ACTION_LOGOUT = App.getCtx().getPackageName()+".receiver.LOGOUT";
-    public static String ACTION_CHANGE_SERVER = App.getCtx().getPackageName()+".receiver.CHANGE_SERVER";
+    public static final String ACTION_LOGOUT = App.getCtx().getPackageName() + ".receiver.LOGOUT";
+    public static String ACTION_CHANGE_SERVER = App.getCtx().getPackageName() + ".receiver.CHANGE_SERVER";
     public static String ACTION_BOOT_COMPLETED = "android.intent.action.BOOT_COMPLETED";
 
     @Override
@@ -46,7 +46,7 @@ public class WatchDogReceiver extends BroadcastReceiver {
         Prefs prefs = Prefs.getInstance(App.getCtx());
         //清空ticket
         prefs = Prefs.getInstance(App.getCtx());
-        String userName=prefs.getUserName();
+        String userName = prefs.getUserName();
         prefs.setTicket(null, null, 0);
 
         TJProtocol.getInstance(App.getCtx()).onDestroy();

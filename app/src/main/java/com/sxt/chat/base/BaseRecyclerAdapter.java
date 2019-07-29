@@ -76,8 +76,8 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         notifyDataSetChanged();
     }
 
-    public void notifyDataSetChanged(List<T> data, boolean isRefesh) {
-        if (isRefesh) {
+    public void notifyDataSetChanged(List<T> data, boolean isRefresh) {
+        if (isRefresh) {
             if (data != null) {
                 this.data = data;
             }

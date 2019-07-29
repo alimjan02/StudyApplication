@@ -26,17 +26,16 @@ public class BannerDetailAdapter extends BaseRecyclerAdapter<VideoInfoCopy> {
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(getInflater().inflate(R.layout.item_banner_detail, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
         final ViewHolder holder = (ViewHolder) viewHolder;
         Glide.with(context)
                 .load(data.get(position).getImageUrl())
-                .error(R.mipmap.ic_banner_placeholder)
-                .placeholder(R.mipmap.ic_banner_placeholder)
+                .placeholder(R.drawable.ic_placeholder)
                 .bitmapTransform(new GlideRoundTransformer(context, 8))
                 .into(holder.img);
 

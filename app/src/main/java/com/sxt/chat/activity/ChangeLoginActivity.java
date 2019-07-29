@@ -75,7 +75,7 @@ public class ChangeLoginActivity extends AdBannerActivity {
                                 public void done(User user, BmobException e) {
                                     loading.dismiss();
                                     if (user != null) {
-                                        Prefs.getInstance(App.getCtx()).setTicket(userList1.get(0).getUserName(), userList1.get(0).getTicket(), userList1.get(0).getAccountId() == null ? 0 : userList1.get(0).getAccountId());
+                                        Prefs.getInstance(App.getCtx()).setTicket(userList1.get(0).getUserName(), userList1.get(0).getTicket(), userList1.get(0).getAccountId());
                                         ToastUtil2.showToast(App.getCtx(), "切换成功");
                                         finish();
                                     } else if (e != null) {

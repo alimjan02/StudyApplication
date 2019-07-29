@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'// Google Play services Gradle plugin
 //apply plugin: 'com.google.protobuf'
 
@@ -83,7 +85,9 @@ android {
     }
 //    dynamicFeatures = [":dynamic_feature"]
 
-
+    dataBinding {
+        enabled = true
+    }
 }
 
 //protobuf {
@@ -143,7 +147,6 @@ dependencies {
     implementation 'com.amap.api:3dmap:6.8.0'
     implementation 'com.amap.api:search:6.5.0.1'
     implementation 'com.amap.api:location:4.6.0'
-    // 微信分享&登录   implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 
     implementation project(':refresh-layout')
     implementation project(':crop_img')
@@ -154,15 +157,13 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads:17.2.1'
     //google filebase
     implementation 'com.google.firebase:firebase-core:16.0.9'
-    //google ARCore library
-    implementation 'com.google.ar:core:1.9.0'
-    implementation 'de.javagl:obj:0.2.1'
     //google VR
     implementation 'com.google.android.exoplayer:extension-gvr:2.6.1'
     implementation 'com.google.vr:sdk-base:1.160.0'
     implementation 'com.google.vr:sdk-common:1.160.0'
     implementation 'com.google.vr:sdk-controller:1.160.0'
     implementation 'com.google.vr:sdk-panowidget:1.160.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     //google grpc相关
 //    implementation 'io.grpc:grpc-okhttp:1.7.0'
 //    implementation 'io.grpc:grpc-protobuf-lite:1.7.0'

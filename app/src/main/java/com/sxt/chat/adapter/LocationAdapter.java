@@ -25,12 +25,12 @@ public class LocationAdapter extends BaseRecyclerAdapter<LocationInfo> {
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_location, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
         final ViewHolder holder = (ViewHolder) viewHolder;
         holder.title.setText(String.format("%s, %s", position + 1, data.get(position).getAddressName()));
         holder.subTitle.setText(data.get(position).getAddress());

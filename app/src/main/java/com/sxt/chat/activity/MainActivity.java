@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -40,7 +41,6 @@ import com.bumptech.glide.signature.StringSignature;
 import com.sxt.chat.App;
 import com.sxt.chat.R;
 import com.sxt.chat.ad.AdRewardActivity;
-import com.sxt.chat.ar.HelloArActivity;
 import com.sxt.chat.base.BaseFragment;
 import com.sxt.chat.db.User;
 import com.sxt.chat.dialog.AlertDialogBuilder;
@@ -70,6 +70,7 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
     private ImageView userIcon;
     private TextView userInfo, userName;
     private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
     private BottomNavigationView bottomNavigationView;
     private ActionBarDrawerToggle drawerToggle;
     private View bottomBarLayout;
@@ -109,27 +110,65 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
 
     private void initView() {
         drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.navigation_view);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomBarLayout = findViewById(R.id.bottom_bar_layout);
-        findViewById(R.id.navigation_header_container).setOnClickListener(this);
-        findViewById(R.id.basic_info).setOnClickListener(this);
-        findViewById(R.id.normal_settings).setOnClickListener(this);
-        findViewById(R.id.ocr_scan_id_card).setOnClickListener(this);
-        findViewById(R.id.ocr_scan).setOnClickListener(this);
-        findViewById(R.id.exo_player).setOnClickListener(this);
-        findViewById(R.id.pdf_parse).setOnClickListener(this);
-        findViewById(R.id.wifi).setOnClickListener(this);
-        findViewById(R.id.notification).setOnClickListener(this);
-        findViewById(R.id.shortcut).setOnClickListener(this);
-        findViewById(R.id.bluetooth).setOnClickListener(this);
-        findViewById(R.id.ar).setOnClickListener(this);
-        findViewById(R.id.vr).setOnClickListener(this);
-        findViewById(R.id.map).setOnClickListener(this);
-        findViewById(R.id.change_login).setOnClickListener(this);
-        userIcon = findViewById(R.id.user_icon);
-        userInfo = findViewById(R.id.user_info);
-        userName = findViewById(R.id.user_name);
-        initFloatButton();
+        initDrawerNavigation();
+        View headerView = navigationView.getHeaderView(0);
+        userIcon = headerView.findViewById(R.id.user_icon);
+        userInfo = headerView.findViewById(R.id.user_info);
+        userName = headerView.findViewById(R.id.user_name);
+        headerView.findViewById(R.id.navigation_header_container).setOnClickListener(this);
+    }
+
+    private void initDrawerNavigation() {
+        navigationView.setItemIconTintList(null);
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.basic_info:
+                    startActivity(new Intent(App.getCtx(), BasicInfoActivity.class));
+                    break;
+                case R.id.normal_settings:
+                    startActivity(new Intent(App.getCtx(), SettingsActivity.class));
+                    break;
+                case R.id.change_login:
+                    startActivity(new Intent(App.getCtx(), ChangeLoginActivity.class));
+                    break;
+                case R.id.ocr_scan:
+                    startActivity(new Intent(App.getCtx(), YouTuActivity.class));
+                    break;
+                case R.id.ocr_scan_id_card:
+                    startActivity(new Intent(App.getCtx(), YouTuIdCardActivity.class));
+                    break;
+                case R.id.wifi:
+                    startActivity(new Intent(App.getCtx(), WiFiSettingsActivity.class));
+                    break;
+                case R.id.exo_player:
+                    startActivity(new Intent(App.getCtx(), ExoPlayerActivity.class));
+                    break;
+                case R.id.pdf_parse:
+                    startActivity(new Intent(App.getCtx(), PdfActivity.class));
+                    break;
+                case R.id.notification:
+                    startActivity(new Intent(App.getCtx(), NotificationActivity.class));
+                    break;
+                case R.id.shortcut:
+                    startActivity(new Intent(App.getCtx(), ShortcutActivity.class));
+                    break;
+                case R.id.bluetooth:
+                    startActivity(new Intent(App.getCtx(), BluetoothActivity.class));
+                    break;
+                case R.id.vr:
+                    startActivity(new Intent(App.getCtx(), VR360Activity.class));
+                    break;
+                case R.id.map:
+                    if (requestLocationPermission(REQUEST_CODE_LOCATION_MAP)) {
+                        openMapActivity();
+                    }
+                    break;
+            }
+            return false;
+        });
     }
 
     /**
@@ -262,7 +301,7 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
         if (user != null) {
             userName.setText(user.getName());
             String info;
-            if (0 != (user.getAge() == null ? 0 : user.getAge())) {
+            if (0 != user.getAge()) {
                 if ("F".equals(user.getGender())) {
                     info = user.getAge() + "岁" + sex_man;
                 } else {
@@ -275,9 +314,9 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
                     info = sex_man;
                 }
             }
-            double pow = Math.pow((user.getHeight() == null ? 0 : user.getHeight()), 2);
+            double pow = Math.pow(user.getHeight(), 2);
             if (pow > 0) {
-                info = info + " BMI:" + (ArithTool.div((user.getWeight() == null ? 0 : user.getWeight()) * 10000, pow, 1));
+                info = info + " BMI:" + (ArithTool.div(user.getWeight() * 10000, pow, 1));
             }
             userInfo.setText(info);
             loadHeader(user.getImgUri(), user.getGender());
@@ -290,7 +329,7 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
      */
     private void loadHeader(String url, String gender) {
         Glide.with(this).load(url)
-                .error("M".equals(gender) ? R.mipmap.men : R.mipmap.female)
+                .error("M".equals(gender) ? R.mipmap.men : R.mipmap.women)
                 .bitmapTransform(new GlideCircleTransformer(this))
                 .signature(new StringSignature(Prefs.getInstance(App.getCtx()).getString(Prefs.KEY_USER_HEADER_IMAGE_FLAG, "")))
                 .into(userIcon);
@@ -485,54 +524,8 @@ public class MainActivity extends AdRewardActivity implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.navigation_header_container:
-                startActivity(new Intent(this, FlutterChartActivity.class));
-                break;
-            case R.id.basic_info:
-                startActivity(new Intent(this, BasicInfoActivity.class));
-                break;
-            case R.id.normal_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                break;
-            case R.id.change_login:
-                startActivity(new Intent(this, ChangeLoginActivity.class));
-                break;
-            case R.id.ocr_scan:
-                startActivity(new Intent(this, YouTuActivity.class));
-                break;
-            case R.id.ocr_scan_id_card:
-                startActivity(new Intent(this, YouTuIdCardActivity.class));
-                break;
-            case R.id.wifi:
-                startActivity(new Intent(this, WiFiSettingsActivity.class));
-                break;
-            case R.id.exo_player:
-                startActivity(new Intent(this, ExoPlayerActivity.class));
-                break;
-            case R.id.pdf_parse:
-                startActivity(new Intent(this, PdfActivity.class));
-                break;
-            case R.id.notification:
-                startActivity(new Intent(this, NotificationActivity.class));
-                break;
-            case R.id.shortcut:
-                startActivity(new Intent(this, ShortcutActivity.class));
-                break;
-            case R.id.bluetooth:
-                startActivity(new Intent(this, BluetoothActivity.class));
-                break;
-            case R.id.ar:
-                startActivity(new Intent(this, HelloArActivity.class));
-                break;
-            case R.id.vr:
-                startActivity(new Intent(this, VR360Activity.class));
-                break;
-            case R.id.map:
-                if (requestLocationPermission(REQUEST_CODE_LOCATION_MAP)) {
-                    openMapActivity();
-                }
-                break;
+        if (view.getId() == R.id.navigation_header_container) {
+            startActivity(new Intent(this, FlutterChartActivity.class));
         }
     }
 

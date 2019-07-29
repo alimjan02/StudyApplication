@@ -13,5 +13,5 @@ public class FlutterRoutes {
     public static final String NAVIGATOR_BACK = "'NAVIGATOR_BACK'"; //返回
 
     //路由
-    public static final String ROUTE_ORDER_HISTORY = "ROUTE_ORDER_HISTORY";
+    public static final String ROUTE_ORDER_HISTORY = "Route_Chart";
 }

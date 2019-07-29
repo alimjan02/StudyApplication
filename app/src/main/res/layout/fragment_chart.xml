@@ -22,10 +22,10 @@
                 android:id="@+id/line_layout_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
                 android:layoutAnimation="@anim/layout_animation_vertical"
                 android:orientation="vertical"
                 android:paddingTop="10dp" />
-
 
         </ViewSwitcher>
 

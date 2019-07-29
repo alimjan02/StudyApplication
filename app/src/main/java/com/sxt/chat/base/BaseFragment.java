@@ -18,9 +18,9 @@ import org.greenrobot.eventbus.ThreadMode;
  * Created by izhaohu on 2018/1/11.
  */
 
-public class BaseFragment<T> extends Fragment {
+public class BaseFragment extends Fragment {
     protected Context context;
-    protected View RootView;
+    public View contentView;
     protected String TAG = this.getClass().getName();
 
     public BaseFragment() {
@@ -41,10 +41,10 @@ public class BaseFragment<T> extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (RootView == null) {
-            RootView = getDisplayView();
+        if (contentView == null) {
+            contentView = getDisplayView();
         }
-        return RootView;
+        return contentView;
     }
 
     protected View getDisplayView() {

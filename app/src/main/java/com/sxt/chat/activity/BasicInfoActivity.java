@@ -46,15 +46,6 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
     public static final int REQUESTCODE_Number = 1001, REQUESTCODE_SEX = 1002;
     public static final int REQUESTCODE_WEIGHT = 1003, REQUESTCODE_HIGHT = 1004;
 
-    private final String CMD_SAVE_USER_IMG = "CMD_SAVE_USER_IMG";
-    private final String CMD_SAVE_ID_CARD = "CMD_SAVE_ID_CARD";
-    private final String CMD_SAVE_USER_NAME = "CMD_SAVE_USER_NAME";
-    private final String CMD_SAVE_USER_SEX = "CMD_SAVE_USER_SEX";
-    private final String CMD_SAVE_USER_AGE = "CMD_SAVE_USER_AGE";
-    private final String CMD_SAVE_USER_Weight = "CMD_SAVE_USER_Weight";
-    private final String CMD_SAVE_USER_Height = "CMD_SAVE_USER_Height";
-    private String name, age, sex, idCard;
-    private float weight, height;
     private long millis = 2 * 60 * 1000L;
     private InterstitialAd interstitialAd;
     private String KEY = this.getClass().getName() + "KEY_LAST_RESUME_MILLIS";
@@ -107,12 +98,12 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
             userName.setText(user.getName() == null ? user.getUserName() : user.getName());
             bodyNumber.setText(user.getIdCard() == null ? "" : user.getIdCard());
             userSex.setText(user.getGender() == null ? "" : user.getGender().equals("M") ? getString(R.string.man) : getString(R.string.woman));
-            userAge.setText((user.getAge() == null ? 0 : user.getAge()) <= 0 ? "" : user.getAge() + "");
-            userWeight.setText((user.getWeight() == null ? 0 : user.getWeight()) <= 0.0 ? "" : user.getWeight() + "KG");
-            userHeight.setText((user.getHeight() == null ? 0 : user.getHeight()) <= 0.0 ? "" : user.getHeight() + "CM");
-            double pow = Math.pow(user.getHeight() == null ? 0 : user.getHeight(), 2);
+            userAge.setText((user.getAge()) <= 0 ? "" : user.getAge() + "");
+            userWeight.setText((user.getWeight()) <= 0.0 ? "" : user.getWeight() + "KG");
+            userHeight.setText((user.getHeight()) <= 0.0 ? "" : user.getHeight() + "CM");
+            double pow = Math.pow(user.getHeight(), 2);
             if (pow > 0.0) {
-                userBmi.setText(ArithTool.div((user.getWeight() == null ? 0 : user.getWeight()) * 10000, pow, 1) + "");
+                userBmi.setText(String.format("%s", ArithTool.div(user.getWeight() * 10000, pow, 1)));
             }
         }
     }
@@ -120,10 +111,10 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
     private void updateHeadPortrait() {
         User user = BmobUser.getCurrentUser(User.class);
         if (user != null) {
-            if ("M".equals(user.getGender())) {
-                update(user.getImgUri(), R.mipmap.men);
+            if ("F".equals(user.getGender())) {
+                update(user.getImgUri(), R.mipmap.women);
             } else {
-                update(user.getImgUri(), R.mipmap.female);
+                update(user.getImgUri(), R.mipmap.men);
             }
         }
     }
@@ -141,47 +132,33 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
 
     @Override
     public void onGoBack(View view) {
-//        super.onGoBack(view);
         onBackPressed();
     }
 
     @Override
     public void onClick(View view) {
-
         switch (view.getId()) {
             case R.id.user_portrait_layout:
-                Intent intent = new Intent(this, com.sxt.chat.activity.UpdateUserImgActivity.class);
+                Intent intent = new Intent(this, UpdateUserImgActivity.class);
                 startActivityForResult(intent, REQUESTCODE_IMG);
                 break;
-
             case R.id.user_name_layout:
-                startActivityForResult(new Intent(this, com.sxt.chat.activity.UpdateUserNameActivity.class), REQUESTCODE_USER_NAME);
+                startActivityForResult(new Intent(this, UpdateUserNameActivity.class), REQUESTCODE_USER_NAME);
                 break;
-
             case R.id.body_number_layout:
-                startActivityForResult(new Intent(this, com.sxt.chat.activity.SelectNumberActivity.class), REQUESTCODE_Number);
+                startActivityForResult(new Intent(this, SelectNumberActivity.class), REQUESTCODE_Number);
                 break;
-
             case R.id.user_sex_layout:
-                startActivityForResult(new Intent(this, com.sxt.chat.activity.SelectSexActivity.class), REQUESTCODE_SEX);
+                startActivityForResult(new Intent(this, SelectSexActivity.class), REQUESTCODE_SEX);
                 break;
-
             case R.id.user_age_layout:
-                Intent ageIntent = new Intent(this, com.sxt.chat.activity.SelectAgeActivity.class);
-                ageIntent.putExtra(String.valueOf(REQUESTCODE_AGE), false);
-                startActivityForResult(ageIntent, REQUESTCODE_AGE);
+                startActivityForResult(new Intent(this, SelectAgeActivity.class), REQUESTCODE_AGE);
                 break;
-
             case R.id.user_weight_layout:
-                Intent weightIntent = new Intent(this, com.sxt.chat.activity.SelectWeightActivity.class);
-                weightIntent.putExtra(String.valueOf(REQUESTCODE_WEIGHT), false);
-                startActivityForResult(weightIntent, REQUESTCODE_WEIGHT);
+                startActivityForResult(new Intent(this, SelectWeightActivity.class), REQUESTCODE_WEIGHT);
                 break;
-
             case R.id.user_hight_layout:
-                Intent hightIntent = new Intent(this, com.sxt.chat.activity.SelectHeightActivity.class);
-                hightIntent.putExtra(String.valueOf(REQUESTCODE_HIGHT), false);
-                startActivityForResult(hightIntent, REQUESTCODE_HIGHT);
+                startActivityForResult(new Intent(this, SelectHeightActivity.class), REQUESTCODE_HIGHT);
                 break;
         }
     }
@@ -190,31 +167,28 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            User newUser = null;
+            User newUser = BmobUser.getCurrentUser(User.class);
             switch (requestCode) {
                 case REQUESTCODE_IMG:
-                    updateUserInfo(BmobUser.getCurrentUser(User.class), CMD_SAVE_USER_NAME);
+                    updateUserInfo(newUser);
                     break;
                 case REQUESTCODE_USER_NAME:
                     if (data != null) {
-                        name = data.getStringExtra(String.valueOf(REQUESTCODE_USER_NAME));
-                        newUser = new User();
+                        String name = data.getStringExtra(String.valueOf(REQUESTCODE_USER_NAME));
                         newUser.setName(name);
-                        updateUserInfo(newUser, CMD_SAVE_USER_NAME);
+                        updateUserInfo(newUser);
                     }
                     break;
                 case REQUESTCODE_AGE:
                     if (data != null) {
-                        age = data.getStringExtra(String.valueOf(REQUESTCODE_AGE));
-                        newUser = new User();
+                        String age = data.getStringExtra(String.valueOf(REQUESTCODE_AGE));
                         newUser.setAge(Integer.parseInt(age));
-                        updateUserInfo(newUser, CMD_SAVE_USER_AGE);
+                        updateUserInfo(newUser);
                     }
                     break;
                 case REQUESTCODE_SEX:
                     if (data != null) {
-                        sex = data.getStringExtra(String.valueOf(REQUESTCODE_SEX));
-                        newUser = new User();
+                        String sex = data.getStringExtra(String.valueOf(REQUESTCODE_SEX));
                         if ("M".equals(sex)) {
                             newUser.setGender("M");
                         } else if ("F".equals(sex)) {
@@ -222,32 +196,28 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
                         } else {
                             newUser.setGender("M");
                         }
-                        updateUserInfo(newUser, CMD_SAVE_USER_SEX);
+                        updateUserInfo(newUser);
                     }
                     break;
                 case REQUESTCODE_Number:
                     if (data != null) {
-                        idCard = data.getStringExtra(String.valueOf(REQUESTCODE_Number));
-                        bodyNumber.setText(idCard);
-                        newUser = new User();
+                        String idCard = data.getStringExtra(String.valueOf(REQUESTCODE_Number));
                         newUser.setIdCard(idCard);
-                        updateUserInfo(newUser, CMD_SAVE_ID_CARD);
+                        updateUserInfo(newUser);
                     }
                     break;
                 case REQUESTCODE_WEIGHT:
                     if (data != null) {
-                        weight = data.getFloatExtra(String.valueOf(REQUESTCODE_WEIGHT), 0.0f);
-                        newUser = new User();
+                        float weight = data.getFloatExtra(String.valueOf(REQUESTCODE_WEIGHT), 0.0f);
                         newUser.setWeight(weight);
-                        updateUserInfo(newUser, CMD_SAVE_USER_Weight);
+                        updateUserInfo(newUser);
                     }
                     break;
                 case REQUESTCODE_HIGHT:
                     if (data != null) {
-                        height = data.getFloatExtra(String.valueOf(REQUESTCODE_HIGHT), 0.0f);
-                        newUser = new User();
+                        float height = data.getFloatExtra(String.valueOf(REQUESTCODE_HIGHT), 0.0f);
                         newUser.setHeight(height);
-                        updateUserInfo(newUser, CMD_SAVE_USER_Height);
+                        updateUserInfo(newUser);
                     }
                     break;
                 default:
@@ -256,48 +226,7 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
         }
     }
 
-    private void response(String cmd_save_id, User user) {
-        if (user != null) {
-            userName.setText(user.getName() == null ? user.getUserName() : user.getName());
-            bodyNumber.setText(user.getIdCard() == null ? "" : user.getIdCard());
-            userSex.setText(user.getGender() == null ? "" : user.getGender().equals("M") ? getString(R.string.man) : getString(R.string.woman));
-            userAge.setText((user.getAge() == null ? 0 : user.getAge()) <= 0 ? "" : user.getAge() + "");
-            userWeight.setText((user.getWeight() == null ? 0 : user.getWeight()) <= 0.0 ? "" : user.getWeight() + "KG");
-            userHeight.setText((user.getHeight() == null ? 0 : user.getHeight()) <= 0.0 ? "" : user.getHeight() + "CM");
-            if (weight > 0.0 && height > 0.0) {
-                userBmi.setText(String.valueOf(ArithTool.div(weight * 10000, Math.pow(height, 2), 1)));
-            }
-            switch (cmd_save_id) {
-                case CMD_SAVE_USER_IMG:
-                    user.setImgUri(user.getImgUri());
-                    break;
-                case CMD_SAVE_ID_CARD:
-                    user.setIdCard(idCard);
-                    break;
-                case CMD_SAVE_USER_NAME:
-                    user.setName(name);
-                    break;
-                case CMD_SAVE_USER_AGE:
-                    user.setAge(Integer.parseInt(age));
-                    break;
-                case CMD_SAVE_USER_SEX:
-                    user.setGender(sex);
-                    break;
-                case CMD_SAVE_USER_Weight:
-                    user.setWeight(weight);
-                    break;
-                case CMD_SAVE_USER_Height:
-                    user.setHeight(height);
-                    break;
-                default:
-                    break;
-            }
-            //将用户的详细信息保存至本地
-            SQLiteUserDao.getInstance(this).updateUserByUserName(user.getUsername(), user);
-        }
-    }
-
-    private void updateUserInfo(final User newUser, final String cmd) {
+    private void updateUserInfo(final User newUser) {
         loading.show();
         BmobUser bmobUser = BmobUser.getCurrentUser(User.class);
         newUser.update(bmobUser.getObjectId(), new UpdateListener() {
@@ -315,7 +244,10 @@ public class BasicInfoActivity extends AdBannerActivity implements View.OnClickL
                             if (e != null) {
                                 Toast("errorCode: " + e.getErrorCode() + " , " + e.getMessage());
                             } else {
-                                response(cmd, BmobUser.getCurrentUser(User.class));
+                                loadUserDetailInfo();
+                                User user = BmobUser.getCurrentUser(User.class);
+                                //将用户的详细信息保存至本地
+                                SQLiteUserDao.getInstance(App.getCtx()).updateUserByUserName(user.getUsername(), user);
                             }
                         }
                     });

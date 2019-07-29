@@ -12,9 +12,10 @@
 
     <string name="exit_press_again">press again to exit</string>
     <string name="basic_info">personal center</string>
-    <string name="nomal_settings">settings</string>
+    <string name="normal_settings">settings</string>
     <string name="scan_2_scan">scan</string>
     <string name="ocr_scan">tencent youtu</string>
+    <string name="google_ml">Google ML</string>
     <string name="ar">ARCore</string>
     <string name="bluetooth">bluetooth stream</string>
     <string name="vr">VR360°</string>
