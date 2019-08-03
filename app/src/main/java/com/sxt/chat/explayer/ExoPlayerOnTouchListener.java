@@ -33,13 +33,10 @@ public class ExoPlayerOnTouchListener implements View.OnTouchListener {
     public ExoPlayerOnTouchListener(Activity activity, final PlayerView exoPlayerView, final SimpleExoPlayer player) {
         this.player = player;
         this.activity = activity;
-        exoPlayerView.post(new Runnable() {
-            @Override
-            public void run() {
-                width = exoPlayerView.getWidth();
-                height = exoPlayerView.getHeight();
-                Log.e(TAG, "width " + width + " height " + height);
-            }
+        exoPlayerView.post(() -> {
+            width = exoPlayerView.getWidth();
+            height = exoPlayerView.getHeight();
+            Log.e(TAG, "width " + width + " height " + height);
         });
         audiomanager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
         if (audiomanager != null) {
@@ -171,14 +168,11 @@ public class ExoPlayerOnTouchListener implements View.OnTouchListener {
     }
 
     public void updateVideoUIParmeras(final View surfaceView) {
-        surfaceView.post(new Runnable() {
-            @Override
-            public void run() {
-                width = surfaceView.getWidth();
-                height = surfaceView.getHeight();
-                Log.e(TAG, "update : width " + width + " height " + height);
+        surfaceView.post(() -> {
+            width = surfaceView.getWidth();
+            height = surfaceView.getHeight();
+            Log.e(TAG, "update : width " + width + " height " + height);
 
-            }
         });
     }
 

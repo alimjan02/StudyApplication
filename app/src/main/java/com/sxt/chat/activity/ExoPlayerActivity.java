@@ -220,7 +220,6 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         // 设置播放资源 开始播放视频
         player.setPlayWhenReady(true);
         exoPlayerView.setControllerAutoShow(false);
-        setPlayerHandle();
     }
 
     /**
@@ -228,6 +227,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
      */
     @SuppressLint("ClickableViewAccessibility")
     private void setPlayerHandle() {
+        if (exoPlayerOnTouchListener != null) return;
         exoPlayerView.setControllerVisibilityListener(visibility -> {
             isControllerVisiable = visibility == View.VISIBLE;
             if (!isInPictureInPictureMode && bottomSheetBehavior != null) {
@@ -343,6 +343,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
                     @Override
                     public void onLoadStarted(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
                         Log.i(TAG, "onLoadStarted " + " windowIndex = " + windowIndex);
+                        setPlayerHandle();//设置触摸监听
                     }
 
                     /**
@@ -562,7 +563,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.back:
-                onBack();
+                onBack(false);
                 break;
             case R.id.picture_in_picture:
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -597,6 +598,9 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * 横竖屏切换时,更新触摸事件的View
+     */
     private void updateVideoUIParams() {
         if (exoPlayerOnTouchListener != null) {
             exoPlayerOnTouchListener.updateVideoUIParmeras(exoPlayerView);
@@ -895,10 +899,14 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    private void onBack() {
+    private void onBack(boolean isOnBackPressed) {
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else {
+            if (isOnBackPressed && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                enterPictureMode();
+                return;
+            }
             if (player != null) {
                 player.stop();
                 player.release();
@@ -909,7 +917,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        onBack();
+        onBack(true);
     }
 
     @Override
@@ -939,12 +947,18 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         super.onStop();
     }
 
+    /**
+     * 开始播放
+     */
     private void play(boolean b) {
         if (b) {
             alertMobileDataDialog();
         }
     }
 
+    /**
+     * 暂停播放
+     */
     private void pause() {
         if (player != null) {
             player.setPlayWhenReady(false);

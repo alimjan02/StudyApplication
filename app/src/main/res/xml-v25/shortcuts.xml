@@ -11,11 +11,11 @@
         android:shortcutShortLabel="@string/basic_info">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.sxt.chat.activity.KotlinDemoActivity"
+            android:targetClass="com.sxt.chat.activity.BasicInfoActivity"
             android:targetPackage="com.sxt.chat" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
-    <!--<shortcut
+    <shortcut
         android:enabled="true"
         android:icon="@drawable/ic_map_blue_24dp"
         android:shortcutId="地图"
@@ -36,7 +36,7 @@
             android:targetClass="com.sxt.chat.activity.BluetoothActivity"
             android:targetPackage="com.sxt.chat" />
         <categories android:name="android.shortcut.conversation" />
-    </shortcut>-->
+    </shortcut>
     <shortcut
         android:enabled="true"
         android:icon="@drawable/ic_vector_video_24dp"
