@@ -11,7 +11,7 @@
         android:padding="8dp">
 
         <TextView
-            android:id="@+id/select"
+            android:id="@+id/picture_in_picture"
             style="@style/text_color_main_blue_17_tyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

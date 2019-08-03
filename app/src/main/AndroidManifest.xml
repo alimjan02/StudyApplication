@@ -164,9 +164,6 @@
         <activity
             android:name=".activity.YouTuIdCardActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
-        <activity
-            android:name=".activity.MLActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
 
         <activity
             android:name=".activity.TakePhotoActivity"
@@ -178,7 +175,8 @@
 
         <activity
             android:name=".activity.ExoPlayerActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|uiMode" />
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|uiMode"
+            android:supportsPictureInPicture="true" />
 
         <activity
             android:name=".activity.BannerDetailActivity"

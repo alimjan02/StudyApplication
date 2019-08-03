@@ -1,68 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
-    android:layout_width="164dp"
-    android:layout_height="254dp"
-    android:layout_gravity="center"
-    android:layout_marginBottom="8dp"
-    android:layout_marginLeft="4dp"
-    android:layout_marginRight="4dp"
-    android:layout_marginTop="4dp"
-    android:clickable="true"
-    android:focusable="true"
-    android:padding="2dp"
-    android:stateListAnimator="@drawable/lift_on_touch_scale"
-    tools:targetApi="lollipop">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/img"
-        android:layout_width="160dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center" />
+    <data>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginTop="8dp"
-        android:paddingLeft="8dp">
+        <import type="com.sxt.chat.R" />
+
+        <variable
+            name="VideoInfo"
+            type="com.sxt.chat.json.VideoInfo" />
+    </data>
+
+    <FrameLayout
+        android:id="@+id/root"
+        android:layout_width="164dp"
+        android:layout_height="254dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="2dp"
+        android:stateListAnimator="@drawable/lift_on_touch_scale"
+        tools:targetApi="lollipop">
 
         <ImageView
-            android:id="@+id/img_header"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_centerVertical="true" />
+            android:id="@+id/img"
+            android:layout_width="160dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/img_header"
-            android:orientation="vertical"
-            android:paddingLeft="5dp">
+            android:layout_height="35dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginTop="8dp"
+            android:paddingLeft="8dp">
 
-            <TextView
-                android:id="@+id/title"
-                style="@style/text_color_white_15_style"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:maxWidth="110dp"
-                android:text="六居室-南卧-33㎡" />
+            <ImageView
+                android:id="@+id/img_header"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_centerVertical="true"
+                app:error="@{R.mipmap.women}"
+                app:imageCircleUrl="@{VideoInfo.imageUrl}"
+                app:placeHolder="@{R.mipmap.women}" />
 
-            <RatingBar
-                android:id="@+id/ratingBar"
-                style="?android:ratingBarStyleSmall"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:isIndicator="false"
-                android:maxWidth="100dp"
-                android:numStars="5"
-                android:progressDrawable="@drawable/rating_bar_style2"
-                android:rating="0" />
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/img_header"
+                android:orientation="vertical"
+                android:paddingLeft="5dp">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/title"
+                    style="@style/text_color_white_15_style"
+                    android:ellipsize="end"
+                    android:maxWidth="110dp"
+                    android:maxLines="1"
+                    android:text="@{VideoInfo.title}" />
 
-    </RelativeLayout>
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="?android:ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="false"
+                    android:maxWidth="100dp"
+                    android:numStars="5"
+                    android:progressDrawable="@drawable/rating_bar_style2"
+                    android:rating="@{VideoInfo.star}" />
 
-</FrameLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </FrameLayout>
+</layout>

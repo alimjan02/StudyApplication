@@ -97,7 +97,7 @@ public class VideoActivity extends BaseActivity {
                 });
 
         // Boilerplate for checking runtime permissions in Android.
-        View button = findViewById(R.id.select);
+        View button = findViewById(R.id.picture_in_picture);
         button.setOnClickListener(
                 new OnClickListener() {
                     @Override

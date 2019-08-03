@@ -356,5 +356,9 @@
     <string name="my_blogger">我的网站</string>
     <string name="day">日间模式</string>
     <string name="night">夜间模式</string>
+    <string name="pause">暂停</string>
+    <string name="play">播放</string>
+    <string name="fast_rewind">快退</string>
+    <string name="fast_forward">快进</string>
 
 </resources>

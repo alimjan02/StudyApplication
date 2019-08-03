@@ -23,8 +23,8 @@ public class ImageBindingAdapter {
     public static void bindImageRoundUrl(ImageView img, String imageUrl, int placeHolder, int error, int conner) {
         Glide.with(img.getContext())
                 .load(imageUrl)
-                .placeholder(placeHolder == 0 ? R.mipmap.ic_no_img : placeHolder)
-                .error(error == 0 ? R.mipmap.ic_no_img : error)
+                .placeholder(placeHolder == 0 ? R.drawable.ic_placeholder : placeHolder)
+                .error(error == 0 ? R.drawable.ic_placeholder : error)
                 .bitmapTransform(new GlideRoundTransformer(img.getContext(), conner))
                 .into(img);
     }
@@ -33,7 +33,7 @@ public class ImageBindingAdapter {
     public static void bindImageCircleUrl(ImageView img, String url) {
         Glide.with(img.getContext())
                 .load(url)
-                .error(R.mipmap.ic_no_img)
+                .error(R.drawable.ic_placeholder)
                 .bitmapTransform(new GlideCircleTransformer(img.getContext()))
                 .into(img);
     }

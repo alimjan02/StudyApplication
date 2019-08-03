@@ -90,7 +90,7 @@ public class VR360Activity extends BaseActivity {
                 finish();
             }
         });
-        findViewById(R.id.select).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.picture_in_picture).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startGallery();

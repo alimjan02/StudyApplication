@@ -317,5 +317,8 @@
     <string name="my_blogger">my Blogger</string>
     <string name="day">day mode</string>
     <string name="night">night mode</string>
+    <string name="pause">pause</string>
+    <string name="fast_rewind">rewind</string>
+    <string name="fast_forward">forward</string>
 
 </resources>

@@ -8,7 +8,7 @@
 
   <!-- Permission request button that will be shown until the permission is granted. -->
   <Button
-    android:id="@+id/select"
+    android:id="@+id/picture_in_picture"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="选择图片"/>

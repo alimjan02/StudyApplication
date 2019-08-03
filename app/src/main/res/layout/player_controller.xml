@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/control_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
@@ -124,39 +125,18 @@
             android:layout_centerVertical="true"
             android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/quality"
+            <ImageView
+                android:id="@+id/picture_in_picture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:text="清晰度"
-                android:textColor="@android:color/white"
-                android:textSize="15dp"
-                android:visibility="gone" />
+                android:src="@drawable/ic_picture_in_picture_white_24dp" />
 
-            <ViewSwitcher
-                android:id="@+id/controllerViewSwitcher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/switchScreen"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_vector_zoom_out_24dp" />
-
-                <TextView
-                    android:id="@+id/select"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:text="@string/selection"
-                    android:textColor="@android:color/white"
-                    android:textSize="15dp" />
-
-            </ViewSwitcher>
+            <ImageView
+                android:id="@+id/switchScreen"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_vector_zoom_out_24dp" />
 
         </LinearLayout>
 

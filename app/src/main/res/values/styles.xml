@@ -107,4 +107,9 @@
         <item name="android:textColor">@drawable/item_text_color_selector</item>
     </style>
 
+    <style name="Widget.PictureInPicture.MovieView" parent="android:Widget">
+        <item name="android:src">@null</item>
+        <item name="android:adjustViewBounds">false</item>
+    </style>
+
 </resources>

@@ -27,7 +27,7 @@ class SelectAgeActivity : HeaderActivity(), View.OnClickListener {
         setContentView(R.layout.activity_select_age)
         setTitle(R.string.age)
         val scrollPicker = findViewById<StringScrollPicker>(R.id.scrollPicker)
-        select = findViewById<TextView>(R.id.select)
+        select = findViewById<TextView>(R.id.picture_in_picture)
         val next = findViewById<TextView>(R.id.next)
         next.setOnClickListener(this)
         val ages = ArrayList<CharSequence>()
