@@ -29,4 +29,11 @@ public class Constants {
     private static String DESIGNED_BY = "Developed by 孙兴涛 in China";
     public static String SHARE_CONTENT = "A beautiful app designed with Material Design:\n" + APP_URL + "\n- " + DESIGNED_BY;
 
+    public static final int CONTROL_TYPE_PLAY = 1;
+    public static final int CONTROL_TYPE_PAUSE = 2;
+    public static final int CONTROL_TYPE_REMIND = 3;
+    public static final int CONTROL_TYPE_FORWARD = 4;
+    public static final String ACTION_MEDIA_CONTROL = "media_control";
+    public static final String EXTRA_CONTROL_TYPE = "control_type";
+
 }

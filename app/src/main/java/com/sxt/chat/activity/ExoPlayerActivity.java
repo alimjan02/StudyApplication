@@ -77,6 +77,7 @@ import com.sxt.chat.json.PlayInfo;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.json.VideoInfo;
 import com.sxt.chat.utils.ArithTool;
+import com.sxt.chat.utils.Constants;
 import com.sxt.chat.utils.DateFormatUtil;
 import com.sxt.chat.utils.Px2DpUtil;
 import com.sxt.chat.utils.Utils;
@@ -122,21 +123,19 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
     private ImageView volumeImg;
     private TextView volume;
 
+    private ViewSwitcher viewSwitcher;
+    private View controllerLayout;
+    private TabLayout tabLayout;
+    private TextView videoTitle;
+
     private SimpleExoPlayer player;
     private PlayerView exoPlayerView;
     private int videoIndexNext = 0, videoIndexCurrent = 0;
-    private ViewSwitcher viewSwitcher;
 
-    private View controllerLayout;
-
-    private VolumeChangeReceiver volumeChangeReceiver;
-    private NetWorkReceiver netWorkReceiver;
-    private MyLoadControl loadControler;
+    private MyLoadControl loadController;
     private ConcatenatingMediaSource mediaSource;
     private BottomSheetBehavior bottomSheetBehavior;
 
-    private TabLayout tabLayout;
-    private TextView videoTitle;
     private ExoPlayerOnTouchListener exoPlayerOnTouchListener;
 
     private boolean isControllerVisiable = true, isUsePhoneData;
@@ -145,15 +144,8 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
     private final String ACTION_VOLUME_CHANGED = "android.media.VOLUME_CHANGED_ACTION";
     private final String CMD_GET_VIDEOS = "CMD_GET_VIDEOS";
     private boolean isInPictureInPictureMode;
-    private static final int CONTROL_TYPE_PLAY = 1;
-    private static final int CONTROL_TYPE_PAUSE = 2;
-    private static final int CONTROL_TYPE_REMIND = 3;
-    private static final int CONTROL_TYPE_FORWARD = 4;
-    private static final String ACTION_MEDIA_CONTROL = "media_control";
-    private static final String EXTRA_CONTROL_TYPE = "control_type";
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private PictureInPictureParams.Builder mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
-    private BroadcastReceiver pictureActionReceiver;
+    private PictureInPictureParams.Builder mPictureInPictureParamsBuilder;
+    private BroadcastReceiver pictureActionReceiver, volumeChangeReceiver, netWorkReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,8 +154,6 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.activity_exoplayer);
         initLayout();
         initPlayer();
-        registerNetWorkReceiver();
-        registerVolumeReceiver();
     }
 
     private void initPlayer() {
@@ -172,9 +162,9 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
         // 创建缓冲控制器
-        loadControler = new MyLoadControl();
+        loadController = new MyLoadControl();
         // 创建播放器
-        player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(this), trackSelector, loadControler);
+        player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(this), trackSelector, loadController);
         exoPlayerView.setPlayer(player);
         player.addListener(new Player.DefaultEventListener() {
             final static String TAG = "playbackState";
@@ -199,11 +189,11 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
                 } else if (playbackState == DrmStore.Playback.PAUSE) {//暂停播放(加载中...)
                     showLoading();
                     alertMobileDataDialog();
-                    setPictureInPictureActions(R.drawable.ic_play_arrow_24dp, getString(R.string.play), CONTROL_TYPE_PLAY);
+                    setPictureInPictureActions(R.drawable.ic_play_arrow_24dp, getString(R.string.play), Constants.CONTROL_TYPE_PLAY);
                     Log.i(TAG, "playbackState == DrmStore.Playback.PAUSE 暂停播放(加载中...)");
                 } else if (playbackState == DrmStore.Playback.RESUME) {//继续播放(加载完成)
                     dismissLoading();
-                    setPictureInPictureActions(R.drawable.ic_pause_24dp, getString(R.string.pause), CONTROL_TYPE_PAUSE);
+                    setPictureInPictureActions(R.drawable.ic_pause_24dp, getString(R.string.pause), Constants.CONTROL_TYPE_PAUSE);
                     Log.i(TAG, "playbackState == DrmStore.Playback.RESUME 继续播放(加载完成)");
                 } else if (playbackState == DrmStore.Playback.STOP) {//播放停止
                     dismissLoading();
@@ -441,6 +431,14 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setNestedScrollingEnabled(false);
+        initBottomSheet();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
+        }
+    }
+
+    private void initBottomSheet() {
         bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.nestedScrollView));
         bottomSheetBehavior.setSkipCollapsed(false);
         bottomSheetBehavior.setHideable(true);
@@ -642,8 +640,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
             Log.e(TAG, "进入画中画模式");
         } else {
             updatePictureController(false);
-            unregisterReceiver(pictureActionReceiver);
-            pictureActionReceiver = null;
+            unRegisterPictureReceiver();
             Log.e(TAG, "退出画中画模式");
         }
     }
@@ -673,25 +670,25 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent == null
-                        || !ACTION_MEDIA_CONTROL.equals(intent.getAction())) {
+                        || !Constants.ACTION_MEDIA_CONTROL.equals(intent.getAction())) {
                     return;
                 }
-                final int controlType = intent.getIntExtra(EXTRA_CONTROL_TYPE, 0);
+                final int controlType = intent.getIntExtra(Constants.EXTRA_CONTROL_TYPE, 0);
                 switch (controlType) {
-                    case CONTROL_TYPE_PLAY:
+                    case Constants.CONTROL_TYPE_PLAY:
                         play(player != null);
-                        setPictureInPictureActions(R.drawable.ic_pause_24dp, getString(R.string.pause), CONTROL_TYPE_PAUSE);
+                        setPictureInPictureActions(R.drawable.ic_pause_24dp, getString(R.string.pause), Constants.CONTROL_TYPE_PAUSE);
                         break;
-                    case CONTROL_TYPE_PAUSE:
+                    case Constants.CONTROL_TYPE_PAUSE:
                         pause();
-                        setPictureInPictureActions(R.drawable.ic_play_arrow_24dp, getString(R.string.play), CONTROL_TYPE_PLAY);
+                        setPictureInPictureActions(R.drawable.ic_play_arrow_24dp, getString(R.string.play), Constants.CONTROL_TYPE_PLAY);
                         break;
-                    case CONTROL_TYPE_REMIND:
+                    case Constants.CONTROL_TYPE_REMIND:
                         long pre = player.getCurrentPosition() - 10 * 1000;
                         long prePosition = pre < 0 ? 0 : pre;
                         player.seekTo(prePosition);
                         break;
-                    case CONTROL_TYPE_FORWARD:
+                    case Constants.CONTROL_TYPE_FORWARD:
                         long target = player.getCurrentPosition() + 10 * 1000;
                         long position = target > player.getDuration() ? player.getDuration() : target;
                         player.seekTo(position);
@@ -699,7 +696,14 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
                 }
             }
         };
-        registerReceiver(pictureActionReceiver, new IntentFilter(ACTION_MEDIA_CONTROL));
+        registerReceiver(pictureActionReceiver, new IntentFilter(Constants.ACTION_MEDIA_CONTROL));
+    }
+
+    private void unRegisterPictureReceiver() {
+        if (pictureActionReceiver != null) {
+            unregisterReceiver(pictureActionReceiver);
+            pictureActionReceiver = null;
+        }
     }
 
     /**
@@ -721,8 +725,8 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
             final ArrayList<RemoteAction> actions = new ArrayList<>();
             //播放/暂停按钮
             final PendingIntent intentPlayOrPause = getBroadcast(controlType);
-            final PendingIntent intentRemind = getBroadcast(CONTROL_TYPE_REMIND);
-            final PendingIntent intentForward = getBroadcast(CONTROL_TYPE_FORWARD);
+            final PendingIntent intentRemind = getBroadcast(Constants.CONTROL_TYPE_REMIND);
+            final PendingIntent intentForward = getBroadcast(Constants.CONTROL_TYPE_FORWARD);
             final Icon iconRewind = Icon.createWithResource(this, R.drawable.exo_controls_rewind);
             final Icon iconForward = Icon.createWithResource(this, R.drawable.exo_controls_fastforward);
             final Icon iconPlay = Icon.createWithResource(this, iconId);
@@ -734,11 +738,14 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * 画中画action可通过广播触发
+     */
     private PendingIntent getBroadcast(int controlType) {
         return PendingIntent.getBroadcast(
                 this,
                 controlType,
-                new Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_CONTROL_TYPE, controlType),
+                new Intent(Constants.ACTION_MEDIA_CONTROL).putExtra(Constants.EXTRA_CONTROL_TYPE, controlType),
                 0);
     }
 
@@ -847,7 +854,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
                         if (info.getType() == ConnectivityManager.TYPE_WIFI) {
 
                             player.setPlayWhenReady(true);
-                            loadControler.shouldContinueLoading(true);
+                            loadController.shouldContinueLoading(true);
                             player.seekTo(player.getCurrentPosition());
                             Log.i(TAG, getConnectionType(info.getType()) + "连上");
 
@@ -878,24 +885,24 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
                     dialog.dismiss();
                     isUsePhoneData = false;
                     player.setPlayWhenReady(false);
-                    loadControler.shouldContinueLoading(false);
+                    loadController.shouldContinueLoading(false);
                 });
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.confirm), (dialog, which) -> {
                     dialog.dismiss();
                     isUsePhoneData = true;
                     player.setPlayWhenReady(true);
-                    loadControler.shouldContinueLoading(true);
+                    loadController.shouldContinueLoading(true);
                 });
             }
             dismissLoading();
             player.setPlayWhenReady(false);
-            loadControler.shouldContinueLoading(false);
+            loadController.shouldContinueLoading(false);
             if (!alertDialog.isShowing()) {
                 alertDialog.show();
             }
         } else {
             player.setPlayWhenReady(true);
-            loadControler.shouldContinueLoading(true);
+            loadController.shouldContinueLoading(true);
         }
     }
 
@@ -907,10 +914,7 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
                 enterPictureMode();
                 return;
             }
-            if (player != null) {
-                player.stop();
-                player.release();
-            }
+            releasePlayer();
             super.onBackPressed();
         }
     }
@@ -935,6 +939,15 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
             return;
         }
         play(player != null);
+        registerNetWorkReceiver();
+        registerVolumeReceiver();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unRegisterNetReceiver();
+        unRegisterVolumeReceiver();
     }
 
     /**
@@ -962,29 +975,42 @@ public class ExoPlayerActivity extends BaseActivity implements View.OnClickListe
     private void pause() {
         if (player != null) {
             player.setPlayWhenReady(false);
-            loadControler.shouldContinueLoading(false);
+            loadController.shouldContinueLoading(false);
+        }
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+            player.stop();
+            player.release();
+        }
+    }
+
+    private void removeHandleMessage() {
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
+    }
+
+    private void unRegisterVolumeReceiver() {
+        if (volumeChangeReceiver != null) {
+            unregisterReceiver(volumeChangeReceiver);
+            volume = null;
+        }
+    }
+
+    private void unRegisterNetReceiver() {
+        if (netWorkReceiver != null) {
+            unregisterReceiver(netWorkReceiver);
+            netWorkReceiver = null;
         }
     }
 
     @Override
     protected void onDestroy() {
+        releasePlayer();
+        removeHandleMessage();
         super.onDestroy();
-        if (player != null) {
-            player.stop();
-            player.release();
-        }
-        if (netWorkReceiver != null) {
-            unregisterReceiver(netWorkReceiver);
-        }
-        if (volumeChangeReceiver != null) {
-            unregisterReceiver(volumeChangeReceiver);
-        }
-        if (pictureActionReceiver != null) {
-            unregisterReceiver(pictureActionReceiver);
-        }
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
-        }
     }
 
     /**

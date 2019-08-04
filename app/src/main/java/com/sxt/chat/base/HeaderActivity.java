@@ -209,6 +209,11 @@ public class HeaderActivity extends BaseActivity {
                 this.rightContainer.removeAllViews();
             }
             this.rightContainer.addView(rightContainer);
+            this.rightContainer.setOnClickListener(v -> {
+                for (int i = 0; i < HeaderActivity.this.rightContainer.getChildCount(); i++) {
+                    HeaderActivity.this.rightContainer.getChildAt(i).performClick();
+                }
+            });
         }
     }
 

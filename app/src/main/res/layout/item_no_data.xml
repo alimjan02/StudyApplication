@@ -13,6 +13,7 @@
         android:paddingRight="30dp">
 
         <TextView
+            android:id="@+id/message"
             style="@style/text_color_1_15_style"
             android:layout_gravity="bottom|center_horizontal"
             android:drawableTop="@mipmap/empty"

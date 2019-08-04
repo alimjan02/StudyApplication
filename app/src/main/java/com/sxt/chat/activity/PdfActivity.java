@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.util.Base64;
 import android.util.Log;
@@ -23,8 +24,8 @@ import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
-import com.bumptech.glide.signature.StringSignature;
 import com.steelkiwi.cropiwa.util.UriUtil;
 import com.sxt.chat.R;
 import com.sxt.chat.base.HeaderActivity;
@@ -40,9 +41,12 @@ import java.util.List;
  * Created by sxt on 2018/12/21.
  * 演示Android PdfRenderer 解析Pdf文档
  * 但是最低支持SDK 21
+ * 本篇的解析思路是 ，将解析到的bitmap展示在WebView中
  */
 public class PdfActivity extends HeaderActivity {
 
+    private ViewSwitcher viewSwitcher;
+    private TextView message;
     private ProgressBar progressBar;
     private WebView webView;
     private ParseTask parseTask;
@@ -57,6 +61,8 @@ public class PdfActivity extends HeaderActivity {
         setTitle("PDF解析");
         progressBar = findViewById(R.id.progressBar);
         webView = findViewById(R.id.webView);
+        viewSwitcher = findViewById(R.id.viewSwitcher);
+        message = findViewById(R.id.message);
         initWebView();
         setRightContainer(null);
     }
@@ -82,14 +88,14 @@ public class PdfActivity extends HeaderActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                if (parseTask != null) {
-                    parseTask.cancel(true);
-                }
-                parseTask = new ParseTask();
-                parseTask.execute(pdfFilePath);
                 Log.i(TAG, "onPageFinished");
+                if (TextUtils.isEmpty(pdfFilePath)) {
+                    viewSwitcher.setDisplayedChild(0);
+                    message.setText("请选择PDF文件进行预览");
+                }
             }
         });
+        webView.loadUrl("file:///android_asset/html/pdf.html");
     }
 
     @Override
@@ -173,29 +179,36 @@ public class PdfActivity extends HeaderActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_SELECT_FILE && data != null) {
-                String path = UriUtil.uri2Path(this, data.getData());
-                if (path != null && path.endsWith(".pdf")) {
-                    pdfFilePath = path;
-                    reload();
-                } else {
-                    Toast("您选择的文件格式有误,请重新选择");
-                }
                 try {
+                    String path = UriUtil.uri2Path(this, data.getData());
+                    if (path != null && path.endsWith(".pdf")) {
+                        pdfFilePath = path;
+                        loadPDF();
+                    } else {
+                        viewSwitcher.setDisplayedChild(0);
+                        message.setText("文件格式有误\n请重新选择PDF文件");
+                    }
                     Log.e(TAG, String.format("%s", path));
                 } catch (Exception e) {
                     e.printStackTrace();
+                    viewSwitcher.setDisplayedChild(0);
+                    message.setText("文件格式有误\n请重新选择PDF文件");
+                    Log.e(TAG, String.format("%s", e.toString()));
                 }
             }
         }
     }
 
-    private void reload() {
+    private void loadPDF() {
+        Log.e(TAG, "开始解析pdf文件");
         if (progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);
         }
-        if (webView != null) {
-            webView.reload();
+        if (parseTask != null) {
+            parseTask.cancel(true);
         }
+        parseTask = new ParseTask();
+        parseTask.execute(pdfFilePath);
     }
 
     class ParseTask extends AsyncTask<String, Void, List<String>> {
@@ -214,7 +227,9 @@ public class PdfActivity extends HeaderActivity {
                     Bitmap mBitmap;
                     for (int i = 0; i < pageCount; i++) {
                         PdfRenderer.Page page = renderer.openPage(i);
-                        mBitmap = Bitmap.createBitmap(page.getWidth(), page.getHeight(), Bitmap.Config.ARGB_8888);
+                        int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.85);
+                        int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.65);
+                        mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                         //将当前页的内容渲染到bitmap中
                         page.render(mBitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
                         //存储当前的bitmap
@@ -228,6 +243,7 @@ public class PdfActivity extends HeaderActivity {
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.e(TAG, String.format("解析出错 ：%s", e.toString()));
                 }
             }
             return pdfBitmapBytes;
@@ -237,13 +253,20 @@ public class PdfActivity extends HeaderActivity {
         protected void onPostExecute(List<String> strings) {
             super.onPostExecute(strings);
             if (strings != null && strings.size() > 0) {
-                for (String bitmapStrs : strings) {
-                    //在页面上添加标签,传递图片参数
-                    webView.loadUrl("javascript:display('data:image/png;base64," + bitmapStrs + "')");
-                }
-            }
-            if (progressBar != null) {
-                progressBar.setVisibility(View.GONE);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        super.run();
+                        for (String bitmapStrs : strings) {
+                            //在页面上添加标签,传递图片参数
+                            PdfActivity.this.runOnUiThread(() -> webView.loadUrl("javascript:display('data:image/png;base64," + bitmapStrs + "')"));
+                        }
+                        dismiss();
+                    }
+                }.start();
+            } else {
+                viewSwitcher.setDisplayedChild(0);
+                message.setText("解析出错，请重新选择PDF文件");
             }
         }
 
@@ -263,6 +286,15 @@ public class PdfActivity extends HeaderActivity {
             }
             return string.toString();
         }
+    }
+
+    private void dismiss() {
+        PdfActivity.this.runOnUiThread(() -> {
+            if (progressBar != null && progressBar.isShown()) {
+                progressBar.setVisibility(View.GONE);
+            }
+            viewSwitcher.setDisplayedChild(1);
+        });
     }
 
     @Override

@@ -28,12 +28,12 @@
     </shortcut>
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_vector_bluetooth_searching_24dp"
-        android:shortcutId="蓝牙搜索"
-        android:shortcutShortLabel="@string/bluetooth">
+        android:icon="@drawable/ic_pdf_blue_24dp"
+        android:shortcutId="PDF解析"
+        android:shortcutShortLabel="@string/pdf_parse">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.sxt.chat.activity.BluetoothActivity"
+            android:targetClass="com.sxt.chat.activity.PdfActivity"
             android:targetPackage="com.sxt.chat" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>

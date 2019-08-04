@@ -31,7 +31,7 @@
         android:id="@+id/pdf_parse"
         android:icon="@drawable/ic_pdf_blue_24dp"
         android:title="@string/pdf_parse"
-        android:visible="false" />
+        android:visible="true" />
 
     <item
         android:id="@+id/wifi"

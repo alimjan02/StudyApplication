@@ -33,16 +33,12 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <!-- This tag indicates that this application requires ARCore.  This results in the application
-         only being visible in the Google Play Store on devices that support ARCore. -->
     <uses-feature
         android:name="android.software.vr.mode"
         android:required="false" />
     <uses-feature
         android:name="android.hardware.vr.high_performance"
         android:required="false" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-
     <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <!--由于 Android P 限制了明文流量的网络请求，非加密的流量请求都会被系统禁止掉。
@@ -295,12 +291,6 @@
         <meta-data
             android:name="com.sxt.chat.utils.glide.GlideCatchConfig"
             android:value="GlideModule" />
-
-        <!-- This tag indicates that this application requires ARCore.  This results in the Google Play
-       Store downloading and installing ARCore along with the application. -->
-        <meta-data
-            android:name="com.google.ar.core"
-            android:value="required" />
 
         <!--腾讯广告,不要打开下面的注释，以防止腾讯自动安装下载的apk，目前还没有找到屏蔽下载apk的办法-->
         <!--<provider-->
