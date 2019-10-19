@@ -10,24 +10,14 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <ViewSwitcher
-            android:id="@+id/viewSwitcher"
+        <LinearLayout
+            android:id="@+id/line_layout_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <include layout="@layout/item_no_data" />
-
-            <LinearLayout
-                android:id="@+id/line_layout_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                android:layoutAnimation="@anim/layout_animation_vertical"
-                android:orientation="vertical"
-                android:paddingTop="10dp" />
-
-        </ViewSwitcher>
+            android:animateLayoutChanges="true"
+            android:layoutAnimation="@anim/layout_animation_vertical"
+            android:orientation="vertical"
+            android:paddingTop="10dp" />
 
     </android.support.v4.widget.NestedScrollView>
 

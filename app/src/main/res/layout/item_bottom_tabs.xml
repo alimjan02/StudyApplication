@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:itemHorizontalTranslationEnabled="true"
+        app:itemIconSize="20dp"
         app:itemIconTint="@drawable/bottom_navigation_colors"
         app:itemTextAppearanceActive="@style/bottom_navigation_bar_text_active_style"
         app:itemTextAppearanceInactive="@style/bottom_navigation_bar_text_inactive_style"

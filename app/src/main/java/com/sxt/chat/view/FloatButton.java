@@ -2,6 +2,7 @@ package com.sxt.chat.view;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;

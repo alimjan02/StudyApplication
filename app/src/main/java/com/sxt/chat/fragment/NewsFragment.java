@@ -52,7 +52,7 @@ public class NewsFragment extends LazyFragment implements
     private HashMap<NativeExpressADView, Integer> mAdViewPositionMap = new HashMap();
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private NestedScrollView nestedScrollView;
+//    private NestedScrollView nestedScrollView;
 
     @Override
     protected int getDisplayView(LayoutInflater inflater, ViewGroup container) {
@@ -61,9 +61,9 @@ public class NewsFragment extends LazyFragment implements
 
     @Override
     protected void initView() {
-        nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
+//        nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
         mRecyclerView = contentView.findViewById(R.id.recyclerView);
-        mRecyclerView.getRecyclerView().setNestedScrollingEnabled(false);
+//        mRecyclerView.getRecyclerView().setNestedScrollingEnabled(false);
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.day_night_dark_color);
         swipeRefreshLayout.setProgressViewOffset(true, -swipeRefreshLayout.getProgressCircleDiameter(), 100);
@@ -74,10 +74,17 @@ public class NewsFragment extends LazyFragment implements
         swipeRefreshLayout.post(this::loadAD);
         refresh();
         //设置滑动监听,使得底部tab栏竖直滑动
-        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            Log.e("scrollY", String.format("oldScrollY = %s ; scrollY = %s", oldScrollY, scrollY));
-            MainActivity activity = (MainActivity) NewsFragment.this.activity;
-            activity.setBottomBarTranslateY(scrollY, scrollY > oldScrollY);
+        mRecyclerView.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int oldScrollY = 0;
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                float scrollY = recyclerView.getScrollY();
+                MainActivity activity = (MainActivity) NewsFragment.this.activity;
+                activity.setBottomBarTranslateY(dy, scrollY < oldScrollY);
+                oldScrollY = recyclerView.getScrollY() + dy;
+            }
         });
     }
 

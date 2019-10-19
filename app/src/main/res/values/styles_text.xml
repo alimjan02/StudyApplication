@@ -198,11 +198,11 @@
     </style>
 
     <style name="bottom_navigation_bar_text_active_style">
-        <item name="android:textSize">13dp</item>
+        <item name="android:textSize">12dp</item>
     </style>
 
     <style name="bottom_navigation_bar_text_inactive_style">
-        <item name="android:textSize">13dp</item>
+        <item name="android:textSize">12dp</item>
     </style>
 
     <style name="AppTheme.AdAttribution" parent="base_text_style">

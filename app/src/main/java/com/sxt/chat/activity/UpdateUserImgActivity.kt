@@ -59,7 +59,7 @@ class UpdateUserImgActivity : AdBannerActivity(), View.OnClickListener {
 
     private fun updateHeadPortrait() {
         val user = BmobUser.getCurrentUser(User::class.java)
-        if (user != null) {
+        if (user != null && user.imgUri != null) {
             load(user.imgUri, if ("M" == BmobUser.getCurrentUser(User::class.java).gender) R.mipmap.men else R.mipmap.women)
         }
     }
@@ -111,6 +111,10 @@ class UpdateUserImgActivity : AdBannerActivity(), View.OnClickListener {
         }
 
         intent = Intent.createChooser(intent, "选择图片")
+        //４．３以上的设备才支持Intent.EXTRA_ALLOW_MULTIPLE，是否可以一次选择多个文件
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+        //返回的文件是否必须存在于设备上，而不是需要从远程服务下载的,用于解决用户选中的是云端文件时的问题
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, false)
         startActivityForResult(intent, REQUEST_CHOOSE_PHOTO)
     }
 

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
+import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
@@ -23,6 +24,7 @@ import com.sxt.chat.fragment.BannerDetailFragment
 import com.sxt.chat.json.RoomInfo
 import com.sxt.chat.utils.Constants
 import com.sxt.chat.utils.Prefs
+import kotlinx.android.synthetic.main.item_ad.view.*
 import java.util.*
 import kotlin.math.abs
 
@@ -30,10 +32,10 @@ class BannerDetailActivity : BaseActivity() {
 
     private var appBarLayout: AppBarLayout? = null
     private var nestedScrollView: NestedScrollView? = null
-    private var title: TextView? = null
     private var roomInfo: RoomInfo? = null
     private var viewPager: ViewPager? = null
     private var tabLayout: TabLayout? = null
+    private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
     private var toolbar: Toolbar? = null
     private var verticalOffset: Float = 0.toFloat()
 
@@ -49,14 +51,13 @@ class BannerDetailActivity : BaseActivity() {
         tabLayout = findViewById(R.id.tablayout)
         nestedScrollView = findViewById(R.id.nestedScrollView)
         appBarLayout = findViewById(R.id.app_bar_layout)
-        title = findViewById(R.id.title)
+        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar_layout)
         toolbar = findViewById(R.id.toolbar)
         viewPager = findViewById(R.id.viewPager)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             findViewById<View>(R.id.image_scrolling_top).transitionName = "shareView"
             setWindowStatusBarColor(this, android.R.color.transparent)
         }
-        toolbar!!.title = ""
         toolbar!!.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
         setSupportActionBar(toolbar)
         //让点击导航的逻辑箭头与后键相同，手动finish掉 没有动画效果
@@ -64,7 +65,8 @@ class BannerDetailActivity : BaseActivity() {
         val bundle = intent.getBundleExtra(Prefs.ROOM_INFO)
         if (bundle != null) {
             roomInfo = bundle.getSerializable(Prefs.ROOM_INFO) as RoomInfo
-            title!!.text = roomInfo!!.home_name
+//            collapsingToolbarLayout!!.title = roomInfo!!.home_name
+            toolbar!!.title = roomInfo!!.home_name
             Glide.with(this)
                     .load(if (roomInfo != null) roomInfo!!.room_url else "")
                     .placeholder(R.drawable.ic_placeholder)
@@ -80,41 +82,13 @@ class BannerDetailActivity : BaseActivity() {
             val rate: Float = abs(verticalOffset / totalScrollRange)
             when {
                 verticalOffset.compareTo(0) == 0 -> {//完全展开
-                    toolbar!!.translationY = 0f
-                    title!!.translationX = 0f
-                    title!!.translationY = 0f
-                    toolbar!!.title = ""
-                    title!!.visibility = View.VISIBLE
-                    if (maxY[0] == 0f) {
-                        maxY[0] = title!!.y - toolbar!!.y
-                    }
                     Log.e(TAG, String.format("完全展开 maxY = %s ，verticalOffset = %s", maxY[0], verticalOffset))
-
                 }
                 abs(verticalOffset) >= totalScrollRange -> {//完全折叠
                     Log.e(TAG, String.format("完全折叠 maxY = %s ，verticalOffset = %s", maxY[0], verticalOffset))
-                    toolbar!!.translationY = (-toolbar!!.height).toFloat()
-                    title!!.translationX = (-toolbar!!.height).toFloat()
-                    title!!.translationX = -maxY[0]
-                    toolbar!!.title = roomInfo!!.home_name
-                    title!!.visibility = View.GONE
-
                 }
                 else -> {//中间状态
-                    title!!.translationX = -title!!.left.toFloat().div(2).times(rate)
                     val last: Float = totalScrollRange - abs(verticalOffset)
-                    if (last <= toolbar!!.height) {
-                        val result = (toolbar!!.height.minus(last))
-                        if (result <= toolbar!!.height) {
-                            toolbar!!.translationY = -result//>0向下，<0向上
-                            toolbar!!.title = roomInfo!!.home_name
-                        }
-                        title!!.visibility = View.GONE
-                    } else {
-                        title!!.visibility = View.VISIBLE
-                        toolbar!!.title = ""
-                        title!!.translationY = -maxY[0].times(rate)
-                    }
                 }
             }
             this@BannerDetailActivity.verticalOffset = verticalOffset

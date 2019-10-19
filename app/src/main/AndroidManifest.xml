@@ -39,6 +39,7 @@
     <uses-feature
         android:name="android.hardware.vr.high_performance"
         android:required="false" />
+
     <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <!--由于 Android P 限制了明文流量的网络请求，非加密的流量请求都会被系统禁止掉。
@@ -63,6 +64,11 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
+
+        <!-- 适配华为的刘海屏，全局生效，也可写在指定的activity中，仅对当前activity生效 -->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" />
 
         <activity
             android:name=".activity.SplashActivity"
@@ -254,6 +260,7 @@
         <activity
             android:name=".activity.MapActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" />
 

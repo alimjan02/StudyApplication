@@ -40,7 +40,6 @@ public class ChartFragment extends LazyFragment {
     String[] lineUnit;
     int[] lineColor;
     int[] shaderColor;
-    private ViewSwitcher viewSwitcher;
     private LinearLayout lineLayoutList;
     private List<ChartBean> chartBeanList0;
     private List<ChartBean> chartBeanList;
@@ -56,7 +55,6 @@ public class ChartFragment extends LazyFragment {
     @Override
     protected void initView() {
         nestedScrollView = contentView.findViewById(R.id.nestedScrollView);
-        viewSwitcher = contentView.findViewById(R.id.viewSwitcher);
         lineLayoutList = contentView.findViewById(R.id.line_layout_list);
         swipeRefreshLayout = contentView.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.day_night_dark_color);
@@ -73,7 +71,6 @@ public class ChartFragment extends LazyFragment {
             swipeRefreshLayout.setRefreshing(true);//第一次来 并不会调用onRefresh方法  android bug
             handler.postDelayed(() -> {
                 swipeRefreshLayout.setRefreshing(false);
-                viewSwitcher.setDisplayedChild(1);
                 init();
             }, 2000);
         });

@@ -57,7 +57,7 @@ public class CustomRecyclerView extends ViewSwitcher {
 
     public CustomRecyclerView setEmptyView(View emptyView) {
         if (emptyView != null) {
-            emptyViewLayout.addView(emptyView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            emptyViewLayout.addView(emptyView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         }
         return this;
     }

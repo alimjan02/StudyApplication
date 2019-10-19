@@ -260,7 +260,7 @@ public class HomePageFragment extends LazyFragment {
             public void onBottomSheetDialogCreate(BaseBottomSheetFragment baseBottomSheetFragment, BottomSheetDialog bottomSheetDialog, View contentView) {
                 int peekHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, App.getCtx().getResources().getDisplayMetrics());
                 baseBottomSheetFragment
-                        .setCancelableOutside(false)
+//                        .setCancelableOutside(false)
                         .setPeekHeight(peekHeight)
                         .setBottomSheetState(BottomSheetBehavior.STATE_EXPANDED)
                         .setBackgtoundColor(Color.TRANSPARENT);

@@ -331,9 +331,24 @@ public class AnimationUtil {
         view.startAnimation(animatorSet);
     }
 
+    /**
+     * Y轴执行位移动画
+     */
     public static void translationYAnimator(View target, int startTranslationY, int endTranslationY, long duration) {
         ObjectAnimator translationAnimator = ObjectAnimator.ofFloat(target, "translationY", startTranslationY, endTranslationY).setDuration(duration);
         translationAnimator.setInterpolator(new LinearInterpolator());
         translationAnimator.start();
+    }
+
+    /**
+     * Y轴执行位移,透明渐变动画
+     */
+    private void translationYAlphaAnimator(View targetView, int startTranslationY, int endTranslationY, int startAlpha, int endAlpha, long duration) {
+        ObjectAnimator translationAnimator = ObjectAnimator.ofFloat(targetView, "translationY", startTranslationY, endTranslationY).setDuration(200);
+        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(targetView, "alpha", startAlpha, endAlpha);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setInterpolator(new LinearInterpolator());
+        animatorSet.playTogether(translationAnimator, alphaAnimator);
+        animatorSet.start();
     }
 }

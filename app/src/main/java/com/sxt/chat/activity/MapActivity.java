@@ -1,11 +1,10 @@
 package com.sxt.chat.activity;
 
 import android.Manifest;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -37,9 +36,6 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.CameraUpdateFactory;
@@ -69,9 +65,10 @@ import com.sxt.chat.json.LocationInfo;
 import com.sxt.chat.json.ResponseInfo;
 import com.sxt.chat.utils.AnimationUtil;
 import com.sxt.chat.utils.ArithTool;
+import com.sxt.chat.utils.LocationManager;
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.SimpleTextWatcher;
-import com.sxt.chat.utils.Utils;
+import com.sxt.chat.utils.SystemUiStyle;
 import com.sxt.chat.ws.BmobRequest;
 
 import java.io.File;
@@ -81,10 +78,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.flutter.embedding.engine.systemchannels.PlatformChannel;
+
 /**
  * Created by sxt on 2018/10/26.
  */
-public class MapActivity extends BaseActivity implements AMapLocationListener, LocationSource, AMap.OnMarkerClickListener, PoiSearch.OnPoiSearchListener {
+public class MapActivity extends BaseActivity implements LocationSource, AMap.OnMarkerClickListener, PoiSearch.OnPoiSearchListener {
 
     private AMap aMap;
     private MapView mapView;
@@ -92,36 +91,34 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     private RecyclerView recyclerView;
     private ViewSwitcher viewSwitcher;
     private NestedScrollView nestedScrollView;
+    private View bottomSheet;
     private CoordinatorLayout coordinatorLayout;
     private LocationAdapter locationAdapter;
-    public AMapLocationClient mLocationClient;
     private BottomSheetBehavior bottomSheetBehavior;
-    public AMapLocationClientOption mLocationOption;
 
     private PoiSearch poiSearch;
     private EditText searchView;
     private ValueAnimator valueAnimator;
     private float mAnimatorValue;
     private View close;
-    private int heightPixels, marginTop;
+    private int marginTop;
     private Marker markerPre;
     private int maxRadius = 100, markerIndexPre = -1;
-    private int ZOOM_MAP = 15, peekHeight, peekHeightMin = 16;
+    private int ZOOM_MAP = 15, peekHeight, maxHeight;
     private List<Circle> listCircle = new ArrayList<>();
     private Map<Integer, Marker> markers = new HashMap<>();
     private LatLng centerLatLng = new LatLng(31.236255, 121.470231);
-    private GpsReceiver gpsReceiver;
     private final int REQUEST_CODE_LOCATION = 500;
-    private final String ACTION_GPS_STATE = "android.location.PROVIDERS_CHANGED";
     private String CMD_GET_LOCATION_INTOS = this.getClass().getName() + "CMD_GET_LOCATION_INTOS";
-    private int statusBarHeight;
     private UiSettings uiSettings;
+    private CardView cardView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_layout);
-        initTitle();
+        SystemUiStyle.fitSystemWindow(this);
+        SystemUiStyle.setStatusBarColor(this, android.R.color.transparent);
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         aMap = mapView.getMap();
@@ -131,43 +128,23 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         requestLocationPermission();
     }
 
-    private void initMap() {
+    private void init() {
         if (uiSettings == null) {
-            uiSettings = aMap.getUiSettings();
-            uiSettings.setScaleControlsEnabled(true);// 标尺开关
-            uiSettings.setZoomControlsEnabled(false);//缩放按钮
-            aMap.moveCamera(CameraUpdateFactory.zoomTo(ZOOM_MAP));
-            aMap.setMyLocationEnabled(true);
-            aMap.setLocationSource(this);
-            aMap.setOnMarkerClickListener(this);
+            initMap();
             initView();
-            initLocationOption();
-            registerReceiver();
-        } else {
-            startLocation();
+            initBehavior();
         }
+        startLocation();
     }
 
-    private void registerReceiver() {
-        gpsReceiver = new GpsReceiver();
-        registerReceiver(gpsReceiver, new IntentFilter(ACTION_GPS_STATE));
-    }
-
-    private void initTitle() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent));
-        }
-        heightPixels = getResources().getDisplayMetrics().heightPixels;
-        final CardView cardView = findViewById(R.id.cardView);
-        cardView.post(() -> {
-            CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) cardView.getLayoutParams();
-            statusBarHeight = 0;
-            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-            if (resourceId > 0) {
-                statusBarHeight = getResources().getDimensionPixelSize(resourceId);
-            }
-            marginTop = cardView.getHeight() + lp.topMargin + lp.bottomMargin / 2 + statusBarHeight;
-        });
+    private void initMap() {
+        uiSettings = aMap.getUiSettings();
+        uiSettings.setScaleControlsEnabled(true);// 标尺开关
+        uiSettings.setZoomControlsEnabled(false);//缩放按钮
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(ZOOM_MAP));
+        aMap.setMyLocationEnabled(true);
+        aMap.setLocationSource(this);
+        aMap.setOnMarkerClickListener(this);
     }
 
     private void initView() {
@@ -175,66 +152,10 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         searchView = findViewById(R.id.search_view);
         viewSwitcher = findViewById(R.id.viewSwitcher);
         nestedScrollView = findViewById(R.id.nestedScrollView);
+        bottomSheet = findViewById(R.id.bottom_sheet);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setNestedScrollingEnabled(false);
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
-        final View fabContainer = findViewById(R.id.fab_container);
-        final FloatingActionButton fab = findViewById(R.id.fab_my_location);
-        final FloatingActionButton fabScrolling = findViewById(R.id.fab_scrolling);
-        fabScrolling.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.day_night_normal_color)));
-        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.day_night_normal_color)));
-        fab.setOnClickListener(view -> startLocation());
-        fabScrolling.setOnClickListener(v -> {
-            LatLng latLng;
-            if (aMapLocation != null) {
-                latLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-            } else {
-                latLng = centerLatLng;
-            }
-            openGaoDeMap(latLng, getString(R.string.app_name));
-        });
-        bottomSheetBehavior = BottomSheetBehavior.from(nestedScrollView);
-        peekHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
-        bottomSheetBehavior.setPeekHeight(peekHeight);
-        bottomSheetBehavior.setHideable(true);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState != BottomSheetBehavior.STATE_DRAGGING) {
-                    ViewGroup.LayoutParams layoutParams = bottomSheet.getLayoutParams();
-                    if (bottomSheet.getHeight() > heightPixels - marginTop) {
-                        layoutParams.height = heightPixels - marginTop;
-                        bottomSheet.setLayoutParams(layoutParams);
-                    }
-                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                        if (nestedScrollView != null && nestedScrollView.getScrollX() != 0) {
-                            nestedScrollView.setScrollX(0);//列表滑动到顶端
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                float distance;
-                if (slideOffset > 0) {//在peekHeight位置以上 滑动(向上、向下) slideOffset bottomSheet.getHeight() 是展开后的高度的比例
-                    distance = bottomSheet.getHeight() * slideOffset;
-                } else {//在peekHeight位置以下 滑动(向上、向下)  slideOffset 是PeekHeight的高度的比例
-                    distance = bottomSheetBehavior.getPeekHeight() * slideOffset;
-                }
-                if (distance < 0) {
-                    fabContainer.setTranslationY(-distance);
-                    mapView.setTranslationY(0);
-                } else {
-                    if (distance <= peekHeight) {
-                        fabContainer.setTranslationY(-distance);
-                        mapView.setTranslationY(-distance);
-                    }
-                }
-                Log.e(TAG, String.format("slideOffset -->>> %s bottomSheet.getHeight() -->>> %s heightPixels -->>> %s", slideOffset, bottomSheet.getHeight(), heightPixels));
-            }
-        });
         close.setOnClickListener(v -> searchView.setText(""));
         searchView.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -267,12 +188,89 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     }
 
     /**
-     * 发起定位
+     * 初始化BottomSheet
      */
-    private void startLocation() {
-        if (mLocationClient != null) {
-            mLocationClient.startLocation();
+    private void initBehavior() {
+        final View fabContainer = findViewById(R.id.fab_container);
+        final FloatingActionButton fab = findViewById(R.id.fab_my_location);
+        final FloatingActionButton fabScrolling = findViewById(R.id.fab_scrolling);
+        fabScrolling.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.day_night_normal_color)));
+        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.day_night_normal_color)));
+        fab.setOnClickListener(view -> startLocation());
+        fabScrolling.setOnClickListener(v -> {
+            LatLng latLng;
+            if (aMapLocation != null) {
+                latLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+            } else {
+                latLng = centerLatLng;
+            }
+            openGaoDeMap(latLng, getString(R.string.app_name));
+        });
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    if (nestedScrollView != null && nestedScrollView.getScrollY() != 0) {
+                        nestedScrollView.setScrollY(0);//列表滑动到顶端
+                    }
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                float distance, result;
+                if (slideOffset > 0) {//在peekHeight位置以上 滑动(向上、向下) slideOffset bottomSheet.getHeight() 是展开后的高度的比例
+                    distance = bottomSheet.getHeight() * slideOffset;
+                } else {//在peekHeight位置以下 滑动(向上、向下)  slideOffset 是PeekHeight的高度的比例
+                    distance = bottomSheetBehavior.getPeekHeight() * slideOffset;
+                }
+                cardView.setTranslationY(-(bottomSheet.getHeight() - distance));
+                cardView.setAlpha(slideOffset);
+                if (distance < 0) {
+                    fabContainer.setTranslationY(-distance);
+                    mapView.setTranslationY(0);
+                } else {
+                    if (distance <= peekHeight) {
+                        fabContainer.setTranslationY(-distance);
+                        mapView.setTranslationY(-distance);
+                    }
+                }
+            }
+        });
+        bottomSheet.post(() -> {
+            initTitle();
+            nestedScrollView.measure(0, 0);
+            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) nestedScrollView.getLayoutParams();
+            params.height = maxHeight;
+            nestedScrollView.setLayoutParams(params);
+            nestedScrollView.requestLayout();
+            bottomSheetBehavior.setPeekHeight(peekHeight);
+            bottomSheetBehavior.setHideable(true);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        });
+    }
+
+    private void initTitle() {
+        cardView = findViewById(R.id.cardView);
+        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) cardView.getLayoutParams();
+        int statusBarHeight = 0;
+        boolean flag = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
+        if (flag) {
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+            }
+            cardView.measure(0, 0);
+            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) cardView.getLayoutParams();
+            params.topMargin += statusBarHeight;
+            cardView.setLayoutParams(params);
+            cardView.requestLayout();
         }
+        marginTop = cardView.getHeight() + lp.topMargin / 2 + (flag ? 0 : statusBarHeight);
+        int heightPixels = getResources().getDisplayMetrics().heightPixels;
+        peekHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
+        maxHeight = heightPixels - marginTop;//展开后最大高度
     }
 
     //======================Start============POI关键词搜索回调=======================================
@@ -315,41 +313,6 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
 
     }
     //======================End============POI关键词搜索回调=========================================
-
-    private void initLocationOption() {
-        AMapLocationClientOption.AMapLocationMode mode;
-        if (Utils.isGpsOpen(this)) {
-            mode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy;//高精度模式。
-            Log.e(TAG, "当前定位模式为 --->>> 高精度模式");
-        } else if (Utils.isGpsNetWorkOpen(this)) {
-            mode = AMapLocationClientOption.AMapLocationMode.Battery_Saving;//低功耗模式。
-            Log.e(TAG, "当前定位模式为 --->>> 低功耗模式");
-        } else {
-            mode = AMapLocationClientOption.AMapLocationMode.Device_Sensors;//仅限设备模式。
-            Log.e(TAG, "当前定位模式为 --->>> 仅限设备模式");
-        }
-        if (mLocationOption == null) {
-            mLocationOption = new AMapLocationClientOption()
-                    .setLocationMode(mode)
-                    .setNeedAddress(true)//设置是否返回地址信息（默认返回地址信息）
-                    .setInterval(2000)//设置定位间隔,单位毫秒,默认为2000ms，最低1000ms。
-                    .setHttpTimeOut(8000)//单位是毫秒，默认30000毫秒，建议超时时间不要低于8000毫秒。
-                    .setLocationCacheEnable(true);//缓存机制默认开启，可以通过以下接口进行关闭。
-            // 设置定位场景，目前支持三种场景（签到、出行、运动，默认无场景）
-            //.setLocationPurpose(AMapLocationClientOption.AMapLocationPurpose.Sport);
-        } else {
-            mLocationOption.setLocationMode(mode);
-        }
-        if (mLocationClient == null) {
-            mLocationClient = new AMapLocationClient(getApplicationContext());//初始化定位
-            mLocationClient.setLocationListener(this);//设置定位回调监听
-            mLocationClient.setLocationOption(mLocationOption);
-            mLocationClient.stopLocation();//设置场景模式后最好调用一次stop，再调用start以保证场景模式生效
-        } else {
-            mLocationClient.setLocationOption(mLocationOption);
-        }
-        mLocationClient.startLocation();
-    }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -495,11 +458,10 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
             }
         }
         if (list == null || list.size() == 0) {
-            viewSwitcher.setDisplayedChild(0);
-        } else {
             viewSwitcher.setDisplayedChild(1);
+        } else {
+            viewSwitcher.setDisplayedChild(0);
         }
-        bottomSheetBehavior.setPeekHeight(peekHeight);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
@@ -581,55 +543,45 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         }
     }
 
-    @Override
-    public void onLocationChanged(AMapLocation aMapLocation) {
-        if (aMapLocation != null) {
-            LatLng latLng;
-            if (aMapLocation.getErrorCode() == 0) {
-                this.aMapLocation = aMapLocation;
-                if (mLocationClient != null) {
-                    mLocationClient.stopLocation();
+    /**
+     * 发起定位
+     */
+    private void startLocation() {
+        LocationManager.getInstance(this).setOnLocationListener(aMapLocation -> {
+            if (aMapLocation != null) {
+                LatLng latLng;
+                if (aMapLocation.getErrorCode() == 0) {
+                    this.aMapLocation = aMapLocation;
+                    latLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+                } else {
+                    latLng = centerLatLng;
+                    Toast(coordinatorLayout, aMapLocation.getErrorInfo());
+                    //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                    Log.e("AmapError", "location Error, ErrCode:"
+                            + aMapLocation.getErrorCode() + ", errInfo:"
+                            + aMapLocation.getErrorInfo());
                 }
-                latLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-            } else {
-                latLng = centerLatLng;
-                Toast(coordinatorLayout, aMapLocation.getErrorInfo());
-                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                Log.e("AmapError", "location Error, ErrCode:"
-                        + aMapLocation.getErrorCode() + ", errInfo:"
-                        + aMapLocation.getErrorInfo());
+                refresh();
+                aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
             }
-            refresh();
-            aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
-        }
+        }).startLocation();
+    }
+
+    /**
+     * 停止定位
+     */
+    private void stopLocation() {
+        LocationManager.getInstance(this).stopLocation();
     }
 
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
-        initLocationOption();
-        OnLocationChangedListener mLocationListener = onLocationChangedListener;
+        startLocation();
     }
 
     @Override
     public void deactivate() {
-        releaseClient();
-    }
-
-    private class GpsReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (ACTION_GPS_STATE.equals(intent.getAction())) {
-                Log.e(TAG, "监听到定位模式发生变化");
-                initLocationOption();
-            }
-        }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        heightPixels = getResources().getDisplayMetrics().heightPixels;
+        LocationManager.getInstance(this).releaseClient();
     }
 
     @Override
@@ -642,7 +594,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     protected void onPause() {
         super.onPause();
         if (mapView != null) mapView.onPause();
-        if (mLocationClient != null) mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
+        stopLocation();
     }
 
     @Override
@@ -661,14 +613,6 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
         }
     }
 
-    private void releaseClient() {
-        if (mLocationClient != null) {
-            mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
-            mLocationClient.onDestroy();//销毁定位客户端，同时销毁本地定位服务。
-            mLocationClient = null;
-        }
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -679,10 +623,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     protected void onDestroy() {
         super.onDestroy();
         if (mapView != null) mapView.onDestroy();
-        releaseClient();
-        if (gpsReceiver != null) {
-            unregisterReceiver(gpsReceiver);
-        }
+        LocationManager.getInstance(this).releaseClient();
         if (valueAnimator != null && valueAnimator.isRunning()) {
             valueAnimator.cancel();
         }
@@ -692,7 +633,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener, L
     public void onPermissionsAllowed(int requestCode, String[] permissions, int[] grantResults) {
         super.onPermissionsAllowed(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_LOCATION) {
-            initMap();
+            init();
         }
     }
 

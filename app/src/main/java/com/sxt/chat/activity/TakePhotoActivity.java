@@ -330,7 +330,9 @@ public class TakePhotoActivity extends BaseActivity implements SurfaceHolder.Cal
                                         @Override
                                         public void run() {
                                             findViewById(R.id.result_layout).setVisibility(View.VISIBLE);
-                                            Glide.with(App.getCtx()).load(file).transform(new CenterCrop(App.getCtx()), new GlideRoundTransformer(App.getCtx(), 4)).into(imgCenter);
+                                            Glide.with(App.getCtx()).load(file)
+                                                    .transform(new CenterCrop(App.getCtx()), new GlideRoundTransformer(App.getCtx(), 4))
+                                                    .into(imgCenter);
                                         }
                                     });
                                 }

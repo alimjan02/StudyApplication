@@ -4,17 +4,9 @@
     android:layout_height="match_parent"
     android:overScrollMode="never">
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
+    <com.sxt.chat.view.CustomRecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.sxt.chat.view.CustomRecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </android.support.v4.widget.NestedScrollView>
-
+        android:layout_height="match_parent" />
 
 </android.support.v4.widget.SwipeRefreshLayout>
