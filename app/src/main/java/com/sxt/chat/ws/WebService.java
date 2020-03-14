@@ -11,15 +11,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-/**
- * @Descripition
- * @Auther liubing
- * @CreateTime 2017/7/13
- * @Version
- * @Since
- */
 public interface WebService {
-
     @Headers("Content-Type:text/json;Authorization:")
     @FormUrlEncoded
     @POST("ocrapi/idcardocr")

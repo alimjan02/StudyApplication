@@ -7,13 +7,17 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
+
 import com.sxt.chat.utils.Prefs;
 import com.sxt.chat.utils.ToastUtil;
+
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -121,12 +125,12 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 
     private String parseAPK(Response response, File localApkFile) {
         FileOutputStream os = null;
-        InputStream is = null;
+        BufferedInputStream is = null;
         try {
             Log.e(TAG, "response : " + ((float) response.body().contentLength() / 1024 / 1024) + "本地已有 : " + (localApkFile.length() / 1024 / 1024));
 
             os = new FileOutputStream(localApkFile, true);
-            is = response.body().byteStream();
+            is = new BufferedInputStream(response.body().byteStream());
             byte[] b = new byte[1024 * 1024];
             int len;
             while ((len = is.read(b)) != -1) {

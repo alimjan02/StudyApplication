@@ -51,7 +51,8 @@ public final class TJProtocol {
                 .build();
 
         //"https://api.youtu.qq.com/youtu/ocrapi/idcardocr";
-        retrofit = new Retrofit.Builder().baseUrl("https://api.youtu.qq.com/youtu/").addConverterFactory(GsonConverterFactory.create()).client(client).build();
+        retrofit = new Retrofit.Builder().baseUrl("https://api.youtu.qq.com/youtu/")
+                .addConverterFactory(GsonConverterFactory.create()).client(client).build();
         apiService = retrofit.create(WebService.class);
     }
 

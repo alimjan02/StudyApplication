@@ -17,7 +17,7 @@ public class SDKConfig {
     public static final String TYPE_FOOD_CARDCOR = "imageapi/fooddetect";//美食图片
     public static final String TYPE_IMAGE_CARDCOR = "imageapi/imagetag";//图片类别
 
-    public static final String AccessKeyId="LTAIe1N8CISkYzLb";
-    public static final String AccessKeySecret="pS7nO5LHUk2JVVUh4VgJeieGnpEtuM";
+    public static final String AccessKeyId = "";
+    public static final String AccessKeySecret = "";
 
 }
